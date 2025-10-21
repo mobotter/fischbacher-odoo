@@ -1,0 +1,101 @@
+<!--test_many2many_from_string-->
+
+<h2 name='test_many2many_from_string'>test_many2many_from_string</h2>"
+<h3>Input</h3>
+<pre>
+[
+    {
+        "name": "testpartner1",
+        "countries": "Germany  ,  Switzerland"
+    }
+]
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "name": "testpartner1",
+        "marks": [
+            {
+                "code": "GE",
+                "name": "Germany"
+            },
+            {
+                "code": "SW",
+                "name": "Switzerland"
+            }
+        ]
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>name</td>
+   <td></td>
+</tr>
+<tr>
+   <td>countries</td>
+   <td>list</td>
+   <td>marks</td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td></td>
+   <td>object</td>
+   <td></td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>$value</td>
+   <td>direct</td>
+   <td>name</td>
+   <td></td>
+</tr>
+<tr>
+   <td>$value</td>
+   <td>direct</td>
+   <td>code</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+        </table>
+    </td>
+</tr>
+</table>

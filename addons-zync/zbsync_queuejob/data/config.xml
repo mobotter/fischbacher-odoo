@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="1">
+    <record id="check_queue" model="ir.config_parameter">
+      <field name="key">zbs.check.duplicate_queue_jobs</field>
+      <field name="value">1</field>
+    </record>
+  </data>
+</odoo>

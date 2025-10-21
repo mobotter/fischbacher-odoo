@@ -1,0 +1,5 @@
+
+  - repo: https://github.com/pre-commit/mirrors-jshint
+    rev: v2.13.5
+    hooks:
+      - id: jshint

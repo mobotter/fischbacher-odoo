@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_payload_parameter_form" model="ir.ui.view">
+      <field name="name">zbs.payload.parameter form</field>
+      <field name="model">zbs.payload.parameter</field>
+      <field name="arch" type="xml">
+        <form>
+          <h1>
+            <field name="name"/>
+          </h1>
+          <group>
+            <field name="description" widget="text"/>
+            <field name="field"/>
+            <field name="parameter_type"/>
+            <field name="required"/>
+            <field name="example"/>
+            <field name="allow_reserved"/>
+            <field name="property_type_id"/>
+          </group>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

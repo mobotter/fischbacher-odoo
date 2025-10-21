@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_zbs_connection_ftp_form" model="ir.ui.view">
+      <field name="name">zbs.connection.ftp.form</field>
+      <field name="model">zbs.connection.ftp</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header/>
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="name" class="oe_inline" colspan="4"/>
+              </h1>
+            </div>
+            <group col="2" string="">
+              <field name="host"/>
+              <field name="port"/>
+              <field name="ttype"/>
+              <field name="username" required="0"/>
+              <field name="password" password="True" required="0"/>
+              <field name="timeout"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_zbs_connection_ftp_list" model="ir.ui.view">
+      <field name="model">zbs.connection.ftp</field>
+      <field name="arch" type="xml">
+        <list default_order="" string="">
+          <field name="host"/>
+          <field name="port"/>
+          <field name="username"/>
+        </list>
+      </field>
+    </record>
+  </data>
+</odoo>

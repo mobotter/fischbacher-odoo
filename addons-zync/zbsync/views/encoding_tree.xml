@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_encoding_tree" model="ir.ui.view">
+      <field name="model">zbs.encoding</field>
+      <field name="arch" type="xml">
+        <list default_order="" editable="bottom" string="">
+          <field name="name"/>
+        </list>
+      </field>
+    </record>
+  </data>
+</odoo>

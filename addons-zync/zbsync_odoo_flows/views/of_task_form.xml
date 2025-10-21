@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_of_task_form" model="ir.ui.view">
+      <field name="model">of.task</field>
+      <field name="inherit_id" ref="odoo_flows.view_of_task_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='help']//ul[1]/li[last()]" position="after">
+          <li><b>zync</b>: array of records or browsable object
+          </li>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

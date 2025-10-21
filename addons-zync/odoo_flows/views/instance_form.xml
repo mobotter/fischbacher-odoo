@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_of_instance_form" model="ir.ui.view">
+      <field name="name">of.instance form</field>
+      <field name="model">of.instance</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header>
+            <button name="heartbeat" string="Heart Beat" type="object"/>
+            <button name="abort" string="Abort" type="object" confirm="Please confirm"/>
+            <button name="restart" string="Restart" type="object" confirm="Please confirm"/>
+            <button name="open_odoo_instance" string="Open Record" type="object"/>
+          </header>
+          <sheet>
+            <group string="" col="2">
+              <field name="name"/>
+              <field name="flow_id"/>
+              <field name="odoo_instance_name"/>
+              <field name="manual_mode"/>
+            </group>
+            <group col="2" colspan="2">
+              <field name="diagram_content" widget="diagrams_net" nolabel="1" colspan="2" context="{'instance_id': id}"/>
+            </group>
+            <field name="item_ids" nolabel="1">
+              <list decoration-info="has_cursor">
+                <button name="open" string="" type="object" icon="fa-external-link" title="Open"/>
+                <field name="name"/>
+                <button name="toggle_has_cursor" string="Toggle Has Cursor" type="object" groups="base.group_no_one"/>
+                <field name="has_cursor"/>
+                <field name="date_started"/>
+                <field name="custom_metadata"/>
+                <field name="mail_activity_id"/>
+                <field name="mail_activity_created"/>
+                <field name="deadline"/>
+              </list>
+            </field>
+          </sheet>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_zbs_pipeline_form" model="ir.ui.view">
+      <field name="model">zbs.pipeline</field>
+      <field name="inherit_id" ref="zbsync.view_zbs_pipeline_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//notebook/page[1]" position="before">
+          <page name="Chart">
+            <button name="add_worker" data-hotkey="a" string="Add Worker" type="object"/>
+            <separator/>
+            <field name="renderer" widget="pipeline_renderer"/>
+          </page>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

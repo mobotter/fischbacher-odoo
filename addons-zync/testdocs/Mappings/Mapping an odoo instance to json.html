@@ -1,0 +1,33 @@
+<!--Mapping an odoo instance to json-->
+
+<h2 name='Mapping an odoo instance to json'>Mapping an odoo instance to json</h2>"
+<h3>Input</h3>
+<pre>
+"res.partner name: otto walkes"
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "firstname": "otto waalkes",
+        "___filter_to_delta": true
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>firstname</td>
+   <td></td>
+</tr>
+</table>

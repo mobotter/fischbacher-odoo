@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="connection_form" model="ir.ui.view">
+      <field name="name">of.connection form</field>
+      <field name="model">of.connection</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <sheet>
+            <notebook>
+              <page string="Connection">
+                <group string="" col="2">
+                  <field name="to_id" domain="[('flow_id', '=', context.get('default_flow_id'))]" required="1" context="{'default_flow_id': context.get('default_flow_id')}"/>
+                  <field name="condition_name"/>
+                  <field name="condition" widget="ace" options="{'mode': 'python'}"/>
+                </group>
+              </page>
+              <page name="help" string="Help">
+                <ul>
+                  <li>object: the current instance</li>
+                </ul>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="connection_form_modal" model="ir.ui.view">
+      <field name="name">of.connection form (modal)</field>
+      <field name="inherit_id" ref="odoo_flows.connection_form"/>
+      <field name="model">of.connection</field>
+      <field name="mode">primary</field>
+      <field name="priority">100</field>
+      <field name="arch" type="xml">
+        <xpath expr="//sheet" position="after">
+          <footer invisible="context.get('regular_close')">
+            <button name="ok" string="OK" type="object"/>
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

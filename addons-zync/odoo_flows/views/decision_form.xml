@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_of_decision_form" model="ir.ui.view">
+      <field name="name">of.decision form</field>
+      <field name="model">of.decision</field>
+      <field name="inherit_id" ref="odoo_flows.base_item_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='item_content']" position="inside">
+          <group>
+            <div colspan="2">
+                            Please put the condition into the outgoing branches.
+                            </div>
+          </group>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<template id="report_generic_barcode_dymo">
+    <t t-call="web.basic_layout">
+        <t t-call="web.html_container">
+            <t t-set="barcode_size" t-value="'width:70mm;height:16mm'"/>
+            <t t-set="table_style" t-value="'width:79mm;height:30.4mm;padding:0;font-family: Open Sans'"/>
+            <t t-set="padding_page" t-value="'padding: 3mm'"/>
+            <t t-foreach="range(len(docs))" t-as="index">
+                    <t t-set="location" t-value="docs[index]"/>
+                        <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+        
+                            <div class="o_label_full" t-att-style="table_style">
+                                <div class="text-start o_label_name" style="font-size: 10px; line-height: 100%;background-color: transparent; padding-top: 2px;">
+                                        <span class="float-end" style="font-size: 10px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                                </div>
+                                <div class="o_label_name text-nowrap" style="font-size: 18px; line-height: 90%; background-color: transparent; padding: 8px 0;">
+                                    <span t-out="location.complete_name"/>
+                                </div>
+                                <div class="o_label_small_barcode" style="padding:4px;">
+                                    <t t-if="location.barcode">
+                                        <div t-out="location.barcode" style="padding:0" t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                                            <div class="o_label_name" style="font-size: 18px; height:1.4em;background-color: transparent;">
+                                                <span class="text-center" t-out="barcode"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="o_label_clear"/>
+                            </div>
+                        </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+<template id="report_location_barcode_dymo">
+    <t t-set="title">Locations</t>
+    <t t-call="report_dymo_barcode.report_generic_barcode_dymo"/>
+</template>
+
+<template id="report_generic_location_barcode_zpl">
+    <t t-foreach="range(len(docs))" t-as="index">
+        <t t-set="location" t-value="docs[index]"/>
+            <t t-translation="off">
+
+                    ^XA
+                    ^CI28
+                    ^FWN
+                    ^PON
+                    ^PW700
+                    ^LL280 
+
+                    
+                    ; Vollständiger Location-Pfad
+            <t t-set="full_path" t-value="''"/>
+            <t t-set="loc" t-value="location"/>
+            <t t-foreach="range(4)" t-as="i">
+                <t t-if="loc">
+                    <t t-set="full_path" t-value="loc.name + (' / ' + full_path if full_path else '')"/>
+                    <t t-set="loc" t-value="loc.location_id"/>
+                </t>
+            </t>
+                    
+                    ^FO100,50^A0,30,30^FD<t t-out="full_path"/>^FS
+                    
+                    <t t-if="location.barcode">
+                    ^BY4,2,50
+                    ^FO100,100
+                    ^BC,75,Y,N,N,A
+                    ^FD<t t-out="location.barcode"/>^FS
+                    </t>
+                    
+                    ^XZ
+            </t>
+        </t>
+</template>
+
+<template id="report_location_barcode_zpl">
+    <t t-set="title">Locations ZPL</t>
+    <t t-call="report_dymo_barcode.report_generic_location_barcode_zpl"/>
+</template>
+
+
+</data>
+</odoo>

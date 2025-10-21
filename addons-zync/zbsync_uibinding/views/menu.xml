@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <menuitem id="menu_root" name="User-Interface" parent="zbsync.root_menu" sequence="5000"/>
+    <record id="buttons_action" model="ir.actions.act_window">
+      <field name="name">Buttons</field>
+      <field name="res_model">zbs.pipeline.button</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_buttons" action="buttons_action" parent="menu_root"/>
+    <record id="fileupload_action" model="ir.actions.act_window">
+      <field name="name">Fileuploads</field>
+      <field name="res_model">zbs.pipeline.fileupload</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_fileupload" action="fileupload_action" parent="menu_root"/>
+  </data>
+</odoo>

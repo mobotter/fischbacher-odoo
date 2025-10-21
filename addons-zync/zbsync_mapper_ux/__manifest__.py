@@ -1,0 +1,32 @@
+{
+    "name": "zbsync_mapper_ux",
+    "version": "1.0",
+    "author": "Zebroo GmbH (hello@zebroo.de)",
+    "depends": ["zbsync_mapper"],
+    "data": ["views/mapper_form.xml"],
+    "external_dependencies": {"python": [], "bin": []},
+    "assets": {
+        "web.assets_backend": [
+            "zbsync_mapper_ux/static/src/css/mapper.scss",
+            "zbsync_mapper_ux/static/src/js/breadcrumb.js",
+            "zbsync_mapper_ux/static/src/js/fieldfilter.js",
+            "zbsync_mapper_ux/static/src/js/mapper_input.js",
+            "zbsync_mapper_ux/static/src/js/mapper_input_list.js",
+            "zbsync_mapper_ux/static/src/js/mapper_list.js",
+            "zbsync_mapper_ux/static/src/js/mapper_output.js",
+            "zbsync_mapper_ux/static/src/js/mapping.js",
+            "zbsync_mapper_ux/static/src/js/mapping_property.js",
+            "zbsync_mapper_ux/static/src/js/outline.js",
+            "zbsync_mapper_ux/static/src/js/preview.js",
+            "zbsync_mapper_ux/static/src/js/sourcefield.js",
+            "zbsync_mapper_ux/static/src/xml/mapper_input.xml",
+            "zbsync_mapper_ux/static/src/xml/mapper_mapping.xml",
+            "zbsync_mapper_ux/static/src/xml/outline.xml",
+        ]
+    },
+    "demo": [],
+    "test": [],
+    "application": False,
+    "web": True,
+    "license": "Other proprietary",
+}

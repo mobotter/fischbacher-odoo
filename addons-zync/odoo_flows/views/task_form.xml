@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_of_task_form" model="ir.ui.view">
+      <field name="name">of.task form</field>
+      <field name="model">of.task</field>
+      <field name="inherit_id" ref="odoo_flows.base_item_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//page[last()]" position="after">
+          <page string="Help" name="help">
+            <h2>Available Objects</h2>
+            <ul>
+              <li>obj</li>
+              <li>arrow</li>
+            </ul>
+            <h2>Examples</h2>
+            <ul>
+              <hr/>
+              <pre>
+obj.message_post(body="Hi - just did it")
+                                    </pre>
+            </ul>
+          </page>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

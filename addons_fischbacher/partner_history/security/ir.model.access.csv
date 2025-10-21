@@ -1,0 +1,2 @@
+model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
+model_partner_history_fs,base.group_user,partner_history_fs_user,partner.history.fs.user,1,1,1,1

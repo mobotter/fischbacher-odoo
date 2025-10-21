@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_type_string" model="zbs.value.property.type">
+      <field name="name">string</field>
+      <field name="description">A string of Characters</field>
+    </record>
+    <record id="zbs_type_integer" model="zbs.value.property.type">
+      <field name="name">integer</field>
+      <field name="description">A full number</field>
+    </record>
+    <record id="zbs_type_float" model="zbs.value.property.type">
+      <field name="name">float</field>
+      <field name="description">A decimal number</field>
+    </record>
+    <record id="zbs_type_boolean" model="zbs.value.property.type">
+      <field name="name">boolean</field>
+      <field name="description">A value of True or False</field>
+    </record>
+    <record id="zbs_type_object" model="zbs.value.property.type">
+      <field name="name">object</field>
+      <field name="description">An object containing multiple fields of values</field>
+    </record>
+    <record id="zbs_type_array" model="zbs.value.property.type">
+      <field name="name">array</field>
+      <field name="description">An array containing multiple objects or values</field>
+    </record>
+    <record id="zbs_keyword_minimum" model="zbs.value.property.keyword">
+      <field name="name">minimum</field>
+    </record>
+    <record id="zbs_keyword_maximum" model="zbs.value.property.keyword">
+      <field name="name">maximum</field>
+    </record>
+    <record id="zbs_keyword_exclusive_minium" model="zbs.value.property.keyword">
+      <field name="name">exclusiveMinimum</field>
+    </record>
+    <record id="zbs_keyword_exclusive_maximum" model="zbs.value.property.keyword">
+      <field name="name">exclusiveMaximum</field>
+    </record>
+    <record id="zbs_keyword_multiple_of" model="zbs.value.property.keyword">
+      <field name="name">multipleOf</field>
+    </record>
+    <record id="zbs_keyword_minLength" model="zbs.value.property.keyword">
+      <field name="name">minLength</field>
+    </record>
+    <record id="zbs_keyword_maxLength" model="zbs.value.property.keyword">
+      <field name="name">maxLength</field>
+    </record>
+    <record id="zbs_keyword_format" model="zbs.value.property.keyword">
+      <field name="name">format</field>
+    </record>
+    <record id="zbs_keyword_pattern" model="zbs.value.property.keyword">
+      <field name="name">pattern</field>
+    </record>
+    <record id="zbs_keyword_nullable" model="zbs.value.property.keyword">
+      <field name="name">nullable</field>
+    </record>
+  </data>
+</odoo>

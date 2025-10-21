@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="download_pipes_action" model="ir.actions.server">
+      <field name="name">Download Pipelines</field>
+      <field name="model_id" ref="model_zbs_pipeline"/>
+      <field name="binding_model_id" ref="model_zbs_pipeline"/>
+      <field name="state">code</field>
+      <field name="code">action=records.download()</field>
+    </record>
+  </data>
+  <data noupdate="0">
+    <record id="view_zbs_pipeline_tree" model="ir.ui.view">
+      <field name="model">zbs.pipeline</field>
+      <field name="inherit_id" ref="zbsync.view_zbs_pipeline_tree"/>
+      <field name="arch" type="xml">
+        <header position="inside">
+          <button name="download" string="Download" type="object"/>
+        </header>
+      </field>
+    </record>
+  </data>
+</odoo>

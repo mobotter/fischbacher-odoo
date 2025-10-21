@@ -1,0 +1,67 @@
+<!--Hierarchical mapping with changing context by diving in-->
+
+<h2 name='Hierarchical mapping with changing context by diving in'>Hierarchical mapping with changing context by diving in</h2>"
+<h3>Input</h3>
+<pre>
+{
+    "name": "testpartner1",
+    "address": {
+        "street": "strasse1"
+    }
+}
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "firstname": "testpartner1",
+        "address": {
+            "street": "strasse1"
+        }
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>firstname</td>
+   <td></td>
+</tr>
+<tr>
+   <td>address</td>
+   <td>object</td>
+   <td>address</td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>street</td>
+   <td>direct</td>
+   <td>street</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+</table>

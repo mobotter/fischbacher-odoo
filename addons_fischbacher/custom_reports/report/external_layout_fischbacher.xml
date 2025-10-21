@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+        <template id="external_layout_din5008_inherited" inherit_id="l10n_din5008.external_layout_din5008">
+            <xpath expr="//div[contains(@class, 'address')]" position="replace">
+                <div class="address" id="din5008_report_main_address">
+                        <t t-if="company.name">
+                            <span t-field="company.name"/>
+                        </t>
+                        <t t-if="company.street">
+                            <span>|</span> <span t-field="company.street"/>
+                        </t>
+                        <t t-if="company.street2">
+                            <span>|</span> <span t-field="company.street2"/>
+                        </t>
+                        <t t-if="company.zip">
+                            <span>|</span> <span t-field="company.zip"/>
+                        </t>
+                        <t t-if="company.city">
+                            <span t-if="not company.zip">|</span> <span t-field="company.city"/>
+                        </t>
+                    <hr class="company_invoice_line"/>
+                    <div t-if="address">
+                        <t t-out="address"/>
+                    </div>
+                    <div t-else="fallback_address">
+                        <t t-out="fallback_address" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//table[contains(@class, 'din_company_info')]" position="after">
+                <colgroup>
+                    <col style="width: 70%;"/>
+                    <col style="width: 30%;"/>
+                </colgroup>
+            </xpath>
+            <xpath expr="//h2" position="replace">
+                <h3>
+                    <span t-if="not o and not docs" style="color:#0069b4;">Invoice</span>
+                    <span t-else="">
+                        <t t-set="o" t-value="docs[0]" t-if="not o"/>
+                        <t t-if="din5008_document_title">
+                            <t t-out="din5008_document_title" style="color:#0069b4;"/>
+                        </t>
+                        <span t-elif="'name' in o" t-field="o.name" style="color:#0069b4;"/>
+                    </span>
+                </h3>
+            </xpath>
+            <xpath expr="//div[contains(@class, 'company_details')]" position="replace">
+                <div class="page_number">
+                    <div class="text-muted" style="position: absolute; bottom: 0; right: 0; font-size: 9px;">
+                        Page: <span class="page"/> of <span class="topage"/>
+                    </div>
+                </div>
+                <div t-attf-style="font-size: 9px; margin-bottom: 4px;">
+                    Kommanditgesellschaft · Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH · Sitz München · HRB <t t-out="company.company_registry"/>  
+                    <br/>
+                    USt-Id. <t t-out="company.vat"/> · ST-Nr. 143/518/60562 · Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez
+                </div>
+                <table class="table-borderless" style="font-size: 9px; width: 100%; border-collapse: collapse;">
+                    <colgroup>
+                        <col style="width: 30%;"/>
+                        <col style="width: 40%;"/>
+                        <col style="width: 30%;"/>
+                    </colgroup>
+                    <tr>
+                        <!-- Company details -->
+                        <td style="vertical-align: top; padding-right: 8px;">
+                            <ul class="list-inline text-nowrap">
+                                <li t-if="company.company_details">
+                                    <span t-field="company.company_details"/>
+                                </li>
+                            </ul>
+                        </td>
+                        <!-- Custom report footer field -->
+                        <td style="vertical-align: top; padding-right: 8px;">
+                            <ul class="list-inline">
+                                <li t-if="company.report_footer">
+                                    <span t-field="company.report_footer"/>
+                                </li>
+                            </ul>
+                        </td>
+                    
+                        <!-- Bank details (up to 2) -->
+                        <td t-if="company.partner_id.bank_ids" style="vertical-align: top;">
+                            <ul class="list-inline">
+                                <li style="color:#0069b4;">Banken</li>
+                                <t t-foreach="company.partner_id.bank_ids[:2]" t-as="bank">
+                                    <li><span t-field="bank.bank_id.name"/></li>
+                                    <li>IBAN: <span t-field="bank.acc_number"/></li>
+                                    <li>BIC: <span t-field="bank.bank_id.bic"/></li>
+                                </t>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>       
+            </xpath>
+            <xpath expr="//div[contains(@class, 'text-end')]" position="replace">
+            </xpath>
+
+        </template>
+
+        <template id="din5008_css_inherit" inherit_id="l10n_din5008.din5008_css">
+            <xpath expr="//t[@t-elif]" position="before">
+                <t t-elif="layout == 'l10n_din5008.external_layout_din5008'">
+                    &amp;.din_page {
+                        .page {
+                            [name=invoice_line_table],
+                            [name=stock_move_table],
+                            .o_main_table {
+                                thead {
+                                    border-bottom: 1px solid #d3d3d3 !important;
+                                    color: <t t-out="secondary"/>;
+                                }
+                                tbody tr {
+                                    border-bottom: 1px solid #d3d3d3 !important;
+                                }
+                            }
+                        }
+                        &amp;.invoice_note {
+                            h3 {
+                                margin-left: 5mm;
+                                margin-right: 10mm;
+                                margin-top: 8.46mm;
+                                color: <t t-out="primary"/>;
+                            }
+                        }
+                    }
+                </t>
+            </xpath>
+          
+        </template>
+
+        <template id="report_saleorder_document_inherit_fb" inherit_id="sale.report_saleorder_document">
+            <xpath
+                expr="//table[contains(@class, 'o_has_total_table') and contains(@class,'o_main_table')]/thead"
+                position="attributes">
+                <attribute name="style">border-bottom:1px solid #0069b4;</attribute>
+                <attribute name="color">#0069b4;</attribute>
+            </xpath>
+        </template>
+
+        <template id="report_invoice_document_inherit_fb" inherit_id="account.report_invoice_document">
+            <xpath
+                expr="//table[contains(@class, 'o_has_total_table') and contains(@class,'o_main_table')]/thead"
+                position="attributes">
+                <attribute name="style">border-bottom:1px solid #0069b4;</attribute>
+                <attribute name="color">#0069b4;</attribute>
+            </xpath>
+        </template>
+    </data>
+</odoo>

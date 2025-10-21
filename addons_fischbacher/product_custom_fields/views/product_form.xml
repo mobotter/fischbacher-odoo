@@ -1,0 +1,52 @@
+<odoo>
+
+    <record id="product_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.form.view.inherit.custom</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="search_term"/>
+                <field name="short_term"/>
+            </xpath>
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="dsp3_id"/>
+            </xpath>
+            <xpath expr="//field[@name='product_tooltip']" position="after">
+                <field name="bonus_applicable"/>
+                <field name="special_sale_applicable"/>
+                <field name="manufacturer_number"/>
+                <field name="main_supplier_id"/>
+                <field name="main_supplier_product_number"/>
+                <field name="label_stock_location"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Product Data">
+                    <group string="Base Data">
+                        <field name="brand_id"/>
+                        <field name="width"/>
+                        <field name="length"/>
+                        <field name="height"/>
+                        <field name="weight"/>
+                    </group>
+                    <group string="Rent Data">
+                        <field name="inspection_date"/>
+                        <field name="uvv_date"/>
+                        <field name="brake_inspection_date"/>
+                    </group>
+                    <group string="Website Data">
+                        <!-- make sure `x_my_field` is defined on the model -->
+                        <field name="webshop_link"  widget="url"/>
+                        <field name="external_id"/>
+                        <field name="product_website_product_attribute_ids">
+                            <list editable="bottom">
+                                <field name="attribute_id"/>
+                                <field name="value_ids" widget="many2many_tags" domain="[('attribute_id','=',attribute_id)]"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,15 @@
+<odoo>
+<record id="product_search_form_view_inherited_fs" model="ir.ui.view">
+    <field name="name">product.search.form.inherited.fs</field>
+    <field name="model">product.product</field>
+    <field name="inherit_id" ref="product.product_search_form_view"/>
+    <field name="arch" type="xml">
+        <field name="name" position="replace">
+            <field name="name" string="Product" filter_domain="['|', '|', '|', '|',('default_code', 'ilike', self), ('name', 'ilike', self), ('barcode', 'ilike', self),('search_term','ilike',self),('short_term','ilike',self)]"/>
+            <field name="name" string="Kurzname" filter_domain="[('short_term','ilike',self)]"/>
+            <field name="name" string="Suchbegriff" filter_domain="[('search_term','ilike',self)]"/>
+            <field name="name" string="Herstellernummer" filter_domain="[('manufacturer_number','ilike',self)]"/>
+        </field> 
+    </field>
+</record>
+</odoo>

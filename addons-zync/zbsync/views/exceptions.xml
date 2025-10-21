@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_pipeline_exception_tree" model="ir.ui.view">
+      <field name="model">zbs.pipeline.exception</field>
+      <field name="arch" type="xml">
+        <list default_order="" string="">
+          <field name="code"/>
+          <field name="name"/>
+          <field name="description"/>
+          <field name="url"/>
+        </list>
+      </field>
+    </record>
+    <record id="zbs_pipeline_exception_form" model="ir.ui.view">
+      <field name="name">zbs.pipeline.exception form</field>
+      <field name="model">zbs.pipeline.exception</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header/>
+          <sheet>
+            <group col="2" string="">
+              <field name="code"/>
+              <field name="name"/>
+              <field name="description"/>
+              <field name="url"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<templates xml:space="preserve">
+    <t owl="1" t-name="zbsync.pipeline_renderer">
+        <div class="zbsync-pipeline-renderer">
+            <WorkerList workerlist="workerlist"/>
+        </div>
+    </t>
+    <t owl="1" t-name="zbsync.pipeline_renderer.worker_list">
+        <t t-as="item" t-foreach="props.workerlist" t-key="item_index">
+            <Worker item="item"/>
+        </t>
+    </t>
+    <t owl="1" t-name="zbsync.pipeline_renderer.worker">
+        <div t-attf-class="     zbpipeline-renderer-worker     #{props.item.line.enabled ? '' : 'disabled'}   ">
+            <div draggable="true" t-attf-class="     #{props.item.line.is_current ? 'is_current' : ''}    " t-on-click="open_line" t-on-dragover="dragover" t-on-dragstart="dragstart">
+                <h2>
+                    <button class="btn btn-primary" href="#" t-on-click.stop.self="open_worker">
+                        <t t-esc="props.item.worker.name"/>
+                    </button>
+                </h2>
+                <h4>
+                    <t t-esc="props.item.worker.model_description"/>
+                    <br/>
+                </h4>
+                <div t-if="props.item.line.is_instance &amp;&amp; !props.item.line.can_set_next_line">
+                    <span class="fa fa-play" t-on-click.stop="make_current"/>
+                    <button class="btn btn-secondary" t-on-click.stop="heartbeat">GO</button>
+                </div>
+                <table>
+                    <tr t-if="props.item.line.log_level">
+                        <th>Log-Level</th>
+                        <td>
+                            <t t-esc="props.item.line.log_level"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.path_content">
+                        <th>Path-Content</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'path_content'" model="props.item.line.model" placeholder="'??'" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.range">
+                        <th>Range</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'range'" model="props.item.line.model" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.input_ffilter">
+                        <th>Input Filter</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'input_ffilter'" model="props.item.line.model" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.input_range">
+                        <th>Input Range</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'input_range'" model="props.item.line.model" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.output_ffilter">
+                        <th>Output Filter</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'output_ffilter'" model="props.item.line.model" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.output_range">
+                        <th>Output Range</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'output_range'" model="props.item.line.model" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.batchsize">
+                        <th>Batch-Size</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'batchsize'" model="props.item.line.model" recordid="props.item.line.id" ttype="'Number'"/>
+                        </td>
+                    </tr>
+                    <tr t-if="!props.item.line.abort_on_error">
+                        <th>Abort on error</th>
+                        <td>
+                            <CheckBox value="props.item.line.abort_on_error"/>
+                        </td>
+                    </tr>
+                    <tr t-if="props.item.line.retry_pattern">
+                        <th>Retry-Pattern</th>
+                        <td>
+                            <StringInput record="props.item.line" fieldname="'retry_pattern'" model="props.item.line.model" placeholder="'1,3,5,10,20'" recordid="props.item.line.id"/>
+                        </td>
+                    </tr>
+                </table>
+                <div t-if="props.item.line.batches">
+                    <t t-set="start_batch_i" t-value="0"/>
+                    <t t-set="info_more_batch" t-value="0"/>
+                    <t t-as="data_batch" t-foreach="props.item.line.batches" t-key="data_batch.state">
+                        <Batch batch="data_batch"/>
+                    </t>
+                    <button class="btn" t-on-click.stop="show_all_batches">Show all batches</button>
+                </div>
+            </div>
+            <div class="pipeline-connection" t-att-data-lineid="props.item.line.id" t-if="!props.item.is_last" t-on-dragover="dragover" t-on-drop="dragdrop">
+                <div>
+                    <i class="fa fa-arrow-right"/>
+                </div>
+                <div>
+                    <PauseButton record="props.item.line" fieldname="'continue_immediately'" model="props.item.line.model" recordid="props.item.line.id"/>
+                    <!-- <span t-esc="props.item.lineid"/> -->
+                    <!-- <PauseButton checked="testdata.ci"/>
+                    <span t-esc="testdata.ci"/> -->
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

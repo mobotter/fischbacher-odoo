@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_of_flow_form" model="ir.ui.view">
+      <field name="name">of.flow form</field>
+      <field name="model">of.flow</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header>
+            <button name="start_from_ui" string="Start Now" type="object"/>
+          </header>
+          <sheet>
+            <group string="" col="4">
+              <field name="name"/>
+              <field name="group_id"/>
+              <field name="model_id"/>
+              <field name="allow_concurrency_runs"/>
+              <field name="priority"/>
+            </group>
+            <group col="2" colspan="2">
+              <field name="diagram_content" widget="diagrams_net" nolabel="1" colspan="2"/>
+            </group>
+            <field name="item_ids" nolabel="0" invisible="1">
+              <list create="0">
+                <button name="open" icon="fa-external-link" type="object" title="Open"/>
+                <field name="sequence" widget="handle"/>
+                <field name="item_type"/>
+                <field name="name"/>
+                <field name="role_id"/>
+                <field name="incoming_text" context="{'connection_display_type': 'incoming'}"/>
+                <field name="outgoing_text" context="{'connection_display_type': 'outgoing'}"/>
+              </list>
+            </field>
+          </sheet>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

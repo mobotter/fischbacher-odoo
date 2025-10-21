@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_zbs_grabber_csvexcel_form" model="ir.ui.view">
+      <field name="name">zbs.grabber.csvexcel form</field>
+      <field name="model">zbs.grabber.csvexcel</field>
+      <field name="inherit_id" ref="zbsync.worker_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='maingroup']" position="replace">
+          <group col="2" string="">
+            <field name="type" required="1"/>
+            <field name="first_line_of_data"/>
+            <field name="data_contains_headers"/>
+            <field name="fieldnames" invisible="data_contains_headers == True" required="data_contains_headers == False"/>
+            <field name="max_column_count" invisible="type != 'excel'"/>
+            <field name="csv_delimiter" invisible="type != 'csv'"/>
+            <field name="sample_file"/>
+            <field name="encoding_id"/>
+            <field name="sheet_name" invisible="type != 'excel'"/>
+            <button name="generate_mapper" string="Generate Mapper" type="object"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+    <record id="view_zbs_dumper_csvexcel_form" model="ir.ui.view">
+      <field name="name">zbs.dumper.csvexcel form</field>
+      <field name="model">zbs.dumper.csvexcel</field>
+      <field name="inherit_id" ref="zbsync.worker_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='maingroup']" position="replace">
+          <group colspan="2">
+            <field name="type"/>
+            <field name="encoding_id"/>
+            <field name="first_line_headers"/>
+            <field name="fieldnames"/>
+            <field name="csv_delimiter" invisible="type != 'csv'"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

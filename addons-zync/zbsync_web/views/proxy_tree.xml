@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_web_proxy_list" model="ir.ui.view">
+      <field name="model">zbs.web.proxy</field>
+      <field name="arch" type="xml">
+        <list editable="bottom">
+          <field name="name"/>
+          <field name="url"/>
+          <field name="protocol"/>
+        </list>
+      </field>
+    </record>
+  </data>
+</odoo>

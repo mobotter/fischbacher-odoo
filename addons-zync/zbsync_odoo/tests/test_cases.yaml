@@ -1,0 +1,609 @@
+# TODO do a test that id is used as key per default
+dumper:
+  - name: m2o_with_id
+    summary: Import a many2one record.
+    description: Import a many2one record.
+    dump_model: zbs.test.order
+    prep: |
+      partner1 = env['zbs.test.partner'].create({"name": "hans"})
+    input: |
+      {
+            "name": "testpartner1",
+            "partner_id": partner1.id,
+      }
+    check: |
+      assert record.created.name == "testpartner1"
+      assert record.created.partner_id
+      assert env['zbs.test.partner'].browse(record.created.partner_id).name == "hans"
+      assert bool(isinstance(data.created[0].id, int))
+
+  - name: m2o_keyresolve
+    summary: Find many2one record by explicit keys.
+    dump_model: zbs.test.order
+    prep: |
+      partner1 = env['zbs.test.partner'].create({"name": "hans"})
+    input: |
+      {
+        "name": "testpartner1",
+        "partner_id": {
+          "___keys": ["name"],
+          "name": "hans",
+        },
+      }
+    check: |
+      assert record
+      assert record.created.name == "testpartner1"
+      partner = env['zbs.test.partner'].browse(record.created.partner_id)
+      assert partner.name == "hans"
+      assert partner.search_count([]) == 1
+      assert isinstance(data.created[0].id, int)
+
+  - name: m2o_keyresolve_two_levels_recursive
+    summary: Find many2one record by explicit keys and one of its children
+    dump_model: zbs.test.order
+    prep: |
+      env["zbs.test.order"].search([]).unlink()
+      env["zbs.test.partner"].search([]).unlink()
+      partner1 = env["zbs.test.partner"].create({"name": "hans"})
+    input: |
+      {
+        "name": "testpartner1",
+        "partner_id": {
+            "___keys": ["name"],
+            "name": "hans",
+            "parent_partner_id": {
+              "___keys": ["name"],
+              "name": "hans",
+            },
+        },
+      }
+    check: |
+      assert record
+      order = env['zbs.test.order'].browse(record.created.id)
+      assert order.name ==  "testpartner1"
+      partner = env['zbs.test.partner'].browse(record.created.partner_id)
+      assert partner.name == "hans"
+      assert partner.search_count([]) == 1
+      assert(isinstance(data.created[0].id, int))
+
+  - name: one2many
+    dump_model: zbs.test.order
+    summary: force use of parent key to identify
+    prep: |
+      env["zbs.test.order.line"].search([]).unlink()
+      env["zbs.test.order.line"].create(
+        [
+          {"name": "product1"},
+          {"name": "product2"},
+        ]
+      )
+    input: |
+      {
+        "name": "order1",
+        "line_ids": [
+          {"name": "product1", "___keys": ["name"]},
+          {"name": "product2", "___keys": ["name"]},
+        ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.created.id)
+      assert record.name == "order1"
+      assert record.line_ids[0].name == "product1"
+      assert record.line_ids[1].name == "product2"
+      assert isinstance(data.created[0].id, int)
+
+  - name: one2many with extra non key fields
+    summary: one2many with extra non key fields
+    continue_from: one2many
+    dump_model: zbs.test.order
+    prep: |
+    input: |
+      {
+          "name": "order1",
+          "___keys": ["name"],
+          "line_ids": [
+              {"name": "product1", "___keys": ["name"], "anyfield": "abc"},
+          ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1", 'order1 name not found'
+      assert record.line_ids[0].name == "product1", 'product should be product1'
+      assert record.line_ids[0].anyfield == "abc", 'anyfield should be abc'
+      assert len(record.line_ids) == 2, 'lines should be 2'
+
+  - name: one2many_unlink
+    summary: one2many test unlinking some lines
+    continue_from: one2many with extra non key fields
+    dump_model: zbs.test.order
+    prep: |
+
+    input: |
+      {
+          "name": "order1",
+          "___keys": ["name"],
+          "___keys_delete": ["line_ids"],
+          "line_ids": [
+              {
+                  "name": "product1",
+                  "anyfield": "abcd",
+                  "___keys": ["name"],
+              },
+          ],
+      }
+    check: |
+      assert record
+      order = env['zbs.test.order'].browse(record.updated[0][0])
+      assert order.name == "order1", 'name should be order1'
+      assert order.line_ids[0].name == "product1", 'name line should be product1'
+      assert order.line_ids[0].anyfield == "abcd", 'name anyfield should be abcd'
+      assert len(order.line_ids) == 1
+
+  - name: many2many
+    summary: many2many
+    description: force use of parent key to identify
+    dump_model: zbs.test.order
+    prep: |
+      env["zbs.test.tag"].create(
+          [
+              {"name": "tag1"},
+          ]
+      )
+    input: |
+      {
+          "name": "order1",
+          "___keys": ["name"],
+          "tag_ids": [{"name": "tag1", "anyfield": "v1", "___keys": ["name"]}],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.created.id)
+      assert record.name == "order1"
+      assert record.tag_ids.name == "tag1"
+      assert record.tag_ids.anyfield == "v1"
+      assert record.tag_ids.search_count([]) == 1
+      assert isinstance(data.created[0].id, int)
+
+  - name: many2many update m2m
+    summary: many2many
+    continue_from: many2many
+    description: ...
+    dump_model: zbs.test.order
+    input: |
+      data = {
+          "name": "order1",
+          "___keys": ["name"],
+          "tag_ids": [{"name": "tag2", "anyfield": "v2", "___keys": ["name"]}],
+      }
+      data
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1"
+      assert "tag1" in record.tag_ids.mapped("name")
+      assert "tag2" in record.tag_ids.mapped("name")
+      assert "v1" in record.tag_ids.mapped("anyfield")
+      assert "v2" in record.tag_ids.mapped("anyfield")
+      assert record.tag_ids.search_count([]) == 2
+
+  - name: many2many test delete
+    summary: many2many
+    continue_from: many2many update m2m
+    description: ...
+    dump_model: zbs.test.order
+    input: |
+      data = {
+          "name": "order1",
+          "___keys": ["name"],
+          "___keys_delete": ["tag_ids"],
+          "tag_ids": [{"name": "tag1", "___keys": ["name"]}],
+      }
+      data
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1"
+      assert "tag1" in record.tag_ids.mapped("name")
+      assert "tag2" not in record.tag_ids.mapped("name")
+      assert "v1" in record.tag_ids.mapped("anyfield")
+      assert "v2" not in record.tag_ids.mapped("anyfield")
+      assert record.tag_ids.search_count([]) == 2
+
+  - name: default_value_and_filter_data_to_delta
+    dump_model: zbs.test.order
+    prep: |
+      env["zbs.test.tag"].create(
+          [
+              {"name": "tag1"},
+          ]
+      )
+    input: |
+      {
+          "name": "order1",
+          "___keys": ["name"],
+          "tag_ids": [{"name": "tag1", "anyfield": "v1", "___keys": ["name"]}],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.created.id)
+      assert record.name == "order1"
+      assert record.tag_ids.name == "tag1"
+      assert record.tag_ids.anyfield == "v1"
+      assert record.tag_ids.search_count([]) == 1
+      assert isinstance(data.created[0].id, int)
+
+  - name: default value
+    dump_model: zbs.test.tag
+    prep: |
+      env['zbs.test.tag'].search([]).unlink()
+      env["zbs.test.tag"].create(
+          [
+              {"name": "tag1", "anyfield": "v1"},
+          ]
+      )
+    input: |
+      {
+          "name": "tag1",
+          "anyfield": "v2",
+          "___default_values": ["anyfield"],
+          "___keys": ["name"],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.tag'].browse(record.updated[0][0])
+      assert record.name == "tag1"
+      assert record.anyfield == "v1"
+      assert isinstance(data.updated[0][0], int)
+
+  - name: delta values
+    dump_model: zbs.test.tag
+    prep: |
+      env["zbs.test.tag"].search([]).unlink()
+      env["zbs.test.tag"].create(
+          [
+              {"name": "tag1", "anyfield": "v1"},
+          ]
+      )
+    input: |
+      {
+          "name": "tag1",
+          "anyfield": "v2",
+          "___filter_to_delta": True,
+          "___keys": ["name"],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.tag'].browse(record.updated[0][0])
+      assert record.name == "tag1", "tag name should be tag1"
+      assert record.anyfield == "v2", "anyfield should be v2"
+      assert isinstance(data.updated[0][0], int)
+  - name: if idcolumn set
+    dump_model: zbs.test.tag
+    prep: |
+      tag = env["zbs.test.tag"].create(
+        [
+            {"name": "tag1", "anyfield": "v1"},
+        ]
+      )
+    input: |
+      {
+        "name": "tag2",
+        "id": tag.id,
+      }
+    check: |
+      assert record
+      record = env['zbs.test.tag'].browse(record.updated[0][0])
+      assert record.name == "tag2"
+      assert record.anyfield == "v1"
+      assert isinstance(data.updated[0][0], int)
+  - name: many2one
+    dump_model: zbs.test.order
+    prep:
+    input: |
+      {
+        "name": "order1",
+        "line_ids": [
+          {"name": "product1", "___keys": ["name"]},
+          {"name": "product2", "___keys": ["name"]},
+        ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.created.id)
+      assert record.name == "order1"
+      assert record.line_ids[0].name == "product1"
+      assert record.line_ids[1].name == "product2"
+      assert isinstance(data.created[0].id, int)
+
+  - name: many2one update
+    dump_model: zbs.test.order
+    continue_from: many2one
+    input: |
+      {
+        "name": "order1",
+        "___keys": ["name"],
+        "line_ids": [
+          {"name": "product1", "___keys": ["name"], "anyfield": "abc"},
+        ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1"
+      assert record.line_ids[0].name == "product1"
+      assert record.line_ids[0].anyfield == "abc"
+      assert len(record.line_ids) == 2
+      prev_instance_env = env["zebrooset"].loads(env['zbs.instance'].browse(instance_env.prev_instance_id).environment or '{}')
+
+  - name: many2one test unlink
+    dump_model: zbs.test.order
+    continue_from: many2one update
+    input: |
+      {
+        "name": "order1",
+        "___keys": ["name"],
+        "___keys_delete": ["line_ids"],
+        "line_ids": [
+          {
+            "name": "product1",
+            "anyfield": "abcd",
+            "___keys": ["name"],
+          },
+        ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1"
+      assert record.line_ids[0].name == "product1"
+      assert record.line_ids[0].anyfield == "abcd"
+      assert len(record.line_ids) == 1
+  - name: many2one no keys
+    dump_model: zbs.test.partner
+    input: |
+      [{"name": "hans", "parent_partner_id": "meike"}]
+    check: |
+      record = env['zbs.test.partner'].search([]).filtered(lambda r: r.name == "hans")
+      assert len(record) == 1
+      assert record
+      assert record.name == "hans"
+      assert record.parent_partner_id.name == "meike"
+      assert isinstance(data.created[0].id, int)
+  - name: many2one no keys 2
+    continue_from: many2one no keys
+    dump_model: zbs.test.partner
+    input: |
+      {
+        "name": "hans2",
+        "parent_partner_id": "meike",
+      }
+    check: |
+      record = env['zbs.test.partner'].search([]).filtered(lambda r: r.name == "hans2")
+      assert len(record) == 1
+      assert record
+      assert record.name == "hans2"
+      assert record.parent_partner_id.name == "meike"
+
+  - name: many2many_just_ids
+    dump_model: zbs.test.order
+    prep: |
+      env['zbs.test.tag'].search([]).unlink()
+      tag1 = env["zbs.test.tag"].create(
+        [
+          {"name": "tag1"},
+        ]
+      )
+    input: |
+      {
+        "name": "order1",
+        "___keys": ["name"],
+        "tag_ids": [tag1.id],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.created.id)
+      assert record.name == "order1"
+      assert record.tag_ids.name == "tag1"
+      assert record.tag_ids.search_count([]) == 1
+      assert isinstance(data.created[0].id, int)
+  - name: many2many with odoo records
+    dump_model: zbs.test.order
+    summary: force use of parent key to identify
+    prep: |
+      tag1 = env["zbs.test.tag"].create({"name": "tag1"})
+      tag2 = env["zbs.test.tag"].create({"name": "tag2"})
+    input: |
+      {
+        "name": "order1",
+        "___keys": ["name"],
+        "tag_ids": [
+            {
+              "_type": "odoo_recordset",
+              "model": tag1._name,
+              "ids": tag1.ids,
+              "uid": env.uid,
+              "su": False,
+              "context": {},
+            },
+        ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.created.id)
+      assert record.name == "order1"
+      assert record.tag_ids.name == "tag1"
+      assert record.tag_ids.search_count([]) == 2
+      assert isinstance(data.created[0].id, int)
+  - name: many2many with odoo records update
+    continue_from: many2many with odoo records
+    dump_model: zbs.test.order
+    prep: |
+      tag1 = env['zbs.test.tag'].search([('name', '=', 'tag1')]).ensure_one()
+      tag2 = env['zbs.test.tag'].search([('name', '=', 'tag2')]).ensure_one()
+    input: |
+      {
+        "name": "order1",
+        "___keys": ["name"],
+        "tag_ids": [
+          {
+            "_type": "odoo_recordset",
+            "model": tag1._name,
+            "ids": tag1.ids + tag2.ids,
+            "uid": env.uid,
+            "su": False,
+            "context": {},
+          }
+        ],
+      }
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1"
+      assert "tag1" in record.tag_ids.mapped("name")
+      assert "tag2" in record.tag_ids.mapped("name")
+      assert record.tag_ids.search_count([]) == 2
+  - name: many2many with odoo records unlink
+    continue_from: many2many with odoo records update
+    dump_model: zbs.test.order
+    prep: |
+      tag1 = env['zbs.test.tag'].search([('name', '=', 'tag1')]).ensure_one()
+      tag2 = env['zbs.test.tag'].search([('name', '=', 'tag2')]).ensure_one()
+    input: |
+      {
+          "name": "order1",
+          "___keys": ["name"],
+          "___keys_delete": ["tag_ids"],
+          "tag_ids": [
+            {
+              "_type": "odoo_recordset",
+              "model": tag1._name,
+              "ids": tag1.ids,
+              "uid": env.uid,
+              "su": False,
+              "context": {},
+            },
+          ],
+        }
+
+    check: |
+      assert record
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record.name == "order1"
+      assert "tag1" in record.tag_ids.mapped("name")
+      assert "tag2" not in record.tag_ids.mapped("name")
+      assert record.tag_ids.search_count([]) == 2
+  - name: field dot separated
+    dump_model: zbs.test.order
+    prep: |
+      partner1 = env["zbs.test.partner"].create({"name": "field_dot_separated"})
+      order = env["zbs.test.order"].create(
+          {"name": "test-order", "partner_id": partner1.id}
+      )
+    input: |
+      {
+        "id": order.id,
+        "partner_id.name": "francesco",
+        "___keys": [
+          "id",
+        ],
+      }
+    check: |
+      record = env['zbs.test.order'].browse(record.updated[0][0])
+      assert record
+      assert record.name == "test-order"
+      assert record.partner_id.name == "francesco"
+
+  - name: do not updated write_date of tag when adding tag to partner
+    dump_model: zbs.test.partner
+    prep: |
+      tag = env['zbs.test.tag'].create({'name': 'tag1', 'anyfield': 'somevalue'})
+      partner1 = env["zbs.test.partner"].create({"name": "partner1"})
+      instance_env['tag_write_date'] = tag.write_date
+    input: |
+      {
+        "id": partner1.id,
+        "tag_ids": [
+          {
+            "___keys": ["name"],
+            "name": "tag1",
+          }
+        ],
+        "___keys": [
+            "id",
+        ],
+      }
+    check: |
+      partner = env['zbs.test.order'].browse(record.updated[0][0])
+      tag = env['zbs.test.tag'].search([('name', '=', 'tag1')])
+      assert tag.write_date == instance_env['tag_write_date'], f"Write date of tag should not change: {tag.write_date} {instance_env['tag_write_date']}"
+      assert tag.anyfield == "somevalue", f"Tag should have anyfield value not {tag.anyfield}"
+
+  - name: now setting an extra field
+    continue_from: do not updated write_date of tag when adding tag to partner
+    dump_model: zbs.test.partner
+    prep: |
+      partner1 = env["zbs.test.partner"].search([('name','=', 'partner1')])
+      tag = env['zbs.test.tag'].search([('name', '=', 'tag1')])
+      instance_env['tag_write_date'] = tag.write_date
+    input: |
+      {
+        "id": partner1.id,
+        "tag_ids": [
+          {
+            "___keys": ["name"],
+            "name": "tag1",
+            "anyfield": "somevalue2"
+          }
+        ],
+        "___keys": [
+            "id",
+        ],
+      }
+    check: |
+      partner = env['zbs.test.order'].browse(record.updated[0][0])
+      tag = env['zbs.test.tag'].search([('name', '=', 'tag1')])
+      assert tag.write_date != instance_env['tag_write_date'], f"Write date of tag should be updated: {tag.write_date} {instance_env['tag_write_date']}"
+      assert tag.anyfield == "somevalue2", f"Tag should have anyfield value not {tag.anyfield}"
+
+  - name: now setting an extra field with same value - no update should happen
+    continue_from: now setting an extra field
+    dump_model: zbs.test.partner
+    prep: |
+      partner1 = env["zbs.test.partner"].search([('name','=', 'partner1')])
+      tag = env['zbs.test.tag'].search([('name', '=', 'tag1')])
+      instance_env['tag_write_date'] = tag.write_date
+    input: |
+      {
+        "id": partner1.id,
+        "tag_ids": [
+          {
+            "___keys": ["name"],
+            "name": "tag1",
+            "anyfield": "somevalue2"
+          }
+        ],
+        "___keys": [
+            "id",
+        ],
+      }
+    check: |
+      partner = env['zbs.test.order'].browse(record.updated[0][0])
+      tag = env['zbs.test.tag'].search([('name', '=', 'tag1')])
+      assert tag.write_date == instance_env['tag_write_date'], f"Write date of tag should not be updated: {tag.write_date} {instance_env['tag_write_date']}"
+      assert tag.anyfield == "somevalue2", f"Tag should have anyfield value not {tag.anyfield}"
+
+  - name: checking wether id is automatically key
+    dump_model: zbs.test.tag
+    prep: |
+      tag = env['zbs.test.tag'].create({'name': 'tag1'})
+    input: |
+      {
+        "id": tag.id,
+        "name": tag.name,
+        "anyfield": "somevalue"
+      }
+    check: |
+      tags = env['zbs.test.tag'].search([('name','=','tag1')])
+      assert len(tags) == 1, "Len 1"

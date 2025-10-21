@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<templates xml:space="preserve">
+    <t owl="1" t-inherit="zbsync.pipeline_renderer" t-name="zbsync.pipeline_instance_renderer">
+
+    </t>
+</templates>

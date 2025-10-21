@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_zbs_zipper_form1" model="ir.ui.view">
+      <field name="name">zbs.grabber.zipper form</field>
+      <field name="model">zbs.grabber.zipper</field>
+      <field name="inherit_id" ref="zbsync.worker_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='maingroup']" position="replace">
+          <group>
+            <field name="glob"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

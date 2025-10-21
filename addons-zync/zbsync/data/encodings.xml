@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="encoding_utf8" model="zbs.encoding">
+      <field name="name">utf8</field>
+    </record>
+  </data>
+</odoo>

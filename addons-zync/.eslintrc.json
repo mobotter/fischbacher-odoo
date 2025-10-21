@@ -1,0 +1,19 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended"],
+  "globals": {
+    "$": "readonly",
+    "document": "readonly"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  }
+}

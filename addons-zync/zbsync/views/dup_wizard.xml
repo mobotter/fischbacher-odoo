@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_dup_wizard_form" model="ir.ui.view">
+      <field name="name">zbs.dup.wizard form</field>
+      <field name="model">zbs.dup.wizard</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header/>
+          <sheet>
+            <group col="2" string="">
+              <field name="src_pipeline_id" required="1"/>
+              <field name="line_ids" colspan="2" nolabel="1">
+                <list create="0" delete="0" editable="bottom">
+                  <field name="mode" required="1"/>
+                  <field name="name"/>
+                  <field name="worker_id"/>
+                  <field name="line_id" nolabel="1" readonly="1" required="1"/>
+                </list>
+              </field>
+            </group>
+          </sheet>
+          <footer>
+            <button name="duplicate" string="Duplicate" type="object"/>
+            <button class="oe_link" special="cancel" string="Cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

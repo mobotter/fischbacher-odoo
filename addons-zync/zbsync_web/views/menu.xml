@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="webrabber_action" model="ir.actions.act_window">
+      <field name="name">Web Workers</field>
+      <field name="res_model">zbs.web.worker</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_webrabber" action="webrabber_action" parent="zbsync.menu_grabbers"/>
+    <record id="authentications_action" model="ir.actions.act_window">
+      <field name="name">Web-Authentications</field>
+      <field name="res_model">zbs.connection.web.auth</field>
+      <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_authentications" action="authentications_action" parent="zbsync.menu_connections"/>
+    <record id="urls_action" model="ir.actions.act_window">
+      <field name="name">Web URLs</field>
+      <field name="res_model">zbs.web.url</field>
+      <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_urls" action="urls_action" parent="zbsync.menu_connections"/>
+    <record id="urls_action" model="ir.actions.act_window">
+      <field name="name">Web-URLs</field>
+      <field name="res_model">zbs.web.url</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_urls" action="urls_action" parent="zbsync.menu_grabbers"/>
+    <record id="zbs_web_proxy_action" model="ir.actions.act_window">
+      <field name="name">Proxies</field>
+      <field name="res_model">zbs.web.proxy</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_zbs_web_proxy" action="zbs_web_proxy_action" parent="zbsync.menu_grabbers"/>
+    <record id="zbs_web_proxy_action" model="ir.actions.act_window">
+      <field name="name">Proxies</field>
+      <field name="res_model">zbs.web.proxy</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_proxies" action="zbs_web_proxy_action" parent="zbsync.menu_connections"/>
+  </data>
+</odoo>

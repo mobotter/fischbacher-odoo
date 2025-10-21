@@ -1,0 +1,66 @@
+<!--Hierarchy - extract one field from object-->
+
+<h2 name='Hierarchy - extract one field from object'>Hierarchy - extract one field from object</h2>"
+<h3>Input</h3>
+<pre>
+[
+    [
+        {
+            "created": [
+                [
+                    {
+                        "id": 313,
+                        "name": "partner313"
+                    }
+                ]
+            ]
+        }
+    ]
+]
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "id": 313
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>created</td>
+   <td>object</td>
+   <td></td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>id</td>
+   <td>direct</td>
+   <td>id</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+</table>

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="group_bpm_manager" model="res.groups">
+      <field name="name">bpm.manager</field>
+    </record>
+  </data>
+</odoo>

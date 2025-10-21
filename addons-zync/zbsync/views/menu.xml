@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <menuitem id="root_menu" name="Zebroo Sync" groups="zbsync.group_manager" web_icon="zbsync,static/description/icon.png"/>
+    <menuitem id="menu_connections" name="Connections" parent="root_menu" sequence="8000"/>
+    <menuitem id="menu_pipelines" name="Pipelines" parent="root_menu" sequence="1000"/>
+    <menuitem id="menu_grabbers" name="Grabbers" parent="root_menu" sequence="8000"/>
+    <menuitem id="menu_dumpers" name="Dumpers" parent="root_menu" sequence="8000"/>
+    <menuitem id="menu_triggers" name="Triggers" parent="root_menu" sequence="8000"/>
+    <menuitem id="menu_cronjobs" name="Cronjobs" parent="root_menu" sequence="8000"/>
+    <menuitem id="menu_config" name="Configuration" parent="root_menu" sequence="99999"/>
+  </data>
+  <data>
+    <record id="pipelines_action" model="ir.actions.act_window">
+      <field name="name">Pipelines</field>
+      <field name="res_model">zbs.pipeline</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_pipelines_pipelines" action="pipelines_action" parent="menu_pipelines"/>
+    <record id="instances_action" model="ir.actions.act_window">
+      <field name="name">Instances</field>
+      <field name="res_model">zbs.instance</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_instances" action="instances_action" parent="menu_pipelines"/>
+    <record id="batches_action" model="ir.actions.act_window">
+      <field name="name">Batches</field>
+      <field name="res_model">zbs.instance.line.batch</field>
+      <field name="view_mode">list,form</field>
+      <field name="context">{'list_view_ref': 'zbsync.zbs_instance_line_batch_list_extended'}</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_batches" action="batches_action" parent="menu_pipelines"/>
+    <record id="pipelinetags_action" model="ir.actions.act_window">
+      <field name="name">Pipeline-Tags</field>
+      <field name="res_model">zbs.pipeline.tag</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_pipelinetags" action="pipelinetags_action" parent="menu_config"/>
+    <record id="encodings_action" model="ir.actions.act_window">
+      <field name="name">Encodings</field>
+      <field name="res_model">zbs.encoding</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found</field>
+    </record>
+    <menuitem id="menu_encodings" action="encodings_action" parent="menu_config"/>
+    <record id="cronstarts_action" model="ir.actions.act_window">
+      <field name="name">Cron-Jobs</field>
+      <field name="res_model">zbs.cronstart</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found</field>
+    </record>
+    <menuitem id="menu_cronstarts" action="cronstarts_action" parent="menu_pipelines"/>
+    <record id="pipeline_exception_action" model="ir.actions.act_window">
+      <field name="name">Exceptions</field>
+      <field name="res_model">zbs.pipeline.exception</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_pipeline_exception" action="pipeline_exception_action" parent="menu_pipelines"/>
+    <menuitem id="menu_environment" name="Environments" parent="menu_pipelines"/>
+    <record id="environments_action" model="ir.actions.act_window">
+      <field name="name">Environments</field>
+      <field name="res_model">zbs.environment</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_environments" action="environments_action" parent="menu_environment"/>
+    <record id="variables_action" model="ir.actions.act_window">
+      <field name="name">Variables</field>
+      <field name="res_model">zbs.variable</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_variables" action="variables_action" parent="menu_environment"/>
+    <record id="variable_values_action" model="ir.actions.act_window">
+      <field name="name">Variable-Values</field>
+      <field name="res_model">zbs.variable.value</field>
+      <field name="view_mode">list</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_variable_values" action="variable_values_action" parent="menu_environment"/>
+    <record id="wiz_env_xport_action" model="ir.actions.act_window">
+      <field name="name">Import/Export</field>
+      <field name="res_model">zbs.env.xport</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_wiz_env_xport" action="wiz_env_xport_action" parent="menu_environment"/>
+  </data>
+</odoo>

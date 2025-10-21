@@ -1,0 +1,5 @@
+model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
+model_product_brand,base.group_user,product_brand_user,product.brand.user,1,1,1,1
+model_product_website_attribute,base.group_user,product_website_attribute_user,product.website.attribute.user,1,1,1,1
+model_product_website_attribute_value,base.group_user,product_website_attribute_value_user,product.website.attribute.value.user,1,1,1,1
+model_product_website_attribute_product,base.group_user,product_website_attribute_product_user,product.website.attribute.product.user,1,1,1,1

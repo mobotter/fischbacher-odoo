@@ -1,0 +1,2 @@
+model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
+model_zbs_transformer_xml,zbsync.group_manager,access_zbs_transformer_xml_zbsync_group_manager,n/a,1,1,1,1

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_receiveauthorizer_action" model="ir.actions.act_window">
+      <field name="name">Receiver Authorization</field>
+      <field name="res_model">zbs.receive.authorizer</field>
+      <field name="view_mode">list,form</field>
+      <field name="help">Nothing found!</field>
+    </record>
+    <menuitem id="menu_zbs_receive_authorizer" action="zbs_receiveauthorizer_action" parent="zbsync.menu_connections"/>
+  </data>
+</odoo>

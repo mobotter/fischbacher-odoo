@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="response_200" model="zbs.response.code">
+      <field name="name">200</field>
+      <field name="description">OK</field>
+    </record>
+    <record id="response_201" model="zbs.response.code">
+      <field name="name">201</field>
+      <field name="description">Created</field>
+    </record>
+    <record id="response_202" model="zbs.response.code">
+      <field name="name">202</field>
+      <field name="description">Accepted</field>
+    </record>
+    <record id="response_203" model="zbs.response.code">
+      <field name="name">203</field>
+      <field name="description">Partial Information</field>
+    </record>
+    <record id="response_204" model="zbs.response.code">
+      <field name="name">204</field>
+      <field name="description">No Content</field>
+    </record>
+    <record id="response_205" model="zbs.response.code">
+      <field name="name">205</field>
+      <field name="description">Reset Content</field>
+    </record>
+    <record id="response_300" model="zbs.response.code">
+      <field name="name">300</field>
+      <field name="description">Multiple Choices</field>
+    </record>
+    <record id="response_400" model="zbs.response.code">
+      <field name="name">400</field>
+      <field name="description">Bad Request</field>
+    </record>
+    <record id="response_401" model="zbs.response.code">
+      <field name="name">401</field>
+      <field name="description">Unauthorized</field>
+    </record>
+    <record id="response_402" model="zbs.response.code">
+      <field name="name">402</field>
+      <field name="description">Payment Required</field>
+    </record>
+    <record id="response_403" model="zbs.response.code">
+      <field name="name">403</field>
+      <field name="description">Forbidden</field>
+    </record>
+    <record id="response_404" model="zbs.response.code">
+      <field name="name">404</field>
+      <field name="description">Not Found</field>
+    </record>
+    <record id="response_500" model="zbs.response.code">
+      <field name="name">500</field>
+      <field name="description">An exception occured during process. Code - ODOO CODE</field>
+    </record>
+  </data>
+</odoo>

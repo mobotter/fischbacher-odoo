@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_of_notify_form" model="ir.ui.view">
+      <field name="name">of.notify form</field>
+      <field name="model">of.notify</field>
+      <field name="inherit_id" ref="odoo_flows.base_item_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <group name="content" position="inside">
+          <field name="include_followers"/>
+          <field name="wall_type_id"/>
+          <field name="mail_template_id"/>
+          <button invisible="mail_template_id != False" name="make_template" string="Make Template" type="object"/>
+        </group>
+      </field>
+    </record>
+  </data>
+</odoo>

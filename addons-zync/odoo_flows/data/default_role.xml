@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="1">
+    <record id="default_role" model="of.role">
+      <field name="name">default</field>
+    </record>
+  </data>
+</odoo>

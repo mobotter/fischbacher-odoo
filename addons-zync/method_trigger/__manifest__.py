@@ -1,0 +1,16 @@
+{
+    "application": False,
+    "author": "Marc Wimmer (marc@zebroo.de)",
+    "license": "Other proprietary",
+    "css": [],
+    "data": [],
+    "demo": [],
+    "depends": ["base"],
+    "external_dependencies": {"bin": [], "python": []},
+    "name": "method_trigger",
+    "summary": "If method is called like action_confirm triggers an event for that instance.",
+    "test": [],
+    "version": "2.0",
+    "assets": {"web.assets_qweb": []},
+    "license": "Other proprietary",
+}

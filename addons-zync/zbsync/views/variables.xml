@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_variable_tree" model="ir.ui.view">
+      <field name="model">zbs.variable</field>
+      <field name="arch" type="xml">
+        <list default_order="" editable="bottom" string="">
+          <field name="name"/>
+          <field name="ttype"/>
+        </list>
+      </field>
+    </record>
+    <record id="zbs_variable_value_tree" model="ir.ui.view">
+      <field name="model">zbs.variable.value</field>
+      <field name="arch" type="xml">
+        <list default_order="" editable="bottom" string="">
+          <field name="environment_ids" widget="many2many_tags"/>
+          <field name="variable_id"/>
+          <field name="name"/>
+        </list>
+      </field>
+    </record>
+  </data>
+</odoo>

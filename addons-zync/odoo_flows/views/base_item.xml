@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="base_item_form" model="ir.ui.view">
+            <field name="name">of.base.item form</field>
+            <field name="model">of.base.item</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button name="add_trigger" string="Add Trigger" type="object"/>
+                        <button context="{'item_type': 'of.decision'}" name="make_item" string="Add Decision" type="object"/>
+                        <button context="{'item_type': 'of.task'}" name="make_item" string="Add Task" type="object"/>
+                        <button context="{'item_type': 'of.timer'}" name="make_item" string="Add Timer" type="object"/>
+                        <button context="{'item_type': 'of.mail_activity'}" name="make_item" string="Add Activity" type="object"/>
+                        <button context="{'item_type': 'of.notify'}" name="make_item" string="Add Notification" type="object"/>
+                        <button context="{'item_type': 'of.end'}" name="make_item" string="Add Stop" type="object"/>
+                    </header>
+                    <sheet>
+                        <field name="custom_data_repr"/>
+                        <notebook>
+                            <page name="item_content" string="Item">
+                            </page>
+                            <page string="Details">
+                                <group>
+                                    <field name="name"/>
+                                    <field invisible="1" name="flow_id"/>
+                                    <field invisible="1" name="item_id"/>
+                                    <field name="item_type"/>
+                                    <field name="role_id"/>
+                                    <field name="no_deadline"/>
+                                    <field invisible="no_deadline == True" name="deadline_days"/>
+                                </group>
+                            </page>
+                            <page string="Description">
+                                <field name="desc"/>
+                            </page>
+                        </notebook>
+                        <separator/>
+                        <field invisible="1" name="has_code"/>
+                        <group invisible="has_code == False" name="code" string="Code">
+                            <field colspan="2" name="code" nolabel="1" options="{'mode': 'python'}" widget="ace"/>
+                        </group>
+                        <group col="2" name="content">
+                        </group>
+                        <group string="Flow">
+                            <group invisible="1">
+                                <field name="background_color"/>
+                                <field name="shape_type"/>
+                                <field invisible="0" name="show_condition"/>
+                            </group>
+                            <group col="4" colspan="4">
+                                <group col="1" colspan="2" string="Incoming">
+                                    <field context="{'inout': 'in'}" name="incoming_ids" nolabel="1">
+                                        <!-- domain="[('flow_id', '=', flow_id)]"> -->
+                                        <list editable="bottom">
+                                            <button icon="fa-external-link" name="open_from" type="object" title="Open"/>
+                                            <field domain="[('flow_id', '=', parent.flow_id)]" name="from_id"/>
+                                            <field name="from_item_type"/>
+                                            <field name="from_role_id"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group col="1" colspan="2" string="Outgoing">
+                                    <field context="{'inout': 'out', 'default_from_id': item_id, 'show_condition': show_condition, 'default_flow_id': flow_id, 'connection_regular_form': 1}" name="outgoing_ids" nolabel="1">
+                                        <list>
+                                            <button icon="fa-external-link" name="open_line" type="object" title="Open"/>
+                                            <field name="sequence" widget="handle"/>
+                                            <field class="open_line" column_invisible="parent.show_condition == False" name="condition_name"/>
+                                            <field domain="[('flow_id', '=', parent.flow_id)]" name="to_id"/>
+                                            <field name="to_item_type"/>
+                                            <field name="to_role_id"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

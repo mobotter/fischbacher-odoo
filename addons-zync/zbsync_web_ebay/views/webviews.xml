@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<odoo>
+  <data>
+    <record id="view_zbs_connection_web_auth_form_ebay" model="ir.ui.view">
+      <field name="model">zbs.connection.web.auth</field>
+      <field name="inherit_id" ref="zbsync_web_oauth.view_zbs_connection_web_auth_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='oauth_auth']" position="attributes">
+          <attribute name="invisible">auth_type not in ['oauth2', 'oauth1', 'ebay', 'ebay_auth_grant']</attribute>
+        </xpath>
+        <xpath expr="//field[@name='scope']" position="after">
+          <group colspan="2" string="Ebay">
+            <group colspan="2">
+              <button name="generate_local_url" class="oe-primary" string="Generate Auth URL" type="object"/>
+              <button name="decode_local_code" class="oe-primary" string="Decode Auth Code" type="object"/>
+            </group>
+            <field name="ebay_env"/>
+            <field name="ebay_user_id"/>
+            <field name="ebay_user_pw"/>
+            <field name="ebay_auth_url"/>
+            <field name="ebay_auth_code"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

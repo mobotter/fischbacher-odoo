@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_zbs_transformer_edi_form" model="ir.ui.view">
+      <field name="name">zbs.transformer edi form</field>
+      <field name="model">zbs.transformer.edi</field>
+      <field name="inherit_id" ref="zbsync.worker_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='maingroup']" position="replace">
+          <group colspan="2" string="Settings">
+            <field name="direction"/>
+            <field name="input_type"/>
+            <field name="header_line"/>
+            <field name="line_break_char"/>
+            <field name="line_start"/>
+            <field name="field_split_type"/>
+            <field name="line_split_char"/>
+            <field name="export_file_name" invisible="direction == 'in'"/>
+          </group>
+          <group coslpan="2" string="Mapping Lines">
+            <field name="edi_mapping_line_ids">
+              <list editable="bottom">
+                <button name="open_line" icon="fa-external-link" string="" title="Open Line" type="object"/>
+                <field name="name"/>
+                <field name="force_name"/>
+                <field name="action_type"/>
+                <field name="parent_id" domain="[('parent_id','=',False),('edi_transformer_id','=',edi_transformer_id)]"/>
+                <field name="source_location" optional="show"/>
+                <field name="edi_transformer_id" invisible="1"/>
+                <field name="line_start" invisible="1"/>
+                <field name="line_number" optional="hide"/>
+                <field name="child_ids" optional="hide" widget="many2many_tags"/>
+                <field name="start_code"/>
+                <field name="edi_mapping_ids" domain="[('edi_transformer_id','=',edi_transformer_id)]" widget="many2many_tags"/>
+              </list>
+            </field>
+          </group>
+          <group colspan="2" string="Mappings">
+            <field name="edi_mappings_ids">
+              <list>
+                <button name="open_mapping" icon="fa-external-link" string="" title="Open Line" type="object"/>
+                <field name="field_name"/>
+                <field name="edi_mapping_line_id" invisible="1"/>
+                <field name="line_start" invisible="1"/>
+                <field name="field_split_type" invisible="1"/>
+                <field name="line_number"/>
+                <field name="start_code"/>
+                <field name="field_count"/>
+                <field name="field_start" optional="hide"/>
+                <field name="field_length" optional="hide"/>
+              </list>
+            </field>
+          </group>
+          <group colspan="2" string="Example Import Values">
+            <field name="edi_example_type"/>
+            <field name="edi_example" style="zbsync-edi-mapper"/>
+            <span colspan="2">
+              <button name="parse_example" class="btn-primary" string="Parse Example" type="object"/>
+            </span>
+          </group>
+        </xpath>
+      </field>
+    </record>
+    <record id="view_zbs_edi_mapping_form" model="ir.ui.view">
+      <field name="name">zbs.edi.mapping form</field>
+      <field name="model">zbs.edi.mapping</field>
+      <field name="arch" type="xml">
+        <form>
+          <h1>
+            <field name="field_name"/>
+          </h1>
+          <group colspan="4" string="Settings">
+            <field name="edi_mapping_line_id" invisible="1"/>
+            <field name="line_start" invisible="1"/>
+            <field name="field_split_type" invisible="1"/>
+            <field name="line_number"/>
+            <field name="start_code"/>
+            <field name="field_count"/>
+            <field name="field_start"/>
+            <field name="field_length"/>
+          </group>
+        </form>
+      </field>
+    </record>
+    <record id="view_zbs_edi_mapping_list" model="ir.ui.view">
+      <field name="name">zbs.edi.mapping list</field>
+      <field name="model">zbs.edi.mapping</field>
+      <field name="arch" type="xml">
+        <list editable="bottom">
+          <field name="field_name"/>
+          <field name="edi_transformer_id" invisible="1"/>
+          <field name="line_start" invisible="1"/>
+          <field name="field_split_type" invisible="1"/>
+          <field name="line_number"/>
+          <field name="start_code"/>
+          <field name="field_count"/>
+          <field name="field_start"/>
+          <field name="field_length"/>
+        </list>
+      </field>
+    </record>
+    <record id="view_zbs_edi_mapping_line_form" model="ir.ui.view">
+      <field name="name">zbs.edi.mapping.line form</field>
+      <field name="model">zbs.edi.mapping.line</field>
+      <field name="arch" type="xml">
+        <form>
+          <h1>
+            <field name="name"/>
+          </h1>
+          <group colspan="4" string="Settings">
+            <field name="force_name"/>
+            <field name="action_type"/>
+            <field name="parent_id" domain="[('parent_id','=',False),('edi_transformer_id','=',edi_transformer_id)]"/>
+            <field name="source_location"/>
+            <field name="edi_transformer_id" invisible="1"/>
+            <field name="line_start"/>
+            <field name="line_number"/>
+            <field name="start_code"/>
+            <field name="child_ids" widget="many2many_tags"/>
+            <field name="edi_mapping_ids">
+              <list editable="bottom">
+                <field name="field_name"/>
+                <field name="edi_transformer_id" invisible="1"/>
+                <field name="line_start" invisible="1"/>
+                <field name="field_split_type" invisible="1"/>
+                <field name="line_number"/>
+                <field name="start_code"/>
+                <field name="field_count"/>
+                <field name="field_start"/>
+                <field name="field_length"/>
+              </list>
+            </field>
+          </group>
+        </form>
+      </field>
+    </record>
+    <record id="view_zbs_edi_mapping_line_list" model="ir.ui.view">
+      <field name="name">zbs.edi.mapping.line list</field>
+      <field name="model">zbs.edi.mapping.line</field>
+      <field name="arch" type="xml">
+        <list editable="bottom">
+          <field name="force_name"/>
+          <field name="action_type"/>
+          <field name="parent_id" domain="[('parent_id','=',False),('edi_transformer_id','=',edi_transformer_id)]"/>
+          <field name="source_location"/>
+          <field name="edi_transformer_id" invisible="1"/>
+          <field name="line_number"/>
+          <field name="start_code"/>
+          <field name="child_ids" widget="many2many_tags"/>
+          <field name="edi_mapping_ids" widget="many2many_tags"/>
+        </list>
+      </field>
+    </record>
+  </data>
+</odoo>

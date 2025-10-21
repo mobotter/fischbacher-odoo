@@ -1,0 +1,9 @@
+of.start:dot:#ffe6cc
+of.trigger:triangle:#ac1
+of.timer:hexagon:#812942
+of.task:square:#dae8fc
+of.end:hexagon:#aa2222
+of.decision:diamond:#ffe7cc
+of.notify:ellipse:#a83ced
+of.mail_activity:box:#ac28ae
+of.zync.pipeline:box:#8ae212

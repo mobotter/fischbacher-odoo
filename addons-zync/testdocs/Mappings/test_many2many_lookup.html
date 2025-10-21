@@ -1,0 +1,47 @@
+<!--test_many2many_lookup-->
+
+<h2 name='test_many2many_lookup'>test_many2many_lookup</h2>"
+<h3>Input</h3>
+<pre>
+[
+    {
+        "name": "testpartner1",
+        "countries": "Germany  ,  Switzerland"
+    }
+]
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "name": "testpartner1",
+        "marks": [
+            57,
+            43
+        ]
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>name</td>
+   <td></td>
+</tr>
+<tr>
+   <td>countries</td>
+   <td>lookup</td>
+   <td>marks</td>
+   <td></td>
+</tr>
+</table>

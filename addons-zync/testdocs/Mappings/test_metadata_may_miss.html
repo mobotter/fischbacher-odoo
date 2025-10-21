@@ -1,0 +1,50 @@
+<!--test_metadata_may_miss-->
+
+<h2 name='test_metadata_may_miss'>test_metadata_may_miss</h2>"
+<h3>Input</h3>
+<pre>
+[
+    {
+        "name": "A"
+    },
+    {
+        "name": "B",
+        "name2": "C"
+    }
+]
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "f1": "A"
+    },
+    {
+        "f1": "B",
+        "f2": "C"
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>f1</td>
+   <td></td>
+</tr>
+<tr>
+   <td>name2</td>
+   <td>direct</td>
+   <td>f2</td>
+   <td></td>
+</tr>
+</table>

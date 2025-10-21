@@ -1,0 +1,103 @@
+<!--Put records into sub-tree as object-->
+
+<h2 name='Put records into sub-tree as object'>Put records into sub-tree as object</h2>"
+<h3>Use-Cases:</h3>
+<ul>
+<li>Web Api with static header informations</li>
+</ul>
+<h3>Documentation:</h3>
+<p>
+
+            Takes a list of records and selects the last record of it and puts its
+            properties into an object.
+            
+</p>
+<h3>Input</h3>
+<pre>
+[
+    {
+        "name": "product 1"
+    },
+    {
+        "name": "product 2"
+    }
+]
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "header_informations": {
+            "version": "1.0"
+        },
+        "product": {
+            "name": "product 2"
+        }
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td></td>
+   <td>object</td>
+   <td>header_informations</td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>'1.0'</td>
+   <td>eval</td>
+   <td>version</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+<tr>
+   <td></td>
+   <td>object</td>
+   <td>product</td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>name</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+</table>

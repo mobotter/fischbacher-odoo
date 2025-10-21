@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="zbs_receive_authorizer_form_inherit" model="ir.ui.view">
+      <field name="name">zbs.receive.authorizer.inherit form</field>
+      <field name="model">zbs.receive.authorizer</field>
+      <field name="inherit_id" ref="zbsync_receiver.zbs_receive_authorizer_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='code']" position="after">
+          <field name="api_spec" widget="ace"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

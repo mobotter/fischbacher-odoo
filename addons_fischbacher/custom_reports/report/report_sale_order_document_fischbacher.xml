@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document" inherit_id="l10n_din5008_sale.report_saleorder_document">
+    
+        <xpath expr="//tr t-if='doc.name'" position="after">
+            <tr><td>Page:</td><td><span class="page"/> of <span class="topage"/></td></tr>
+        </xpath>
+       <xpath expr="//div class='company_details'" position="replace">
+            <div class="company_details">
+                        <table class="table-borderless">
+                            <tr>
+                                <td>
+                                    <p>Kommanditgesellschaft, Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH, Sitz München HRB 278787    
+USt-Id.-DE 355 684 446 · ST-Nr. 143/518/60562 · Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table-borderless" style="padding-top:10px;">
+                            <tr>
+                                <td>
+                                    <ul class="list-inline text-nowrap">
+                                        <li style="color:#0069b4;">Hausanschrift</li>
+                                        <li t-if="company.company_details"><span t-field="company.company_details"/></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul class="list-inline">
+                                        <li style="color:#0069b4;">Kontakt</li>
+                                        <li><span style="color:#0069b4;">Telefon</span> 089 / 14 99 08-0</li>
+                                        <li><span style="color:#0069b4;">Telefax</span> 089 / 14 99 08-36</li>
+                                        <!--<li t-if="company.report_footer"><span t-field="company.report_footer"/></li>-->
+                                    </ul>
+                                </td>
+                                <td t-if="company.partner_id.bank_ids">
+                                     <ul class="list-inline">
+                                        <t t-foreach="company.partner_id.bank_ids[:2]" t-as="bank">
+                                            <li><span t-field="bank.bank_id.name"/></li>
+                                            <li>IBAN <span t-field="bank.acc_number"/></li>
+                                            <li>BIC <span t-field="bank.bank_id.bic"/></li>
+                                        </t>
+                                    </ul>
+                                </td>
+                                
+                            </tr>
+                        </table>
+                    </div>
+       </xpath>
+    </template>
+</odoo>

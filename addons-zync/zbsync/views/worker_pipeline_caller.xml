@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="view_zbs_pipeline_caller_form" model="ir.ui.view">
+      <field name="name">zbs.pipeline.caller form</field>
+      <field name="model">zbs.pipeline.caller</field>
+      <field name="inherit_id" ref="worker_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='maingroup']" position="replace">
+          <notebook>
+            <page name="pipeline" string="Pipeline">
+              <group>
+                <field name="pipeline_id"/>
+                <field name="mode"/>
+                <field name="call_mode"/>
+                <field name="extract_path"/>
+              </group>
+              <group>
+                <div colspan="2">
+                  <p>
+                                If you select 'return data', then you can pass data to the
+                                subpipeline and let it manipulate your data and you get your data back.
+                                </p>
+                  <p>
+                                If you select to 'wait', then this step is just continued after the sub pipeline is finished.
+                                No data is returned.
+                                </p>
+                </div>
+              </group>
+            </page>
+          </notebook>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

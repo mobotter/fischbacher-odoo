@@ -1,0 +1,121 @@
+<!--test_one2many-->
+
+<h2 name='test_one2many'>test_one2many</h2>"
+<h3>Input</h3>
+<pre>
+[
+    {
+        "name": "testpartner1",
+        "field1": "A",
+        "field2": "B"
+    }
+]
+</pre>
+<h3>Result</h3>
+<pre>
+[
+    {
+        "name": "testpartner1",
+        "contacts": [
+            {
+                "product": "A"
+            },
+            {
+                "product": "B"
+            }
+        ]
+    }
+]
+</pre>
+<h3>Mappings</h3>
+<table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>name</td>
+   <td>direct</td>
+   <td>name</td>
+   <td></td>
+</tr>
+<tr>
+   <td></td>
+   <td>list</td>
+   <td>contacts</td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td></td>
+   <td>object</td>
+   <td></td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>field1</td>
+   <td>direct</td>
+   <td>product</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+<tr>
+   <td></td>
+   <td>object</td>
+   <td></td>
+   <td></td>
+</tr>
+<tr>
+    <td style='min-width: 30px;'></td>
+    <td colspan='3'>
+        <table border='1'>
+<tr>
+
+                <th>Source</th>
+                <th>Action</th>
+                <th>Destination</th>
+                <th>Details</th>
+            
+</tr>
+<tr>
+   <td>field2</td>
+   <td>direct</td>
+   <td>product</td>
+   <td></td>
+</tr>
+        </table>
+    </td>
+</tr>
+        </table>
+    </td>
+</tr>
+</table>

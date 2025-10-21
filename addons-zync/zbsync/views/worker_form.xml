@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="0">
+    <record id="worker_form" model="ir.ui.view">
+      <field name="name">zbs.worker form</field>
+      <field name="model">zbs.worker</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <field name="used_in_more_pipelines" invisible="1"/>
+          <header>
+            <field name="can_show_heartbeat" context="{'active_model': context.get('active_model')}" invisible="1"/>
+            <button name="heartbeat" data-hotkey="h" invisible="can_show_heartbeat == False" string="Heartbeat" type="object"/>
+          </header>
+          <group invisible="used_in_more_pipelines &lt;= 1">
+            <div style="padding: 4px; color: yellow; border: 1px solid #aaaaaa;">
+              <span>
+                                Caution: Changing this worker affects following pipelines:
+                            </span>
+            </div>
+            <field name="pipeline_ids"/>
+          </group>
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="name" class="oe_inline" colspan="4"/>
+              </h1>
+            </div>
+            <group col="2" invisible="used_in_more_pipelines == False">
+              <div colspan="2" style="background-color: #cccca6; padding: 6px; color: white; border: 3px solid #fac900;">
+                <span>
+                                    Caution: Changing this worker affects following pipelines:
+                                </span>
+                <field name="pipeline_ids" widget="many2many_tags"/>
+              </div>
+            </group>
+            <group name="maingroup" col="2">
+                        </group>
+            <field name="comment" nolabel="0" placeholder="Comment..."/>
+            <field name="documentation" nolabel="0" placeholder="Documentation..."/>
+          </sheet>
+          <chatter/>
+        </form>
+      </field>
+    </record>
+    <record id="view_zbs_const_form" model="ir.ui.view">
+      <field name="name">zbs.const form</field>
+      <field name="model">zbs.const</field>
+      <field name="inherit_id" ref="worker_form"/>
+      <field name="mode">primary</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='maingroup']" position="after">
+          <group col="1" colspan="4" string="">
+            <field name="data" nolabel="1" options="{'mode': 'python'}" placeholder="{ 'field1': 'value1'}" widget="ace"/>
+          </group>
+          <group col="4" colspan="4">
+            <field name="demo_count"/>
+            <button name="make_demo" string="Generate Data" type="object"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>
