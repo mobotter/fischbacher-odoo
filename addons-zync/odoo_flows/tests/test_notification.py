@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timedelta
 from unittest import skipIf
 from odoo import api
@@ -45,13 +46,15 @@ class TestFlow(common.TransactionCase):
         user2 = self.env["res.users"].create(
             {
                 "name": "user2",
-                "login": "user2",
+                "login": f"user2-{uuid.uuid4()}-no-notification-please",
             }
         )
 
+        name = str(uuid.uuid4())
         partner = self.env["res.partner"].create(
-            {"name": "versuchskaninchen", "email": "test@test.de"}
+            {"name": name, "email": "test@test.de"}
         )
+
         # add follower to see if he gets also notified
         partner.message_follower_ids = [
             [
@@ -85,10 +88,11 @@ class TestFlow(common.TransactionCase):
             {
                 "flow_id": flow.id,
                 "role_id": self.role.id,
-                "name": "find versuchskaninchen",
+                "name": f"find {name}",
+                "trigger_by_code": True,
                 "code": (
                     "result = env['res.partner']."
-                    "search([('name', '=', 'versuchskaninchen')])"
+                    f"search([('name', '=', '{name}')])"
                 ),
             }
         )
@@ -120,7 +124,9 @@ class TestFlow(common.TransactionCase):
 
         # make sure it appears as subtype wished on the wall
         message = flow_instance.odoo_instance.message_ids[0]
+        self.assertEqual(message, mails.mail_message_id)
         self.assertEqual(message.subtype_id.id, 1)
         self.assertEqual(message.message_type, "comment")  # to be visible on portal
-        self.assertEqual(len(message.partner_ids), 1)
+        self.assertEqual(len(mails.recipient_ids), 1)
         self.assertTrue(message.notification_ids)
+        self.assertEqual(message.subject, f'Notification: {name} [flow1]')

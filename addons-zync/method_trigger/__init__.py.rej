@@ -1,0 +1,5 @@
+--- method_trigger/__init__.py
++++ method_trigger/__init__.py
+@@ -0,0 +1,2 @@
++from . import models
++from . import tests

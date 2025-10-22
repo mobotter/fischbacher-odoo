@@ -251,7 +251,6 @@ class BaseShellExecutor:
             f"echo\n"
             f"echo 1>&2\n"
             f"[[ -e '{cmd_filename}' ]] && rm '{cmd_filename}'\n"
-            f"sync\n"
             f"echo '{stop_marker}' \n"
         )
         # endregion
@@ -400,12 +399,18 @@ class BaseShellExecutor:
             if filename.exists():
                 filename.unlink()
 
-    def upload(self, source, dest):
+    def upload(self, source, dest, auto_retry=5):
         cmd, host = self._get_ssh_client("scp", split_host=True)
         capt = Capture()
-        p = run(cmd + f" '{source}' '{host}:{dest}'", stdout=capt, stderr=capt)
-        if p.commands[0].returncode:
-            err = capt.readlines()
+        err = ""
+        for i in range(auto_retry or 0):
+            p = run(cmd + f" '{source}' '{host}:{dest}'", stdout=capt, stderr=capt)
+            if p.commands[0].returncode:
+                err = capt.readlines()
+                time.sleep(3)
+            else:
+                break
+        else:
             raise Exception(f"Transfer failed to {host}:{dest}\n{err}")
 
     def put(self, content, dest):
@@ -632,3 +637,11 @@ class BaseShellExecutor:
         res = self._internal_execute(cmd)
         if res['exit_code']:
             raise Exception(f"Failed to create the directory {path}")
+
+    def is_file(self, path):
+        res = self._internal_execute(["test", "-f", path], logoutput=False)
+        return not res['exit_code']
+
+    def is_dir(self, path):
+        res = self._internal_execute(["test", "-d", path], logoutput=False)
+        return not res['exit_code']

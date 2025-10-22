@@ -9,7 +9,7 @@ class Notify(models.Model):
     _name = "of.notify"
     _description = "Flows Notifier"
 
-    include_followers = fields.Boolean("Include Followers (Message Post)")
+    include_followers = fields.Boolean("Include Followers (Message Post) of the instance")
     mail_template_id = fields.Many2one(
         "mail.template", string="Template", required=False
     )
@@ -30,7 +30,7 @@ class Notify(models.Model):
         partners = self.partner_ids | self.user_ids.mapped("partner_id")
         context.update(
             dict(
-                flow_partner_id=partners.id,
+                of_notify_partner_ids=partners.ids,
                 flow_user_ids=self.user_ids,
                 wk_instance=instance_item.instance_id,
                 wk_instance_item=instance_item,
@@ -53,8 +53,8 @@ class Notify(models.Model):
         self.mail_template_id = self.env["mail.template"].create(
             {
                 "model_id": self.flow_id.model_id.id,
-                "subject": "Notification: ${object.name} [${ctx['wk_instance'].flow_id.name}]",
-                "partner_to": "${ctx['flow_partner_id']}",
+                "subject": "Notification: {{object.name}} [{{ctx['wk_instance'].flow_id.name}}]",
+                "partner_to": "{{ctx['of_notify_partner_ids']}}",
                 "auto_delete": False,  # if true, then vanishes also from wall
                 "lang": "${object.partner_id.lang}",
             }

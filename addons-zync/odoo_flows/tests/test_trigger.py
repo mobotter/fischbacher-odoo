@@ -32,7 +32,8 @@ class TestFlow(common.TransactionCase):
             }
         )
 
-        partner = self.env["res.partner"].create({"name": "versuchskaninchen"})
+        name = str(uuid.uuid4())
+        partner = self.env["res.partner"].create({"name": name})
         task_item = self.env["of.task"].create(
             {
                 "flow_id": flow.id,
@@ -45,10 +46,11 @@ class TestFlow(common.TransactionCase):
             {
                 "flow_id": flow.id,
                 "role_id": self.role.id,
-                "name": "find versuchskaninchen",
+                "name": f"find {name}",
+                "trigger_by_code": True,
                 "code": (
                     "result = env['res.partner']."
-                    "search([('name', '=', 'versuchskaninchen')])"
+                    f"search([('name', '=', '{name}')])"
                 ),
             }
         )
@@ -103,9 +105,13 @@ class TestFlow(common.TransactionCase):
                 "role_id": self.role.id,
                 "name": "find versuchskaninchen",
                 "code": False,
-                "trigger_by_create": True,
-                "trigger_model_id": self.env.ref("base.model_res_partner").id,
-                "trigger_by_create_domain": "[]",
+                "method_trigger_ids": [[0,0, {
+                    'method': 'create',
+                    'model_id': self.env.ref("base.model_res_partner").id,
+                    'domain': '[]',
+                    'enabled': True,
+                    'link_expression': "object",
+                }]],
             }
         )
         flow.item_ids[0].outgoing_ids = [[0, 0, {"to_id": task_item.item_id.id}]]
@@ -146,10 +152,13 @@ class TestFlow(common.TransactionCase):
                 "role_id": self.role.id,
                 "name": "find versuchskaninchen",
                 "code": False,
-                "trigger_by_write": True,
-                "trigger_model_id": self.env.ref("base.model_res_partner").id,
-                "trigger_by_write_domain": f"[('street', '=', '{street_id}')]",
-                "trigger_by_write_linkexpression": "env[obj._name].browse(obj.id)",
+                "method_trigger_ids": [[0,0, {
+                    'method': 'write',
+                    'model_id': self.env.ref("base.model_res_partner").id,
+                    'domain': f"[('street', '=', '{street_id}')]",
+                    'enabled': True,
+                    'link_expression': "object",
+                }]],
             }
         )
         flow.item_ids[0].outgoing_ids = [[0, 0, {"to_id": task_item.item_id.id}]]
@@ -206,6 +215,7 @@ class TestFlow(common.TransactionCase):
                 "flow_id": flow.id,
                 "role_id": self.role.id,
                 "name": "find 1",
+                "trigger_by_code": True,
                 "code": ("result = env['res.partner']." "search([('name', '=', '1')])"),
             }
         )
@@ -273,10 +283,13 @@ class TestFlow(common.TransactionCase):
                 "flow_id": flow.id,
                 "role_id": self.role.id,
                 "name": "find 1",
-                "trigger_by_write": True,
-                "trigger_model_id": self.env.ref("base.model_res_partner").id,
-                "trigger_by_write_domain": f"[('street', '=', '{street_id}')]",
-                "trigger_by_write_linkexpression": "env[obj._name].browse(obj.id)",
+                "method_trigger_ids": [[0,0, {
+                    'method': 'write',
+                    'model_id': self.env.ref("base.model_res_partner").id,
+                    'domain': f"[('street', '=', '{street_id}')]",
+                    'enabled': True,
+                    'link_expression': "object",
+                }]],
             }
         )
         flow.item_ids[0].outgoing_ids = [[0, 0, {"to_id": task1.item_id.id}]]

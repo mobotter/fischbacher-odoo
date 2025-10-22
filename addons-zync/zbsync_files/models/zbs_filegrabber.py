@@ -11,6 +11,7 @@ import shutil
 
 class FileMixin(models.AbstractModel):
     _name = "zbs.file.mixin"
+    _description = "ZBS File Mixin"
     recursive = fields.Boolean(
         "Search subfolders",
         help="Allows recursive searching for matching files in subfolders.",

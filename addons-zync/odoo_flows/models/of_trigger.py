@@ -66,7 +66,8 @@ class Trigger(models.Model):
                 lambda x: x.to_id.ref._name != "of.start"
             ):
                 self._continue_in_running_flow(ref)
-                self.env.cr.commit()
+                if not self._is_testing():
+                    self.env.cr.commit()
 
         for ref in unbound_refs:
             ref = _ref2instance(ref)
@@ -74,7 +75,8 @@ class Trigger(models.Model):
                 lambda x: x.to_id.ref._name == "of.start"
             ):
                 self._start_new_flow(ref)
-                self.env.cr.commit()
+                if not self._is_testing():
+                    self.env.cr.commit()
 
     def _continue_in_running_flow(self, odoo_instance):
         ref = f"{odoo_instance._name},{odoo_instance.id}"

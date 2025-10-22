@@ -1,3 +1,4 @@
+import threading
 from odoo import _, api, fields, models, SUPERUSER_ID
 from odoo.exceptions import UserError, RedirectWarning, ValidationError
 from odoo.addons.module_tools import get_subclasses
@@ -99,3 +100,8 @@ class AbstractBase(models.AbstractModel):
             if conn.from_id:
                 yield (prev_conn, conn.from_id)
                 yield from conn.from_id.walk_to_start(conn)
+
+    @api.model
+    def _is_testing(self):
+        t = threading.current_thread()
+        return getattr(t, "testing", False)

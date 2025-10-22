@@ -1,6 +1,7 @@
 from odoo import fields
 from odoo.tests.common import TransactionCase
 from odoo import models
+from odoo.tests.common import tagged
 
 
 class TestTrigger(models.Model):
@@ -18,6 +19,8 @@ class TestModel(models.Model):
     name = fields.Char("Name")
 
 
+#odoo update method_trigger --test-tags=at_install/method_trigger,post_install/method_trigger,standard/method_trigger
+@tagged("post_install", "-at_install")
 class TestTrigger(TransactionCase):
     def setUp(self):
         super().setUp()

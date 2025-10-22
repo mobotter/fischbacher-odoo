@@ -5,6 +5,7 @@ from odoo.tools import OrderedSet
 import inspect
 import os
 from pathlib import Path
+import threading
 
 current_dir = Path(
     os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))

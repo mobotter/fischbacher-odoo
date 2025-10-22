@@ -18,8 +18,10 @@ class IrModelData(models.Model):
         Because the later module is more safe in the destination database.
         """
         assert isinstance(model, str)
-        data = self.env["ir.model.data"].search(
-            [("model", "=", model), ("res_id", "=", res_id)]
+        data = (
+            self.env["ir.model.data"]
+            .sudo()
+            .search([("model", "=", model), ("res_id", "=", res_id)])
         )
 
         infos = {}

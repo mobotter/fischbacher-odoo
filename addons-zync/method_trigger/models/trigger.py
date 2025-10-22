@@ -217,6 +217,7 @@ class TriggerMethodHook(models.AbstractModel):
                 filters = args_packed.get("kwargs", {}).get("trigger.filters")
                 if filters and filters == "before.write":
                     return
+
                 if not new_hook.exists():
                     return
                 if new_hook.model_id.model != recordset._name:
@@ -248,3 +249,17 @@ class TriggerMethodHook(models.AbstractModel):
                         ),
                         hook.id,
                     )
+
+class TestTrigger(models.Model):
+    _inherit = "method_hook.trigger.mixin"
+    _name = "test.method_hook.test_trigger"
+    _description = "Test method hook Trigger"
+
+    def _trigger(self, instance, args, method_name):
+        breakpoint()
+
+
+class TestModel(models.Model):
+    _name = "test.method_hook.test_trigger.partner"
+    _description = "Test Model Method Hooks"
+    name = fields.Char("Name")

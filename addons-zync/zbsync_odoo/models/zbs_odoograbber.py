@@ -68,7 +68,6 @@ class OdooGrabber(models.Model):
         self = self.with_context(ODOORPC_CONTEXT=context)
 
         for index, record in self.env["zebrooset"].iterate(data):
-            breakpoint()
             domain = self.resolve_domain(instance, data=record, record=record) or []
 
             obj = self.connection_id._get_obj(self.model)
