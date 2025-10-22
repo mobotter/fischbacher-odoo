@@ -1,10 +1,10 @@
-From 8b20226ee6d122677cd08378cdd22c3de92cb396 Mon Sep 17 00:00:00 2001
-From: Marc Wimmer <marc@itewimmer.de>
-Date: Mon, 30 Oct 2023 13:41:05 +0100
+From b0f4fbf4510fc0a244cf322a5c7db539ca6b4f6c Mon Sep 17 00:00:00 2001
+From: Marc Wimmer <marc@zebroo.de>
+Date: Tue, 22 Jul 2025 14:09:42 +0200
 Subject: [PATCH] for patch
 
 ---
- odoorpc/__init__.py     | 4 ++--
+ odoorpc/__init__.py     | 7 +++++--
  odoorpc/db.py           | 4 ++--
  odoorpc/env.py          | 6 +++---
  odoorpc/fields.py       | 2 +-
@@ -12,13 +12,13 @@ Subject: [PATCH] for patch
  odoorpc/odoo.py         | 8 ++++----
  odoorpc/report.py       | 2 +-
  odoorpc/rpc/__init__.py | 2 +-
- 8 files changed, 15 insertions(+), 15 deletions(-)
+ 8 files changed, 18 insertions(+), 15 deletions(-)
 
 diff --git a/odoorpc/__init__.py b/odoorpc/__init__.py
-index c1816e0..04b1047 100644
+index c1816e06..7ae635ab 100644
 --- a/odoorpc/__init__.py
 +++ b/odoorpc/__init__.py
-@@ -39,7 +39,7 @@ __all__ = ['ODOO', 'error']
+@@ -39,7 +39,10 @@ __all__ = ['ODOO', 'error']
  
  import logging
  
@@ -26,10 +26,13 @@ index c1816e0..04b1047 100644
 -from odoorpc.odoo import ODOO
 +from . import error
 +from .odoo import ODOO
++
++
++from . import models
  
  logging.getLogger(__name__).addHandler(logging.NullHandler())
 diff --git a/odoorpc/db.py b/odoorpc/db.py
-index e938f61..a80dbc0 100644
+index e938f617..a80dbc0b 100644
 --- a/odoorpc/db.py
 +++ b/odoorpc/db.py
 @@ -6,8 +6,8 @@ import base64
@@ -44,7 +47,7 @@ index e938f61..a80dbc0 100644
  # Python 2
  if sys.version_info[0] < 3:
 diff --git a/odoorpc/env.py b/odoorpc/env.py
-index 536dbd4..389ac22 100644
+index f184c522..b1c6bd41 100644
 --- a/odoorpc/env.py
 +++ b/odoorpc/env.py
 @@ -6,9 +6,9 @@
@@ -61,7 +64,7 @@ index 536dbd4..389ac22 100644
  FIELDS_RESERVED = ['id', 'ids', '__odoo__', '__osv__', '__data__', 'env']
  
 diff --git a/odoorpc/fields.py b/odoorpc/fields.py
-index e8f9831..254b01e 100644
+index e8f98314..254b01e0 100644
 --- a/odoorpc/fields.py
 +++ b/odoorpc/fields.py
 @@ -9,7 +9,7 @@ import datetime
@@ -74,7 +77,7 @@ index e8f9831..254b01e 100644
  
  def is_int(value):
 diff --git a/odoorpc/models.py b/odoorpc/models.py
-index f5e9b96..b518017 100644
+index f5e9b967..b518017d 100644
 --- a/odoorpc/models.py
 +++ b/odoorpc/models.py
 @@ -9,7 +9,7 @@ __all__ = ['Model']
@@ -87,7 +90,7 @@ index f5e9b96..b518017 100644
  # Python 2
  if sys.version_info[0] < 3:
 diff --git a/odoorpc/odoo.py b/odoorpc/odoo.py
-index c86df55..f2614ea 100644
+index c86df55c..f2614ea0 100644
 --- a/odoorpc/odoo.py
 +++ b/odoorpc/odoo.py
 @@ -4,10 +4,10 @@
@@ -106,7 +109,7 @@ index c86df55..f2614ea 100644
  
  class ODOO(object):
 diff --git a/odoorpc/report.py b/odoorpc/report.py
-index 2a11c39..8599086 100644
+index 2a11c398..85990868 100644
 --- a/odoorpc/report.py
 +++ b/odoorpc/report.py
 @@ -7,7 +7,7 @@ to generate/download them.
@@ -119,7 +122,7 @@ index 2a11c39..8599086 100644
  
  def encode2bytes(data):
 diff --git a/odoorpc/rpc/__init__.py b/odoorpc/rpc/__init__.py
-index ecceace..fe536d7 100644
+index ecceace9..fe536d7e 100644
 --- a/odoorpc/rpc/__init__.py
 +++ b/odoorpc/rpc/__init__.py
 @@ -9,7 +9,7 @@ These methods can be accessed from the connectors of this module.
@@ -132,4 +135,4 @@ index ecceace..fe536d7 100644
  # Python 2
  if sys.version_info[0] < 3:
 -- 
-2.34.1
+2.43.0

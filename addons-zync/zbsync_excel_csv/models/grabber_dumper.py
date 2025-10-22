@@ -82,9 +82,7 @@ class CSVGrabber(models.Model):
     def _read_excel(self, content):
         content = self._extract_content(content)
         stream = self._get_stream(content)
-        #encoding = self._get_encoding()
         wb = openpyxl.load_workbook(stream, data_only=True, read_only=True)
-        #wb =  wb.encode(encoding)
         if self.sheet_name:
             ws = wb[self.sheet_name]
         else:

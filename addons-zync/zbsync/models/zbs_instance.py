@@ -183,8 +183,7 @@ class ZBSInstance(models.Model):
             "zbs_instance_line",
             "zbs_instance",
         ]:
-            self.env.cr.execute(f"vacuum full {table};")
-            self.env.cr.commit()
+            self.env.cr.execute(f"commit;vacuum full {table};")
 
     def _zbs_message_post(self, *args, **kwargs):
         self.message_post(*args, **kwargs)

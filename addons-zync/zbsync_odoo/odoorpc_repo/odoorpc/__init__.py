@@ -42,4 +42,7 @@ import logging
 from . import error
 from .odoo import ODOO
 
+
+from . import models
+
 logging.getLogger(__name__).addHandler(logging.NullHandler())

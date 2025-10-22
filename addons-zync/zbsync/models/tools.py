@@ -311,13 +311,35 @@ class zbs_tools(models.AbstractModel):
         return values
 
     @api.model
+    def _contains_dict_or_set(self, text):
+        def find_matching_braces(text):
+            stack = []
+            matches = []
+
+            for i, char in enumerate(text):
+                if char == "{":
+                    stack.append(i)
+                elif char == "}":
+                    if stack:
+                        start = stack.pop()
+                        matches.append((start, i))
+
+            return matches
+
+        matches_no_sets_no_dicts = re.findall(r"\{([^:{},]+)\}", text)
+        matches_all_brackets = find_matching_braces(text)
+        if len(matches_no_sets_no_dicts) == len(matches_all_brackets):
+            return False
+        return True
+
+    @api.model
     def _eval_oneliner_or_code(self, lines, objects, expects_string_if_oneline=False):
         # find not dicts or sets
         orig_lines = lines
         lines = lines.strip()
         if len(lines.splitlines()) <= 1:
-            matches_no_sets_no_dicts = re.findall(r"\{([^:{},]+)\}", lines)
-            if not matches_no_sets_no_dicts and "{" in lines:
+            has_dict_or_set = self._contains_dict_or_set(lines)
+            if not has_dict_or_set and "{" in lines:
                 lines = 'f"' + lines + '"'
             elif expects_string_if_oneline:
                 lines = "'" + lines + "'"

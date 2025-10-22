@@ -31,7 +31,8 @@ class TestFlow(common.TransactionCase):
             }
         )
 
-        partner = self.env["res.partner"].create({"name": "versuchskaninchen"})
+        name = str(uuid.uuid4())
+        partner = self.env["res.partner"].create({"name": name})
         task_item = self.env["of.task"].create(
             {
                 "flow_id": flow.id,
@@ -77,7 +78,7 @@ class TestFlow(common.TransactionCase):
             }
         )
 
-        partner = self.env["res.partner"].create({"name": "versuchskaninchen"})
+        partner = self.env["res.partner"].create({"name": name})
         decision = self.env["of.decision"].create(
             {
                 "flow_id": flow.id,
@@ -109,7 +110,7 @@ class TestFlow(common.TransactionCase):
                 0,
                 {
                     "to_id": task_item_should.item_id.id,
-                    "condition": 'obj.name == "versuchskaninchen"',
+                    "condition": f'obj.name == {name}',
                 },
             ],
             [
@@ -164,7 +165,8 @@ class TestFlow(common.TransactionCase):
             }
         )
 
-        partner = self.env["res.partner"].create({"name": "versuchskaninchen"})
+        name = str(uuid.uuid4())
+        partner = self.env["res.partner"].create({"name": name})
         mail_activity_item = self.env["of.mail_activity"].create(
             {
                 "flow_id": flow.id,
@@ -178,10 +180,11 @@ class TestFlow(common.TransactionCase):
             {
                 "flow_id": flow.id,
                 "role_id": self.role.id,
-                "name": "find versuchskaninchen",
+                "name": f"find {name}",
+                "trigger_by_code": True,
                 "code": (
                     "result = env['res.partner']."
-                    "search([('name', '=', 'versuchskaninchen')])"
+                    f"search([('name', '=', '{name}')])"
                 ),
             }
         )
