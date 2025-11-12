@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_barcode_label" name="Barcode Label Report">
+        <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div style="">
+                        <div style="font-weight:bold; font-size:20px;"> 
+                            <span t-esc="doc.default_code"/>
+                        </div>
+                        <div style="font-weight:lighter; font-size:15px;">
+                            <span t-esc="doc.name[:77]"/>
+                        </div>
+                        <div>
+                            <span t-field="doc.barcode" class="barcode" t-options="{'widget': 'barcode', 'width': 330, 'height': 38, 'quiet': 0, }"/>
+                        </div>
+                        <div style="font-size:12px;">
+                            <span t-field="doc.barcode"/>
+                        </div>
+                    
+                    </div>
+                </t>
+        </t>
+
+    </template>
+</odoo>
