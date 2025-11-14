@@ -8,6 +8,7 @@
     'data': [
         'report/partner_report_template.xml',
         'report/partner_report_action.xml',
+        'report/zpl_partner_report_template.xml',
     ],
     'installable': True,
     'application': False,

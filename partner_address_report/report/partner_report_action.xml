@@ -10,4 +10,16 @@
         <!-- <field name="paperformat_id" ref="partner_address_report.paperformat_din_a6"/> -->
         <field name="print_report_name">'Partner_Address_' + (object.name or '')</field>
     </record>
+
+    <record id="action_zpl_report_partner_address" model="ir.actions.report">
+        <field name="name">Partner Address Report ZPL (A6)</field>
+        <field name="model">res.partner</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+        <field name="report_type">qweb-text</field>
+        <field name="report_name">partner_address_report.zpl_partner_address_template</field>
+        <field name="report_file">partner_address_report.zpl_partner_address_template</field>
+        <!-- <field name="paperformat_id" ref="partner_address_report.paperformat_din_a6"/> -->
+        <field name="print_report_name">'Partner_Address_' + (object.name or '')</field>
+    </record>
 </odoo>
