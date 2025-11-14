@@ -14,6 +14,7 @@
     'data': [
         'report/action_product_barcode_report.xml',
         'report/report_product_barcode.xml',
+        'report/zpl_product_barcode_report.xml',
     ],
 
     'installable': True,

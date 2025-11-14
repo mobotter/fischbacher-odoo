@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_barcode_label_zpl" name="Barcode Label ZPL Report">
+    <t t-foreach="docs" t-as="doc">
+        <t t-translations="off">
+            ^XA
+
+^FX Top section with default_code
+^CFB, 30,15
+^FO20,15^FD<t t-out="doc.default_code or ''" />^FS
+
+^FX Second section with recipient address and permit information.
+^CF,20
+<t t-foreach="doc.split_by_limit(doc.name,23)" t-as="name">
+^FO20,65^FD<t t-esc="name" />^FS
+</t>
+<!--^FO20,95^FDthe product in 2 lines^FS-->
+
+^FX Third section with bar code.
+^BY3,2,65
+^FO20,130^BC^FD1234567890123^FS
+
+^XZ
+        </t>
+        
+        
+    </t>
+</template>
+<!--<t t-translation="off">-->
+<!--    ^XA-->
+<!--    ^CI28-->
+<!--    ^PW600-->
+<!--    ^LH0,0-->
+<!--    ^CF0,40-->
+
+<!--    ^FX Product Code-->
+<!--    ^FO40,20^A0,40,40^FD<t t-out="doc.default_code or ''"/>^FS-->
+
+<!--    ^FX Product Name-->
+<!--    ^FO40,80^A0,30,30^FD<t t-out="doc.name or ''"/>^FS-->
+
+<!--    ^FX Barcode section (Code128)-->
+<!--    ^BY3,2,80-->
+<!--    ^FO40,130-->
+<!--    ^BCN,80,N,N,N-->
+<!--    ^FD<t t-out="doc.barcode or ''"/>^FS-->
+
+<!--    ^FX Human-readable code below barcode-->
+<!--    ^FO40,220^A0,30,30^FD<t t-out="doc.barcode or ''"/>^FS-->
+   
+<!--    ^XZ-->
+<!--</t>-->
+</odoo>
