@@ -1,28 +1,46 @@
 <odoo>
     <template id="zpl_partner_address_template">
         <t t-foreach="docs" t-as="doc">
-            <t t-translation="off">
+<t t-translation="off">
 ^XA
-^PW840
-^LL1184
 ^CI28
-^MNN
-^LH0,0
-^CF0,18
-^FO30,200^FD<t t-esc="doc.company_id.name or user.company_id.name"/><t t-if="doc.company_id.street or user.company_id.street"> | <t t-esc="doc.company_id.street or user.company_id.street"/></t><t t-if="doc.company_id.zip or doc.company_id.city"> | <t t-if="doc.company_id.zip"><t t-esc="doc.company_id.zip"/> </t><t t-esc="doc.company_id.city or ''"/></t>^FS
-^FO30,230^GB780,1,1^FS
-^CF0,26
-^FO30,255^FD<t t-esc="doc.name"/>^FS
-<t t-if="doc.street">
-^CF0,22
-^FO30,290^FD<t t-esc="doc.street"/>^FS
-</t>
-<t t-if="doc.zip or doc.city">
-^CF0,22
-^FO30,320^FD<t t-if="doc.zip"><t t-esc="doc.zip"/> </t><t t-esc="doc.city"/><t t-if="doc.country_id">, <t t-esc="doc.country_id.name"/></t>^FS
-</t>
+^FX Top section with address.
+^CFA0,40
+^FO150,450^FD<t t-esc="doc.company_id.name or user.company_id.name"/><t t-if="doc.company_id.street or user.company_id.street"> | <t t-esc="doc.company_id.street or user.company_id.street"/></t><t t-if="doc.company_id.zip or doc.company_id.city"> | <t t-if="doc.company_id.zip"><t t-esc="doc.company_id.zip"/> </t><t t-esc="doc.company_id.city or ''"/></t>^FS
+
+^FO150,510^GB1500,3,6^FS
+
+^FX Second section with client address 
+^CFA,60
+^FO150,570^FD<t t-esc="doc.name"/>^FS
+^FO150,660^FD<t t-esc="doc.street"/>^FS
+^FO150,740^<t t-if="doc.zip"><t t-esc="doc.zip"/> </t><t t-esc="doc.city"/>^FS
+^FO150,830^FD<t t-esc="doc.country_id.name"/>^FS
+
 ^XZ
-            </t>
+</t>
         </t>
     </template>
+    <!--            <t t-translation="off">-->
+<!--^XA-->
+<!--^PW840-->
+<!--^LL1184-->
+<!--^CI28-->
+<!--^MNN-->
+<!--^LH0,0-->
+<!--^CF0,18-->
+<!--^FO30,200^FD<t t-esc="doc.company_id.name or user.company_id.name"/><t t-if="doc.company_id.street or user.company_id.street"> | <t t-esc="doc.company_id.street or user.company_id.street"/></t><t t-if="doc.company_id.zip or doc.company_id.city"> | <t t-if="doc.company_id.zip"><t t-esc="doc.company_id.zip"/> </t><t t-esc="doc.company_id.city or ''"/></t>^FS-->
+<!--^FO30,230^GB780,1,1^FS-->
+<!--^CF0,26-->
+<!--^FO30,255^FD<t t-esc="doc.name"/>^FS-->
+<!--<t t-if="doc.street">-->
+<!--^CF0,22-->
+<!--^FO30,290^FD<t t-esc="doc.street"/>^FS-->
+<!--</t>-->
+<!--<t t-if="doc.zip or doc.city">-->
+<!--^CF0,22-->
+<!--^FO30,320^FD<t t-if="doc.zip"><t t-esc="doc.zip"/> </t><t t-esc="doc.city"/><t t-if="doc.country_id">, <t t-esc="doc.country_id.name"/></t>^FS-->
+<!--</t>-->
+<!--^XZ-->
+<!--            </t>-->
 </odoo>
