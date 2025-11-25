@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <!-- Task Id 51088 JC -->
+        <!-- Inherit the stock.production.lot.form view for the stock.lot model -->
+        <record id="stock_view_production_lot_form" model="ir.ui.view">
+            <field name="name">stock.production.lot.form</field>
+            <field name="model">stock.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='main_group']" position="after">
+                        <!-- Create a box for the dates -->
+                    <group>
+                        <group/>
+                        <group>
+                            <field name="tuv_date" widget="date"/>
+                            <field name="uvv_date" widget="date"/>
+                            <field name="safety_brake_date" widget="date"/>
+                        </group>
+                    </group>
+                    
+                </xpath>
+            </field>
+        </record>
+    <!-- Task Id 51088 JC -->
+    <!-- Task Id 51088 JC -->
+        <!-- Inherit the stock.production.lot.tree view for the stock.lot model -->
+        <record id="view_production_lot_view_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.list.inherit</field>
+            <field name="model">stock.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+            <field name="arch" type="xml">
+                <!-- Add the three fields after the product_id field -->
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="tuv_date"
+                        decoration-success="tuv_status == 'green'"
+                        decoration-warning="tuv_status == 'orange'"
+                        decoration-danger="tuv_status == 'red'"/>
+                    <field name="uvv_date"
+                        decoration-success="uvv_status == 'green'"
+                        decoration-warning="uvv_status == 'orange'"
+                        decoration-danger="uvv_status == 'red'"/> 
+                    <field name="safety_brake_date"
+                        decoration-success="safety_brake_status == 'green'"
+                        decoration-warning="safety_brake_status == 'orange'"
+                        decoration-danger="safety_brake_status == 'red'"/>
+                </xpath>
+            </field>
+        </record>
+    <!-- Task Id 51088 JC -->
+
+    </data>
+</odoo>
+
+
+
+
