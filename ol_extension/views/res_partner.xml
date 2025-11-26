@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Task ID: 51015 -->
+    <record id="contacts.action_contacts" model="ir.actions.act_window">
+        <field name="context">{'search_default_type_company': 1}</field>
+    </record>
+    <!-- Task ID: 51015 -->
+</odoo>
