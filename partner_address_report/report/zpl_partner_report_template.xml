@@ -17,7 +17,7 @@
 
 ^FX Second section with client address 
 ^CF,60
-<t t-if="doc.company_type== 'personal' and doc.parent_id">
+<t t-if="doc.company_type== 'person' and doc.parent_id">
 ^FO600, 150^FD
 <t t-esc="doc.parent_id.name" />
 FS
