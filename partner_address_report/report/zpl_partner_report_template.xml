@@ -17,10 +17,15 @@
 
 ^FX Second section with client address 
 ^CF,60
-^FO600, 150^FD<t t-esc="doc.name"/>^FS
-^FO500, 150^FD<t t-esc="doc.street"/>^FS
-^FO400, 150^FD<t t-if="doc.zip"><t t-esc="doc.zip"/> </t><t t-esc="doc.city"/>^FS
-^FO300, 150^FD<t t-esc="doc.country_id.name"/>^FS
+<t t-if="doc.company_type== 'personal' and doc.parent_id">
+^FO600, 150^FD
+<t t-esc="doc.parent_id.name" />
+FS
+</t>
+^FO500, 150^FD<t t-esc="doc.name"/>^FS
+^FO400, 150^FD<t t-esc="doc.street"/>^FS
+^FO300, 150^FD<t t-if="doc.zip"><t t-esc="doc.zip"/> </t><t t-esc="doc.city"/>^FS
+^FO200, 150^FD<t t-esc="doc.country_id.name"/>^FS
 
 ^XZ
 </t>
@@ -49,3 +54,5 @@
 ^XZ
 </t>
         </t> -->
+
+        
