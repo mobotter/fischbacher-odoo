@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+<!-- TASK ID: 51581 -->
+    <t t-name="pos_customization.ProductCard"
+       t-inherit="point_of_sale.ProductCard"
+       t-inherit-mode="extension">
+
+        <xpath expr="//div[contains(@class, 'product-information-tag')]" position="after">
+      
+            <!--  Add product default code -->
+            <div t-if="props.product.default_code" class="mt-1" style="font-weight:bold; text-align:center;">
+                <t t-esc="props.product.default_code"/>
+            </div>
+        </xpath>
+
+
+    </t>
+<!-- TASK ID: 51581 -->
+
+</templates>
