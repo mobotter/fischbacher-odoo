@@ -5,4 +5,18 @@
         <field name="context">{'search_default_type_company': 1}</field>
     </record>
     <!-- Task ID: 51015 -->
+
+    <record id="res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <!-- TASK ID: 51827 -->
+            <xpath expr="//form[1]/sheet[1]/group[1]/group[2]/field[@name='mobile_blacklisted']"
+                position="after">
+                <field name="short_term" />
+            </xpath>
+            <!-- TASK ID: 51827 -->
+        </field>
+    </record>
 </odoo>
