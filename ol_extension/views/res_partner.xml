@@ -28,6 +28,23 @@
                     </field>
                 </page>
                 <!-- Task ID: 51016 -->
+                <!-- Task ID: 51017 -->
+                <page name="contact_persons_page" string="Contact Persons">
+                    <field name="contact_person_ids"
+                        options="{'no_create': False, 'no_edit': False}">
+                        <list editable="bottom">
+                            <field name="salutation" />
+                            <field name="first_name" />
+                            <field name="last_name" />
+                            <field name="phone_prefix" />
+                            <field name="phone" />
+                            <field name="mobile" />
+                            <field name="info" />
+                            <field name="email" />
+                        </list>
+                    </field>
+                </page>
+                <!-- Task ID: 51017 -->
             </xpath>
         </field>
     </record>
