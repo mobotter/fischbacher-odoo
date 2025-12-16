@@ -1,0 +1,18 @@
+<odoo>
+    <!-- Task Id 51018 JC -->
+    <record model="ir.actions.server" id="action_update_partner_emails">
+        <field name="name">Update Partner Emails</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner" />
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            for partner in records:
+                values_to_update = {}
+                values_to_update['advertising_email'] = partner.email
+                if values_to_update:
+                    partner.write(values_to_update)
+        </field>
+    </record>
+    <!-- Task Id 51018 JC -->
+</odoo>
