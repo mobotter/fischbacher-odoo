@@ -17,6 +17,18 @@
                 <field name="short_term" />
             </xpath>
             <!-- TASK ID: 51827 -->
+            <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
+                <!-- Task ID: 51016 -->
+                <page name="client_info_page" string="Client Info">
+                    <field name="client_info_ids">
+                        <list editable="bottom">
+                            <field name="pos" />
+                            <field name="info" />
+                        </list>
+                    </field>
+                </page>
+                <!-- Task ID: 51016 -->
+            </xpath>
         </field>
     </record>
 </odoo>

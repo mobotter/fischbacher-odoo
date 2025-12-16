@@ -9,6 +9,7 @@
         "security/ir.model.access.csv",
         "reports/report_delivery_document.xml",
         "views/res_partner.xml",
+        "views/client_info.xml",
     ],
     "installable": True,
     "application": True,
