@@ -6,6 +6,7 @@
     "author": "Sana Khalid",
     "category": "",
     "data": [
+        "security/ir.model.access.csv",
         "reports/report_delivery_document.xml",
         "views/res_partner.xml",
     ],
