@@ -8,7 +8,10 @@
     "data": [
         "security/ir.model.access.csv",
         "reports/report_delivery_document.xml",
+        "reports/report_invoice_document.xml",
+        "reports/report_saleorder_document.xml",
         "views/res_partner.xml",
+        "views/sale_order.xml",
         "views/client_info.xml",
     ],
     "installable": True,
