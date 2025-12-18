@@ -28,8 +28,8 @@ class ProductCustom(models.Model):
     uvv_date = fields.Date("UVV Date")
     brake_inspection_date = fields.Date("Brake Inspection Date")    
 
-    #Temp
-    label_stock_location = fields.Char("Stock-Label Location")
+    #Removed task id 52133 JC
+    # label_stock_location = fields.Char("Stock-Label Location")
 
 
     @api.depends("seller_ids", "seller_ids.product_code", "seller_ids.partner_id","seller_ids.price")

@@ -18,7 +18,8 @@
                 <field name="manufacturer_number"/>
                 <field name="main_supplier_id"/>
                 <field name="main_supplier_product_number"/>
-                <field name="label_stock_location"/>
+        
+                <!-- <field name="label_stock_location"/> --><!-- task id 52133 JC -->
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Product Data">
