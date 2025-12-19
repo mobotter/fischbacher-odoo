@@ -1,10 +1,12 @@
 <odoo>
     <template id="report_invoice_document_inherit"
         inherit_id="l10n_din5008.report_invoice_document">
-        <!-- TASK ID: 51580 -->
+        <!-- TASK ID: 52132 -->
         <xpath position="before" expr="//div[@class='information_block']">
             <br />
         </xpath>
+        <!-- TASK ID: 52132 -->
+        <!-- TASK ID: 51580 -->
         <xpath position="replace" expr="//t[@t-set='din5008_address_block']">
             <t t-set="din5008_address_block">
                 <t t-if="o and o._name=='account.move'">
