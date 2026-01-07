@@ -3,21 +3,21 @@
   <data>
         <template id="external_layout_din5008_inherited" inherit_id="l10n_din5008.external_layout_din5008">
             <xpath expr="//div[contains(@class, 'address')]" position="replace">
-                <div class="address" id="din5008_report_main_address">
+                <div class="address" id="din5008_report_main_address" style="font-size:9px;">
                         <t t-if="company.name">
                             <span t-field="company.name"/>
                         </t>
                         <t t-if="company.street">
                             <span>|</span> <span t-field="company.street"/>
                         </t>
-                        <t t-if="company.street2">
+                        <!-- <t t-if="company.street2">
                             <span>|</span> <span t-field="company.street2"/>
-                        </t>
+                        </t> -->
                         <t t-if="company.zip">
                             <span>|</span> <span t-field="company.zip"/>
                         </t>
                         <t t-if="company.city">
-                            <span t-if="not company.zip">|</span> <span t-field="company.city"/>
+                            <span>|</span> <span t-field="company.city"/>
                         </t>
                     <hr class="company_invoice_line"/>
                     <div t-if="address">
