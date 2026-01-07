@@ -10,6 +10,7 @@
                         <t t-if="company.street">
                             <span>|</span> <span t-field="company.street"/>
                         </t>
+                        <!-- jc  -->
                         <!-- <t t-if="company.street2">
                             <span>|</span> <span t-field="company.street2"/>
                         </t> -->
@@ -20,12 +21,13 @@
                             <span>|</span> <span t-field="company.city"/>
                         </t>
                     <hr class="company_invoice_line"/>
-                    <div t-if="address">
+                    <!-- jc  -->
+                    <!-- <div t-if="address">
                         <t t-out="address"/>
                     </div>
                     <div t-else="fallback_address">
                         <t t-out="fallback_address" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                    </div>
+                    </div> -->
                 </div>
             </xpath>
             <xpath expr="//table[contains(@class, 'din_company_info')]" position="after">
