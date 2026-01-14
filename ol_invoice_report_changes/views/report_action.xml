@@ -1,0 +1,14 @@
+<odoo>
+    <record id="action_report_invoices" model="ir.actions.report">
+        <field name="name">PDF New</field>
+        <field name="model">account.move</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ol_invoice_report_changes.invoice_report_new</field>
+        <field name="report_file">ol_invoice_report_changes.invoice_report_new</field>
+        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+        <!-- <field name="print_report_name">'Partner_Address_' + (object.name or '')</field> -->
+    </record>
+
+</odoo>

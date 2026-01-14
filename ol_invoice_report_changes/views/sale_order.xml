@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_report_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.report.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="purchase_no" />
+                <field name="order_number" />
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
