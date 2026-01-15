@@ -7,6 +7,11 @@
 
              <main>
                 <div class="page"> 
+                    <t t-if="doc.invoice_origin">
+                        <t t-set="sale_orders" t-value="doc.env['sale.order'].search([('name', '=', doc.invoice_origin)])"/>
+
+                        
+                    </t>
             
                     <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
                         <tr>
@@ -54,28 +59,28 @@
                                             <td style="font-size:13px"><t t-esc="doc.invoice_origin"/></td>
                                         </tr>
                                     </t>
-                                    <t t-if="doc.invoice_line_ids">
-                                        <t t-if="doc.invoice_line_ids[0].sale_line_ids.order_id.date_order">
-                                            <tr>
-                                                <td style="font-size:13px">Auftragsdatum:</td>
-                                                <td style="font-size:13px"><t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
-                                            </tr>
-                                        </t>    
-                                    </t>
+                                    
+                                    <t t-if="sale_orders.date_order">
+                                        <tr>
+                                            <td style="font-size:13px">Auftragsdatum:</td>
+                                            <td style="font-size:13px"><t t-esc="sale_orders.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
+                                        </tr>
+                                    </t>    
+                                
                                     <t t-if="doc.partner_id.ref">
                                         <tr>
                                             <td style="font-size:13px">Kundennummer:</td>
                                             <td style="font-size:13px"><t t-esc="doc.partner_id.ref"/></td>
                                         </tr>
                                     </t>
-                                    <t t-if="doc.invoice_line_ids">
-                                        <t t-if="doc.invoice_line_ids[0].sale_line_ids.order_id.picking_policy">
-                                            <tr>
-                                                <td style="font-size:13px">Lieferbedingungen:</td>
-                                                <td style="font-size:13px"><t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.with_context(lang='de_DE').picking_policy"/></td>
-                                            </tr>
-                                        </t>    
-                                    </t>
+                                    
+                                    <t t-if="sale_orders.picking_policy">
+                                        <tr>
+                                            <td style="font-size:13px">Lieferbedingungen:</td>
+                                            <td style="font-size:13px"><t t-esc="sale_orders.with_context(lang='de_DE').picking_policy"/></td>
+                                        </tr>
+                                    </t>    
+                                    
                                     <t t-if="doc.invoice_incoterm_id">
                                         <tr>
                                             <td style="font-size:13px">Versandart:</td>
@@ -94,21 +99,21 @@
                                             <td style="font-size:13px"><t t-esc="doc.ref"/></td>
                                         </tr>
                                     </t>
-                                    <t t-if="doc.invoice_line_ids">
-                                        <t t-if="doc.invoice_line_ids[0].sale_line_ids.order_id.purchase_no">
-                                            <tr>
-                                                <td style="font-size:13px">Besteller:</td>
-                                                <td style="font-size:13px"><t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.purchase_no"/></td>
-                                            </tr>
-                                        </t>    
-                                    </t>
-                                    <t t-if="doc.invoice_line_ids">
-                                        <t t-if="doc.invoice_line_ids[0].sale_line_ids.order_id.order_number">
-                                            <tr>
-                                                <td style="font-size:13px">Bestellnummer:</td>
-                                                <td style="font-size:13px"><t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.order_number"/></td>
-                                            </tr>
-                                        </t>    
+                                    
+                                    <t t-if="sale_orders.purchase_no">
+                                        <tr>
+                                            <td style="font-size:13px">Besteller:</td>
+                                            <td style="font-size:13px"><t t-esc="sale_orders.purchase_no"/></td>
+                                        </tr>
+                                    </t>    
+                                    
+                                    <t t-if="sale_orders.order_number">
+                                    
+                                        <tr>
+                                            <td style="font-size:13px">Bestellnummer:</td>
+                                            <td style="font-size:13px"><t t-esc="sale_orders.order_number"/></td>
+                                        </tr>
+                                       
                                     </t>
                                     
                                 </table>
@@ -124,15 +129,17 @@
                             <tr>
                                 <th colspan="4" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
                                     Mietzeitraum:
-                                    <t t-if="doc.invoice_line_ids">
-                                        <t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.plan_id.name"/>
+                                    <t t-if="sale_orders">
+                                        <t t-esc="sale_orders.plan_id.name"/>
                                         vom
-                                        <t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+                                        <t t-esc="sale_orders.start_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
                                         bis
-                                        <t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                            
-                                        
+                                        <t t-esc="sale_orders.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+
                                     </t>
+                                                                                    
+                                        
+                                    
                                 </th>
                     
                                 <th colspan="4" style="text-align:right; font-size:12px; font-weight:600; padding:6px 0;">
@@ -202,16 +209,16 @@
                                   
                                 </div>
                     
+                    
                                 <div style="font-size:14px;">
                                     Zahlungsbedingungen:
-                                    Zahlbar
                                     <t t-if="doc.invoice_payment_term_id">
                                         <t t-esc="doc.invoice_payment_term_id.name"/>
                                     </t>
                                     
                                 </div>
                             
-                               <div style="font-size:14px;">
+                                <div style="font-size:14px;">
                                     <t t-if="doc.amount_total">
                                         <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}" />
                                     </t>
@@ -236,8 +243,7 @@
                                     <tr style="font-size:14px;">
                                         <td style="text-align:left;">Nettobetrag:</td>
                                         <td style="text-align:right;">
-                                            <t t-esc="doc.amount_untaxed"
-                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                            <t t-esc="doc.amount_untaxed" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                         </td>
                                     </tr>
                     
@@ -245,8 +251,7 @@
                                     <tr style="font-size:14px;">
                                         <td style="text-align:left;">Steuern:</td>
                                         <td style="text-align:right;">
-                                            <t t-esc="doc.amount_tax"
-                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                            <t t-esc="doc.amount_tax" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                         </td>
                                     </tr>
                     
@@ -254,8 +259,7 @@
                                     <tr style="font-weight:bold; font-size:14px;">
                                         <td style="text-align:left;">Bruttobetrag:</td>
                                         <td style="text-align:right;">
-                                            <t t-esc="doc.amount_total"
-                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                            <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                         </td>
                                     </tr>
                     
