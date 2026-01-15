@@ -142,7 +142,7 @@
                                         <t t-esc="sale_orders.plan_id.name"/>
                                         vom
                                         <t t-esc="sale_orders.start_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                        bis
+                                        ab dem
                                         <t t-esc="sale_orders.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
 
                                     </t>
