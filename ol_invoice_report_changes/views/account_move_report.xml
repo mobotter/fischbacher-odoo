@@ -62,10 +62,10 @@
                                             </tr>
                                         </t>    
                                     </t>
-                                    <t t-if="doc.ref">
+                                    <t t-if="doc.partner_id.ref">
                                         <tr>
                                             <td style="font-size:13px">Kundennummer:</td>
-                                            <td style="font-size:13px"><t t-esc="doc.ref"/></td>
+                                            <td style="font-size:13px"><t t-esc="doc.partner_id.ref"/></td>
                                         </tr>
                                     </t>
                                     <t t-if="doc.invoice_line_ids">
@@ -122,12 +122,20 @@
                     <table style="width:100%; border-collapse:collapse; font-size:12px;">
                         <thead>
                             <tr>
-                                <th colspan="6"
-                                    style="text-align:right;
-                                           font-size:16px;
-                                           font-weight:600;
-                                           padding:6px 0;
-                                           ">
+                                <th colspan="4" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
+                                    Mietzeitraum:
+                                    <t t-if="doc.invoice_line_ids">
+                                        <t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.plan_id.name"/>
+                                        vom
+                                        <t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+                                        bis
+                                        <t t-esc="doc.invoice_line_ids[0].sale_line_ids.order_id.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+                                            
+                                        
+                                    </t>
+                                </th>
+                    
+                                <th colspan="4" style="text-align:right; font-size:12px; font-weight:600; padding:6px 0;">
                                     Rechnung <t t-esc="doc.name"/>
                                 </th>
                             </tr>
@@ -187,16 +195,12 @@
                     
                     
                             <td style="width:60%; vertical-align:top;">
-                                <div>
-                                    Es bestehen Vereinbarungen, aus denen sich ggf. nachträgliche
-                                    Minderungen des Entgelts ergeben.
+                                <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
+                                    <t t-if="doc.narration">
+                                        <t t-esc="doc.narration"/>
+                                    </t>
+                                  
                                 </div>
-                    
-                                <div>Es gelten unsere Verkaufs- und Lieferbedingungen.</div>
-                                <div>Unsere Allgemeinen Geschäftsbedingungen (AGB) sind ebenfalls verbindlich.</div>
-                                <div>Rechnungsdatum entspricht Leistungsdatum!</div>
-                    
-                                <br/>
                     
                                 <div style="font-size:14px;">
                                     Zahlungsbedingungen:
@@ -207,19 +211,19 @@
                                     
                                 </div>
                             
-                                <div style="font-size:14px;">
+                               <div style="font-size:14px;">
                                     <t t-if="doc.amount_total">
-                                        <t t-esc="doc.amount_total"/>
+                                        <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}" />
                                     </t>
-                                    € fällig bei Zahlung bis
+                                     fällig bei Zahlung bis
                                     <t t-if="doc.invoice_date_due">
-                                        <t t-esc="doc.invoice_date_due"/>
+                                        <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
                                     </t>
                                 </div>
                             
                                 <div style="font-size:14px;">
                                     Fälligkeitsdatum:
-                                    <t t-esc="doc.invoice_date_due"/>
+                                    <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
                                     
                                 </div>
                             </td>
