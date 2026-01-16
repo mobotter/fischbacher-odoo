@@ -7,12 +7,12 @@ class AccountMove(models.Model):
     extended_date = fields.Date(
         string="Extended Date",
         compute="_compute_discounted_amount",
-        store=True
+    
     )
     discount_amount = fields.Float(
         string="Discounted Amount",
         compute="_compute_discounted_amount",
-        store=True
+        
     )
 
     @api.depends(

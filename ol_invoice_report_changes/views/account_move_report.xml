@@ -61,7 +61,7 @@
                                         </tr>
                                     </t>
                                     
-                                    <t t-if="sale_orders.date_order">
+                                    <t t-if="sale_orders and sale_orders.date_order">
                                         <tr>
                                             <td style="font-size:13px">Auftragsdatum: </td>
                                             <td style="font-size:13px;padding-left:3px;"><t t-esc="sale_orders.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
@@ -75,7 +75,7 @@
                                         </tr>
                                     </t>
                                     
-                                    <t t-if="sale_orders.picking_policy">
+                                    <t t-if="sale_orders and sale_orders.picking_policy">
                                         <tr>
                                             <td style="font-size:13px">Lieferbedingungen:</td>
                                             <td style="font-size:13px;padding-left:3px;"><t t-esc="sale_orders.with_context(lang='de_DE').picking_policy"/></td>
@@ -101,14 +101,14 @@
                                         </tr>
                                     </t>
                                     
-                                    <t t-if="sale_orders.purchase_no">
+                                    <t t-if="sale_orders and sale_orders.purchase_no">
                                         <tr>
                                             <td style="font-size:13px">Besteller: </td>
                                             <td style="font-size:13px;padding-left:3px;"><t t-esc="sale_orders.purchase_no"/></td>
                                         </tr>
                                     </t>    
                                     
-                                    <t t-if="sale_orders.order_number">
+                                    <t t-if="sale_orders and sale_orders.order_number">
                                     
                                         <tr>
                                             <td style="font-size:13px">Bestellnummer: </td>
@@ -226,22 +226,39 @@
                                     </t>
                                     
                                 </div>
+                                <t t-if="doc.invoice_payment_term_id.early_discount">
+                                    <div style="font-size:14px;">
+                                        
+                                        Bei Zahlung bis
+                                        <t t-if="doc.extended_date and doc.discount_amount">
+                                            <t t-esc="doc.extended_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}" />
+                                            :
+                                            <t t-esc="doc.discount_amount" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                            
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-if="doc.invoice_payment_term_id and 'Banklastschrift' not in doc.invoice_payment_term_id">
+                                    <div style="font-size:14px;">
+                                        
+                                        Bei Zahlung bis
+                                        <t t-if="doc.invoice_date_due and doc.amount_total">
+                                            <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}" />
+                                            :
+                                            <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                            
+                                        </t>
+                                    </div>
+                                    <div style="font-size:14px;">
+                                         <t t-esc="doc.invoice_payment_term_id.note"/>
+                                    </div>
+                                </t>
                             
-                                <div style="font-size:14px;">
-                                    <t t-if="doc.amount_total">
-                                        <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                                    </t>
-                                     fällig bei Zahlung ab dem
-                                    <t t-if="doc.invoice_date_due">
-                                        <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                    </t>
-                                </div>
-                            
-                                <div style="font-size:14px;">
-                                    Fälligkeitsdatum:
-                                    <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+                                <!--<div style="font-size:14px;">-->
+                                <!--    Fälligkeitsdatum:-->
+                                <!--    <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>-->
                                     
-                                </div>
+                                <!--</div>-->
                             </td>
                     
                     
