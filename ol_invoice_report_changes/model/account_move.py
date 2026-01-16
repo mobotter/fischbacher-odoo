@@ -33,6 +33,6 @@ class AccountMove(models.Model):
                     rec.extended_date = rec.invoice_date + timedelta(
                         days=rec.invoice_payment_term_id.discount_days
                     )
-                rec.discount_amount = rec.amount_total - (rec.amount_total * rec.invoice_payment_term_id.discount_percentage)
+                rec.discount_amount = rec.amount_total - (rec.amount_total * rec.invoice_payment_term_id.discount_percentage/100)
 
 
