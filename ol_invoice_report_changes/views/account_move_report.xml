@@ -141,15 +141,18 @@
                                 <thead>
                                     <tr>
                                         <th colspan="4" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                            Mietzeitraum:
-                                            <t t-if="sale_orders">
-                                                <t t-esc="sale_orders.plan_id.name"/>
-                                                vom
-                                                <t t-esc="sale_orders.start_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                                bis
-                                                <t t-esc="sale_orders.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+                                            <t t-if="is_rent">
+                                                Mietzeitraum:
+                                                <t t-if="sale_orders">
+                                                    <t t-esc="sale_orders.plan_id.name"/>
+                                                    vom
+                                                    <t t-esc="sale_orders.start_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
+                                                    bis
+                                                    <t t-esc="sale_orders.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
 
+                                                </t>
                                             </t>
+                                           
                                                                                             
                                                 
                                             

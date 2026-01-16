@@ -14,4 +14,18 @@
 
         </field>
     </record>
+
+    <record id="acc_move_report_form_inherit" model="ir.ui.view">
+        <field name="name">acc.move.report.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="is_rent" />
+
+            </xpath>
+
+        </field>
+    </record>
 </odoo>

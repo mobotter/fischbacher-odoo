@@ -15,6 +15,8 @@ class AccountMove(models.Model):
         
     )
 
+    is_rent = fields.Boolean(string="Rent")
+
     @api.depends(
         'invoice_date',
         'amount_total',
