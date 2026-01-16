@@ -238,17 +238,20 @@
                                         </t>
                                     </div>
                                 </t>
-                                <t t-if="doc.invoice_payment_term_id and 'Banklastschrift' not in doc.invoice_payment_term_id">
+                                     <t t-if="doc.invoice_payment_term_id and 'Banklastschrift' not in doc.invoice_payment_term_id.name">
                                     <div style="font-size:14px;">
                                         
                                         Bei Zahlung bis
                                         <t t-if="doc.invoice_date_due and doc.amount_total">
-                                            <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}" />
+                                            <t t-esc="doc.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
                                             :
                                             <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                             
                                         </t>
                                     </div>
+                                </t>
+                                <t t-if="doc.invoice_payment_term_id and 'Banklastschrift' in doc.invoice_payment_term_id.name">
+                
                                     <div style="font-size:14px;">
                                          <t t-esc="doc.invoice_payment_term_id.note"/>
                                     </div>
