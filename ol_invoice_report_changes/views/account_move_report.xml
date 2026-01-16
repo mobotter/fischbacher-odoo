@@ -141,7 +141,7 @@
                                 <thead>
                                     <tr>
                                         <th colspan="4" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                            <t t-if="is_rent">
+                                            <t t-if="doc.is_rent">
                                                 Mietzeitraum:
                                                 <t t-if="sale_orders">
                                                     <t t-esc="sale_orders.plan_id.name"/>
