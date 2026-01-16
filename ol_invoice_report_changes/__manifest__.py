@@ -7,7 +7,7 @@
     'summary': 'Changes on the invoice report',
     'data': [
         'views/paperformat.xml',
-        'views/report_action.xml',
+        # 'views/report_action.xml',
         'views/external_layout.xml',
         'views/account_move_report.xml',
         'views/sale_order.xml',
