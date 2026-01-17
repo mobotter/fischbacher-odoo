@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_order_preview_inherit" inherit_id="sale.sale_order_portal_content">
+        <xpath expr="//div[@id='sale_info']/table/tbody/tr[3]" position="replace">
+            <tr t-if="sale_order.client_order_ref">
+                <th class="ps-0 pb-0">Your Reference:</th>
+                <td class="w-100 pb-0 text-wrap" style="white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><span t-field="sale_order.client_order_ref"/></td>
+            </tr>
+        </xpath>
+            
+        
+    </template>
+</odoo>

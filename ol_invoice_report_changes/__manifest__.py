@@ -11,6 +11,8 @@
         'views/external_layout.xml',
         'views/account_move_report.xml',
         'views/sale_order.xml',
+        'views/sale_order_preview.xml',
+
 
 
     ],
