@@ -100,8 +100,8 @@
                                             </t>
                                             <t t-if="doc.ref">
                                                 <tr>
-                                                    <td style="font-size:13px">Referenz: </td>
-                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.ref"/></td>
+                                                    <td style="font-size:13px;vertical-align:top;">Referenz: </td>
+                                                    <td style="font-size:13px;padding-left:3px;white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><t t-esc="doc.ref"/></td>
                                                 </tr>
                                             </t>
                                             
@@ -120,7 +120,7 @@
                                                 </tr>
                                             
                                             </t>
-                                            <t t-if="doc.partner_id.country_id.name != 'Deutschland' and doc.partner_id.country_id.name != 'Germany'">
+                                            <t t-if="doc.partner_id.country_id.name != 'Deutschland' and doc.partner_id.country_id.name != 'Germany' and doc.partner_id.name != 'Barverkauf' ">
                                             
                                                 <tr>
                                                     <td style="font-size:13px">USt-IdNr.: </td>
@@ -141,7 +141,7 @@
                                 <thead>
                                     <tr>
                                         <th colspan="4" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                            <t t-if="doc.is_rent">
+                                            <t t-if="doc.is_rent and doc.partner_id.name != 'Barverkauf'">
                                                 Mietzeitraum:
                                                 <t t-if="sale_orders">
                                                     <t t-esc="sale_orders.plan_id.name"/>
@@ -323,7 +323,7 @@
                             <!--</div>-->
                             <br/>
                             <div style="font-size:14px;font-weight:bold;text-align:left;">
-                                <t t-if="doc.partner_id.country_id.name != 'Deutschland' and doc.partner_id.country_id.name != 'Germany'">
+                                <t t-if="doc.partner_id.country_id.name != 'Deutschland' and doc.partner_id.country_id.name != 'Germany' and doc.partner_id.name != 'Barverkauf' ">
                                     *** Reverse Charge ***
                                     
                                 </t>
