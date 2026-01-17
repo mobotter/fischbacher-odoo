@@ -1,7 +1,7 @@
 {
     'name': 'Invoice Report Change',
     'version': '18.0',
-    'depends': ['base','account','l10n_din5008','sale'],
+    'depends': ['base','account','l10n_din5008','sale','sale_subscription'],
     'author': 'Baqar Hussain',
     'category': 'Account',
     'summary': 'Changes on the invoice report',
