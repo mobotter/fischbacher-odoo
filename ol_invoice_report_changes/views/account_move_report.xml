@@ -182,7 +182,7 @@
                                                 <t t-esc="pos"/>
                                             </td>
                             
-                                            <td style="white-space:normal;font-size:14px; word-wrap: break-word; word-break: break-word;max-width:20px;">
+                                            <td style="white-space:normal;font-size:14px; word-wrap: break-word; word-break: break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
                                                 <t t-esc="line.name"/>
                                             </td>
                             
