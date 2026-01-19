@@ -20,7 +20,7 @@
             </div>
     
       
-            <div class="page">
+            <div class="page"> 
                 <t t-out="0"/>
             </div>
     
