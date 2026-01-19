@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_report_inherit" model="ir.ui.view">
+        <field name="name">sale.order.report.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <!-- TASK ID 32829 Jc -->
+            <xpath expr="//field[@name='order_number']" position="after">
+                <field name="order_door" />
+            </xpath>
+            <!-- TASK ID 32829 Jc -->
+        </field>
+    </record>
+</odoo>

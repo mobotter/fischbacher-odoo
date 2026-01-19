@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- TASK ID 32829 Jc -->
+    <template id="delivery_slip_new" inherit_id="stock.report_deliveryslip">
+        <xpath expr="//t" position="replace">
+            <t t-foreach="docs" t-as="doc"> 
+                <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
+                    <t t-set="o" t-value="doc.with_context(lang=doc._get_report_lang())"/>
+                    <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
+
+                <main>
+                    <div class="page"> 
+                        <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
+                            <tr>
+                                <td style="width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
+                                    <div style="margin-top:5mm;">
+                                        <div style="font-size:10.5px; margin-bottom:4px;border-bottom:1px solid #ccc;">
+                                            <span t-field="o.company_id.name"/> |
+                                            <span t-field="o.company_id.street"/> |
+                                            <span t-field="o.company_id.zip"/>
+                                            <span t-field="o.company_id.city"/>
+                                        </div>
+                                        
+                                        <!--Billing Address -->
+                                        <t t-set="sale_order" t-value="o.sale_id or o.move_lines.mapped('sale_line_id.order_id')[:1]"/>
+                                        <t t-if="sale_order">
+                                            <span>
+                                                <t t-out="sale_order.partner_invoice_id.name"/><br/>
+                                                <t t-out="sale_order.partner_invoice_id.street"/> <t t-out="sale_order.partner_invoice_id.street2"/><br/>
+                                                <t t-out="sale_order.partner_invoice_id.zip"/> <t t-out="sale_order.partner_invoice_id.city"/> <br/>
+                                                <t t-out="sale_order.partner_invoice_id.country_id.name"/>
+                                            </span>
+                                        </t>
+                
+                                        <t t-if="not sale_order">
+                                            <span>
+                                                <t t-out="o.partner_id.name"/><br/>
+                                                <t t-out="o.partner_id.street"/> <t t-out="o.partner_id.street2"/><br/>
+                                                <t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/> <br/>
+                                                <t t-out="o.partner_id.country_id.name"/>
+                                            </span>
+                                        </t>
+                                        <t>
+                                            <!--Shipping Address -->
+                                            <p style="margin-bottom:0px;"><strong>Lieferadresse:</strong></p>
+                                            <span>
+                                                <t t-out="o.partner_id.name"/><br/>
+                                                <t t-out="o.partner_id.street"/> <t t-out="o.partner_id.street2"/><br/>
+                                                <t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/> <br/>
+                                                <t t-out="o.partner_id.country_id.name"/>
+                                            </span>
+                                        </t>
+                                    
+                                    </div>
+                                </td>
+                
+                                <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:5.2;">
+                                    <br/>
+                                    <br/>
+                                    <table style="width:70%; border-collapse:collapse;">
+                                        <t t-if="o.partner_id.user_id">
+                                            <tr>
+                                                <td style="font-size:13px"><strong>Vertriebsmitarbeiter:</strong></td>
+                                                <td style="font-size:13px;"><t t-esc="o.partner_id.user_id.name"/></td>
+                                            </tr>
+                                        </t>
+                                        
+                                        
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
+                            Lieferschein
+                        </h2>
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; font-size:14px;">
+                            <tr>
+                                <td style="width:50%; padding: 2px 5px;">
+                                    <strong>Bestellnummer:</strong> <span t-field="o.sale_id.order_number"/>
+                                </td>
+                                <td style="width:50%; padding: 2px 5px;">
+                                    <strong>Lieferbedingung:</strong> <span t-field="o.sale_id.incoterm"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:30%; padding: 2px 5px;">
+                                    <strong>Bestelldatum:</strong> <span t-field="o.sale_id.date_order" t-options="{'format': 'dd.MM.yyyy'}"/>
+                                </td>
+                                <td style="width:70%; padding: 2px 5px;" rowspan="2">
+                                    <strong>Versandbedingungen:</strong> <span t-field="o.sale_id.carrier_id"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%; padding: 2px 5px;">
+                                    <strong>Bestellt durch:</strong> <span t-field="o.sale_id.order_door"/>
+                                </td>
+                                <!--<td style="width:70%; padding: 2px 5px;">-->
+                                    <!-- Agar dusra field nahi hai to empty -->
+                                <!--</td>-->
+                            </tr>
+                            <tr>
+                                <td style="width:50%; padding: 2px 5px;">
+                                    <strong>Kundennummer:</strong> <span t-field="o.sale_id.client_order_ref"/>
+                                </td>
+                                <!--<td style="width:70%; padding: 2px 5px;">-->
+                                    <!-- Agar dusra field nahi hai to empty -->
+                                <!--</td>-->
+                            </tr>
+                        </table>
+
+                        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; margin-top: 20px; font-size:14px;">
+                            <tr>
+                                <!-- Column 1: Auftrag -->
+                                <td t-if="o.origin" style="width:33%; padding: 5px;">
+                                    <strong>Auftrag</strong><br/>
+                                    <span t-field="o.origin">S0001</span>
+                                </td>
+                        
+                                <!-- Column 2: Lieferscheindatum -->
+                                <td t-if="o.state" style="width:33%; padding: 5px;">
+                                    <strong>Lieferscheindatum</strong><br/>
+                                    <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'format': 'dd.MM.yyyy'}"/>
+                                    <span t-else="" t-field="o.scheduled_date" t-options="{'format': 'dd.MM.yyyy'}"/>
+                                </td>
+                        
+                                <!-- Column 3: Lieferschein Nr. -->
+                                <td t-if="o.name" style="width:33%; padding: 5px;">
+                                    <strong>Lieferschein Nr.</strong><br/>
+                                    <span t-field="o.name"/>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <table class="table table-borderless" name="stock_move_table" style="width:100%; border-collapse: collapse; font-size:14px;">
+                            <thead>
+                                <tr style="border-bottom:1px solid #ccc;margin-bottom:10px;">
+                                    <th style="width:5%; text-align:left;font-size:14px;">POS</th>
+                                    <th style="width:50%; text-align:left;font-size:14px;">Produkt</th>
+                                    <th style="width:15%; text-align:left;font-size:14px;">Bestellmenge</th>
+                                    <th style="width:15%; text-align:left;font-size:14px;">Liefermenge</th>
+                                    <th style="width:15%; text-align:left;font-size:14px;">Rückstand</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
+                                <t t-set="pos" t-value="0"/>
+                                
+                                <tr t-foreach="lines" t-as="move" style="border-bottom:1px solid #e0e0e0;margin-bottom:10px;">
+                                    <t t-set="pos" t-value="pos + 1"/>
+                                    <t t-set="complete_pr_name" t-value="''"/>
+                                    <t t-if="o.sale_id">
+                                        <t t-set="sale_pr" t-value="o.sale_id.order_line.filtered(lambda line:line.product_id == move.product_id)"/>
+                                        <t t-if="sale_pr">
+                                            <t t-set="complete_pr_name" t-value="sale_pr[0].name"/>
+                                        </t>
+                                    </t>
+                                    <td style="font-size:14px;">
+                                            <t t-esc="pos"/>
+                                    </td>
+                                    <td style="font-size:14px; padding-top:10px; padding-bottom:10px;">
+                                        <span t-field="move.product_id.name"/>
+                                        <t t-if="not o.is_description_report">
+                                            <span t-field="move.product_id.description"/>
+                                        </t>
+                                    </td>
+                            
+                                    <td class="text-end">
+                                        <span t-field="move.product_uom_qty"/>
+                                        <t t-if="move.product_uom.uom_type == 'reference'">
+                                            Einheit(en)
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="move.product_uom" groups="uom.group_uom"/>
+                                        </t>
+                                    </td>
+                            
+                                    <td class="text-end">
+                                        <span t-field="move.quantity"/>
+                                        <t t-if="move.product_uom.uom_type == 'reference'">
+                                            Einheit(en)
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="move.product_uom" groups="uom.group_uom"/>
+                                        </t>
+                                    </td>
+                            
+                                    <td class="text-end">
+                                        <t t-esc="max(move.product_uom_qty - move.quantity, 0.0)"/>
+                                        <t t-if="move.product_uom.uom_type == 'reference'">
+                                            Einheit(en)
+                                        </t>
+                                        <t t-else="">
+                                            <span t-field="move.product_uom" groups="uom.group_uom"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div style="margin-top: 50px;">
+                            <p style="margin-bottom: 10px;">Hiermit wird der ordnungsgemäße Erhalt der Ware bestätigt.</p>
+                            
+                            <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
+                                <tr style="margin-top: 20px;">
+                                    <td style="width:35%; padding-bottom:40px;">
+                                        <div>Datum</div>
+                                        <div style="border-bottom:2px solid black; height:35px;">
+                                            <field name="signature_date_field" widget="date" style="border:none;width:100%;"/>
+                                        </div>
+                                    </td>
+                                    <td style="width:30%; padding-bottom:40px;">
+                                    </td>
+                                    <td style="width:35%; padding-bottom:40px;">
+                                        <div>Unterschrift</div>
+                                        <div style="border-bottom:2px solid black; height:35;">
+                                            <field name="signature_field" widget="signature" style="border:none;width:100%;"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+
+                
+                    </div>
+                </main>
+            
+                </t>  
+            </t>
+        </xpath>
+    </template>
+<!-- TASK ID 32829 Jc -->
+</odoo>
+
+
+
+
