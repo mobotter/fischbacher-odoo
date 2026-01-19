@@ -12,6 +12,14 @@
 
             </xpath>
 
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="is_rent" />
+                <field name="hide_total" />
+                <field name="german_payment_term" />
+
+
+            </xpath>
+
         </field>
     </record>
 

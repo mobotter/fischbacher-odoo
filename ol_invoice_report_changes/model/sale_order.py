@@ -5,3 +5,6 @@ class SaleOrder(models.Model):
 
     purchase_no = fields.Char(string="Purchase")
     order_number = fields.Char(string="Order Number")
+    is_rent = fields.Boolean(string="Rent")
+    hide_total = fields.Boolean(string="Hide Total Amount")
+    german_payment_term = fields.Char(string="Zahlungsbedingungen")
