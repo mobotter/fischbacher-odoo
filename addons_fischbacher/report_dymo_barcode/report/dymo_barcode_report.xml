@@ -28,6 +28,19 @@
             <field name="binding_type">report</field>
         </record>
 
+        <!-- Task id 34020 JC  -->
+        <record id="report_product_template_label_dymo_without_price" model="ir.actions.report">
+            <field name="name">Product Label WIth Out Price (PDF)</field>
+            <field name="model">product.template</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">report_dymo_barcode.dymo_without_price</field>
+            <field name="report_file">report_dymo_barcode.dymo_without_price</field>
+            <field name="paperformat_id" ref="product.paperformat_label_sheet_dymo"/>
+            <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+            <field name="binding_type">report</field>
+        </record>
+        <!-- Task id 34020 JC -->
+
         <record id="report_product_template_label_dymo_price_small" model="ir.actions.report">
             <field name="name">Product Label Price (PDF) Small</field>
             <field name="model">product.template</field>
