@@ -3,7 +3,7 @@
     <template id="report_simple_label_dymo" inherit_id="product.report_simple_label_dymo">
     <xpath expr="//t" position="replace">
 
-    <t t-name="report_simple_label_dymo_full">
+    <!-- <t t-name="report_simple_label_dymo_full"> -->
         <t t-set="barcode_size" t-value="'width:70mm;height:8mm'"/>
         <t t-set="table_style" t-value="'width:79mm;height:30.2mm;padding:0px;font-family: Open Sans'"/>
         <t t-set="padding_page" t-value="'padding: 2mm 4mm'"/>
@@ -31,7 +31,7 @@
                 <div class="o_label_clear"/>
             </div>
         </div>
-    </t>
+    <!-- </t> -->
     </xpath>
     </template>
 
@@ -100,8 +100,8 @@
 
 
 
-
-    <template id="
+    <!-- JC resolve it  -->
+    <!-- <template id="
     
     
     
@@ -120,7 +120,8 @@
                         </t>
                     </t>
                 </t>
-    </template>
+    </template> -->
+    <!-- JC resolve it  -->
 
 
     <template id="dymo_price_small">
