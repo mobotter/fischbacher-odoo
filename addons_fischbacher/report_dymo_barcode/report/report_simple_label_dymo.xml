@@ -261,12 +261,12 @@
 ^PW640
 ^LL240
 ^CI28
-^CF0,18 
+^CF0,24 
 
 <!-- Set margins -->
-<t t-set="left_margin" t-value="40"/>
-<t t-set="top_margin" t-value="20"/>
-<t t-set="line_height" t-value="20"/> <!-- height per line -->
+<t t-set="left_margin" t-value="145"/>
+<t t-set="top_margin" t-value="40"/>
+<t t-set="line_height" t-value="25"/> <!-- height per line -->
 
 <!-- Default Code -->
 ^FO<t t-esc="left_margin"/>,<t t-esc="top_margin"/>^FD<t t-esc="product.default_code or ''"/>^FS
@@ -274,7 +274,7 @@
 <!-- Product Name: always 3 lines -->
 <t t-set="name_top" t-value="top_margin + line_height"/>
 ^FO<t t-esc="left_margin"/>,<t t-esc="name_top"/>^FB350,3,0,L,0^FD<t t-esc="product.display_name if product.is_product_variant else product.name"/>^FS
-<!-- ^FB = Field Block: width=300, max lines=3, left align -->
+<!-- ^FB = Field Block: width=350, max lines=3, left align -->
 
 <!-- Barcode: with spacing below product name -->
 <t t-if="barcode">
