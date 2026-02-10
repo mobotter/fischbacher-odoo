@@ -15,8 +15,8 @@
             <field name="margin_right">0</field>
             <field name="disable_shrinking" eval="True"/>
             <field name="dpi">96</field>
-        </record>
-    
+    </record>
+
     <!-- Task id 34092 JC  -->
     <record id="paperformat_label_sheet_dymo_artikel_barcode" model="report.paperformat">
             <field name="name">Dymo Artikel barcode Label Sheet </field>
@@ -34,6 +34,23 @@
             <field name="dpi">96</field>
     </record>
     <!-- Task id 34092 JC  -->
+    <!-- Task id 34163 JC  -->
+    <record id="paperformat_label_sheet_zpl_without_price" model="report.paperformat">
+            <field name="name">ZPL With Out Price Label Sheet </field>
+            <field name="default" eval="True" />
+            <field name="format">custom</field>
+            <field name="page_height">80</field>
+            <field name="page_width">30</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">5</field>
+            <field name="header_spacing">0</field>
+            <field name="disable_shrinking" eval="False"/>
+            <field name="dpi">96</field>
+    </record>
+    <!-- Task id 34163 JC  -->
     
 
         <record id="report_product_template_label_dymo_price" model="ir.actions.report">
@@ -72,7 +89,19 @@
             <field name="binding_type">report</field>
         </record>
         <!-- Task id 34092 JC -->
-
+        <!-- Task id 34163 JC -->
+        <record id="report_product_template_label_zpl_without_price" model="ir.actions.report">
+            <field name="name">ZPL Without Price</field>
+            <field name="model">product.template</field>
+            <field name="report_type">qweb-text</field>
+            <field name="report_name">report_dymo_barcode.zpl_without_price</field>
+            <field name="report_file">report_dymo_barcode.zpl_without_price</field>
+            <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_zpl_without_price"/>
+            <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+            <field name="binding_type">report</field>
+        </record>
+        <!-- Task id 34163 JC -->
+        
         <record id="report_product_template_label_dymo_price_small" model="ir.actions.report">
             <field name="name">Product Label Price (PDF) Small</field>
             <field name="model">product.template</field>
@@ -99,8 +128,8 @@
             <field name="name">Product Label(ZPL) Small</field>
             <field name="model">product.template</field>
             <field name="report_type">qweb-text</field>
-            <field name="report_name">report_dymo_barcode.dymo_price</field>
-            <field name="report_file">report_dymo_barcode.dymo_price</field>
+            <field name="report_name">report_dymo_barcode.label_product_product_view_small</field>
+            <field name="report_file">report_dymo_barcode.label_product_product_view_small</field>
             <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
             <field name="binding_type">report</field>
         </record>

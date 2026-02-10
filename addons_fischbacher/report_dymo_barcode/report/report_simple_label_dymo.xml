@@ -3,7 +3,7 @@
     <template id="report_simple_label_dymo" inherit_id="product.report_simple_label_dymo">
     <xpath expr="//t" position="replace">
 
-        <!-- <t t-name="report_simple_label_dymo_full"> -->
+    <!-- <t t-name="report_simple_label_dymo_full"> -->
         <t t-set="barcode_size" t-value="'width:70mm;height:8mm'"/>
         <t t-set="table_style" t-value="'width:79mm;height:30.2mm;padding:0px;font-family: Open Sans'"/>
         <t t-set="padding_page" t-value="'padding: 2mm 4mm'"/>
@@ -31,7 +31,7 @@
                 <div class="o_label_clear"/>
             </div>
         </div>
-        <!-- </t> -->
+    <!-- </t> -->
     </xpath>
     </template>
 
@@ -97,6 +97,7 @@
         </t>
 
     </template>
+
     <!-- Task id 34020 JC -->
     <template id="report_productlabel_dymo_without_price">
         <t t-call="web.html_container">
@@ -199,7 +200,7 @@
                     </div>
                     <!--<div class="text-nowrap" style="font-size: 16px; line-height: 90%; background-color: transparent; padding: 8px 0;"0>-->
                     <div class="o_label_name" style="
-                            font-size: 14px;
+                            font-size: 16px;
                             line-height: 1.2;
                             max-height: 3.6em;
                             overflow: hidden;
@@ -215,7 +216,7 @@
                         <t t-if="barcode">
                             <!-- `quiet=0` to remove the left and right margins on the barcode -->
                             <div t-out="barcode" style="padding:0" t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                                <div class="o_label_name" style="font-size: 10px; height:1.4em;background-color: transparent;">
+                                <div class="o_label_name" style="font-size: 14px; height:1.4em;background-color: transparent;">
                                     <span class="text-center" t-out="barcode"/>
                             </div>
                         </t>
@@ -227,13 +228,71 @@
     </template>
     <!-- task id 34092 JC -->
 
+    <!-- Task id 34163 JC -->
+    <template id="report_productlabel_zpl_without_price">
+        <!-- <t t-call="web.html_container"> -->
+            <t t-set="barcode_size" t-value="'width:65mm;height:8mm'"/>
+            <t t-set="table_style" t-value="'width:69mm;height:30.2mm;padding:0;font-family: Open Sans;'"/>
+            <t t-set="padding_page" t-value="'padding: 2mm'"/>
+            <t t-foreach="quantity.items()" t-as="barcode_and_qty_by_product">
+                <t t-set="product" t-value="barcode_and_qty_by_product[0]"/>
+                <t t-foreach="barcode_and_qty_by_product[1]" t-as="barcode_and_qty">
+                    <t t-set="barcode" t-value="barcode_and_qty[0]"/>
+                    <t t-foreach="range(barcode_and_qty[1])" t-as="qty">
+                        <t t-call="report_dymo_barcode.report_simple_label_zpl_without_price"/>
+                    </t>
+                </t>
+            </t>
+        <!-- </t> -->
+    </template>
 
-    <!-- JC resolve it  -->
-    <!-- <template id="
-    
-    
-    
-    ">
+    <template id="zpl_without_price">
+        <!-- <t t-call="web.basic_layout"> -->
+            <!-- <div class="page">     -->
+                <t t-call="report_dymo_barcode.report_productlabel_zpl_without_price"/>
+            <!-- </div> -->
+        <!-- </t> -->
+    </template>
+    <!-- Task id 34163 JC -->
+    <template id="report_simple_label_zpl_without_price">
+    <t t-name="report_simple_label_without_zpl_price">
+<t t-translation="off">
+^XA
+^PW640
+^LL240
+^CI28
+^CF0,18 
+
+<!-- Set margins -->
+<t t-set="left_margin" t-value="40"/>
+<t t-set="top_margin" t-value="20"/>
+<t t-set="line_height" t-value="20"/> <!-- height per line -->
+
+<!-- Default Code -->
+^FO<t t-esc="left_margin"/>,<t t-esc="top_margin"/>^FD<t t-esc="product.default_code or ''"/>^FS
+
+<!-- Product Name: always 3 lines -->
+<t t-set="name_top" t-value="top_margin + line_height"/>
+^FO<t t-esc="left_margin"/>,<t t-esc="name_top"/>^FB350,3,0,L,0^FD<t t-esc="product.display_name if product.is_product_variant else product.name"/>^FS
+<!-- ^FB = Field Block: width=300, max lines=3, left align -->
+
+<!-- Barcode: with spacing below product name -->
+<t t-if="barcode">
+<t t-set="barcode_top" t-value="name_top + (line_height * 3) + 10"/> <!-- 3 lines height + 10px spacing -->
+^BY2,2,50
+^FO<t t-esc="left_margin"/>,<t t-esc="barcode_top"/>^BCN,50,Y,N,N
+^FD<t t-esc="barcode"/>^FS
+</t>
+
+^XZ
+</t>
+    </t>
+</template>
+
+<!-- Task id 34163 JC -->
+    <!-- task id 34163 JC -->
+
+    <!-- <template id="">
                 <t t-call="web.html_container">
                     <t t-set="barcode_size" t-value="'width:60mm;height:10mm'"/>
                     <t t-set="table_style" t-value="'width:69mm;height:30.4mm;padding:0;font-family: Open Sans'"/>
@@ -249,8 +308,6 @@
                     </t>
                 </t>
     </template> -->
-    <!-- JC resolve it  -->
-
 
     <template id="dymo_price_small">
         <t t-call="web.basic_layout">
@@ -296,8 +353,6 @@
         </t>
     </template>
 
-
-
     <template id="report_productlabel_dymo_small">
                 <t t-call="web.html_container">
                     <t t-set="barcode_size" t-value="'width:60mm;height:10mm'"/>
@@ -325,8 +380,7 @@
     </template>
 
     <template id="report_simple_label_dymo_small">
-
-        <t t-name="report_simple_label_dymo_full_price_small">
+        <t t-name="report_simple_label_dymo_full_price_small_v2">
             
             <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             
