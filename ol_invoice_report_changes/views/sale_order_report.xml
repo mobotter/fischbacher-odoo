@@ -91,7 +91,7 @@
                             <thead>
                                 <tr>
                                     <th colspan="4" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                        <t t-if="doc.is_rent">
+                                        <t t-if="doc.is_subscription">
                                             Mietzeitraum:
                                                 <t t-esc="doc.plan_id.name"/>
                                                 vom
@@ -182,7 +182,7 @@
                                     <div style="font-size:14px;">
                                         Zahlungsbedingungen:
                                         <div>
-                                            <t t-if="doc.is_rent">
+                                            <t t-if="doc.is_subscription">
                                                 <t t-esc="doc.german_payment_term"/>
                                             </t>
                                             <t t-else="">
@@ -303,7 +303,3 @@
 
     </template>
 </odoo>
-
-
-
-
