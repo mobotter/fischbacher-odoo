@@ -11,6 +11,6 @@ class SaleOrder(models.Model):
 
 
     # Task Id 33897 JC
-    client_order_name = fields.Text(string="Ordered by")
-    client_order_number = fields.Char(string=" Your Order Number")
+    # client_order_name = fields.Text(string="Ordered by")
+    # client_order_number = fields.Char(string=" Your Order Number")
 
