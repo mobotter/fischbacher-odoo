@@ -341,7 +341,7 @@
                             </tbody>
                         </table>
                         
-                        <div style="margin-top: 50px; page-break-inside: avoid;">
+                        <div style="margin-top: 50px; page-break-inside: avoid; font-size:12px;">
                             <p style="margin-bottom: 10px;">Hiermit wird der ordnungsgemäße Erhalt der Ware bestätigt.</p>
                             
                             <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
