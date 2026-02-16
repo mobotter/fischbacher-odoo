@@ -14,13 +14,13 @@
                             <img t-if="company.logo"
                                  t-att-src="image_data_uri(company.logo)"
                                  style="height:80px;"/>
-                        </td>   
+                        </td>
                     </tr>
                 </table>
             </div>
     
       
-            <div class="page"> 
+            <div class="page">
                 <t t-out="0"/>
             </div>
     

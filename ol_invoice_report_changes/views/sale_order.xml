@@ -8,16 +8,17 @@
 
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="purchase_no" />
-                <field name="order_number" />
-
+                <!-- <field name="order_number" /> -->
+                <!-- Task Id 33897 JC -->
+                <field name="client_order_number" />
+                <field name="client_order_name" />
+                <!-- Task Id 33897 JC -->
             </xpath>
 
             <xpath expr="//field[@name='payment_term_id']" position="after">
-                <field name="is_rent" />
+                <field name="is_rent" invisible="1"/>
                 <field name="hide_total" />
                 <field name="german_payment_term" />
-
-
             </xpath>
 
         </field>
@@ -30,7 +31,7 @@
         <field name="arch" type="xml">
 
             <xpath expr="//field[@name='invoice_date']" position="after">
-                <field name="is_rent" />
+                <field name="is_rent" invisible="1"/>
 
             </xpath>
 
