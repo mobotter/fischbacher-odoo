@@ -341,12 +341,12 @@
                             </tbody>
                         </table>
                         
-                        <div style="margin-top: 50px; page-break-inside: avoid; font-size:12px;">
+                        <div style="margin-top: 50px; page-break-inside: avoid; font-size:14px;">
                             <p style="margin-bottom: 10px;">Hiermit wird der ordnungsgemäße Erhalt der Ware bestätigt.</p>
                             
                             <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
                                 <tr style="margin-top: 20px;">
-                                    <td style="width:35%; padding-bottom:40px;">
+                                    <td style="width:35%; padding-bottom:40px; font-size:14px;">
                                         <div>Datum</div>
                                         <div style="border-bottom:2px solid black; height:35px;">
                                             <field name="signature_date_field" widget="date" style="border:none;width:100%;"/>
@@ -354,7 +354,7 @@
                                     </td>
                                     <td style="width:30%; padding-bottom:40px;">
                                     </td>
-                                    <td style="width:35%; padding-bottom:40px;">
+                                    <td style="width:35%; padding-bottom:40px; font-size:14px; ">
                                         <div>Unterschrift</div>
                                         <div style="border-bottom:2px solid black; height:35;">
                                             <field name="signature_field" widget="signature" style="border:none;width:100%;"/>
