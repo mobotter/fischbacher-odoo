@@ -10,7 +10,7 @@ def _pre_render_qweb_pdf(self, report_ref, res_ids=None, data=None):
     _logger.info("Res IDs: %s", res_ids)
     _logger.info("Data: %s", data)
 
-    result = super(IrActionsReport)._pre_render_qweb_pdf(
+    result = super(IrActionsReport, self)._pre_render_qweb_pdf(
         report_ref,
         res_ids=res_ids,
         data=data
