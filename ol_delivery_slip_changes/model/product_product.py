@@ -3,7 +3,7 @@ from odoo.tools import html2plaintext
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
-    # TASK ID 32829 Jc
+
     def get_product_multiline_description_sale(self):
         name = self.display_name
         
@@ -15,4 +15,3 @@ class ProductProduct(models.Model):
                 name += '\n' + internal_notes
         
         return name
-    # TASK ID 32829 Jc

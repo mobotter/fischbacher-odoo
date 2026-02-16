@@ -10,12 +10,10 @@
         'views/sale_order.xml',       # jc work
         'views/stock_picking.xml',       # jc work
         'views/delivery_slip_new_report.xml',       # jc work
-
-
-
+        'views/picking_operation_new_report.xml', #jc work
 
     ],
     'installable': True,
     'application': False,
-    'sequence' : -12,
+    'sequence' : -2,
 }

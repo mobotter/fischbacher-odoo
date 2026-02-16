@@ -1,13 +1,13 @@
 <odoo>
     <!-- Jc work -->
     <!-- <record id="action_report_delivery" model="ir.actions.report">
-        <field name="name">Delivery Slip New</field>
+        <field name="name">Picking Operation New</field>
         <field name="model">stock.picking</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ol_delivery_slip_changes.delivery_slip_new</field>
-        <field name="report_file">ol_delivery_slip_changes.delivery_slip_new</field>
+        <field name="report_name">ol_delivery_slip_changes.picking_operation_new</field>
+        <field name="report_file">ol_delivery_slip_changes.picking_operation_new</field>
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
     </record> -->
     <!-- Jc work -->
