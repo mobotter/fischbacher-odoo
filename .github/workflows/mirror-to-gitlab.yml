@@ -1,0 +1,67 @@
+name: Mirror to GitLab
+
+on:
+  push:
+    branches:
+      - "**"         # all branches
+    tags:
+      - "**"         # all tags
+
+# One job per repo+ref at a time
+concurrency:
+  group: mirror-${{ github.repository }}-${{ github.ref_type }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  mirror_to_gitlab:
+    runs-on: self-hosted
+
+    # avoid infinite loop if GitLab user pushes back to GitHub
+    if: github.actor != 'odolutiondev'
+
+    env:
+      REF_TYPE: ${{ github.ref_type }}   # "branch" or "tag"
+      REF_NAME: ${{ github.ref_name }}   # e.g. "main", "feature/x", "v1.0.0"
+
+    steps:
+      - name: Checkout full repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Mirror current ref to GitLab
+        env:
+          GITLAB_USER: ${{ secrets.GITLAB_USER }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_HOST: ${{ secrets.GITLAB_HOST }}
+        run: |
+          set -e
+
+          git config user.name  "GitHub Sync Bot"
+          git config user.email "github-sync@local"
+
+          echo "Using GitLab host: $GITLAB_HOST"
+          echo "Ref type: $REF_TYPE"
+          echo "Ref name: $REF_NAME"
+
+          GITLAB_REPO="https://${GITLAB_USER}:${GITLAB_TOKEN}@${GITLAB_HOST}/odoo/${{ github.event.repository.name }}.git"
+
+          git remote remove gitlab || true
+          git remote add gitlab "$GITLAB_REPO"
+
+          git fetch origin --prune --tags
+
+          if [ "$REF_TYPE" = "branch" ]; then
+            echo "Syncing branch '$REF_NAME' to GitLab..."
+            # Make sure local branch matches origin
+            git branch -f "$REF_NAME" "origin/$REF_NAME" || true
+            git push gitlab "$REF_NAME" --force -o ci.skip
+
+          elif [ "$REF_TYPE" = "tag" ]; then
+            echo "Syncing tag '$REF_NAME' to GitLab..."
+            git push gitlab "refs/tags/$REF_NAME" --force -o ci.skip
+
+          else
+            echo "Unknown ref type '$REF_TYPE' – nothing to do."
+          fi
