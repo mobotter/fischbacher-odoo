@@ -14,3 +14,16 @@ class SaleOrder(models.Model):
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string=" Your Order Number")
 
+    def _find_mail_template(self):
+        self.ensure_one()
+
+        # ONLY change behavior when proforma button is used
+        if self.env.context.get('proforma'):
+            return self.env.ref(
+                'ol_invoice_report_changes.email_template_edi_sale_proforma',
+                raise_if_not_found=False
+            )
+
+        # Otherwise keep original logic
+        return super()._find_mail_template()
+

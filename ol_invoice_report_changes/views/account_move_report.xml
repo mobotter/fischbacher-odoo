@@ -43,7 +43,7 @@
                                     </td>
                     
                                     <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
-                                        <table style="width:100%; border-collapse:collapse;">
+                                         <table style="width:100%; border-collapse:collapse;">
                                             <t t-if="doc.name">
                                                 <tr>
                                                     <td style="width:55%;font-size:13px;">Invoice number: </td>
@@ -64,6 +64,21 @@
                                                     </tr>
                                                 </t>
                                             </t>
+                                            <t t-if="doc.reversed_entry_id and doc.move_type == 'out_refund'">
+                                                <t t-if="doc.reversed_entry_id.name">
+                                                    <tr>
+                                                        <td style="width:55%;font-size:13px;">Invoice Reference: </td>
+                                                        <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.reversed_entry_id.name"/></td>
+                                                    </tr>
+                                                </t>
+                                                <t t-if="doc.reversed_entry_id.invoice_date">
+                                                    <tr>
+                                                        <td style="font-size:13px">Dated: </td>
+                                                        <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.reversed_entry_id.invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
+                                                    </tr>
+                                                </t>
+                                                
+                                            </t>
                                             
                                             <t t-if="doc.invoice_origin">
                                                 <tr>
@@ -74,7 +89,7 @@
                                             
                                             <t t-if="sale_orders and sale_orders.date_order">
                                                 <tr>
-                                                    <td style="font-size:13px">Quote Date: </td>
+                                                    <td style="font-size:13px">Order Date: </td>
                                                     <td style="font-size:13px;padding-left:3px;"><t t-esc="sale_orders.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
                                                 </tr>
                                             </t>    
@@ -88,7 +103,7 @@
                                             <t t-elif="not doc.partner_id.ref">
                                                 <tr>
                                                     <td style="font-size:13px">Client Number: </td>
-                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.id"/></td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.partner_id.id"/></td>
                                                 </tr>
                                             </t>
                                             
@@ -152,6 +167,12 @@
                                                     </tr>
                                                 </t>
                                             </t>
+                                            <t t-if="doc.ref">
+                                                <tr>
+                                                    <td style="font-size:13px;vertical-align:top;">Reference: </td>
+                                                    <td style="font-size:13px;padding-left:3px;white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><t t-esc="doc.ref"/></td>
+                                                </tr>
+                                            </t>
                                             <!--<t t-if="sale_orders and sale_orders.picking_policy">-->
                                             <!--    <tr>-->
                                             <!--        <td style="font-size:13px">Lieferbedingungen:</td>-->
@@ -209,7 +230,7 @@
                             <h2 t-if="doc.move_type == 'out_invoice' and doc.state == 'posted' and sale_orders.is_subscription" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Rental Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft' and sale_orders.is_subscription" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Rental Draft Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'posted'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Invoice</h2>
-                            <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Pro-Forma-Invoice</h2>
+                            <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Proforma Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'cancel'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Cancelled Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_refund' and doc.state == 'posted'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Corrected Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_refund' and doc.state == 'draft'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Draft Corrected Invoice</h2>
@@ -258,17 +279,19 @@
                                         </th>
                                        
                                         <th colspan="3" style="text-align:right; font-size:12px; font-weight:600; padding:6px 0;">
-                                            Invoice-Nr: <t t-esc="doc.name"/>
+                                            
+                                            <t t-if="doc.move_type == 'out_invoice' and doc.state == 'draft'">Order Number: <t t-esc="doc.invoice_origin"/></t>
+                                            <t t-else="">Invoice-Nr:<t t-esc="doc.name"/></t> 
                                         </th>
                                     </tr>
                                     <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
                                         <th style="width:5%; text-align:left;font-size:14px;">POS</th>
-                                        <th style="width:45%; text-align:left;font-size:14px;">Beschreibung</th>
-                                        <th style="width:15%; text-align:right;font-size:14px;">Menge</th>
-                                        <th style="width:12%; text-align:right;font-size:14px;">Einzelpreis</th>
+                                        <th style="width:45%; text-align:left;font-size:14px;">Description</th>
+                                        <th style="width:15%; text-align:right;font-size:14px;">Quantity</th>
+                                        <th style="width:12%; text-align:right;font-size:14px;">Unit Price</th>
                                         <th style="width:10%; text-align:right;font-size:14px;" t-if="display_discount">Disc.%</th>
                                         <!--<th style="width:10%; text-align:right;font-size:14px;">Steuern</th>-->
-                                        <th style="width:13%; text-align:right;font-size:14px;">Betrag</th>
+                                        <th style="width:13%; text-align:right;font-size:14px;">Amount</th>
                                     </tr>
                                 </thead>
                             
@@ -284,7 +307,9 @@
                                                 </td>
                                 
                                                 <td style="white-space:normal;font-size:14px; word-wrap: break-word; word-break: break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                    <t t-esc="line.name"/>
+                                                    <!-- <t t-esc="line.name"/> -->
+                                                    <t t-esc="line.product_id.display_name"/>
+                                                    <t t-esc="line.product_id.description"/>
                                                 </td>
                                 
                                                <td style="text-align:right;font-size:14px;">
@@ -297,7 +322,7 @@
                                                     <t t-esc="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                                 </td>
                                                 <td t-if="display_discount" style="text-align:right;font-size:14px;">
-                                                    <t t-esc="line.discount"/>
+                                                    <t t-esc="line.discount"/>%
                                                     <!--<span t-field="line.discount">-</span>-->
                                                 </td>
                                 
@@ -322,14 +347,14 @@
                                 </tbody>
                             </table>
                             
-                            <table style="margin-top:8mm; font-size:12px; line-height:1.2; width:100%;">
+                            <table style="margin-top:8mm; font-size:12px; line-height:1.2; width:100%; page-break-inside: avoid;">
                                 <tr>
                             
                                     <td style="width:60%; vertical-align:top;">
                                         <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
                                             
                                             <div>
-                                                Agreements exist that may result in subsequent reductions of the final price
+                                                Agreements exist that may result in subsequent reductions of the final price.
                                                 
                                             </div>
                                             
@@ -343,11 +368,13 @@
                                         </div>
                                         <t t-if=" not doc.move_type == 'out_refund'">
                                             <div style="font-size:12px;">
-                                                Zahlungsbedingungen:
+                                                Payment Terms:
                                                 <t t-if="doc.invoice_payment_term_id">
                                                     <t t-esc="doc.invoice_payment_term_id.name"/>
                                                 </t>
-                                                
+                                                <t t-else="">
+                                                   Zahlbar 10 Tage Skonto netto.
+                                                </t>
                                             </div>
                                             <t t-if="doc.invoice_payment_term_id.early_discount  and doc.state == 'posted'">
                                                 <div style="font-size:12px;">
@@ -358,7 +385,7 @@
                                                      <t t-esc="doc.extended_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>.
                                                      After that
                                                      <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                                                     without discount
+                                                     without discount.
                                                 </div>
                                             </t>
                                         </t>
@@ -375,12 +402,12 @@
                                         <!--        </t>-->
                                         <!--    </div>-->
                                         <!--</t>-->
-                                        <t t-if="doc.invoice_payment_term_id and 'Banklastschrift' in doc.invoice_payment_term_id.name">
+                                        <!-- <t t-if="doc.invoice_payment_term_id and 'Banklastschrift' in doc.invoice_payment_term_id.name">
                         
                                             <div style="font-size:12px;">
                                                 <t t-esc="doc.invoice_payment_term_id.note"/>
                                             </div>
-                                        </t>
+                                        </t> -->
                                     </td>
                             
                             

@@ -73,7 +73,7 @@
                                         <t t-else="not doc.partner_id.ref">
                                             <tr>
                                                 <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.id"/></td>
+                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.partner_id.id"/></td>
                                             </tr>
                                         </t>
         
@@ -136,7 +136,7 @@
                             </tr>
                         </table>
                         <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                            Angebot
+                            Quote
                         </h2>
                         <!-- Is there a discount on at least one line? -->
                         <t t-set="lines_to_report" t-value="doc._get_order_lines_to_report()"/>
@@ -146,26 +146,26 @@
                                 <tr>
                                     <th colspan="3" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
                                         <t t-if="doc.is_subscription">
-                                            Mietzeitraum:
+                                            Rental Period:
                                                 <t t-esc="doc.plan_id.name"/>
-                                                vom
+                                                from
                                                 <t t-esc="doc.start_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                                bis
+                                                to
                                                 <t t-esc="doc.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
 
                                         </t>
                                     </th>
                                     <th colspan="4" style="text-align:right; font-size:12px; font-weight:600; ">
-                                            Order Number <t t-esc="doc.name"/>
+                                            Order Number: <t t-esc="doc.name"/>
                                     </th>
                                 </tr>
                                 <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
                                     <th style="width:5%; text-align:left;font-size:14px;">POS</th>
-                                    <th style="width:45%; text-align:left;font-size:14px;">Beschreibung</th>
-                                    <th style="width:15%; text-align:right;font-size:14px;">Menge</th>
-                                    <th style="width:12%; text-align:right;font-size:14px;">Einzelpreis</th>
+                                    <th style="width:45%; text-align:left;font-size:14px;">Description</th>
+                                    <th style="width:15%; text-align:right;font-size:14px;">Quantity</th>
+                                    <th style="width:12%; text-align:right;font-size:14px;">Unit Price</th>
                                     <th style="width:10%; text-align:right;font-size:14px;" t-if="display_discount">Disc.%</th>
-                                    <th style="width:13%; text-align:right;font-size:14px;">Betrag</th>
+                                    <th style="width:13%; text-align:right;font-size:14px;">Amount</th>
                                 </tr>
                             </thead>
                         
@@ -181,7 +181,9 @@
                                             </td>
                             
                                             <td style="white-space:normal;font-size:14px; word-wrap: break-word; word-break: break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                <t t-esc="line.name"/>
+                                                <!-- <t t-esc="line.name"/> -->
+                                                <t t-esc="line.product_id.display_name"/>
+                                                <t t-esc="line.product_id.description"/>
                                             </td>
                             
                                            <td style="text-align:right;font-size:14px;">
@@ -217,34 +219,41 @@
                             </tbody>
                         </table>
                         
-                        <table style="margin-top:4mm; font-size:12px; line-height:1.2; width:100%;">
+                        <table style="margin-top:4mm; font-size:12px; line-height:1.1; width:100%; page-break-inside: avoid;">
                             <tr>
                                 <td style="width:60%; vertical-align:top;">
                                     <t>
                                        <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
-                                            Preise:
+                                            Prices:
                                             <div>
-                                                ab Werk, Konditionen wie beschrieben,
-                                                
+                                                Ex works, conditions as described above,  
                                             </div>
                                             <div>
-                                            
-                                                Zwischenverkauf vorbehalten. zzgl. gesetzl MwSt.
+                                                subject to prior sale, plus statutory VAT.
                                             </div>
-                                            
-                                        
                                         </div>
                                         <br/>
                                     </t>
                         
                                     <div style="white-space:normal;">
-                                        Zahlungsbedingungen:
+                                        Payment Terms:
                                         <div>
                                             <t t-if="doc.is_subscription">
-                                                <t t-esc="doc.german_payment_term"/>
+                                                <!-- <t t-esc="doc.german_payment_term"/> -->
+                                                <t t-if="doc.german_payment_term">
+                                                    <t t-esc="doc.german_payment_term"/>
+                                                </t>
+                                                <t t-else="">
+                                                    Zahlbar 10 Tage Skonto netto.
+                                                </t>
                                             </t>
                                             <t t-else="">
-                                                <t t-esc="doc.payment_term_id.name"/>
+                                                <t t-if="doc.payment_term_id.name">
+                                                    <t t-esc="doc.payment_term_id.name"/>
+                                                </t>
+                                                <t t-else="">
+                                                   Zahlbar 10 Tage Skonto netto.
+                                                </t>
                                             </t>
                                         </div>
                                     </div>
@@ -255,12 +264,9 @@
                                                 <t t-esc="doc.note"/>
                                             </t>
                                         </div>
-                                        
-                                        
                                     </div>
                                     
                                 </td>
-                        
                         
                                 <td style="width:40%; vertical-align:top; padding-left:10mm;">
                                     <table style="width:100%; border-collapse:collapse; font-size:12px;">
@@ -272,16 +278,12 @@
                                                     <t t-esc="doc.amount_untaxed" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                 </td>
                                             </tr>
-                            
-                            
                                             <tr style="font-size:14px;">
                                                 <td style="text-align:left;">VAT 19%:</td>
                                                 <td style="text-align:right;">
                                                     <t t-esc="doc.amount_tax" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                 </td>
                                             </tr>
-                            
-                            
                                             <tr style="font-weight:bold; font-size:14px;">
                                                 <td style="text-align:left;">Total:</td>
                                                 <td style="text-align:right;">
@@ -289,8 +291,6 @@
                                                 </td>
                                             </tr>
                                         </t>
-                                        
-                        
                                     </table>
                                 </td>
                         

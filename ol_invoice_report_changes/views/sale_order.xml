@@ -8,7 +8,7 @@
 
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="purchase_no" />
-                <field name="order_number" />
+                <!-- <field name="order_number" /> -->
                 <!-- Task Id 33897 JC -->
                 <field name="client_order_number" />
                 <field name="client_order_name" />
