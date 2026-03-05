@@ -232,7 +232,7 @@
                                     <td style="vertical-align:top;width:50%;">
                                         <strong class="d-block">Delivery Address</strong><br/>
                                         <t t-if="sale_order and sale_order.print_delivery_address">
-                                            <span t-out="sale_order.delivery_address"/>
+                                            <pre t-out="sale_order.delivery_address"/>
                                         </t>
 
                                         <t t-elif="o.partner_id">
