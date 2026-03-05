@@ -40,3 +40,4 @@ sync_to_github:
   only:
     - branches
     - tags
+
