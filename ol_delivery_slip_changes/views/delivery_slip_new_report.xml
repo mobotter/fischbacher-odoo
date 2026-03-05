@@ -20,12 +20,44 @@
                                             <span t-field="o.company_id.city"/>
                                         </div>
                                         
-                                        <!--Billing Address -->
                                         <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
                                         <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
                                         <t t-set="shipping_partner" t-value="o.partner_id"/>
                                         
+                                        <!-- Shipping Address -->
+                                        <t t-if="sale_order and sale_order.print_delivery_address">
+                                            <!-- <p style="margin-bottom:0px; margin-top:6px;">
+                                                <strong>Delivery Address:</strong>
+                                                
+                                            </p> -->
+                                            <pre t-esc="sale_order.delivery_address"/>
+                                        </t>
+
+                                        <t t-elif="invoice_partner and shipping_partner and invoice_partner.id != shipping_partner.id">
+                                            <!-- <p style="margin-bottom:0px; margin-top:6px;">
+                                                <strong>Delivery Address:</strong>
+                                            </p> -->
+                                            <span>
+                                                <t t-out="shipping_partner.display_name"/><br/>
+                                                <t t-out="shipping_partner.street"/> <t t-out="shipping_partner.street2"/><br/>
+                                                <t t-out="shipping_partner.zip"/> <t t-out="shipping_partner.city"/><br/>
+                                                <t t-out="shipping_partner.country_id.name"/>
+                                            </span>
+                                        </t>
+                                        <br/>
+                                        <br/>
+                                        <!--Billing Address -->
                                         <t t-if="invoice_partner">
+                                            <t t-if="invoice_partner and shipping_partner and invoice_partner.id == shipping_partner.id">
+                                                <p style="margin-bottom:0px; margin-top:6px;">
+                                                    <strong>Customer &amp; Delivery Address:</strong>
+                                                </p>
+                                            </t>
+                                            <t t-else="">
+                                                <p style="margin-bottom:0px; margin-top:6px;">
+                                                    <strong>Customer Address:</strong>
+                                                </p>
+                                            </t>
                                             <span>
                                                 <t t-out="invoice_partner.name"/><br/>
                                                 <t t-out="invoice_partner.street"/> <t t-out="invoice_partner.street2"/><br/>
@@ -43,27 +75,6 @@
                                             </span>
                                         </t>
                                         <!-- Shipping address -->
-                                        <!-- Shipping Address -->
-                                        <t t-if="sale_order and sale_order.print_delivery_address">
-                                            <p style="margin-bottom:0px; margin-top:6px;">
-                                                <strong>Delivery Address:</strong>
-                                                <!-- Lieferadresse -->
-                                            </p>
-                                            <span t-out="sale_order.delivery_address"/>
-                                        </t>
-
-                                        <t t-elif="invoice_partner and shipping_partner and invoice_partner.id != shipping_partner.id">
-                                            <p style="margin-bottom:0px; margin-top:6px;">
-                                                <strong>Delivery Address:</strong>
-                                            </p>
-                                            <span>
-                                                <t t-out="shipping_partner.name"/><br/>
-                                                <t t-out="shipping_partner.street"/> <t t-out="shipping_partner.street2"/><br/>
-                                                <t t-out="shipping_partner.zip"/> <t t-out="shipping_partner.city"/><br/>
-                                                <t t-out="shipping_partner.country_id.name"/>
-                                            </span>
-                                        </t>
-
                                     
                                     </div>
                                 </td>
@@ -71,8 +82,8 @@
                                 <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
                 
                                     <table style="width:100%; border-collapse:collapse;">
-                                        <t t-set="inv" t-value="o.sale_id.invoice_ids.sorted('invoice_date')[:1]"/>
-
+                                        <!-- <t t-set="inv" t-value="o.sale_id.invoice_ids.sorted('invoice_date')[:1]"/> -->
+                                        <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
                                         <t t-if="inv">
                                             <tr>
                                                 <td style="font-size:13px">Invoice Number: </td>
@@ -123,7 +134,7 @@
                                         <t t-else="not o.partner_id.ref">
                                             <tr>
                                                 <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.id"/></td>
+                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.id"/></td>
                                             </tr>
                                         </t>
 
@@ -189,7 +200,8 @@
                             </tr>
                         </table>
                         <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                            Lieferschein
+                            <!-- Lieferschein -->
+                            Delivery Slip
                         </h2>
                         <!--<table style="width:100%; border-collapse: collapse; margin-bottom: 20px; font-size:14px;">-->
                         <!--    <tr>-->
@@ -254,34 +266,34 @@
                                  <tr style="margin-bottom:10px;">
                                     <!-- Column 1: Auftrag -->
                                     <td t-if="o.origin" colspan="1" style="text-align:center;">
-                                        <strong>Auftrag</strong><br/>
+                                        <strong>Order</strong><br/>
                                         <span t-field="o.origin">S0001</span>
                                     </td>
                             
                                     <!-- Column 2: Lieferscheindatum -->
                                     <td t-if="o.state" colspan="2" style="text-align:center;">
-                                        <strong>Lieferscheindatum</strong><br/>
+                                        <strong>Delivery Slip Date</strong><br/>
                                         <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'format': 'dd.MM.yyyy'}"/>
                                         <span t-else="" t-field="o.scheduled_date" t-options="{'format': 'dd.MM.yyyy'}"/>
                                     </td>
                             
                                     <!-- Column 3: Lieferschein Nr. -->
                                     <td t-if="o.name" colspan="2" style="text-align:center;">
-                                        <strong>Lieferschein Nr.</strong><br/>
+                                        <strong>Delivery Slip No.</strong><br/>
                                         <span t-field="o.name"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5" style="height:20px; padding:0; border:none;"></td>
+                                    <td colspan="5" style="height:20px; padding:0; border:none;"/>
                                 </tr>
 
                                 
                                 <tr style="border-bottom:1px solid #ccc;margin-bottom:10px;">
                                     <th style="width:5%; text-align:left;font-size:14px;">POS</th>
-                                    <th style="width:50%; text-align:left;font-size:14px;">Produkt</th>
-                                    <th style="width:15%; text-align:left;font-size:14px;">Bestellmenge</th>
-                                    <th style="width:15%; text-align:left;font-size:14px;">Liefermenge</th>
-                                    <th style="width:15%; text-align:left;font-size:14px;">Rückstand</th>
+                                    <th style="width:48%; text-align:left;font-size:14px;">Product</th>
+                                    <th style="width:15%; text-align:left;font-size:14px;">Order Quantity</th>
+                                    <th style="width:17%; text-align:left;font-size:14px;">Delivery Quantity</th>
+                                    <th style="width:15%; text-align:left;font-size:14px;">Backorder</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -341,21 +353,21 @@
                             </tbody>
                         </table>
                         
-                        <div style="margin-top: 50px; page-break-inside: avoid; font-size:14px;">
-                            <p style="margin-bottom: 10px;">Hiermit wird der ordnungsgemäße Erhalt der Ware bestätigt.</p>
+                        <div style="margin-top: 50px; page-break-inside: avoid; ">
+                            <p style="margin-bottom: 10px;">The proper receipt of the goods is hereby confirmed.</p>
                             
                             <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
                                 <tr style="margin-top: 20px;">
-                                    <td style="width:35%; padding-bottom:40px; font-size:14px;">
-                                        <div>Datum</div>
+                                    <td style="width:35%; padding-bottom:40px; ">
+                                        <div>Date</div>
                                         <div style="border-bottom:2px solid black; height:35px;">
                                             <field name="signature_date_field" widget="date" style="border:none;width:100%;"/>
                                         </div>
                                     </td>
                                     <td style="width:30%; padding-bottom:40px;">
                                     </td>
-                                    <td style="width:35%; padding-bottom:40px; font-size:14px; ">
-                                        <div>Unterschrift</div>
+                                    <td style="width:35%; padding-bottom:40px; font-size:14px;">
+                                        <div>Signature</div>
                                         <div style="border-bottom:2px solid black; height:35;">
                                             <field name="signature_field" widget="signature" style="border:none;width:100%;"/>
                                         </div>

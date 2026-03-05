@@ -181,9 +181,9 @@
                                             </td>
                             
                                             <td style="white-space:normal;font-size:14px; word-wrap: break-word; word-break: break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                <!-- <t t-esc="line.name"/> -->
-                                                <t t-esc="line.product_id.display_name"/>
-                                                <t t-esc="line.product_id.description"/>
+                                                <pre t-esc="line.name"/>
+                                                <!-- <t t-esc="line.product_id.display_name"/> -->
+                                                <!-- <t t-esc="line.product_id.description"/> -->
                                             </td>
                             
                                            <td style="text-align:right;font-size:14px;">
@@ -319,7 +319,7 @@
                                 <tbody>
                                     <tr t-foreach="doc.sale_order_option_ids" t-as="option" style="border-bottom:1px solid #e0e0e0;margin-bottom:20px;">
                                         <td name="td_option_name" style="white-space:normal; word-wrap: break-word; word-break: break-word;max-width:20px;padding:7px;padding-bottom:7px;">
-                                            <span t-field="option.name">Extra Chips</span>
+                                            <pre t-field="option.name">Extra Chips</pre>
                                         </td>
                                         <td t-if="has_option_discount" name="td_option_discount" style="text-align:right;">
                                             <strong t-if="option.discount != 0.0" class="text-info">

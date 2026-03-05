@@ -72,8 +72,8 @@
                                 <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
                 
                                     <table style="width:100%; border-collapse:collapse;">
-                                        <t t-set="inv" t-value="o.sale_id.invoice_ids.sorted('invoice_date')[:1]"/>
-
+                                        <!-- <t t-set="inv" t-value="o.sale_id.invoice_ids.sorted('invoice_date')[:1]"/> -->
+                                        <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
                                         <t t-if="inv">
                                             <tr>
                                                 <td style="font-size:13px">Invoice Number: </td>
@@ -124,7 +124,7 @@
                                         <t t-else="not o.partner_id.ref">
                                             <tr>
                                                 <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.id"/></td>
+                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.id"/></td>
                                             </tr>
                                         </t>
 

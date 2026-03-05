@@ -307,9 +307,9 @@
                                                 </td>
                                 
                                                 <td style="white-space:normal;font-size:14px; word-wrap: break-word; word-break: break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                    <!-- <t t-esc="line.name"/> -->
-                                                    <t t-esc="line.product_id.display_name"/>
-                                                    <t t-esc="line.product_id.description"/>
+                                                    <pre t-esc="line.name"/>
+                                                    <!-- <t t-esc="line.product_id.display_name"/> -->
+                                                    <!-- <t t-esc="line.product_id.description"/> -->
                                                 </td>
                                 
                                                <td style="text-align:right;font-size:14px;">

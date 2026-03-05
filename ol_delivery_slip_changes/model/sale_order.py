@@ -11,8 +11,3 @@ class SaleOrder(models.Model):
     is_rent_backup = fields.Boolean(string="Rent")
     hide_total_backup = fields.Boolean(string="Hide Total Amount")
     german_payment_term_backup = fields.Char(string="Zahlungsbedingungen")
-
-
-    # Task Id 33897 JC
-    # client_order_name = fields.Text(string="Ordered by")
-    # client_order_number = fields.Char(string=" Your Order Number")
