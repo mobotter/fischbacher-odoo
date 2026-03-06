@@ -146,7 +146,7 @@
                                         </t> -->
                                     </th>
                                     <th colspan="4" style="text-align:right; font-size:12px;" class="fw-bolder">
-                                            Order Number: <t t-esc="doc.name"/>
+                                            Order Number : <t t-esc="doc.name"/>
                                     </th>
                                 </tr>
                                 <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
