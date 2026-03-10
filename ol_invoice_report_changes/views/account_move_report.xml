@@ -253,7 +253,7 @@
                                 <thead>
                                     <tr>
                                         <th colspan="3" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                            <t t-if="doc.is_rent  and doc.partner_id.name != 'Barverkauf'">
+                                            <!-- <t t-if="doc.is_rent  and doc.partner_id.name != 'Barverkauf'">
                                                 Mietzeitraum:
                                                 <t t-if="sale_orders">
                                                     <t t-esc="sale_orders.plan_id.name"/>
@@ -263,8 +263,8 @@
                                                     <t t-esc="sale_orders.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
 
                                                 </t>
-                                            </t>
-                                             <t t-elif="sale_orders.is_subscription">
+                                            </t> -->
+                                             <!-- <t t-elif="sale_orders.is_subscription">
                                                 Rental price /
                                                     <t t-esc="sale_orders.plan_id.name"/>
                                                     <br/>
@@ -274,6 +274,22 @@
                                                     to
                                                     <t t-esc="sale_orders.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
     
+                                            </t> -->
+                                            <t t-if="sale_orders.is_subscription">
+                                                <t t-set="first_line" t-value="doc.invoice_line_ids and doc.invoice_line_ids[0]"/>
+                                                
+                                                Rental price /
+                                                <t t-esc="sale_orders.plan_id.name"/>
+                                                <br/>
+                                                Rental period
+                                                from
+                                                <t t-if="first_line and first_line.deferred_start_date">
+                                                    <t t-esc="first_line.deferred_start_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                </t>
+                                                to
+                                                <t t-if="first_line and first_line.deferred_end_date">
+                                                    <t t-esc="first_line.deferred_end_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                </t>
                                             </t>
                                            
                                         </th>
@@ -281,7 +297,7 @@
                                         <th colspan="3" style="text-align:right; font-size:12px; font-weight:600; padding:6px 0;">
                                             
                                             <t t-if="doc.move_type == 'out_invoice' and doc.state == 'draft'">Order Number: <t t-esc="doc.invoice_origin"/></t>
-                                            <t t-else="">Invoice-Nr:<t t-esc="doc.name"/></t> 
+                                            <t t-else="">Invoice-Nr: <t t-esc="doc.name"/></t> 
                                         </th>
                                     </tr>
                                     <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
