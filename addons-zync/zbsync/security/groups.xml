@@ -1,12 +1,21 @@
 <?xml version="1.0"?>
 <odoo>
   <data noupdate="0">
+    <!-- 1. Kategorie bleibt gleich -->
     <record id="cat_zebroo_sync" model="ir.module.category">
       <field name="name">Zebroo-Sync</field>
     </record>
+
+    <!-- 2. NEU: Das Privileg, das die Kategorie mit der Gruppe verbindet -->
+    <record id="privilege_zebroo_sync" model="res.groups.privilege">
+      <field name="name">Zebroo-Sync Privilege</field>
+      <field name="category_id" ref="cat_zebroo_sync"/>
+    </record>
+
+    <!-- 3. Gruppe: Nutzt jetzt privilege_id anstatt category_id -->
     <record id="group_manager" model="res.groups">
       <field name="name">Zebroo-Sync Manager</field>
-      <field name="category_id" ref="cat_zebroo_sync"/>
+      <field name="privilege_id" ref="privilege_zebroo_sync"/>
     </record>
   </data>
 </odoo>
