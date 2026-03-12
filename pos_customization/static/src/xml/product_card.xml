@@ -5,14 +5,14 @@
        t-inherit="point_of_sale.ProductCard"
        t-inherit-mode="extension">
 
-        <xpath expr="//div[contains(@class, 'product-information-tag')]" position="after">
+        <!-- Neuer, robuster XPath für Odoo POS -->
+        <xpath expr="//div[hasclass('product-name')]" position="after">
       
             <!--  Add product default code -->
-            <div t-if="props.product.default_code" class="mt-1" style="font-weight:bold; text-align:center;">
+            <div t-if="props.product.default_code" class="mt-1 text-muted" style="font-size: 0.9em; text-align:center;">
                 <t t-esc="props.product.default_code"/>
             </div>
         </xpath>
-
 
     </t>
 <!-- TASK ID: 51581 -->
