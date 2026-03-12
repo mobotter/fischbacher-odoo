@@ -12,11 +12,11 @@
     'data': [],
     'installable': True,
     'application': True,
-    'assets': {
-        'point_of_sale._assets_pos': [
-            'pos_customization/static/src/**/',
-            
-        ],
-    },
+#    'assets': {
+#        'point_of_sale._assets_pos': [
+#            'pos_customization/static/src/**/',
+#            
+#        ],
+#    },
     'license': 'LGPL-3',
 }
