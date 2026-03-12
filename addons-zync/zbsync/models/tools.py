@@ -2,7 +2,7 @@
 import re
 import random
 import threading
-from odoo import registry
+from odoo.modules.registry import Registry
 from odoo import api, models
 import hashlib
 import struct
@@ -250,7 +250,7 @@ class zbs_tools(models.AbstractModel):
             if on_after_commit:
                 on_after_commit()
         else:
-            db_registry = registry(self.env.cr.dbname)
+            db_registry = Registry(self.env.cr.dbname)
             # with api.Environment.manage():
             with closing(db_registry.cursor()) as cr:
                 env = api.Environment(cr, self.env.user.id, self.env.context, su)
