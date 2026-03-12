@@ -9,7 +9,7 @@ class ContactCustom(models.Model):
 
 class PartnerHistory(models.Model):
     _name = 'partner.history.fs'
-    _description = 'Partner History' # Gut für Odoo 19, um Warnungen zu vermeiden
+    _description = 'Partner History' # Gut für Odoo 19, um Warnungen zu vermeiden 
 
     @api.model
     def _get_year_selection(self):
