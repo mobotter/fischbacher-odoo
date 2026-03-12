@@ -167,12 +167,12 @@
                                                     </tr>
                                                 </t>
                                             </t>
-                                            <t t-if="doc.ref">
+                                            <!-- <t t-if="doc.ref">
                                                 <tr>
                                                     <td style="font-size:13px;vertical-align:top;">Reference: </td>
                                                     <td style="font-size:13px;padding-left:3px;white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><t t-esc="doc.ref"/></td>
                                                 </tr>
-                                            </t>
+                                            </t> -->
                                             <!--<t t-if="sale_orders and sale_orders.picking_policy">-->
                                             <!--    <tr>-->
                                             <!--        <td style="font-size:13px">Lieferbedingungen:</td>-->
@@ -401,7 +401,12 @@
                                                      <t t-esc="doc.extended_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>.
                                                      After that
                                                      <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                                                     without discount.
+                                                     without deduction.
+                                                </div>
+                                            </t>
+                                            <t t-if="doc.invoice_payment_term_id">
+                                               <div style="font-size:12px;">
+                                                    <t t-esc="doc.invoice_payment_term_id.note"/>
                                                 </div>
                                             </t>
                                         </t>
