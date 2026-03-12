@@ -1,7 +1,6 @@
 # Part of Zebroo GmbH. See LICENSE file for full copyright and licensing details (www.zebroo.de/license).
 
 from odoo import api, fields, models, tools
-from odoo.models import NewId
 import logging
 from .zebrooset import ZebrooSet
 from .zbs_pipeline_line import RANGE_HELP
@@ -65,7 +64,7 @@ class InstanceLine(models.Model):
         with self.env["zbs.tools"].new_env() as env:
             for rec in self:
                 id = rec.id
-                if isinstance(id, NewId):
+                if isinstance(id, models.NewId):
                     id = id.origin
                 env.cr.execute(
                     "select id from zbs_instance_line_batch where line_id = %s",
