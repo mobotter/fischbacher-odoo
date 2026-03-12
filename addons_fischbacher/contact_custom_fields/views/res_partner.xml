@@ -1,5 +1,4 @@
 <odoo>
-    
     <record id="partner_form_view_inherit_base_fb" model="ir.ui.view">
         <field name="name">partner.form.view.inherit.base.fb</field>
         <field name="model">res.partner</field>
@@ -11,9 +10,11 @@
             <xpath expr="//group[@name='purchase']" position="inside">
                 <field name="supplier_customer_number"/>
             </xpath>
+            <!-- Auskommentiert für Odoo 19 Upgrade, da Feld dsp3_id nicht existiert:
             <xpath expr="//field[@name='ref']" position="after">
                 <field name="dsp3_id"/>
             </xpath>
+            -->
         </field>
-        </record>
+    </record>
 </odoo>

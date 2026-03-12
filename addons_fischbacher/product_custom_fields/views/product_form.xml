@@ -1,5 +1,4 @@
 <odoo>
-
     <record id="product_form_view_inherit" model="ir.ui.view">
         <field name="name">product.form.view.inherit.custom</field>
         <field name="model">product.product</field>
@@ -9,11 +8,17 @@
                 <field name="search_term"/>
                 <field name="short_term"/>
             </xpath>
+            
+            <!-- Auskommentiert für Odoo 19 Upgrade: Feld dsp3_id existiert nicht
             <xpath expr="//field[@name='default_code']" position="after">
                 <field name="dsp3_id"/>
             </xpath>
+            -->
+
             <xpath expr="//field[@name='product_tooltip']" position="after">
+                <!-- Auskommentiert für Odoo 19 Upgrade: Feld bonus_applicable existiert nicht
                 <field name="bonus_applicable"/>
+                -->
                 <field name="special_sale_applicable"/>
                 <field name="manufacturer_number"/>
                 <field name="main_supplier_id"/>

@@ -415,5 +415,5 @@ class zbs_tools(models.AbstractModel):
             if obj:
                 obj.clear_caches()
             else:
-                self.env.registry.clear_caches()
+                self.env.registry.clear_cache()
 
