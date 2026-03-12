@@ -1,7 +1,8 @@
 # Part of Zebroo GmbH. See LICENSE file for full copyright and licensing details (www.zebroo.de/license).
 from odoo.http import request, Controller
 from ..exceptions import TokenExpirationException, TokenInvalidException
-from odoo import http, registry
+from odoo import http
+from odoo.modules.registry import Registry as registry
 from odoo.api import Environment
 import json
 import threading
