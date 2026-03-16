@@ -238,7 +238,7 @@
                                 <tr>
                             
                                     <td style="width:60%; vertical-align:top;">
-                                        <t t-if="sale_orders.is_subscription">
+                                        <t t-if="doc.is_subscription">
                                             <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
                                                 <div>
                                                     Agreements exist that may result in subsequent reductions of the final price.  
