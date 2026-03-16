@@ -260,9 +260,9 @@
                                                 Zahlbar 10 Tage Skonto netto.
                                             </t>
                                         </div>
-                                        <t t-if="doc.invoice_payment_term_id">
+                                        <t t-if="doc.payment_term_id">
                                             <div style="font-size:12px;">
-                                                <t t-esc="doc.invoice_payment_term_id.note"/>
+                                                <t t-esc="doc.payment_term_id.note"/>
                                             </div>
                                         </t>                                           
                                     </td>
