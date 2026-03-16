@@ -238,30 +238,33 @@
                                 <tr>
                             
                                     <td style="width:60%; vertical-align:top;">
-                                        <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
-                                            
-                                            <div>
-                                                Agreements exist that may result in subsequent reductions of the final price.
-                                                
+                                        <t t-if="sale_orders.is_subscription">
+                                            <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
+                                                <div>
+                                                    Agreements exist that may result in subsequent reductions of the final price.  
+                                                </div>
                                             </div>
-                                            
-                                        </div>
+                                        </t>
                                         
                                         <div style="white-space:normal;font-size:12px; word-wrap: break-word; word-break: break-word;max-width:100%;">
                                             <t t-if="doc.note">
                                                 <t t-esc="doc.note"/>
-                                            </t>
-                                        
+                                            </t>                                        
                                         </div>
+                                        <div style="font-size:12px;">
+                                            Payment Terms:
+                                            <t t-if="doc.payment_term_id">
+                                                <t t-esc="doc.payment_term_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                Zahlbar 10 Tage Skonto netto.
+                                            </t>
+                                        </div>
+                                        <t t-if="doc.invoice_payment_term_id">
                                             <div style="font-size:12px;">
-                                                Payment Terms:
-                                                <t t-if="doc.payment_term_id">
-                                                    <t t-esc="doc.payment_term_id.name"/>
-                                                </t>
-                                                <t t-else="">
-                                                   Zahlbar 10 Tage Skonto netto.
-                                                </t>
-                                            </div>                                           
+                                                <t t-esc="doc.invoice_payment_term_id.note"/>
+                                            </div>
+                                        </t>                                           
                                     </td>
                                     <td style="width:40%; vertical-align:top; padding-left:10mm;">
                                         <table style="width:100%; border-collapse:collapse; font-size:12px;">
