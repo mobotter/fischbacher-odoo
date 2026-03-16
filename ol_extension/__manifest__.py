@@ -1,6 +1,6 @@
 {
     "name": "Fischbacher Extension",
-    "version": "19.0.1.0.0",
+    "version": "18.0.1.0.0",
     "summary": "A custom module for Fischbacher customization",
     "depends": ["base", "contacts", "stock", "stock_delivery"],
     "author": "Sana Khalid",
