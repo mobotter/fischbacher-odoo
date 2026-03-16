@@ -28,16 +28,10 @@
                                         <t t-if="sale_order and sale_order.print_delivery_address">
                                             <!-- <p style="margin-bottom:0px; margin-top:6px;">
                                                 <strong>Delivery Address:</strong>
+                                                
                                             </p> -->
-                                            <span>
-                                                <t t-out="shipping_partner.display_name"/><br/>
-                                                <t t-out="shipping_partner.street"/> <t t-out="shipping_partner.street2"/><br/>
-                                                <t t-out="shipping_partner.zip"/> <t t-out="shipping_partner.city"/><br/>
-                                                <t t-out="shipping_partner.country_id.name"/>
-                                            </span>
+                                            <pre t-esc="sale_order.delivery_address"/>
                                         </t>
-
-
 
                                         <t t-elif="invoice_partner and shipping_partner and invoice_partner.id != shipping_partner.id">
                                             <!-- <p style="margin-bottom:0px; margin-top:6px;">
@@ -392,7 +386,3 @@
         </xpath>
     </template>
 </odoo>
-
-
-
-
