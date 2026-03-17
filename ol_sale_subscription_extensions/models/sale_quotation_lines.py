@@ -1,123 +1,172 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.tools import html2plaintext
+from odoo.exceptions import UserError
+
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+
+    # 1. Korrekte Erweiterung des Status-Feldes ohne Zerstörung des Originals
+    state = fields.Selection(
+        selection_add=[('accept', "Order Accepted by Client")],
+        ondelete={'accept': 'set default'}
+    )
+    
+    quotation_line_ids = fields.One2many(
+        'sale.quotation.line',
+        'order_id',
+        string='Quotation Lines'
+    )
+
+    def action_accept_by_client(self):
+        for order in self:
+            order.state = 'accept'
+    
+    def action_reset_to_quotation(self):
+        for record in self:
+            record.state = 'draft'
+
+    # 2. Beibehaltung der Standard-Validierungen von Odoo
+    def _confirmation_error_message(self):
+        error = super()._confirmation_error_message()
+        
+        # Ignoriere den Status-Fehler, wenn unser benutzerdefinierter Status aktiv ist
+        if error and self.state == 'accept':
+            if "state requiring confirmation" in str(error):
+                return False
+                
+        return error
+
+    def _find_mail_template_subscription(self):
+        self.ensure_one()
+        if self.env.context.get('proforma') or self.state != 'sale':
+            return self.env.ref('ol_sale_subscription_extensions.email_template_edi_sale_subscription', raise_if_not_found=False)
+        else:
+            # Hier Template für bestätigte Verkaufsaufträge referenzieren
+            return self.env.ref('sale.mail_template_sale_confirmation', raise_if_not_found=False)
+
 
 class SaleQuotationLine(models.Model):
     _name = 'sale.quotation.line'
     _description = 'Sale Quotation Line'
     _order = 'sequence, id'
 
-    order_id = fields.Many2one(
-        'sale.order',
-        string='Sale Order',
-        ondelete='cascade',
-        required=True
-    )
-
+    order_id = fields.Many2one('sale.order', string='Sale Order', ondelete='cascade', required=True)
     sequence = fields.Integer(default=10)
-
-    display_type = fields.Selection(
-        [
-            ('line_section', "Section"),
-            ('line_note', "Note"),
-        ],
-        default=False
-    )
-
-    product_id = fields.Many2one(
-        'product.product',
-        string="Product",
-        domain="[('sale_ok', '=', True)]",
-        ondelete='restrict'
-    )
-
-    product_uom_qty = fields.Float(
-        string="Quantity",
-        default=1.0
-    )
-
-    product_uom = fields.Many2one(
-        comodel_name='uom.uom',
-        string="Unit of Measure",
-        compute='_compute_product_uom',
-        store=True, readonly=False, precompute=True, ondelete='restrict'
-    )
     
-    price_unit = fields.Float(
-        string="Unit Price"
-    )
+    display_type = fields.Selection([
+        ('line_section', "Section"),
+        ('line_note', "Note"),
+    ], default=False)
 
-    tax_id = fields.Many2many(
-        'account.tax',
-        compute='_compute_tax_id',
-        store=True,
-        string='Taxes'
-    )
+    product_id = fields.Many2one('product.product', string="Product", domain="[('sale_ok', '=', True)]", ondelete='restrict')
+    product_uom_qty = fields.Float(string="Quantity", default=1.0)
+    product_uom = fields.Many2one('uom.uom', string="Unit of Measure", compute='_compute_product_uom', store=True, readonly=False, precompute=True, ondelete='restrict')
+    
+    # 3. Preisberechnung über Compute-Feld statt onchange (Modern Odoo Standard)
+    price_unit = fields.Float(string="Unit Price", compute='_compute_price_unit', store=True, readonly=False)
+    
+    tax_id = fields.Many2many('account.tax', compute='_compute_tax_id', store=True, string='Taxes')
+    company_id = fields.Many2one(related='order_id.company_id', store=True, readonly=True)
+    currency_id = fields.Many2one(related='order_id.currency_id', store=True, readonly=True)
+    price_subtotal = fields.Monetary(string="Subtotal", compute='_compute_price_subtotal', store=True)
+    name = fields.Text(string="Description", compute='_compute_name', store=True, readonly=False)
+    pricelist_item_id = fields.Many2one('product.pricelist.item', compute='_compute_pricelist_item_id')
+    discount = fields.Float(string="Discount (%)", compute='_compute_discount', digits='Discount', store=True, readonly=False, precompute=True)
 
-    company_id = fields.Many2one(
-        related='order_id.company_id',
-        store=True,
-        readonly=True
-    )
+    @api.depends('product_id')
+    def _compute_product_uom(self):
+        for line in self:
+            if not line.product_uom or (line.product_id and line.product_id.uom_id.id != line.product_uom.id):
+                line.product_uom = line.product_id.uom_id
 
-    currency_id = fields.Many2one(
-        related='order_id.currency_id',
-        store=True,
-        readonly=True
-    )
+    @api.depends('product_id')
+    def _compute_name(self):
+        for line in self:
+            if not line.product_id:
+                if not line.name:
+                    line.name = False
+                continue
+            desc = html2plaintext(line.product_id.description or '').strip()
+            line.name = desc
 
-    price_subtotal = fields.Monetary(
-        string="Subtotal",
-        compute='_compute_price_subtotal',
-        store=True
-    )
-    
-    name = fields.Text(
-        string="Description",
-        compute='_compute_name',
-        store=True, readonly=False
-    )
-    
-    pricelist_item_id = fields.Many2one(
-        comodel_name='product.pricelist.item',
-        compute='_compute_pricelist_item_id'
-    )
-    
-    discount = fields.Float(
-        string="Discount (%)",
-        compute='_compute_discount',
-        digits='Discount',
-        store=True, readonly=False, precompute=True)
-    
-    @api.depends('product_id', 'product_uom', 'product_uom_qty')
+    @api.depends('product_id', 'product_uom', 'product_uom_qty', 'order_id.pricelist_id')
+    def _compute_price_unit(self):
+        for line in self:
+            if not line.product_id or line.display_type:
+                continue
+            if line.order_id.pricelist_id:
+                line.price_unit = line.order_id.pricelist_id._get_product_price(
+                    line.product_id, 
+                    line.product_uom_qty or 1.0, 
+                    uom=line.product_uom, 
+                    date=line.order_id.date_order
+                )
+            else:
+                line.price_unit = line.product_id.lst_price
+
+    # 4. Sicheres Tax-Mapping (wichtig für B2B/B2C und EU-Lieferungen)
+    @api.depends('product_id', 'company_id', 'order_id.fiscal_position_id', 'order_id.partner_id', 'order_id.partner_shipping_id')
+    def _compute_tax_id(self):
+        for line in self:
+            if not line.product_id or line.display_type:
+                line.tax_id = False
+                continue
+
+            taxes = line.product_id.taxes_id.filtered(lambda t: t.company_id == line.company_id)
+            fiscal_position = line.order_id.fiscal_position_id
+            
+            if fiscal_position:
+                partner = line.order_id.partner_shipping_id or line.order_id.partner_id
+                taxes = fiscal_position.map_tax(taxes, product=line.product_id, partner=partner)
+
+            line.tax_id = taxes
+
+    # 5. Fehlende Methoden ergänzt, um Abstürze bei Rabatten zu vermeiden
+    def _get_pricelist_price(self):
+        self.ensure_one()
+        if self.order_id.pricelist_id:
+            return self.order_id.pricelist_id._get_product_price(
+                self.product_id, 
+                self.product_uom_qty or 1.0, 
+                uom=self.product_uom, 
+                date=self.order_id.date_order
+            )
+        return self.price_unit
+
+    def _get_pricelist_price_before_discount(self):
+        self.ensure_one()
+        return self.product_id.lst_price
+
+    @api.depends('product_id', 'product_uom', 'product_uom_qty', 'order_id.pricelist_id')
     def _compute_discount(self):
         discount_enabled = self.env['product.pricelist.item']._is_discount_feature_enabled()
         for line in self:
             if not line.product_id or line.display_type:
                 line.discount = 0.0
+                continue
 
             if not (line.order_id.pricelist_id and discount_enabled):
+                line.discount = 0.0
                 continue
-
-            line.discount = 0.0
 
             if not (line.pricelist_item_id and line.pricelist_item_id._show_discount()):
-                # No pricelist rule was found for the product
-                # therefore, the pricelist didn't apply any discount/change
-                # to the existing sales price.
+                line.discount = 0.0
                 continue
 
-            line = line.with_company(line.company_id)
-            pricelist_price = line._get_pricelist_price()
-            base_price = line._get_pricelist_price_before_discount()
+            line_with_company = line.with_company(line.company_id)
+            pricelist_price = line_with_company._get_pricelist_price()
+            base_price = line_with_company._get_pricelist_price_before_discount()
 
-            if base_price != 0:  # Avoid division by zero
+            if base_price != 0:
                 discount = (base_price - pricelist_price) / base_price * 100
                 if (discount > 0 and base_price > 0) or (discount < 0 and base_price < 0):
-                    # only show negative discounts if price is negative
-                    # otherwise it's a surcharge which shouldn't be shown to the customer
                     line.discount = discount
+                else:
+                    line.discount = 0.0
+            else:
+                line.discount = 0.0
 
-    @api.depends('product_id', 'product_uom', 'product_uom_qty')
+    @api.depends('product_id', 'product_uom', 'product_uom_qty', 'order_id.pricelist_id')
     def _compute_pricelist_item_id(self):
         for line in self:
             if not line.product_id or line.display_type or not line.order_id.pricelist_id:
@@ -129,83 +178,26 @@ class SaleQuotationLine(models.Model):
                     uom=line.product_uom,
                     date=line.order_id.date_order,
                 )
-    
-    @api.depends('product_id')
-    def _compute_product_uom(self):
-        for line in self:
-            if not line.product_uom or (line.product_id.uom_id.id != line.product_uom.id):
-                line.product_uom = line.product_id.uom_id
 
-    @api.depends('product_id')
-    def _compute_name(self):
-        for line in self:
-            if not line.product_id:
-                line.name = False
-                # line.description = ''
-                continue
-
-            product = line.product_id
-
-            # Start with the base description (or empty string)
-            desc = ''
-
-            # Convert HTML description to plain text
-            internal_notes_html = product.description or ''
-            internal_notes = html2plaintext(internal_notes_html).strip()
-            if internal_notes:
-                desc += internal_notes  # No need for '\n' if desc is empty
-
-            line.name = desc
-
-    @api.onchange('product_id')
-    def _onchange_product_id(self):
-        for line in self:
-            if not line.product_id:
-                continue
-
-            product = line.product_id
-            line.price_unit = product.lst_price
-
-            # line.tax_id = product.taxes_id.filtered(
-                
-            #     lambda t: t.company_id == line.order_id.company_id
-            # )
-    @api.depends('product_id', 'company_id', 'order_id.fiscal_position_id')
-    def _compute_tax_id(self):
-        for line in self:
-            if not line.product_id:
-                line.tax_id = False
-                continue
-
-            # 1️⃣ Product taxes filtered by company
-            taxes = line.product_id.taxes_id.filtered(
-                lambda t: t.company_id == line.company_id
-            )
-
-            # 2️⃣ Apply fiscal position (if exists)
-            fiscal_position = line.order_id.fiscal_position_id
-            if fiscal_position:
-                taxes = fiscal_position.map_tax(taxes)
-
-            line.tax_id = taxes
-
-    # @api.depends('product_uom_qty', 'price_unit', 'tax_id')
-    # def _compute_price_subtotal(self):
-    #     for line in self:
-    #         qty = line.product_uom_qty or 0.0
-    #         price = line.price_unit or 0.0
-
-    #         # simple subtotal (no tax)
-    #         line.price_subtotal = qty * price
-
+    # 6. Exakte Subtotal-Berechnung, die Brutto/Netto-Listen verarbeiten kann
     @api.depends('product_uom_qty', 'price_unit', 'discount', 'tax_id')
     def _compute_price_subtotal(self):
         for line in self:
+            if line.display_type:
+                line.price_subtotal = 0.0
+                continue
+                
             qty = line.product_uom_qty or 0.0
-            price = line.price_unit or 0.0
-            discount = line.discount or 0.0
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
 
-            # Apply discount
-            price_after_discount = price * (1 - (discount / 100))
-
-            line.price_subtotal = qty * price_after_discount
+            if line.tax_id:
+                taxes = line.tax_id.compute_all(
+                    price,
+                    line.currency_id,
+                    qty,
+                    product=line.product_id,
+                    partner=line.order_id.partner_shipping_id or line.order_id.partner_id
+                )
+                line.price_subtotal = taxes['total_excluded']
+            else:
+                line.price_subtotal = qty * price
