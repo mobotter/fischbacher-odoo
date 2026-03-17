@@ -14,7 +14,7 @@
         "base", 
         "contacts", 
         "stock", 
-        "stock_delivery"
+        "delivery"
     ],
     "data": [
         "security/ir.model.access.csv",
