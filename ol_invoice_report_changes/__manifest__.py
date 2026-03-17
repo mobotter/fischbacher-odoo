@@ -1,6 +1,6 @@
 {
     'name': 'Invoice Report Change',
-    'version': '18.0',
+    'version': '19.0.1.0.0',
     'depends': ['base','account','l10n_din5008','sale','mail','sale_pdf_quote_builder'],
     'author': 'Baqar Hussain and Johi Chawla',
     'category': 'Account',
