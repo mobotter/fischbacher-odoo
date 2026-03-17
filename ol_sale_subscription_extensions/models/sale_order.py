@@ -6,24 +6,13 @@ from odoo.exceptions import (
     ValidationError,
 )
 
-SALE_ORDER_STATE = [
-    ('draft', "Quotation"),
-    ('sent', "Quotation Sent"),
-    ('accept', "Order Accepted by Client"),
-    ('sale', "Sales Order"),
-    ('cancel', "Cancelled"),
-]
-
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    # 1. KORREKTUR: selection_add anstelle von harter Überschreibung
     state = fields.Selection(
-        selection=SALE_ORDER_STATE,
-        string="Status",
-        readonly=True,
-        copy=False,
-        index=True,
-        default='draft'
+        selection_add=[('accept', "Order Accepted by Client")],
+        ondelete={'accept': 'set default'}
     )
     
     quotation_line_ids = fields.One2many(
@@ -40,31 +29,28 @@ class SaleOrder(models.Model):
         for record in self:
             record.state = 'draft'
 
-
+    # 2. KORREKTUR: Super-Aufruf, um Basis-Checks (wie fehlende Produkte) zu behalten
     def _confirmation_error_message(self):
-        """ Return whether order can be confirmed or not if not then returm error message. """
-        self.ensure_one()
-        if self.state not in {'draft', 'sent' ,'accept'}:
-            return _("Some orders are not in a state requiring confirmation.")
-        if any(
-            not line.display_type
-            and not line.is_downpayment
-            and not line.product_id
-            for line in self.order_line
-        ):
-            return _("A line on these orders missing a product, you cannot confirm it.")
+        """ Return whether order can be confirmed or not if not then return error message. """
+        error = super()._confirmation_error_message()
+        
+        # Odoo blockiert standardmäßig alles, was nicht 'draft' oder 'sent' ist.
+        # Wenn der Fehler geworfen wird, unser Auftrag aber auf 'accept' steht,
+        # heben wir diesen spezifischen Blockade-Fehler auf.
+        if error and self.state == 'accept' and "state requiring confirmation" in str(error):
+            return False
+            
+        return error
 
-        return False
-
+    # 3. KORREKTUR: Kompatibilität mit dem Subscription-Modell sichergestellt
     @api.constrains('plan_id', 'state', 'order_line')
     def _constraint_subscription_plan(self):
-        recurring_product_orders = self.order_line.filtered(lambda l: l.product_id.recurring_invoice).order_id
         for so in self:
-            if so.state in ['draft', 'cancel','accept'] or so.subscription_state == '7_upsell':
+            # Erlaubt nun auch den Status 'accept' in der Base-Prüfung
+            if so.state in ['draft', 'cancel', 'accept'] or so.subscription_state == '7_upsell':
                 continue
             if so.subscription_id and not so.subscription_state:
                 # so created before merge sale.subscription into sale.order upgrade.
-                # This is the so that created the sale.subscription records.
                 continue
 
             if so.has_recurring_line and not so.plan_id:
@@ -72,10 +58,10 @@ class SaleOrder(models.Model):
             if so.plan_id and not so.has_recurring_line:
                 raise UserError(_('Please add a recurring product in the subscription or remove the recurring plan.'))
 
-
     def action_quotation_send_subscription(self):
         """ Opens a wizard to compose an email, with relevant mail template loaded by default """
-        self.filtered(lambda so: so.state in ('draft', 'sent')).order_line._validate_analytic_distribution()
+        # Hinzufügen von 'accept' in die gefilterte Liste für Analytic Distribution Validation
+        self.filtered(lambda so: so.state in ('draft', 'sent', 'accept')).order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
 
         ctx = {
@@ -130,17 +116,13 @@ class SaleOrder(models.Model):
             return layout_action
         return action
 
+    # 4. KORREKTUR: Sinnvolle if/else Logik für die E-Mail-Templates
     def _find_mail_template_subscription(self):
-        """ Get the appropriate mail template for the current sales order based on its state.
-
-        If the SO is confirmed, we return the mail template for the sale confirmation.
-        Otherwise, we return the quotation email template.
-
-        :return: The correct mail template based on the current status
-        :rtype: record of `mail.template` or `None` if not found
-        """
+        """ Get the appropriate mail template for the current sales order based on its state. """
         self.ensure_one()
         if self.env.context.get('proforma') or self.state != 'sale':
+            # Rückgabe für Quotation / Proforma / Accept
             return self.env.ref('ol_sale_subscription_extensions.email_template_edi_sale_subscription', raise_if_not_found=False)
         else:
-            return self.env.ref('ol_sale_subscription_extensions.email_template_edi_sale_subscription', raise_if_not_found=False)
+            # Rückgabe für bestätigte Sales Orders (zuvor stand hier exakt dasselbe Template)
+            return self.env.ref('sale.mail_template_sale_confirmation', raise_if_not_found=False)
