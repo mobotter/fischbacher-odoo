@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Product Report',
-    'version': '18.1',
+    'version': '19.0.1.0.0',
     'author': 'Ali Khan | Odolution',
     'website': 'https://odolution.com',
     'depends': [
