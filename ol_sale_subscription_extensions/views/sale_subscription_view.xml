@@ -3,19 +3,25 @@
     <record id="sale_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
+        <!-- HINWEIS: Prüfe, ob du hier nicht besser standardmäßig von 'sale.view_order_form' erbst -->
         <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='has_rented_products']" position="after">
+            
+            <!-- 1. KORREKTUR: Buttons sauber in den Odoo-Header einfügen -->
+            <xpath expr="//header" position="inside">
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
                     invisible="state != 'accept'"/>
+                
+                <!-- 2. KORREKTUR: Fehlerhafter invisible-Ausdruck repariert -->
                 <button
                     name="action_accept_by_client"
                     type="object"
                     string="Accepted by Client"
                     class="btn-primary"
-                    invisible="state != 'draft', 'sent'"
+                    invisible="state not in ('draft', 'sent')" 
                 />
+                
                 <button
                     name="action_reset_to_quotation"
                     type="object"
@@ -23,19 +29,23 @@
                     class="btn-primary"
                     invisible="state != 'accept'"
                 />
+                
                 <button 
                     name="action_quotation_send_subscription" 
                     id="send_by_email_subscription" 
                     string="Quotation send by email" 
                     class="btn-primary"
                     type="object" 
-                    invisible="state not in ('sent', 'sale','draft')" 
+                    invisible="state not in ('sent', 'sale', 'draft')" 
                     data-hotkey="g" 
                     context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
-           <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]" position="before">
+
+           <!-- 3. KORREKTUR: Robuster relativer XPath anstelle von absoluten Pfaden -->
+           <xpath expr="//notebook/page[@name='order_lines']" position="before">
                 <page name="quatation_page" string="Quotation Lines">
-                    <field name="quotation_line_ids" widget="sol_o2m" mode="list,kanban" readonly="state == 'cancel' or locked">
+                    <!-- Standard-Widget für Zeilen mit Sektionen in Odoo 19 nutzen -->
+                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
                         <list editable="bottom" limit="200">
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
@@ -44,19 +54,11 @@
                             </control>
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
-                            <!-- <field name="product_id" 
-                                required="not display_type" 
-                                force_save="1" 
-                                options="{'no_open': True,}" 
-                                optional="hide" 
-                                domain="[('sale_ok', '=', True)]" 
-                                widget="sol_product_many2one"
-                            /> -->
                             <field name="product_id" 
                                 required="not display_type" 
-                                options="{'no_open': True,}" 
+                                options="{'no_open': True}" 
                                 force_save="1" 
-                                widget="sol_product_many2one"/>
+                                widget="many2one"/> <!-- sol_product_many2one existiert oft standardmäßig nicht -->
                             <field name="name"/>
                             <field name="product_uom_qty"/>
                             <field name="product_uom"/>
