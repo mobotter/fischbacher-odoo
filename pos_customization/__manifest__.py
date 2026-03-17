@@ -3,7 +3,7 @@
 
 {
     'name': 'Point of Sale Customizations',
-    'version': '1.0.1',
+    'version': '19.0.1.0.1',
     'category': 'Sales/Point of Sale',
     'sequence': 40,
     'author':'Baqar Hussain',
