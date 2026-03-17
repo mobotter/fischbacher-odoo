@@ -1,6 +1,6 @@
 {
     "name": "Sale Subscription Fischbacher Extension",
-    "version": "18.0.1.0.0",
+    "version": "19.0",
     "summary": "A custom module for Fischbacher customization",
     "depends": [
         "base",
