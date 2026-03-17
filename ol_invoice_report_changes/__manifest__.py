@@ -16,11 +16,9 @@
         'views/sale_order.xml',
         'views/sale_order_preview.xml',
         'views/res_partner_view.xml',
-        'data/mail_template_data.xml',
-
-
+        'data/mail_template_data.xml'
     ],
     'installable': True,
     'application': False,
-    'sequence' : -10,
+    'sequence' : -10
 }
