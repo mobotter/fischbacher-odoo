@@ -190,7 +190,7 @@
                         
                                             <td style="text-align:right;font-size:14px;">
                                                 <t t-esc="line.product_uom_qty"/>
-                                                <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
+                                                <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
                                             </td>
                             
                                             <td style="text-align:right;font-size:14px;">
