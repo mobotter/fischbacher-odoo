@@ -8,7 +8,7 @@ from odoo import _, api, fields, models, SUPERUSER_ID
 from odoo.exceptions import UserError, RedirectWarning, ValidationError
 from odoo.addons.zbsync.models.zebrooset import ZebrooSet
 from .zbs_odooconnection import WriteValues, RemoveMe
-from odoo.osv import expression
+#from odoo.osv import expression
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import date, datetime
