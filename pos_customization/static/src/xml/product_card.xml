@@ -5,11 +5,20 @@
        t-inherit="point_of_sale.ProductCard"
        t-inherit-mode="extension">
 
-        <xpath expr="//div[hasclass('product-name')]" position="before">
-      
-            <!--  w-100 erzwingt einen Zeilenumbruch, d-block macht es zum Block-Element -->
-            <div t-if="props.product.default_code" class="w-100 d-block text-muted px-2 pt-1" style="font-size: 0.85em; text-align: left; line-height: 1;">
-                <t t-esc="props.product.default_code"/>
+        <!-- Wir ersetzen das bestehende div, um volle Kontrolle über das Layout zu haben -->
+        <xpath expr="//div[hasclass('product-name')]" position="replace">
+            
+            <!-- Neuer Container mit flex-column, damit alles zwingend UNTEREINANDER steht -->
+            <div class="d-flex flex-column justify-content-start align-items-start w-100 px-2 py-1">
+                
+                <!-- 1. Zeile: Die interne Referenz (default_code) -->
+                <div t-if="props.product.default_code" class="text-muted w-100 text-truncate" style="font-size: 0.85em;">
+                    <t t-esc="props.product.default_code"/>
+                </div>
+
+                <!-- 2. Zeile: Der ursprüngliche Produktname -->
+                <div class="product-name w-100 fw-bold fs-6 mt-1 text-truncate" t-esc="props.product.display_name" t-att-id="props.product.id"/>
+                
             </div>
             
         </xpath>
