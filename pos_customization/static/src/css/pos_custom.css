@@ -1,3 +1,6 @@
+.product-list {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
 /* Erhöht die Mindestbreite der Produktkarten im Point of Sale */
 .pos .product-list .product {
     /* Standardmäßig ist das meist ca. 120px. 
