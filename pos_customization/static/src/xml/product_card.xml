@@ -5,20 +5,14 @@
        t-inherit="point_of_sale.ProductCard"
        t-inherit-mode="extension">
 
-        <!-- Wir ersetzen das bestehende div, um volle Kontrolle über das Layout zu haben -->
-        <xpath expr="//div[hasclass('product-name')]" position="replace">
-            
-            <!-- Neuer Container mit flex-column, damit alles zwingend UNTEREINANDER steht -->
-            <div class="d-flex flex-column justify-content-start align-items-start w-100 px-2 py-1">
-                
-                <!-- 1. Zeile: Die interne Referenz (default_code) -->
-                <div t-if="props.product.default_code" class="text-muted w-100 text-truncate" style="font-size: 0.85em;">
-                    <t t-esc="props.product.default_code"/>
-                </div>
-
-                <!-- 2. Zeile: Der ursprüngliche Produktname -->
-                <div class="product-name w-100 fw-bold fs-6 mt-1 text-truncate" t-esc="props.product.display_name" t-att-id="props.product.id"/>
-                
+        <!-- In Odoo 19 ist der äußere Container der Karte meist 'product-content' oder wir setzen es vor das Bild -->
+        <xpath expr="//div[hasclass('product-img')]" position="before">
+      
+            <!-- Kopfzeile: Artikelnummer GANZ OBEN auf der Karte -->
+            <div t-if="props.product.default_code" 
+                 class="w-100 px-2 py-1 text-muted fw-bold bg-light" 
+                 style="font-size: 0.85em; text-align: center; border-bottom: 1px solid #dee2e6; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                <t t-esc="props.product.default_code"/>
             </div>
             
         </xpath>
