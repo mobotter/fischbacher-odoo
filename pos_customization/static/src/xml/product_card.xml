@@ -5,11 +5,10 @@
        t-inherit="point_of_sale.ProductCard"
        t-inherit-mode="extension">
 
-        <!-- Änderung: position="before" statt "after" -->
         <xpath expr="//div[hasclass('product-name')]" position="before">
       
-            <!--  Add product default code -->
-            <div t-if="props.product.default_code" class="mb-1 text-muted" style="font-size: 0.85em; text-align:center; font-weight: bold;">
+            <!--  w-100 erzwingt einen Zeilenumbruch, d-block macht es zum Block-Element -->
+            <div t-if="props.product.default_code" class="w-100 d-block text-muted px-2 pt-1" style="font-size: 0.85em; text-align: left; line-height: 1;">
                 <t t-esc="props.product.default_code"/>
             </div>
             
