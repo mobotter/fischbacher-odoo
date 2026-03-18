@@ -13,5 +13,4 @@
         'report/external_layout_fischbacher.xml',
     ],
     'auto_install': True,
-    'license': 'LGPL-3',
 }
