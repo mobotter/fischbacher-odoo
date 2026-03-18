@@ -3,6 +3,7 @@
     'name': 'Product Report',
     'version': '19.0.1.0.0',
     'author': 'Ali Khan | Odolution',
+    'license': 'LGPL-3'
     'website': 'https://odolution.com',
     'depends': [
         'base',
