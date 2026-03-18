@@ -28,7 +28,19 @@ class PartnerHistory(models.Model):
         help="Select the year"
     )
     category_id = fields.Many2one("product.category", string="Categories")
-    total_turnover = fields.Float(string="Total Turnover")
-    total_margin = fields.Float(string="Total Margin")
+    
+    # --- NEU HINZUGEFÜGT ---
+    # Notwendig für das widget="monetary" in der XML-Ansicht
+    currency_id = fields.Many2one(
+        'res.currency', 
+        string='Currency', 
+        default=lambda self: self.env.company.currency_id.id
+    )
+    
+    # --- ANGEPASST --- 
+    # Von Float auf Monetary geändert, damit Odoo die Währung korrekt anzeigt
+    total_turnover = fields.Monetary(string="Total Turnover", currency_field="currency_id")
+    total_margin = fields.Monetary(string="Total Margin", currency_field="currency_id")
+    
     partner_id = fields.Many2one("res.partner", string="Partner")
     note = fields.Char(string="Note")
