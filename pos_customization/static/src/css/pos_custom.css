@@ -1,0 +1,15 @@
+/* Erhöht die Mindestbreite der Produktkarten im Point of Sale */
+.pos .product-list .product {
+    /* Standardmäßig ist das meist ca. 120px. 
+       240px macht die Karte ungefähr doppelt so breit. */
+    min-width: 240px !important;
+    width: 240px !important; 
+    
+    /* Optional: Die Höhe anpassen, damit das Verhältnis wieder stimmt */
+    height: 180px !important; 
+}
+
+/* Passt das Container-Verhältnis für das Bild an */
+.pos .product-list .product .product-img {
+    height: 60% !important; /* Gibt dem Bild mehr Platz */
+}
