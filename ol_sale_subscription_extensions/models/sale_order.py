@@ -9,7 +9,7 @@ from odoo.exceptions import (
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    # 1. KORREKTUR: selection_add anstelle von harter Überschreibung
+    # KORREKTUR: selection_add anstelle von harter Überschreibung
     state = fields.Selection(
         selection_add=[('accept', "Order Accepted by Client")],
         ondelete={'accept': 'set default'}
@@ -29,7 +29,7 @@ class SaleOrder(models.Model):
         for record in self:
             record.state = 'draft'
 
-    # 2. KORREKTUR: Super-Aufruf, um Basis-Checks (wie fehlende Produkte) zu behalten
+    # KORREKTUR: Super-Aufruf, um Basis-Checks (wie fehlende Produkte) zu behalten
     def _confirmation_error_message(self):
         """ Return whether order can be confirmed or not if not then return error message. """
         error = super()._confirmation_error_message()
@@ -42,7 +42,7 @@ class SaleOrder(models.Model):
             
         return error
 
-    # 3. KORREKTUR: Kompatibilität mit dem Subscription-Modell sichergestellt
+    # KORREKTUR: Kompatibilität mit dem Subscription-Modell sichergestellt
     @api.constrains('plan_id', 'state', 'order_line')
     def _constraint_subscription_plan(self):
         for so in self:
@@ -116,7 +116,7 @@ class SaleOrder(models.Model):
             return layout_action
         return action
 
-    # 4. KORREKTUR: Sinnvolle if/else Logik für die E-Mail-Templates
+    # KORREKTUR: Sinnvolle if/else Logik für die E-Mail-Templates
     def _find_mail_template_subscription(self):
         """ Get the appropriate mail template for the current sales order based on its state. """
         self.ensure_one()
