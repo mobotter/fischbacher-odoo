@@ -1,31 +1,18 @@
 .product-list {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
-/* Erlaubt dem Produktnamen, über mehrere Zeilen umzubrechen */
-.pos .product-list .product .product-name {
-    white-space: normal !important;        /* Zeilenumbrüche erlauben */
-    text-overflow: clip !important;        /* Keine '...' mehr anzeigen */
-    overflow: visible !important;          /* Text darf komplett sichtbar sein */
-    
-    /* Falls Odoo 19 webkit-line-clamp nutzt, heben wir das hier auf: */
-    display: block !important;
-    -webkit-line-clamp: unset !important;
-    
-    /* Ggf. die Zeilenhöhe etwas anpassen, damit mehrzeiliger Text gut lesbar ist */
-    line-height: 1.2 !important;
-    height: auto !important;               /* Automatische Höhe für den Text */
-    max-height: none !important;
-}
-
-/* Optional: Gibt der Box, in der der Name steht, mehr Platz,
-   damit die Karte bei langen Namen nach unten mitwächst */
-.pos .product-list .product .product-content {
-    height: auto !important;
-    min-height: 40% !important; /* Mindestplatz für den Text unten */
-}
-
-/* Lässt die gesamte Produktkarte in der Höhe flexibel mitwachsen */
+/* Erhöht die Mindestbreite der Produktkarten im Point of Sale */
 .pos .product-list .product {
-    height: auto !important;
-    min-height: 180px !important; 
+    /* Standardmäßig ist das meist ca. 120px. 
+       240px macht die Karte ungefähr doppelt so breit. */
+    min-width: 240px !important;
+    width: 240px !important; 
+    
+    /* Optional: Die Höhe anpassen, damit das Verhältnis wieder stimmt */
+    height: 180px !important; 
+}
+
+/* Passt das Container-Verhältnis für das Bild an */
+.pos .product-list .product .product-img {
+    height: 60% !important; /* Gibt dem Bild mehr Platz */
 }
