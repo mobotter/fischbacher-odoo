@@ -2,49 +2,6 @@ from odoo import models, fields, api, _
 from odoo.tools import html2plaintext
 from odoo.exceptions import UserError
 
-class SaleOrder(models.Model):
-    _inherit = "sale.order"
-
-    # 1. Korrekte Erweiterung des Status-Feldes ohne Zerstörung des Originals
-    state = fields.Selection(
-        selection_add=[('accept', "Order Accepted by Client")],
-        ondelete={'accept': 'set default'}
-    )
-    
-    quotation_line_ids = fields.One2many(
-        'sale.quotation.line',
-        'order_id',
-        string='Quotation Lines'
-    )
-
-    def action_accept_by_client(self):
-        for order in self:
-            order.state = 'accept'
-    
-    def action_reset_to_quotation(self):
-        for record in self:
-            record.state = 'draft'
-
-    # 2. Beibehaltung der Standard-Validierungen von Odoo
-    def _confirmation_error_message(self):
-        error = super()._confirmation_error_message()
-        
-        # Ignoriere den Status-Fehler, wenn unser benutzerdefinierter Status aktiv ist
-        if error and self.state == 'accept':
-            if "state requiring confirmation" in str(error):
-                return False
-                
-        return error
-
-    def _find_mail_template_subscription(self):
-        self.ensure_one()
-        if self.env.context.get('proforma') or self.state != 'sale':
-            return self.env.ref('ol_sale_subscription_extensions.email_template_edi_sale_subscription', raise_if_not_found=False)
-        else:
-            # Hier Template für bestätigte Verkaufsaufträge referenzieren
-            return self.env.ref('sale.mail_template_sale_confirmation', raise_if_not_found=False)
-
-
 class SaleQuotationLine(models.Model):
     _name = 'sale.quotation.line'
     _description = 'Sale Quotation Line'
@@ -62,7 +19,7 @@ class SaleQuotationLine(models.Model):
     product_uom_qty = fields.Float(string="Quantity", default=1.0)
     product_uom = fields.Many2one('uom.uom', string="Unit of Measure", compute='_compute_product_uom', store=True, readonly=False, precompute=True, ondelete='restrict')
     
-    # 3. Preisberechnung über Compute-Feld statt onchange (Modern Odoo Standard)
+    # Preisberechnung über Compute-Feld (Modern Odoo Standard)
     price_unit = fields.Float(string="Unit Price", compute='_compute_price_unit', store=True, readonly=False)
     
     tax_id = fields.Many2many('account.tax', compute='_compute_tax_id', store=True, string='Taxes')
@@ -104,7 +61,7 @@ class SaleQuotationLine(models.Model):
             else:
                 line.price_unit = line.product_id.lst_price
 
-    # 4. Sicheres Tax-Mapping (wichtig für B2B/B2C und EU-Lieferungen)
+    # Sicheres Tax-Mapping (wichtig für B2B/B2C und EU-Lieferungen)
     @api.depends('product_id', 'company_id', 'order_id.fiscal_position_id', 'order_id.partner_id', 'order_id.partner_shipping_id')
     def _compute_tax_id(self):
         for line in self:
@@ -121,7 +78,6 @@ class SaleQuotationLine(models.Model):
 
             line.tax_id = taxes
 
-    # 5. Fehlende Methoden ergänzt, um Abstürze bei Rabatten zu vermeiden
     def _get_pricelist_price(self):
         self.ensure_one()
         if self.order_id.pricelist_id:
@@ -179,7 +135,7 @@ class SaleQuotationLine(models.Model):
                     date=line.order_id.date_order,
                 )
 
-    # 6. Exakte Subtotal-Berechnung, die Brutto/Netto-Listen verarbeiten kann
+    # Exakte Subtotal-Berechnung, die Brutto/Netto-Listen verarbeiten kann
     @api.depends('product_uom_qty', 'price_unit', 'discount', 'tax_id')
     def _compute_price_subtotal(self):
         for line in self:
