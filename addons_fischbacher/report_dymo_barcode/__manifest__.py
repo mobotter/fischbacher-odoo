@@ -10,5 +10,5 @@
         'report/zpl_product_report.xml'
     ],
     'external_dependencies': {},
-    'license': 'LGPL-3',
+    'license': 'LGPL-3'
 }
