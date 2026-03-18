@@ -14,7 +14,7 @@ class PartnerHistory(models.Model):
     @api.model
     def _get_year_selection(self):
         # Geändert von fields.datetime zu fields.Datetime
-        current = fields.Datetime.now().year
+        current = fields.Date.context_today(self).year
         return [(str(y), str(y)) for y in range(1900, current + 1)]
 
     year = fields.Selection(
