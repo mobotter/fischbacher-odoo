@@ -3,10 +3,24 @@
     <record id="sale_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
+        <!-- Wir erben direkt vom Standard-Verkaufsauftrag -->
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             
-            <!-- KORREKTUR: Wir platzieren die Buttons direkt VOR dem Odoo-Standard-Confirm-Button -->
+            <!-- ==============================================
+                 1. DATUM-AUSBLENDUNG (aus deiner sale_order.xml)
+                 ============================================== -->
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="invisible">state in ["sale", "cancel", "accept"]</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_td_label')]/label[@for='date_order']" position="attributes">
+                <attribute name="invisible">state in ["sale", "cancel", "accept"]</attribute>
+            </xpath>
+
+            <!-- ==============================================
+                 2. HEADER BUTTONS
+                 ============================================== -->
+            <!-- Wir setzen unsere Buttons exakt VOR den ersten Odoo Confirm Button -->
             <xpath expr="//header/button[@name='action_confirm'][1]" position="before">
                 
                 <button name="action_accept_by_client" 
@@ -20,7 +34,8 @@
                         string="Reset to Quotation" 
                         invisible="state != 'accept'"/>
                         
-                <button name="action_confirm" data-hotkey="q"
+                <button name="action_confirm" 
+                        data-hotkey="q"
                         string="Confirm" 
                         type="object" 
                         context="{'validate_analytic': True}"
@@ -36,16 +51,23 @@
                         context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
-           <!-- KORREKTUR: Direkter XPath auf das Notebook und position="inside" kombiniert mit sequence -->
-           <xpath expr="//notebook" position="inside">
+            <!-- ==============================================
+                 3. QUOTATION LINES TAB
+                 ============================================== -->
+            <!-- DER TRICK: Wir navigieren das Notebook direkt an -->
+            <xpath expr="//notebook" position="inside">
                 <page name="quotation_page" string="Quotation Lines" sequence="5">
-                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
-                        <list editable="bottom" limit="200">
+                    <field name="quotation_line_ids" 
+                           widget="section_and_note_one2many" 
+                           mode="list,kanban" 
+                           readonly="state == 'cancel' or locked">
+                        <list editable="bottom">
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
+                            <!-- column_invisible statt invisible für Tree-Views! -->
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
                             <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1" widget="many2one"/>
@@ -58,15 +80,9 @@
                             <field name="price_subtotal" readonly="1"/>
                         </list>
                     </field>
-                    <group name="note_group" col="6" class="mt-2 mt-md-0">
-                        <group colspan="4" class="order-1 order-lg-0" col="6">
-                            <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
-                        </group>
-                        <group col="6">
-                        </group>
-                    </group>
                 </page>
             </xpath>
+            
         </field>
     </record>
 </odoo>
