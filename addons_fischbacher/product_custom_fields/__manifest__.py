@@ -2,6 +2,7 @@
 
 {
     'name': 'Adds Custom Fields to Products',
+    'author': 'Odolution',
     'depends': ['sale','website_sale'],
     'data': [
         'views/product_form.xml',
