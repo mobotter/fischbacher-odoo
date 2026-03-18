@@ -3,7 +3,7 @@
 {
     'name': 'Adds Custom Fields to Contacts',
     'author': 'Odolution',
-    'license': 'LGPL-3'
+    'license': 'LGPL-3',
     'depends': ['base'],
     'data': [
         'views/res_partner.xml',
