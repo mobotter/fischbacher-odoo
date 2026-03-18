@@ -3,7 +3,7 @@
     'version': '19.0.1.0.0',
     'depends': ['base','account','l10n_din5008','sale','mail','sale_pdf_quote_builder'],
     'author': 'Baqar Hussain and Johi Chawla',
-    'license': 'LGPL-3'
+    'license': 'LGPL-3',
     'category': 'Account',
     'summary': 'Changes on the invoice report',
     'data': [
