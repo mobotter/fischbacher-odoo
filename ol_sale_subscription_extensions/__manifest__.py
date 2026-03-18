@@ -9,7 +9,6 @@
         "base",
         "sale",
         "stock",
-        "ol_invoice_report_changes",
         "sale_subscription",
         "mail"
     ],
