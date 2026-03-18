@@ -4,15 +4,23 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='website']" position="before">
+            
+            <!-- x_telefax direkt unter dem Standardfeld 'mobile' platzieren -->
+            <xpath expr="//field[@name='mobile']" position="after">
                 <field name="x_telefax" widget="phone"/>
             </xpath>
+            
+            <!-- supplier_customer_number im Tab "Verkauf & Einkauf" (Sales & Purchase) hinzufügen -->
             <xpath expr="//group[@name='purchase']" position="inside">
                 <field name="supplier_customer_number"/>
             </xpath>
             
-            <xpath expr="//field[@name='ref']" position="after">
-                <field name="dsp3_id"/>
+            <!-- dsp3_id in den Notizen-Tab (Internal Notes) platzieren, 
+                 falls 'ref' in Odoo 19 versteckt oder in einem anderen Modul liegt -->
+            <xpath expr="//page[@name='internal_notes']" position="inside">
+                <group>
+                    <field name="dsp3_id"/>
+                </group>
             </xpath>
             
         </field>
