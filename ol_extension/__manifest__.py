@@ -3,7 +3,6 @@
     "version": "19.0.1.0.0",
     "summary": "A custom module for Fischbacher customization",
     "author": "Sana Khalid",
-    'license': 'LGPL-3'
     "category": "Customizations",
     "description": """
         TASK ID: 51580: One of the report (PROFORMA INVOICE sale.order) modifications 
