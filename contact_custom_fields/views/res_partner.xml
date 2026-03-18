@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='website']" position="before">
-                <field name="telefax" widget="phone"/>
+                <field name="x_telefax" widget="phone"/>
             </xpath>
             <xpath expr="//group[@name='purchase']" position="inside">
                 <field name="supplier_customer_number"/>
