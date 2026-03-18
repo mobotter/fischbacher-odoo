@@ -3,7 +3,7 @@
     'version': '19.0.1.0.0',
     'depends': ['base'],
     'author': 'Odolution',
-    'license': 'LGPL-3'
+    'license': 'LGPL-3',
     'category': 'Contacts',
     'summary': 'Custom printable report for res.partner',
     'data': [
