@@ -17,8 +17,7 @@
         "reports/report_action.xml",
         "reports/sale_subscription_report.xml",
         "data/mail_template_data.xml",
-        "views/sale_subscription_view.xml",
-        "views/sale_order.xml"
+        "views/sale_subscription_view.xml"
     ],
     "installable": True,
     "application": False,  # Custom Extensions sollten keine eigene 'App' im Dashboard sein
