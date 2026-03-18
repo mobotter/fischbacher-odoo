@@ -4,7 +4,7 @@
 {
     'name': 'DIN 5008 - Sale Fischbacher',
     'author': 'Odolution',
-    'license': 'LGPL-3'
+    'license': 'LGPL-3',
     'category': 'Accounting/Localizations',
     'depends': [
         'l10n_din5008',
