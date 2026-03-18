@@ -32,13 +32,13 @@ class ProductCustom(models.Model):
     # label_stock_location = fields.Char("Stock-Label Location")
 
 
-    @api.depends("seller_ids", "seller_ids.product_code", "seller_ids.partner_id","seller_ids.price")
+    @api.depends("seller_ids", "seller_ids.product_code", "seller_ids.partner_id", "seller_ids.price")
     def _compute_supplier(self):
         for rec in self:
             if rec.seller_ids:
                 ms = rec.seller_ids[0]
-                rec.main_supplier_id = ms.id
-                rec.main_supplier_id = ms.product_code
+                rec.main_supplier_id = ms.partner_id.id  # Many2one erwartet eine ID
+                rec.main_supplier_product_number = ms.product_code  # Das ist das Char-Feld!
             else:
                 rec.main_supplier_id = False
                 rec.main_supplier_product_number = False
