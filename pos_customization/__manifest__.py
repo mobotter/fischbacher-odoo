@@ -16,6 +16,7 @@
             'pos_customization/static/src/js/pos.js',
             'pos_customization/static/src/xml/pos_button.xml',
             'pos_customization/static/src/xml/product_card.xml',
+            'pos_customization/static/src/css/pos_custom.css',
         ],
     },
     'license': 'LGPL-3',
