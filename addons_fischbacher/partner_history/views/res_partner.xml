@@ -7,16 +7,20 @@
             <xpath expr="//notebook" position="inside">
                 <page string="History">
                     <field name="partner_history_ids">
-                    <list>
-                        <field name="year"/>
-                        <field name="category_id"/>
-                        <field name="total_turnover" widget="monetary"/>               
-                        <field name="total_margin" widget="monetary"/>
-                        <field name="note"/>
-                    </list>
+                        <!-- editable="bottom" für direkte Inline-Bearbeitung -->
+                        <list editable="bottom">
+                            <!-- Währung unsichtbar laden, damit das Widget funktioniert -->
+                            <field name="currency_id" column_invisible="True"/>
+                            
+                            <field name="year"/>
+                            <field name="category_id"/>
+                            <field name="total_turnover" widget="monetary"/>               
+                            <field name="total_margin" widget="monetary"/>
+                            <field name="note"/>
+                        </list>
                     </field>
                 </page>
             </xpath>
         </field>
-        </record>
+    </record>
 </odoo>
