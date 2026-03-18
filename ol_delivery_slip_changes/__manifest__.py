@@ -3,7 +3,7 @@
     'version': '19.0.1.0.0',
     'depends': ['base','stock','l10n_din5008','ol_invoice_report_changes','sale','product'],
     'author': 'Johi Chawla',
-    'license': 'LGPL-3'
+    'license': 'LGPL-3',
     'category': 'stock',
     'summary': 'Changes on the delivery slip  report',
     'data': [
