@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
+  <data noupdate="1">
     <!-- Haupt-Layout-Anpassung (für alle DIN5008-Docs) -->
     <template id="external_layout_din5008_inherited" inherit_id="l10n_din5008.external_layout_din5008" priority="20">
-      <xpath expr="//div[contains(@class, 'address')]" position="replace">
+      <xpath expr="//div[contains(@class, 'address') or contains(@class, 'o_company_layout')]" position="replace">
         <div class="address" id="din5008_report_main_address" style="font-size:9px;">
           <t t-if="company.name">
             <span t-field="company.name"/>
@@ -28,7 +28,7 @@
         </colgroup>
       </xpath>
       
-      <xpath expr="//h2" position="replace">
+      <xpath expr="//h2 | //h1" position="replace">
         <h3>
           <span t-if="not o and not docs" style="color:#0069b4;">Invoice</span>
           <span t-else="">
@@ -41,11 +41,9 @@
         </h3>
       </xpath>
       
-      <xpath expr="//div[contains(@class, 'company_details')]" position="replace">
-        <div class="page_number">
-          <div class="text-muted" style="position: absolute; bottom: 0; right: 0; font-size: 9px;">
-            Page: <span class="page"/> of <span class="topage"/>
-          </div>
+      <xpath expr="//div[contains(@class, 'company_details') or contains(@class, 'o_report_footer')]" position="replace">
+        <div class="page_number" style="position: absolute; bottom: 0; right: 0; font-size: 9px; color: #666;">
+          Page: <span class="page"/> of <span class="topage"/>
         </div>
         <div t-attf-style="font-size: 9px; margin-bottom: 4px;">
           Kommanditgesellschaft · Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH · Sitz München · HRB <t t-out="company.company_registry"/>  
@@ -121,17 +119,17 @@
       </xpath>
     </template>
 
-    <!-- Sale-Order-spezifisch (KORRIGIERT: Robuster XPath) -->
+    <!-- Sale-Order-spezifisch (KOMPLETT KORRIGIERT) -->
     <template id="report_saleorder_document_inherit_fb" inherit_id="sale.report_saleorder_document" priority="20">
-      <!-- FIX: Statt //tr[t-if='doc.name'] -> //div[contains(@class, 'row')][1] für Seitenummer -->
-      <xpath expr="//div[@class='row']" position="inside">
-        <div style="text-align: right; font-size: 10px; margin-top: 5px;">
+      <!-- FIX 1: Robuster XPath für Seitenummer -->
+      <xpath expr="//div[contains(@class, 'header') or //h1 or //h2][1]" position="after">
+        <div style="text-align: right; font-size: 10px; margin-top: 5px; color: #666;">
           Page: <span class="page"/> of <span class="topage"/>
         </div>
       </xpath>
       
-      <!-- Company Details ersetzen (robust) -->
-      <xpath expr="//div[contains(@class, 'col-auto text-end me-auto') or contains(@class, 'company_details')]" position="replace">
+      <!-- FIX 2: Robuster Company Details XPath -->
+      <xpath expr="//div[contains(@class, 'col-auto') or contains(@class, 'company_details') or contains(@class, 'o_report_layout_standard')]" position="replace">
         <div class="company_details">
           <table class="table-borderless">
             <tr>
@@ -142,20 +140,20 @@
           </table>
           <table class="table-borderless" style="padding-top:10px;">
             <tr>
-              <td>
+              <td style="width:33%;">
                 <ul class="list-inline text-nowrap">
                   <li style="color:#0069b4;">Hausanschrift</li>
                   <li t-if="company.company_details"><span t-field="company.company_details"/></li>
                 </ul>
               </td>
-              <td>
+              <td style="width:33%;">
                 <ul class="list-inline">
                   <li style="color:#0069b4;">Kontakt</li>
                   <li><span style="color:#0069b4;">Telefon</span> <t t-esc="company.phone or '089 / 14 99 08-0'"/></li>
                   <li><span style="color:#0069b4;">Telefax</span> <t t-esc="company.fax or '089 / 14 99 08-36'"/></li>
                 </ul>
               </td>
-              <td t-if="company.partner_id.bank_ids">
+              <td t-if="company.partner_id.bank_ids" style="width:34%;">
                 <ul class="list-inline">
                   <t t-foreach="company.partner_id.bank_ids[:2]" t-as="bank">
                     <li><span t-field="bank.bank_id.name"/></li>
