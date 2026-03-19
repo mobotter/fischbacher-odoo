@@ -107,12 +107,33 @@
         </field>
     </record>
 
+        <!-- ============================================== -->
+    <!-- 3. MENÜ-AKTIONEN (Zeigt Accepted Abos an)      -->
     <!-- ============================================== -->
-    <!-- 3. MENÜ-AKTION (Zeigt Accepted Abos an)        -->
-    <!-- ============================================== -->
+    
+    <!-- A) Für den Menüpunkt: Subscriptions -> Quotations -->
     <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
-        <!-- Wir nehmen 'accept' in die Standardliste der Abo-Angebote mit auf -->
         <field name="domain">[('is_subscription', '=', True), ('state', 'in', ['draft', 'sent', 'accept'])]</field>
     </record>
+
+    <!-- B) Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
+    <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
+        <!-- Lässt neben Progress/Paused/Churn/Draft etc. explizit auch unseren 'accept' Status zu -->
+        <field name="domain">[('is_subscription', '=', True), '|', ('state', 'in', ['draft', 'sent', 'accept', 'sale', 'done', 'cancel']), ('subscription_state', '!=', False)]</field>
+    </record>
+
+    <!-- C) Erweitert die Standard-Suche, damit Filter nicht stören -->
+    <record id="sale_subscription_search_inherit_accept" model="ir.ui.view">
+        <field name="name">sale.subscription.search.inherit.accept</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="arch" type="xml">
+            <!-- Fügt 'accept' in die Standard-Angebotsfilter auf System-Ebene hinzu -->
+            <xpath expr="//filter[@name='draft']" position="attributes">
+                 <attribute name="domain">[('state', 'in', ('draft', 'sent', 'accept'))]</attribute>
+            </xpath>
+        </field>
+    </record>
+
 
 </odoo>
