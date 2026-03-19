@@ -277,7 +277,8 @@
                                 </thead>
                                 <tbody>
                                     <!-- In case you come across duplicated lines, ask NIM or LAP -->
-                                    <tr t-foreach="o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" style="border-bottom:1px solid #e0e0e0;margin-bottom:10px;">
+                                    <!--<tr t-foreach="o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" style="border-bottom:1px solid #e0e0e0;margin-bottom:10px;">-->
+                                    <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" style="border-bottom:1px solid #e0e0e0;margin-bottom:10px;">
                                         <t t-set="complete_pr_name" t-value="''"/>
                                         <!--<t t-if="o.sale_id">-->
                                         <!--    <t t-set="sale_pr" t-value="o.sale_id.order_line.filtered(lambda line:line.product_id == ml.product_id)"/>-->
