@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_open_product_label_layout_wizard" model="ir.actions.act_window">
-        <field name="name">Etiketten drucken</field>
+        <field name="name">Etikettenlayout auswählen</field>
         <field name="res_model">product.label.layout</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
