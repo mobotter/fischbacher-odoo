@@ -59,21 +59,16 @@
             <!-- ==============================================
                  3. QUOTATION LINES TAB - Nur in Subscriptions
                  ============================================== -->
-                       <!-- Wir zielen EXAKT auf den "order_lines"-Reiter und schieben unseren davor -->
-            <xpath expr="//notebook/page[@name='order_lines']" position="before">
-                <!-- invisible="not is_subscription" sorgt dafür, dass er im Standard-Angebot verschwindet -->
-                <page name="quotation_page" string="Quotation Lines" invisible="not is_subscription">
-                    <field name="quotation_line_ids" 
-                           widget="section_and_note_one2many" 
-                           mode="list,kanban" 
-                           readonly="state == 'cancel' or locked">
-                        <list editable="bottom">
+                        <!-- 1. Wir platzieren den Tab ganz normal im Notebook und geben ihm die allererste Sequenz -->
+            <xpath expr="//notebook" position="inside">
+                <page name="quatation_page" string="Angebotspositionen" sequence="1">
+                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
+                        <list editable="bottom" limit="200">
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
-                            <!-- column_invisible statt invisible für Tree-Views! -->
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
                             <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1" widget="many2one"/>
@@ -86,8 +81,29 @@
                             <field name="price_subtotal" readonly="1"/>
                         </list>
                     </field>
+                    <group name="note_group" col="6" class="mt-2 mt-md-0">
+                        <group colspan="4" class="order-1 order-lg-0" col="6">
+                            <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                        </group>
+                        <group col="6">
+                        </group>
+                    </group>
                 </page>
             </xpath>
+
+            <!-- 2. Wir schieben die Standard-Auftragspositionen (Order Lines) auf Sequenz 20 (also nach rechts) -->
+            <xpath expr="//notebook/page[@name='order_lines']" position="attributes">
+                <attribute name="sequence">20</attribute>
+            </xpath>
+            
+            <!-- 3. (Optional) Falls die anderen Tabs immer noch dazwischen grätschen, zwingen wir sie nach hinten -->
+            <xpath expr="//notebook/page[@name='other_information']" position="attributes">
+                <attribute name="sequence">30</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='customer_signature']" position="attributes">
+                <attribute name="sequence">40</attribute>
+            </xpath>
+
             
         </field>
     </record>
