@@ -2,7 +2,7 @@
 <odoo>
   <data>
     <!-- Haupt-Layout-Anpassung (für alle DIN5008-Docs) -->
-    <template id="external_layout_din5008_inherited" inherit_id="l10n_din5008.external_layout_din5008" priority="20">  <!-- Priority für Konfliktvermeidung [web:29] -->
+    <template id="external_layout_din5008_inherited" inherit_id="l10n_din5008.external_layout_din5008" priority="20">
       <xpath expr="//div[contains(@class, 'address')]" position="replace">
         <div class="address" id="din5008_report_main_address" style="font-size:9px;">
           <t t-if="company.name">
@@ -50,7 +50,7 @@
         <div t-attf-style="font-size: 9px; margin-bottom: 4px;">
           Kommanditgesellschaft · Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH · Sitz München · HRB <t t-out="company.company_registry"/>  
           <br/>
-          USt-Id. <t t-out="company.vat"/> · ST-Nr. 143/518/60562 · Geschäftsführer: <t t-out="company.report_legal_reps or 'Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez'"/>  <!-- Dynamisch via company-Feld [web:30] -->
+          USt-Id. <t t-out="company.vat"/> · ST-Nr. 143/518/60562 · Geschäftsführer: <t t-out="company.report_legal_reps or 'Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez'"/>
         </div>
         <table class="table-borderless" style="font-size: 9px; width: 100%; border-collapse: collapse;">
           <colgroup>
@@ -121,17 +121,22 @@
       </xpath>
     </template>
 
-    <!-- Sale-Order-spezifisch (konsolidiert, alte Datei löschen) -->
+    <!-- Sale-Order-spezifisch (KORRIGIERT: Robuster XPath) -->
     <template id="report_saleorder_document_inherit_fb" inherit_id="sale.report_saleorder_document" priority="20">
-      <xpath expr="//tr[t-if='doc.name']" position="after">
-        <tr><td>Page:</td><td><span class="page"/> of <span class="topage"/></td></tr>
+      <!-- FIX: Statt //tr[t-if='doc.name'] -> //div[contains(@class, 'row')][1] für Seitenummer -->
+      <xpath expr="//div[@class='row']" position="inside">
+        <div style="text-align: right; font-size: 10px; margin-top: 5px;">
+          Page: <span class="page"/> of <span class="topage"/>
+        </div>
       </xpath>
-      <xpath expr="//div[@class='company_details']" position="replace">
+      
+      <!-- Company Details ersetzen (robust) -->
+      <xpath expr="//div[contains(@class, 'col-auto text-end me-auto') or contains(@class, 'company_details')]" position="replace">
         <div class="company_details">
           <table class="table-borderless">
             <tr>
               <td>
-                <p t-attf="Kommanditgesellschaft, Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH, Sitz München HRB 278787 USt-Id.-DE 355 684 446 · ST-Nr. 143/518/60562 · Geschäftsführer: {company.report_legal_reps or 'Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez'}">  <!-- Dynamisch [web:30] --></p>
+                <p t-attf="Kommanditgesellschaft, Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH, Sitz München HRB 278787 USt-Id.-DE 355 684 446 · ST-Nr. 143/518/60562 · Geschäftsführer: {company.report_legal_reps or 'Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez'}"></p>
               </td>
             </tr>
           </table>
@@ -146,7 +151,7 @@
               <td>
                 <ul class="list-inline">
                   <li style="color:#0069b4;">Kontakt</li>
-                  <li><span style="color:#0069b4;">Telefon</span> <t t-esc="company.phone or '089 / 14 99 08-0'"/></li>  <!-- Dynamisch via company.phone [web:27] -->
+                  <li><span style="color:#0069b4;">Telefon</span> <t t-esc="company.phone or '089 / 14 99 08-0'"/>
                   <li><span style="color:#0069b4;">Telefax</span> <t t-esc="company.fax or '089 / 14 99 08-36'"/></li>
                 </ul>
               </td>
@@ -163,15 +168,16 @@
           </table>
         </div>
       </xpath>
-      <!-- Tabellen-Styling -->
-      <xpath expr="//table[contains(@class, 'o_has_total_table') and contains(@class,'o_main_table')]/thead" position="attributes">
+      
+      <!-- Tabellen-Styling (robust) -->
+      <xpath expr="//table[contains(@class, 'table') or contains(@class, 'o_main_table')]/thead" position="attributes">
         <attribute name="style">border-bottom:1px solid #0069b4;</attribute>
       </xpath>
     </template>
 
     <!-- Invoice-Styling (wie vorher) -->
     <template id="report_invoice_document_inherit_fb" inherit_id="account.report_invoice_document">
-      <xpath expr="//table[contains(@class, 'o_has_total_table') and contains(@class,'o_main_table')]/thead" position="attributes">
+      <xpath expr="//table[contains(@class, 'table') or contains(@class, 'o_main_table')]/thead" position="attributes">
         <attribute name="style">border-bottom:1px solid #0069b4;</attribute>
       </xpath>
     </template>
