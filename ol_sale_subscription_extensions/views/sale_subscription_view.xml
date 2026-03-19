@@ -59,9 +59,10 @@
             <!-- ==============================================
                  3. QUOTATION LINES TAB - Nur in Subscriptions
                  ============================================== -->
-                        <!-- 1. Wir platzieren den Tab ganz normal im Notebook und geben ihm die allererste Sequenz -->
-            <xpath expr="//notebook" position="inside">
-                <page name="quatation_page" string="Angebotspositionen" sequence="1">
+                                    <!-- Wir zielen hart auf die einzige Notebook-Page in der Base-Sales-View, 
+                 die JEDES Modul respektieren MUSS -->
+            <xpath expr="//page[@name='order_lines']" position="before">
+                <page name="quatation_page" string="Angebotspositionen">
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
                         <list editable="bottom" limit="200">
                             <control>
@@ -81,28 +82,9 @@
                             <field name="price_subtotal" readonly="1"/>
                         </list>
                     </field>
-                    <group name="note_group" col="6" class="mt-2 mt-md-0">
-                        <group colspan="4" class="order-1 order-lg-0" col="6">
-                            <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
-                        </group>
-                        <group col="6">
-                        </group>
-                    </group>
                 </page>
             </xpath>
 
-            <!-- 2. Wir schieben die Standard-Auftragspositionen (Order Lines) auf Sequenz 20 (also nach rechts) -->
-            <xpath expr="//notebook/page[@name='order_lines']" position="attributes">
-                <attribute name="sequence">20</attribute>
-            </xpath>
-            
-            <!-- 3. (Optional) Falls die anderen Tabs immer noch dazwischen grätschen, zwingen wir sie nach hinten -->
-            <xpath expr="//notebook/page[@name='other_information']" position="attributes">
-                <attribute name="sequence">30</attribute>
-            </xpath>
-            <xpath expr="//notebook/page[@name='customer_signature']" position="attributes">
-                <attribute name="sequence">40</attribute>
-            </xpath>
 
             
         </field>
