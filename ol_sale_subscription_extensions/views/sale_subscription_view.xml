@@ -95,7 +95,6 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
-            
             <!-- Überschreibt das Badge in der Abo-Übersicht -->
             <xpath expr="//field[@name='subscription_state']" position="replace">
                 <field name="subscription_state" 
@@ -105,32 +104,15 @@
                        decoration-danger="subscription_state == '6_churn'"
                        decoration-info="subscription_state == '1_draft'"/>
             </xpath>
-
         </field>
     </record>
 
-
     <!-- ============================================== -->
-    <!-- 3. ANPASSUNG DER SUCH-ANSICHT (FILTER)         -->
+    <!-- 3. MENÜ-AKTION (Zeigt Accepted Abos an)        -->
     <!-- ============================================== -->
-        <!-- ============================================== -->
-    <!-- 3. ANPASSUNG DER SUCH-ANSICHT (FILTER)         -->
-    <!-- ============================================== -->
-    <record id="sale_order_search_inherit_accept" model="ir.ui.view">
-        <field name="name">sale.order.search.inherit.accept</field>
-        <field name="model">sale.order</field>
-        <!-- Erbt direkt von der globalen Verkaufs-Suche -->
-        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
-        <field name="arch" type="xml">
-            
-            <!-- Erweitert den Standard-Filter "Quotations" (Angebote) um den Status 'accept' -->
-            <xpath expr="//filter[@name='draft']" position="replace">
-                <filter string="Quotations" name="draft" domain="[('state', 'in', ('draft', 'sent', 'accept'))]"/>
-            </xpath>
-
-        </field>
+    <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
+        <!-- Wir nehmen 'accept' in die Standardliste der Abo-Angebote mit auf -->
+        <field name="domain">[('is_subscription', '=', True), ('state', 'in', ['draft', 'sent', 'accept'])]</field>
     </record>
 
-
-    
 </odoo>
