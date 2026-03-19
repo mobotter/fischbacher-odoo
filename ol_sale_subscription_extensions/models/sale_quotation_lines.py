@@ -73,10 +73,15 @@ class SaleQuotationLine(models.Model):
             fiscal_position = line.order_id.fiscal_position_id
             
             if fiscal_position:
+                # Odoo 18/19 Fix: map_tax wurde refactored. 
+                # Falls die Signatur weder product= noch partner= erlaubt, können wir einfach so rufen:
                 partner = line.order_id.partner_shipping_id or line.order_id.partner_id
-                taxes = fiscal_position.map_tax(taxes, product=line.product_id, partner=partner)
+                
+                # Der sichere Standard-Weg für Odoo 18/19 in Sales Lines:
+                line.tax_id = fiscal_position.map_tax(taxes)
+            else:
+                line.tax_id = taxes
 
-            line.tax_id = taxes
 
     def _get_pricelist_price(self):
         self.ensure_one()
