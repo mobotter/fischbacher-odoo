@@ -9,63 +9,59 @@ from odoo.exceptions import (
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    # Komplettüberschreibung erzwingt unsere exakte Reihenfolge
-    state = fields.Selection([
-        ('draft', "Quotation"),
-        ('sent', "Quotation Sent"),
-        ('accept', "Order Accepted by Client"),  # <-- Hier ist es nun exakt an Position 3
-        ('sale', "Sales Order"),
-        ('cancel', "Cancelled"),
-    ], string="Status", readonly=True, copy=False, index=True, tracking=3, default='draft')
-    
-    subscription_state = fields.Selection(
-        selection_add=[('5_accepted', "Accepted by Client")],
-        ondelete={'5_accepted': 'set null'}
+    # 1. Wir erweitern den Standard-Status 'state'
+    state = fields.Selection(
+        selection_add=[('accept', "Order Accepted by Client")],
+        ondelete={'accept': 'set default'}
     )
-
     
+    # 2. Wir erweitern den Abo-Status 'subscription_state'
     subscription_state = fields.Selection(
-        selection_add=[('5_accepted', "Accepted by Client")],
-        ondelete={'5_accepted': 'set null'}
+        selection_add=[('accepted', 'Accepted')],
+        ondelete={'accepted': 'set default'}
     )
-
+    
     quotation_line_ids = fields.One2many(
         'sale.quotation.line',
         'order_id',
         string='Quotation Lines'
     )
 
-    @api.depends('state', 'is_subscription')
-    def _compute_subscription_state(self):
-        super()._compute_subscription_state()
-        for order in self:
-            if order.is_subscription and order.state == 'accept':
-                order.subscription_state = '5_accepted'
-
     def action_accept_by_client(self):
         for order in self:
+            # Setze den normalen Verkaufsstatus
             order.state = 'accept'
+            # Wenn es sich um ein Abo handelt, setze parallel den Abo-Status
             if order.is_subscription:
-                order.subscription_state = '5_accepted'
+                order.subscription_state = 'accepted'
     
     def action_reset_to_quotation(self):
         for record in self:
             record.state = 'draft'
+            # Falls ein Abo zurückgesetzt wird, auch den Abo-Status anpassen
             if record.is_subscription:
                 record.subscription_state = '1_draft'
 
     def _confirmation_error_message(self):
+        """ Return whether order can be confirmed or not if not then return error message. """
         error = super()._confirmation_error_message()
+        
+        # Odoo blockiert standardmäßig alles, was nicht 'draft' oder 'sent' ist.
+        # Wenn der Fehler geworfen wird, unser Auftrag aber auf 'accept' steht,
+        # heben wir diesen spezifischen Blockade-Fehler auf.
         if error and self.state == 'accept' and "state requiring confirmation" in str(error):
             return False
+            
         return error
 
     @api.constrains('plan_id', 'state', 'order_line')
     def _constraint_subscription_plan(self):
         for so in self:
+            # Erlaubt nun auch den Status 'accept' in der Base-Prüfung
             if so.state in ['draft', 'cancel', 'accept'] or so.subscription_state == '7_upsell':
                 continue
             if so.subscription_id and not so.subscription_state:
+                # so created before merge sale.subscription into sale.order upgrade.
                 continue
 
             if so.has_recurring_line and not so.plan_id:
@@ -74,6 +70,8 @@ class SaleOrder(models.Model):
                 raise UserError(_('Please add a recurring product in the subscription or remove the recurring plan.'))
 
     def action_quotation_send_subscription(self):
+        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
+        # Hinzufügen von 'accept' in die gefilterte Liste für Analytic Distribution Validation
         self.filtered(lambda so: so.state in ('draft', 'sent', 'accept')).order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
 
@@ -123,14 +121,18 @@ class SaleOrder(models.Model):
             layout_action = self.env['ir.actions.report']._action_configure_external_report_layout(
                 action,
             )
+            # Need to remove this context for windows action
             action.pop('close_on_report_download', None)
             layout_action['context']['dialog_size'] = 'extra-large'
             return layout_action
         return action
 
     def _find_mail_template_subscription(self):
+        """ Get the appropriate mail template for the current sales order based on its state. """
         self.ensure_one()
         if self.env.context.get('proforma') or self.state != 'sale':
+            # Rückgabe für Quotation / Proforma / Accept
             return self.env.ref('ol_sale_subscription_extensions.email_template_edi_sale_subscription', raise_if_not_found=False)
         else:
+            # Rückgabe für bestätigte Sales Orders
             return self.env.ref('sale.mail_template_sale_confirmation', raise_if_not_found=False)
