@@ -1,11 +1,11 @@
-from odoo import models,api,fields,_
-from odoo.exceptions import UserError
-
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    def split_by_limit(self,text, limit):
-        words = text.split()
+    def split_by_limit(self, text, limit):
+        if not text:
+            return []
+        # Sicherstellen, dass es ein String ist, um AttributeError zu vermeiden
+        words = str(text).split()
         result = []
         current = ""
     
