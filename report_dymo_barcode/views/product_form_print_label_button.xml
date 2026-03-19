@@ -6,10 +6,9 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
 
-            <!-- Button-Leiste im Header erweitern -->
             <xpath expr="//header" position="inside">
-                <button name="%(product.report_product_template_label)d"
-                        string="Print Labels"
+                <button name="%(action_open_product_label_layout_wizard)d"
+                        string="Etiketten drucken"
                         type="action"
                         class="btn-secondary"
                         context="{'active_model': 'product.template',
