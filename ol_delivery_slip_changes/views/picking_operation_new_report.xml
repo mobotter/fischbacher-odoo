@@ -294,7 +294,7 @@
                                         <td class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
                                             <span t-field="ml.quantity">3.00</span>
                                             <span t-field="ml.product_uom_id" groups="uom.group_uom">units</span>
-                                            <span t-if="ml.move_id.product_packaging_id">
+                                            <!-- <span t-if="ml.move_id.product_packaging_id"> ... </span> -->
                                                 <span t-if="o.state != 'done'">
                                                     (<span t-field="ml.product_packaging_qty" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/> <span t-field="ml.move_id.product_packaging_id.name"/>)
                                                 </span>
