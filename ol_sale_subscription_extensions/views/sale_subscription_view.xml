@@ -109,4 +109,30 @@
         </field>
     </record>
 
+
+    <!-- ============================================== -->
+    <!-- 3. ANPASSUNG DER SUCH-ANSICHT (FILTER)         -->
+    <!-- ============================================== -->
+    <record id="sale_subscription_search_inherit" model="ir.ui.view">
+        <field name="name">sale.subscription.search.inherit.accept</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_search"/>
+        <field name="arch" type="xml">
+            
+            <!-- Erweitert den Standard-Filter "Quotations" (Angebote) um den Status 'accept' -->
+            <xpath expr="//filter[@name='filter_draft_sent']" position="replace">
+                <!-- Alter Filter war nur draft und sent. Wir nehmen accept mit rein -->
+                <filter string="Quotations" name="filter_draft_sent" domain="[('state', 'in', ['draft', 'sent', 'accept'])]"/>
+            </xpath>
+
+            <!-- Erweitert den "Sales Orders" Filter (falls du willst, dass es dort AUCH auftaucht) -->
+            <!-- Optional: füge noch einen ganz eigenen Filter nur für 'Accepted' hinzu -->
+            <xpath expr="//filter[@name='filter_draft_sent']" position="after">
+                <filter string="Accepted by Client" name="filter_accepted" domain="[('state', '=', 'accept')]"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    
 </odoo>
