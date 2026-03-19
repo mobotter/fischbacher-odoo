@@ -59,10 +59,9 @@
             <!-- ==============================================
                  3. QUOTATION LINES TAB - Nur in Subscriptions
                  ============================================== -->
-            <!-- DER TRICK: Wir navigieren das Notebook direkt an -->
-            <xpath expr="//page[@name='order_lines']" position="before">
-                <!-- Auch der Reiter bekommt das Attribut invisible="not is_subscription" -->
-                <page name="quotation_page" string="Quotation Lines" sequence="5" invisible="not is_subscription">
+            <!-- Wir nutzen "inside" aber erzwingen die Position durch sequence="0" -->
+            <xpath expr="//notebook" position="inside">
+                <page name="quotation_page" string="Quotation Lines" sequence="0" invisible="not is_subscription">
                     <field name="quotation_line_ids" 
                            widget="section_and_note_one2many" 
                            mode="list,kanban" 
@@ -73,7 +72,6 @@
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
-                            <!-- column_invisible statt invisible für Tree-Views! -->
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
                             <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1" widget="many2one"/>
@@ -88,6 +86,7 @@
                     </field>
                 </page>
             </xpath>
+
             
         </field>
     </record>
