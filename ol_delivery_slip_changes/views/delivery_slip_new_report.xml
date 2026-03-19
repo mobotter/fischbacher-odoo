@@ -327,36 +327,20 @@
                             
                                     <!-- Order Quantity -->
                                     <td class="text-end">
-                                      <span t-field="move.product_uom_qty"/>
-                                      <t t-if="move.product_uom.category_id.name == 'Einheit'">
-                                        Einheit(en)
-                                      </t>
-                                      <t t-else="">
-                                        <span t-field="move.product_uom"/>
-                                      </t>
+                                      <span t-field="move.product_uom_qty"/> <span t-field="move.product_uom"/>
                                     </td>
                                     
                                     <!-- Delivery Quantity -->
                                     <td class="text-end">
-                                      <span t-field="move.quantity"/>
-                                      <t t-if="move.product_uom.category_id.name == 'Einheit'">
-                                        Einheit(en)
-                                      </t>
-                                      <t t-else="">
-                                        <span t-field="move.product_uom"/>
-                                      </t>
+                                      <span t-field="move.quantity"/> <span t-field="move.product_uom"/>
                                     </td>
                                     
                                     <!-- Backorder -->
                                     <td class="text-end">
-                                      <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/>
-                                      <t t-if="move.product_uom.category_id.name == 'Einheit'">
-                                        Einheit(en)
-                                      </t>
-                                      <t t-else="">
-                                        <span t-field="move.product_uom"/>
-                                      </t>
+                                      <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/> 
+                                      <span t-field="move.product_uom"/>
                                     </td>
+
 
                                 </tr>
                             </tbody>
