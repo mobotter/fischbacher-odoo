@@ -21,6 +21,7 @@
         'report/report_simple_label_dymo.xml',
         'report/report_stock_label_dymo.xml',
         'report/zpl_product_report.xml',
+        'views/product_label_wizard_action.xml',
         'views/product_form_print_label_button.xml',
     ],
     'external_dependencies': {},
