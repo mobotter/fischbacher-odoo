@@ -5,6 +5,10 @@
         <field name="model">sale.order</field>
         <!-- Wir erben direkt vom Standard-Verkaufsauftrag -->
         <field name="inherit_id" ref="sale.view_order_form" />
+
+ <!-- DIESE ZEILE HINZUFÜGEN: -->
+    <field name="priority">99</field>
+        
         <field name="arch" type="xml">
             <!-- Stellt sicher, dass das Feld für die invisible-Bedingung geladen ist -->
             <xpath expr="//sheet" position="inside">
