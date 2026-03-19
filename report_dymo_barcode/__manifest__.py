@@ -24,6 +24,7 @@
         'report/label_product_product_view_small.xml',
         'views/product_label_wizard_action.xml',
         'actions/product_label_layout.xml',
+        'report/templates/zpl_small.xml',  # neu
         'views/product_form_print_label_button.xml',
     ],
     'external_dependencies': {},
