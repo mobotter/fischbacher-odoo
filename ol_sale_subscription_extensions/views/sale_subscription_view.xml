@@ -49,7 +49,7 @@
 
             <!-- Grünes Bändchen (Ribbon) oben rechts im Formular -->
             <xpath expr="//sheet" position="inside">
-                <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != '5_accepted'"/>
+                <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != 'accepted'"/>
             </xpath>
 
            <xpath expr="//notebook/page[@name='order_lines']" position="before">
@@ -99,7 +99,7 @@
             <xpath expr="//field[@name='subscription_state']" position="replace">
                 <field name="subscription_state" 
                        widget="badge" 
-                       decoration-success="subscription_state in ('3_progress', '5_accepted')"
+                       decoration-success="subscription_state in ('3_progress', 'accepted')"
                        decoration-warning="subscription_state == '4_paused'"
                        decoration-danger="subscription_state == '6_churn'"
                        decoration-info="subscription_state == '1_draft'"/>
@@ -121,13 +121,13 @@
 
     <!-- B) Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
     <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
-        <!-- Wir erlauben explizit state 'accept' ODER den Custom subscription_state '5_accepted' -->
+        <!-- Wir erlauben explizit state 'accept' ODER den Custom subscription_state 'accepted' -->
         <field name="domain">[
             ('is_subscription', '=', True), 
             '|', '|',
             ('subscription_state', 'not in', ['1_draft', '2_renewal', '7_upsell']), 
             ('state', '=', 'accept'),
-            ('subscription_state', '=', '5_accepted')
+            ('subscription_state', '=', 'accepted')
         ]</field>
     </record>
 
