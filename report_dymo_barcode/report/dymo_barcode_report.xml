@@ -144,8 +144,8 @@
         <field name="name">Product Label (ZPL) Small</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-text</field>
-        <field name="report_name">report_dymo_barcode.label_product_product_view_small</field>
-        <field name="report_file">report_dymo_barcode.label_product_product_view_small</field>
+        <field name="report_name">report_dymo_barcode.zpl_small</field>
+        <field name="report_file">report_dymo_barcode.zpl_small</field>
         <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
         <field name="binding_type">report</field>
     </record>
