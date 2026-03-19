@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--
     <record id="view_product_form_add_print_labels_button" model="ir.ui.view">
         <field name="name">product.template.form.print.labels.button</field>
         <field name="model">product.template</field>
@@ -15,4 +16,5 @@
             </xpath>
         </field>
     </record>
+    -->
 </odoo>
