@@ -121,14 +121,9 @@
 
     <!-- B) Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
     <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
-        <field name="domain">[
-            ('is_subscription', '=', True), 
-            '|', '|',
-            ('subscription_state', 'not in', ['1_draft', '2_renewal', '7_upsell']), 
-            ('state', '=', 'accepted'),
-            ('subscription_state', '=', 'accepted')
-        ]</field>
+        <field name="domain">[('is_subscription', '=', True)]</field>
     </record>
+
 
     <!-- C) Erweitert die Standard-Suche, damit Filter nicht stören -->
     <record id="sale_subscription_search_inherit_accept" model="ir.ui.view">
