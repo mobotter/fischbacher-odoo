@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from collections import defaultdict
@@ -7,9 +8,6 @@ import markupsafe
 class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_price'
     _description = 'Product Label Report Dymo Price'
-
-    def _get_report_values(self, docids, data):
-        return self._prepare_data(docids, data)
 
     def _prepare_common_data(self, docids, data, include_price=False):
         layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
@@ -71,31 +69,26 @@ class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
     def _prepare_data(self, docids, data):
         return self._prepare_common_data(docids, data, include_price=True)
 
+    def _get_report_values(self, docids, data):
+        return self._prepare_data(docids, data)
+
 
 class ReportProductTemplateLabelDymoWithOutPrice(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_without_price'
     _description = 'Product Label Report Dymo Without Price'
 
     def _get_report_values(self, docids, data):
-        return self._prepare_data(docids, data)
-
-    def _prepare_data(self, docids, data):
         return self._prepare_common_data(docids, data, include_price=False)
 
 
-# Artikel‑Barcode (ohne Preis)
 class ReportProductTemplateLabelDymoArtikelBarcode(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_artikel_barcode'
     _description = 'Product Label Report Dymo Artikel Barcode'
 
     def _get_report_values(self, docids, data):
-        return self._prepare_data(docids, data)
-
-    def _prepare_data(self, docids, data):
         return self._prepare_common_data(docids, data, include_price=False)
 
 
-# Dymo Price Small (mit Preis)
 class ReportProductTemplateLabelDymoPriceSmall(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_price_small'
     _description = 'Product Label Report Dymo Price (Small)'
@@ -108,7 +101,6 @@ class ReportProductTemplateLabelDymoPriceSmall(models.AbstractModel):
         return values
 
 
-# Dymo Small (ohne Preis)
 class ReportProductTemplateLabelDymoSmall(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_small'
     _description = 'Product Label Report Dymo Small (No Price)'
