@@ -6,7 +6,7 @@
 ^XA
 ^CI28
 ^FWR
-^POB
+^NB
 
 ^FX Top section with company address.
 ^CF0,30
@@ -15,7 +15,7 @@
 <t t-if="doc.company_id.zip or user.company_id.zip"> | <t t-esc="doc.company_id.zip or user.company_id.zip"/></t> 
 <t t-if="doc.company_id.city or user.company_id.city"><t t-esc="doc.company_id.city or user.company_id.city"/></t>^FS
 
-^FO770,150^GB3,1500,6^FS
+^FO770,150^GB6,1500,6^FS
 
 ^FX Second section with client address.
 ^CF,60
