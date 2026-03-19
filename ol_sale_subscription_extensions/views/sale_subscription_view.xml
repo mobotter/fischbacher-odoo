@@ -107,19 +107,28 @@
         </field>
     </record>
 
-        <!-- ============================================== -->
-    <!-- 3. MENÜ-AKTIONEN (Zeigt Accepted Abos an)      -->
+    <!-- ============================================== -->
+    <!-- 3. MENÜ-AKTIONEN & FILTER (Zeigt Accepted an)  -->
     <!-- ============================================== -->
     
     <!-- A) Für den Menüpunkt: Subscriptions -> Quotations -->
     <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
-        <field name="domain">[('is_subscription', '=', True), ('state', 'in', ['draft', 'sent', 'accept'])]</field>
+        <field name="domain">[
+            ('is_subscription', '=', True), 
+            ('state', 'in', ['draft', 'sent', 'accept'])
+        ]</field>
     </record>
 
     <!-- B) Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
     <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
-        <!-- Lässt neben Progress/Paused/Churn/Draft etc. explizit auch unseren 'accept' Status zu -->
-        <field name="domain">[('is_subscription', '=', True), '|', ('state', 'in', ['draft', 'sent', 'accept', 'sale', 'done', 'cancel']), ('subscription_state', '!=', False)]</field>
+        <!-- Wir erlauben explizit state 'accept' ODER den Custom subscription_state '5_accepted' -->
+        <field name="domain">[
+            ('is_subscription', '=', True), 
+            '|', '|',
+            ('subscription_state', 'not in', ['1_draft', '2_renewal', '7_upsell']), 
+            ('state', '=', 'accept'),
+            ('subscription_state', '=', '5_accepted')
+        ]</field>
     </record>
 
     <!-- C) Erweitert die Standard-Suche, damit Filter nicht stören -->
@@ -134,6 +143,5 @@
             </xpath>
         </field>
     </record>
-
 
 </odoo>
