@@ -9,38 +9,35 @@ from odoo.exceptions import (
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    # 1. ERWEITERUNG: subscription_state statt state
-    subscription_state = fields.Selection(
-        selection_add=[('5_accepted', "Accepted by Client")],
-        ondelete={'5_accepted': 'set null'}
+    state = fields.Selection(
+        selection_add=[('accept', "Order Accepted by Client")],
+        ondelete={'accept': 'set default'}
     )
-
+    
+    # HIER MUSS DIE EINRÜCKUNG EXAKT STIMMEN (4 Leerzeichen)
     subscription_state = fields.Selection(
         selection_add=[('5_accepted', "Accepted by Client")],
         ondelete={'5_accepted': 'set default'}
     )
 
-    
     quotation_line_ids = fields.One2many(
         'sale.quotation.line',
         'order_id',
         string='Quotation Lines'
     )
 
-    # 2. ANPASSUNG: Methoden ändern nun subscription_state
-        def action_accept_by_client(self):
+    def action_accept_by_client(self):
         for order in self:
             order.state = 'accept'
-            # Setzt auch explizit den Subscription Status, damit er in der Liste richtig angezeigt wird
             if order.is_subscription:
                 order.subscription_state = '5_accepted'
     
     def action_reset_to_quotation(self):
         for record in self:
             record.state = 'draft'
-            # Bei Reset wieder auf das Angebots-Badge setzen
             if record.is_subscription:
                 record.subscription_state = '1_draft'
+
 
 
     # 3. KORREKTUR: Validierung für den neuen Status erlauben
