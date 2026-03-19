@@ -2,8 +2,20 @@
 {
     'name': 'Adds Dymo Barcode Report',
     'version': '19.0.1.0.0',
+    'category': 'Inventory/Delivery',
+    'summary': 'Fügt spezielle Dymo- und ZPL-Etiketten für Produkte und Lagerorte hinzu',
+    'description': """
+        Dieses Modul erweitert die Standard-Etikettendruckfunktion um:
+        - Dymo Label Formate (mit/ohne Preis, kleine Etiketten)
+        - ZPL Formate für Industriedrucker (Zebra etc.)
+        - Spezifische Barcode-Layouts für Lagerorte (stock.location)
+    """,
     'author': 'Odolution',
-    'depends': ['sale'],
+    'depends': [
+        'product', 
+        'sale', 
+        'stock'
+    ],
     'data': [
         'report/dymo_barcode_report.xml',
         'report/report_simple_label_dymo.xml',
@@ -11,5 +23,7 @@
         'report/zpl_product_report.xml'
     ],
     'external_dependencies': {},
+    'installable': True,
+    'application': False,
     'license': 'LGPL-3'
 }
