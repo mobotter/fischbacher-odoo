@@ -325,35 +325,39 @@
                                         </t>
                                     </td>
                             
+                                    <!-- Order Quantity -->
                                     <td class="text-end">
-                                       <!-- Order Quantity -->
-                                        <span t-field="move.product_uom_qty"/>
-                                        <t t-if="move.product_uom.uom_type == 'reference'">
-                                          Einheit(en)
-                                        </t>
-                                        <t t-else="">
-                                          <span t-field="move.product_uom" groups="uom.group_uom"/>
-                                        </t>
-                                        
-                                        <!-- Delivery Quantity -->
-                                        <span t-field="move.quantity"/>
-                                        <t t-if="move.product_uom.uom_type == 'reference'">
-                                          Einheit(en)
-                                        </t>
-                                        <t t-else="">
-                                          <span t-field="move.product_uom" groups="uom.group_uom"/>
-                                        </t>
-                                        
-                                        <!-- Backorder -->
-                                        <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/> 
-                                        <t t-if="move.product_uom.uom_type == 'reference'">
-                                          Einheit(en)
-                                        </t>
-                                        <t t-else="">
-                                          <span t-field="move.product_uom" groups="uom.group_uom"/>
-                                        </t>
-
+                                      <span t-field="move.product_uom_qty"/>
+                                      <t t-if="move.product_uom.category_id.name == 'Einheit'">
+                                        Einheit(en)
+                                      </t>
+                                      <t t-else="">
+                                        <span t-field="move.product_uom"/>
+                                      </t>
                                     </td>
+                                    
+                                    <!-- Delivery Quantity -->
+                                    <td class="text-end">
+                                      <span t-field="move.quantity"/>
+                                      <t t-if="move.product_uom.category_id.name == 'Einheit'">
+                                        Einheit(en)
+                                      </t>
+                                      <t t-else="">
+                                        <span t-field="move.product_uom"/>
+                                      </t>
+                                    </td>
+                                    
+                                    <!-- Backorder -->
+                                    <td class="text-end">
+                                      <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/>
+                                      <t t-if="move.product_uom.category_id.name == 'Einheit'">
+                                        Einheit(en)
+                                      </t>
+                                      <t t-else="">
+                                        <span t-field="move.product_uom"/>
+                                      </t>
+                                    </td>
+
                                 </tr>
                             </tbody>
                         </table>
