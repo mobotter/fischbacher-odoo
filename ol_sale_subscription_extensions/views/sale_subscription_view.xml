@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="sale_subscription_form_inherit_v2" model="ir.ui.view">
-        <field name="name">sale.subscription.form.inherit_v2</field>
+    <record id="sale_subscription_form_inherit" model="ir.ui.view">
+        <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
-        <!-- Wir erben direkt vom Standard-Verkaufsauftrag -->
         <field name="inherit_id" ref="sale.view_order_form" />
-
- <!-- DIESE ZEILE HINZUFÜGEN: -->
-    <field name="priority">99</field>
-        
+        <field name="priority">99</field>
         <field name="arch" type="xml">
-            <!-- Stellt sicher, dass das Feld für die invisible-Bedingung geladen ist -->
+        
+        <!-- 1. WICHTIG: Das Feld in die View laden, sonst funktioniert die Bedingung nicht -->
             <xpath expr="//sheet" position="inside">
                 <field name="is_subscription" invisible="1"/>
             </xpath>
@@ -28,45 +25,48 @@
             <!-- ==============================================
                  2. HEADER BUTTONS - Nur in Subscriptions
                  ============================================== -->
-            <!-- Wir setzen unsere Buttons exakt VOR den ersten Odoo Confirm Button -->
-            <xpath expr="//header/button[@name='action_confirm'][1]" position="before">
+            <xpath expr="//header" position="inside">
+                <!-- Confirm Button: Nur bei Status 'accept' UND nur im Abo -->
+                <button name="action_confirm" data-hotkey="q"
+                    string="Confirm" type="object" context="{'validate_analytic': True}"
+                    invisible="state != 'accept' or not is_subscription"/>
                 
-                <!-- Durch das "or not is_subscription" wird der Button im normalen Verkauf versteckt -->
-                <button name="action_accept_by_client" 
-                        type="object"
-                        string="Accepted by Client" 
-                        class="btn-primary"
-                        invisible="state not in ('draft', 'sent') or not is_subscription" />
+                <!-- Accepted by Client Button: Nur bei draft/sent UND nur im Abo -->
+                <button
+                    name="action_accept_by_client"
+                    type="object"
+                    string="Accepted by Client"
+                    class="btn-primary"
+                    invisible="state not in ('draft', 'sent') or not is_subscription" 
+                />
                 
-                <button name="action_reset_to_quotation" 
-                        type="object"
-                        string="Reset to Quotation" 
-                        invisible="state != 'accept' or not is_subscription"/>
-                        
-                <button name="action_confirm" 
-                        data-hotkey="q"
-                        string="Confirm" 
-                        type="object" 
-                        context="{'validate_analytic': True}"
-                        invisible="state != 'accept' or not is_subscription"/>
+                <!-- Reset Button: Nur bei Status 'accept' UND nur im Abo -->
+                <button
+                    name="action_reset_to_quotation"
+                    type="object"
+                    string="Reset to Quotation"
+                    class="btn-primary"
+                    invisible="state != 'accept' or not is_subscription"
+                />
                 
-                <button name="action_quotation_send_subscription" 
-                        id="send_by_email_subscription" 
-                        string="Quotation send by email" 
-                        class="btn-primary"
-                        type="object" 
-                        invisible="state not in ('sent', 'sale', 'draft') or not is_subscription" 
-                        data-hotkey="g" 
-                        context="{'validate_analytic': True, 'check_document_layout': True}"/>
+                <!-- Mail Button: Nur bei sent/sale/draft UND nur im Abo -->
+                <button 
+                    name="action_quotation_send_subscription" 
+                    id="send_by_email_subscription" 
+                    string="Quotation send by email" 
+                    class="btn-primary"
+                    type="object" 
+                    invisible="state not in ('sent', 'sale', 'draft') or not is_subscription" 
+                    data-hotkey="g" 
+                    context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
             <!-- ==============================================
                  3. QUOTATION LINES TAB - Nur in Subscriptions
                  ============================================== -->
-                                    <!-- Wir zielen hart auf die einzige Notebook-Page in der Base-Sales-View, 
-                 die JEDES Modul respektieren MUSS -->
-            <xpath expr="//page[@name='order_lines']" position="before">
-                <page name="quatation_page" string="Angebotspositionen">
+             <xpath expr="//page[@name='order_lines']" position="before">
+                <page name="quatation_page" string="Angebotspositionen" invisible="not is_subscription">
+                    <!-- Dein restlicher Code für quotation_line_ids -->
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
                         <list editable="bottom" limit="200">
                             <control>
