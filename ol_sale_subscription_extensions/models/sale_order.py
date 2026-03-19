@@ -9,10 +9,20 @@ from odoo.exceptions import (
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    state = fields.Selection(
-        selection_add=[('accept', "Order Accepted by Client")],
-        ondelete={'accept': 'set null'}
+    # Komplettüberschreibung erzwingt unsere exakte Reihenfolge
+    state = fields.Selection([
+        ('draft', "Quotation"),
+        ('sent', "Quotation Sent"),
+        ('accept', "Order Accepted by Client"),  # <-- Hier ist es nun exakt an Position 3
+        ('sale', "Sales Order"),
+        ('cancel', "Cancelled"),
+    ], string="Status", readonly=True, copy=False, index=True, tracking=3, default='draft')
+    
+    subscription_state = fields.Selection(
+        selection_add=[('5_accepted', "Accepted by Client")],
+        ondelete={'5_accepted': 'set null'}
     )
+
     
     subscription_state = fields.Selection(
         selection_add=[('5_accepted', "Accepted by Client")],
