@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    
     <!-- ============================================== -->
-    <!-- 1. ANPASSUNG DER FORMULARANSICHT (FORM VIEW)   -->
+    <!-- 1. ANPASSUNG DER FORMULARANSICHT               -->
     <!-- ============================================== -->
     <record id="sale_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form" />
-        <field name="priority">99</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
         <field name="arch" type="xml">
             
-            <!-- Feld laden, damit die invisible-Bedingungen auf "is_subscription" reagieren können -->
-            <xpath expr="//sheet" position="inside">
-                <field name="is_subscription" invisible="1"/>
-            </xpath>
-
-            <!-- ================= HEADER BUTTONS ================= -->
+            <!-- A. Buttons in den Header -->
             <xpath expr="//header" position="inside">
-                <!-- Confirm Button: Sichtbar, wenn das Abo akzeptiert wurde UND es ein Abo ist -->
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
-                    invisible="subscription_state != '5_accepted' or not is_subscription"/>
+                    invisible="state != 'accept'"/>
                 
-                <!-- Accept Button: Sichtbar im Draft/Renewal Status UND wenn es ein Abo ist -->
                 <button
                     name="action_accept_by_client"
                     type="object"
                     string="Accepted by Client"
                     class="btn-primary"
-                    invisible="subscription_state not in ('1_draft', '2_renewal') or not is_subscription" 
+                    invisible="state not in ('draft', 'sent')" 
                 />
                 
-                <!-- Reset Button: Sichtbar, wenn das Abo akzeptiert wurde UND es ein Abo ist -->
                 <button
                     name="action_reset_to_quotation"
                     type="object"
                     string="Reset to Quotation"
                     class="btn-primary"
-                    invisible="subscription_state != '5_accepted' or not is_subscription"
+                    invisible="state != 'accept'"
                 />
                 
-                <!-- Mail Button -->
                 <button 
                     name="action_quotation_send_subscription" 
                     id="send_by_email_subscription" 
                     string="Quotation send by email" 
                     class="btn-primary"
                     type="object" 
-                    invisible="state not in ('sent', 'sale', 'draft') or not is_subscription" 
+                    invisible="state not in ('sent', 'sale', 'draft')" 
                     data-hotkey="g" 
                     context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
-            <!-- ================= NOTEBOOK TAB ================= -->
-            <xpath expr="//page[@name='order_lines']" position="before">
-                <!-- Verstecke den Tab komplett in normalen Sales Orders -->
-                <page name="quatation_page" string="Angebotspositionen" invisible="not is_subscription">
+            <!-- B. Statusleiste um "accept" erweitern -->
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,sent,accept,sale</attribute>
+            </xpath>
+
+            <!-- C. Grünes "Accepted" Ribbon in die rechte Ecke -->
+            <xpath expr="//sheet" position="inside">
+                <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != '5_accepted'"/>
+            </xpath>
+
+            <!-- D. Quotation Lines Page vor Order Lines -->
+           <xpath expr="//notebook/page[@name='order_lines']" position="before">
+                <page name="quatation_page" string="Quotation Lines">
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
                         <list editable="bottom" limit="200">
                             <control>
@@ -65,7 +65,11 @@
                             </control>
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
-                            <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1" widget="many2one"/>
+                            <field name="product_id" 
+                                required="not display_type" 
+                                options="{'no_open': True}" 
+                                force_save="1" 
+                                widget="many2one"/> 
                             <field name="name"/>
                             <field name="product_uom_qty"/>
                             <field name="product_uom"/>
@@ -79,25 +83,22 @@
                         <group colspan="4" class="order-1 order-lg-0" col="6">
                             <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
                         </group>
-                        <group col="6">
-                        </group>
                     </group>
                 </page>
             </xpath>
         </field>
     </record>
 
-       <!-- ============================================== -->
-    <!-- ANPASSUNG DER ABO-LISTENANSICHT (TREE VIEW)    -->
+    <!-- ============================================== -->
+    <!-- 2. ANPASSUNG DER LISTENANSICHT (TREE VIEW)     -->
     <!-- ============================================== -->
     <record id="sale_subscription_tree_view_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.tree.view.inherit</field>
         <field name="model">sale.order</field>
-        <!-- Wir erben direkt von der Haupt-Listenansicht der Abos -->
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
             
-            <!-- Wir überschreiben das subscription_state Feld komplett, um unsere Farbe und das Badge zu forcieren -->
+            <!-- Überschreibt das Badge in der Abo-Übersicht -->
             <xpath expr="//field[@name='subscription_state']" position="replace">
                 <field name="subscription_state" 
                        widget="badge" 
@@ -109,7 +110,5 @@
 
         </field>
     </record>
-
-
-
+    
 </odoo>
