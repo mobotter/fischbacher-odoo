@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    
+    <!-- 1. DEIN BISHERIGER CODE (Ausblenden von Datum etc.) -->
     <record id="sale_order_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.order.subscription.form.inherit</field>
         <field name="model">sale.order</field>
@@ -13,4 +15,35 @@
             </xpath>
         </field>
     </record>
+
+    <!-- ============================================== -->
+    <!-- 2. SALES LISTEN-ANSICHT: BADGE FARBE FÜR 'ACCEPT' -->
+    <!-- ============================================== -->
+    
+    <!-- Patch für die Angebots-Liste (Quotations) -->
+    <record id="sale_order_quotation_tree_badge_inherit" model="ir.ui.view">
+        <field name="name">sale.order.quotation.tree.badge.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding" />
+        <field name="arch" type="xml">
+            <!-- Setzt die Spalte Status auf Grün für accepted -->
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="decoration-success">state in ('sale', 'done', 'accept')</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Patch für die Verkaufs-Liste (Orders) -->
+    <record id="sale_order_order_tree_badge_inherit" model="ir.ui.view">
+        <field name="name">sale.order.order.tree.badge.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree" />
+        <field name="arch" type="xml">
+            <!-- Setzt die Spalte Status auf Grün für accepted -->
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="decoration-success">state in ('sale', 'done', 'accept')</attribute>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
