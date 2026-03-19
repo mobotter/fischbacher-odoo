@@ -86,7 +86,11 @@
                     </field>
                 </page>
             </xpath>
-
+            
+            <!-- Schiebt den Standard-Reiter hart auf Position 10 -->
+            <xpath expr="//page[@name='order_lines']" position="attributes">
+                <attribute name="sequence">10</attribute>
+            </xpath>
             
         </field>
     </record>
