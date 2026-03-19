@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="sale_subscription_form_inherit" model="ir.ui.view">
-        <field name="name">sale.subscription.form.inherit</field>
+    <record id="sale_subscription_form_inherit_v2" model="ir.ui.view">
+        <field name="name">sale.subscription.form.inherit_v2</field>
         <field name="model">sale.order</field>
         <!-- Wir erben direkt vom Standard-Verkaufsauftrag -->
         <field name="inherit_id" ref="sale.view_order_form" />
