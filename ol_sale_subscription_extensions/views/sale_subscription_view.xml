@@ -25,7 +25,7 @@
             <!-- ==============================================
                  2. HEADER BUTTONS - Nur in Subscriptions
                  ============================================== -->
-            <xpath expr="//header" position="inside">
+                        <xpath expr="//header" position="inside">
                 <!-- Confirm Button: Nur bei Status 'accept' UND nur im Abo -->
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
@@ -60,6 +60,7 @@
                     data-hotkey="g" 
                     context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
+
 
             <!-- ==============================================
                  3. QUOTATION LINES TAB - Nur in Subscriptions
