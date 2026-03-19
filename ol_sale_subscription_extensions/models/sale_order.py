@@ -11,8 +11,8 @@ class SaleOrder(models.Model):
 
     # Status erweitern - ondelete auf 'set null' gesetzt
     state = fields.Selection(
-        selection_add=[('accept', "Order Accepted by Client")],
-        ondelete={'accept': 'set null'}
+        selection_add=[('accepted', "Order Accepted by Client")],
+        ondelete={'accepted': 'set null'}
     )
     
     # Abo-Status erweitern - ondelete auf 'set null' gesetzt
@@ -29,7 +29,7 @@ class SaleOrder(models.Model):
 
     def action_accept_by_client(self):
         for order in self:
-            order.state = 'accept'
+            order.state = 'accepted'
             if order.is_subscription:
                 order.subscription_state = 'accepted'
     
@@ -42,14 +42,14 @@ class SaleOrder(models.Model):
     def _confirmation_error_message(self):
         """ Return whether order can be confirmed or not if not then return error message. """
         error = super()._confirmation_error_message()
-        if error and self.state == 'accept' and "state requiring confirmation" in str(error):
+        if error and self.state == 'accepted' and "state requiring confirmation" in str(error):
             return False
         return error
 
     @api.constrains('plan_id', 'state', 'order_line')
     def _constraint_subscription_plan(self):
         for so in self:
-            if so.state in ['draft', 'cancel', 'accept'] or so.subscription_state == '7_upsell':
+            if so.state in ['draft', 'cancel', 'accepted'] or so.subscription_state == '7_upsell':
                 continue
             if so.subscription_id and not so.subscription_state:
                 continue
@@ -60,7 +60,7 @@ class SaleOrder(models.Model):
                 raise UserError(_('Please add a recurring product in the subscription or remove the recurring plan.'))
 
     def action_quotation_send_subscription(self):
-        self.filtered(lambda so: so.state in ('draft', 'sent', 'accept')).order_line._validate_analytic_distribution()
+        self.filtered(lambda so: so.state in ('draft', 'sent', 'accepted')).order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
 
         ctx = {
