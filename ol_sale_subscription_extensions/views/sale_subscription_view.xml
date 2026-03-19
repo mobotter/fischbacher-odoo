@@ -108,7 +108,7 @@
     </record>
 
     <!-- ============================================== -->
-    <!-- 3. MENÜ-AKTIONEN & FILTER (Zeigt Accepted an)  -->
+    <!-- 3. MENÜ-AKTIONEN & FILTER                      -->
     <!-- ============================================== -->
     
     <!-- A) Für den Menüpunkt: Subscriptions -> Quotations -->
@@ -137,7 +137,6 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
         <field name="arch" type="xml">
-            <!-- Fügt 'accept' in die Standard-Angebotsfilter auf System-Ebene hinzu -->
             <xpath expr="//filter[@name='draft']" position="attributes">
                  <attribute name="domain">[('state', 'in', ('draft', 'sent', 'accept'))]</attribute>
             </xpath>
