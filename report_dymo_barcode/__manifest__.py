@@ -16,14 +16,15 @@
         'sale', 
         'stock'
     ],
-    'data': [
+        'data': [
         'report/dymo_barcode_report.xml',
         'report/report_simple_label_dymo.xml',
         'report/report_stock_label_dymo.xml',
         'report/zpl_product_report.xml',
+        'report/templates/label_product_product_view_small.xml',
         'views/product_label_wizard_action.xml',
         'actions/product_label_layout.xml',
-       # 'views/product_form_print_label_button.xml',
+        'views/product_form_print_label_button.xml',
     ],
     'external_dependencies': {},
     'installable': True,
