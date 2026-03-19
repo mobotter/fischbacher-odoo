@@ -60,7 +60,7 @@
                  3. QUOTATION LINES TAB - Nur in Subscriptions
                  ============================================== -->
             <!-- DER TRICK: Wir navigieren das Notebook direkt an -->
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//page[@name='order_lines']" position="before">
                 <!-- Auch der Reiter bekommt das Attribut invisible="not is_subscription" -->
                 <page name="quotation_page" string="Quotation Lines" sequence="5" invisible="not is_subscription">
                     <field name="quotation_line_ids" 
