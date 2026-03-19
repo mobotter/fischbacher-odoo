@@ -9,13 +9,11 @@ from odoo.exceptions import (
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    # Erweiterung des Base-Order-State
     state = fields.Selection(
         selection_add=[('accept', "Order Accepted by Client")],
         ondelete={'accept': 'set null'}
     )
     
-    # Erweiterung des Subscription-Badge-State
     subscription_state = fields.Selection(
         selection_add=[('5_accepted', "Accepted by Client")],
         ondelete={'5_accepted': 'set null'}
@@ -27,8 +25,6 @@ class SaleOrder(models.Model):
         string='Quotation Lines'
     )
 
-    # Verhindert, dass Odoo das Abo in der Liste auf "Abgelaufen" (6_churn) setzt, 
-    # nur weil unser Custom-State ("accept") aktiv ist.
     @api.depends('state', 'is_subscription')
     def _compute_subscription_state(self):
         super()._compute_subscription_state()
@@ -39,7 +35,6 @@ class SaleOrder(models.Model):
     def action_accept_by_client(self):
         for order in self:
             order.state = 'accept'
-            # Explizites Setzen, damit das UI sofort reagiert
             if order.is_subscription:
                 order.subscription_state = '5_accepted'
     
@@ -50,25 +45,17 @@ class SaleOrder(models.Model):
                 record.subscription_state = '1_draft'
 
     def _confirmation_error_message(self):
-        """ Return whether order can be confirmed or not if not then return error message. """
         error = super()._confirmation_error_message()
-        
-        # Odoo blockiert standardmäßig alles, was nicht 'draft' oder 'sent' ist.
-        # Wenn der Fehler geworfen wird, unser Auftrag aber auf 'accept' steht,
-        # heben wir diesen spezifischen Blockade-Fehler auf.
         if error and self.state == 'accept' and "state requiring confirmation" in str(error):
             return False
-            
         return error
 
     @api.constrains('plan_id', 'state', 'order_line')
     def _constraint_subscription_plan(self):
         for so in self:
-            # Erlaubt nun auch den Status 'accept' in der Base-Prüfung
             if so.state in ['draft', 'cancel', 'accept'] or so.subscription_state == '7_upsell':
                 continue
             if so.subscription_id and not so.subscription_state:
-                # so created before merge sale.subscription into sale.order upgrade.
                 continue
 
             if so.has_recurring_line and not so.plan_id:
@@ -77,7 +64,6 @@ class SaleOrder(models.Model):
                 raise UserError(_('Please add a recurring product in the subscription or remove the recurring plan.'))
 
     def action_quotation_send_subscription(self):
-        """ Opens a wizard to compose an email, with relevant mail template loaded by default """
         self.filtered(lambda so: so.state in ('draft', 'sent', 'accept')).order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
 
@@ -133,7 +119,6 @@ class SaleOrder(models.Model):
         return action
 
     def _find_mail_template_subscription(self):
-        """ Get the appropriate mail template for the current sales order based on its state. """
         self.ensure_one()
         if self.env.context.get('proforma') or self.state != 'sale':
             return self.env.ref('ol_sale_subscription_extensions.email_template_edi_sale_subscription', raise_if_not_found=False)
