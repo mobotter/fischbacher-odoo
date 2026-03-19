@@ -23,7 +23,7 @@
         'report/zpl_product_report.xml',
         'views/product_label_wizard_action.xml',
         'actions/product_label_layout.xml',
-        'views/product_form_print_label_button.xml',
+       # 'views/product_form_print_label_button.xml',
     ],
     'external_dependencies': {},
     'installable': True,
