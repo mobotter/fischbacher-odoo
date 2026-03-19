@@ -10,7 +10,6 @@
         <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
         <field name="arch" type="xml">
             
-            <!-- A. Buttons in den Header -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
@@ -43,17 +42,16 @@
                     context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
-            <!-- B. Statusleiste um "accept" erweitern -->
+            <!-- Statusbar Reihenfolge anpassen -->
             <xpath expr="//field[@name='state']" position="attributes">
-                <attribute name="statusbar_visible">draft,sent,accept,sale</attribute>
+                <attribute name="statusbar_visible">draft,sent,accept,sale,cancel</attribute>
             </xpath>
 
-            <!-- C. Grünes "Accepted" Ribbon in die rechte Ecke -->
+            <!-- Grünes Bändchen (Ribbon) oben rechts im Formular -->
             <xpath expr="//sheet" position="inside">
                 <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != '5_accepted'"/>
             </xpath>
 
-            <!-- D. Quotation Lines Page vor Order Lines -->
            <xpath expr="//notebook/page[@name='order_lines']" position="before">
                 <page name="quatation_page" string="Quotation Lines">
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
@@ -110,5 +108,5 @@
 
         </field>
     </record>
-    
+
 </odoo>
