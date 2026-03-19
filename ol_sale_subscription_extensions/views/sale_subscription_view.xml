@@ -87,7 +87,7 @@
         </field>
     </record>
 
-        <!-- ============================================== -->
+    <!-- ============================================== -->
     <!-- 2. ANPASSUNG DER LISTENANSICHT (TREE VIEW)     -->
     <!-- ============================================== -->
     <record id="sale_subscription_tree_inherit" model="ir.ui.view">
@@ -96,13 +96,18 @@
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
             
-            <!-- Badge-Widget mit Colors konfigurieren -->
-            <xpath expr="//field[@name='subscription_state']" position="attributes">
-                <!-- Die bestehenden Attribute bleiben (widget="badge"), aber wir fügen die options hinzu -->
-                <attribute name="options">{'color_field': 'color', 'custom_colors': {'5_accepted': 'success', '3_progress': 'success', '4_paused': 'warning', '6_churn': 'danger', '1_draft': 'info'}}</attribute>
+            <xpath expr="//field[@name='subscription_state']" position="replace">
+                <!-- Wir überschreiben das Feld komplett, um die Widgets und Colors hart reinzuzwingen -->
+                <field name="subscription_state" 
+                       widget="badge" 
+                       decoration-success="subscription_state in ('3_progress', '5_accepted')"
+                       decoration-warning="subscription_state == '4_paused'"
+                       decoration-danger="subscription_state == '6_churn'"
+                       decoration-info="subscription_state == '1_draft'"/>
             </xpath>
 
         </field>
     </record>
+
 
 </odoo>
