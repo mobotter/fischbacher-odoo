@@ -237,7 +237,7 @@
                                         </td>
                                         <t t-set="product_barcode" t-value="ml.product_id.barcode if ml.product_id else False"/>
                                         <td class="text-center" t-if="has_barcode and product_barcode" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <div t-field="product_barcode" 
+                                            <div t-esc="ml.product_id.barcode" 
                                                  t-options='{"widget": "barcode", "symbology": "auto", "width": 400, "height": 100, "quiet": 0, "img_style": "height:35px;"}'/>
                                         </td>
                                     </tr>
