@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="zpl_small_template" name="ZPL Small Label">
+        <t t-name="report_dymo_barcode.zpl_small">
+            <t t-foreach="quantity" t-as="product">
+                <t t-foreach="quantity[product]" t-as="barcode_info">
+                    <t t-set="barcode" t-value="barcode_info[0]"/>
+                    <t t-set="qty" t-value="barcode_info[1]"/>
+                    <t t-foreach="range(0, qty)" t-as="i">
+^XA
+^FO50,50^A0N,40^FD<t t-esc="product.name"/>^FS
+^FO50,100^BCN,50^FD<t t-esc="barcode"/>^FS
+^XZ
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
