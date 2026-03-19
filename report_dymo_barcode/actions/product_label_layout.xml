@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fensteraktion: Etikettenlayout auswählen (DYMO) -->
+    <record id="action_open_product_label_layout_wizard" model="ir.actions.act_window">
+        <field name="name">Etikettenlayout auswählen (DYMO)</field>
+        <field name="res_model">product.label.layout</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
+            'active_model': 'product.template'
+        }</field>
+    </record>
+
+    <!-- Optional: Menüeintrag, falls du das separat willst -->
+    <menuitem id="menu_product_label_layout_dymo"
+              name="Etiketten drucken (DYMO)"
+              action="action_open_product_label_layout_wizard"
+              parent="product.menu_product_configuration"/>
+</odoo>
