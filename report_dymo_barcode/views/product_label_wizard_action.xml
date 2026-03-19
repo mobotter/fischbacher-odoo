@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Server Action, die den Standard-Label-Wizard öffnet -->
+    <record id="action_open_product_label_layout_wizard" model="ir.actions.act_window">
+        <field name="name">Print Labels</field>
+        <field name="res_model">product.label.layout</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <!-- context: aktive Produkte vorgeben -->
+        <field name="context">
+            {
+                "active_model": "product.template",
+                "active_ids": [active_id],
+                "default_product_tmpl_ids": [active_id],
+            }
+        </field>
+    </record>
+
+</odoo>
