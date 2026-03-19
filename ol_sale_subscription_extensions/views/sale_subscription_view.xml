@@ -6,7 +6,11 @@
         <!-- Wir erben direkt vom Standard-Verkaufsauftrag -->
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            
+            <!-- Stellt sicher, dass das Feld für die invisible-Bedingung geladen ist -->
+            <xpath expr="//sheet" position="inside">
+                <field name="is_subscription" invisible="1"/>
+            </xpath>
+
             <!-- ==============================================
                  1. DATUM-AUSBLENDUNG (aus deiner sale_order.xml)
                  ============================================== -->
