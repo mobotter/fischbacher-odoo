@@ -87,17 +87,18 @@
         </field>
     </record>
 
+       <!-- ============================================== -->
+    <!-- ANPASSUNG DER ABO-LISTENANSICHT (TREE VIEW)    -->
     <!-- ============================================== -->
-    <!-- 2. ANPASSUNG DER LISTENANSICHT (TREE VIEW)     -->
-    <!-- ============================================== -->
-    <record id="sale_subscription_tree_inherit" model="ir.ui.view">
-        <field name="name">sale.subscription.tree.inherit</field>
+    <record id="sale_subscription_tree_view_inherit" model="ir.ui.view">
+        <field name="name">sale.subscription.tree.view.inherit</field>
         <field name="model">sale.order</field>
+        <!-- Wir erben direkt von der Haupt-Listenansicht der Abos -->
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
             
+            <!-- Wir überschreiben das subscription_state Feld komplett, um unsere Farbe und das Badge zu forcieren -->
             <xpath expr="//field[@name='subscription_state']" position="replace">
-                <!-- Wir überschreiben das Feld komplett, um die Widgets und Colors hart reinzuzwingen -->
                 <field name="subscription_state" 
                        widget="badge" 
                        decoration-success="subscription_state in ('3_progress', '5_accepted')"
@@ -108,6 +109,7 @@
 
         </field>
     </record>
+
 
 
 </odoo>
