@@ -13,9 +13,11 @@ class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
 
     def _prepare_common_data(self, docids, data, include_price=False):
         layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
-        if data.get('active_model') == 'product.template':
+        active_model = data.get('active_model')
+
+        if active_model == 'product.template':
             Product = self.env['product.template'].with_context(display_default_code=False)
-        elif data.get('active_model') == 'product.product':
+        elif active_model == 'product.product':
             Product = self.env['product.product'].with_context(display_default_code=False)
         elif data.get("studio") and docids:
             products = self.env['product.template'].with_context(display_default_code=False).browse(docids)
@@ -25,7 +27,7 @@ class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
             return {
                 'quantity': quantity_by_product,
                 'page_numbers': 1,
-                'pricelist': layout_wizard.pricelist_id if include_price else None,
+                'pricelist': layout_wizard.pricelist_id if include_price and layout_wizard else None,
                 'price_included': include_price,
                 'extra_html': layout_wizard.extra_html if layout_wizard else "",
             }
@@ -50,7 +52,7 @@ class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
             for product_id, barcodes_qtys in data.get('custom_barcodes').items():
                 browsed_product = Product.browse(int(product_id))
                 if browsed_product.exists():
-                    quantity_by_product[browsed_product] += barcodes_qtys
+                    quantity_by_product[browsed_product].extend(barcodes_qtys)
                     total += sum(qty for _, qty in barcodes_qtys)
 
         page_numbers = (total - 1) // (layout_wizard.rows * layout_wizard.columns) + 1 if total else 1
@@ -93,25 +95,20 @@ class ReportProductTemplateLabelDymoArtikelBarcode(models.AbstractModel):
         return self._prepare_common_data(docids, data, include_price=False)
 
 
-# Kleine Versionen (z.B. dymo_price_small, dymo_small, etc.)
-# Falls du die Layouts unterscheidest, kannst du hier:
-# - `_name` anpassen
-# - ggf. andere Layout‑Parameter oder `price_included`‑Logik setzen
-# z.B.:
+# Dymo Price Small (mit Preis)
 class ReportProductTemplateLabelDymoPriceSmall(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_price_small'
     _description = 'Product Label Report Dymo Price (Small)'
 
     def _get_report_values(self, docids, data):
         values = self._prepare_common_data(docids, data, include_price=True)
-        # Optional: spezielle Layout‑Anpassungen in `extra_html`
         layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
         if layout_wizard:
-            # z.B. kleinere Schrift oder kein extra_html
-            values['extra_html'] = ""
+            values['extra_html'] = ""  # ggf. individuell anpassen
         return values
 
 
+# Dymo Small (ohne Preis)
 class ReportProductTemplateLabelDymoSmall(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_small'
     _description = 'Product Label Report Dymo Small (No Price)'
@@ -120,5 +117,5 @@ class ReportProductTemplateLabelDymoSmall(models.AbstractModel):
         values = self._prepare_common_data(docids, data, include_price=False)
         layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
         if layout_wizard:
-            values['extra_html'] = ""
+            values['extra_html'] = ""  # ggf. individuell anpassen
         return values
