@@ -14,6 +14,12 @@ class SaleOrder(models.Model):
         selection_add=[('5_accepted', "Accepted by Client")],
         ondelete={'5_accepted': 'set null'}
     )
+
+    subscription_state = fields.Selection(
+        selection_add=[('5_accepted', "Accepted by Client")],
+        ondelete={'5_accepted': 'set default'}
+    )
+
     
     quotation_line_ids = fields.One2many(
         'sale.quotation.line',
@@ -22,17 +28,20 @@ class SaleOrder(models.Model):
     )
 
     # 2. ANPASSUNG: Methoden ändern nun subscription_state
-    def action_accept_by_client(self):
+        def action_accept_by_client(self):
         for order in self:
-            order.subscription_state = '5_accepted'
-            # Optional: Wir setzen den normalen Status zusätzlich auf 'sent' oder lassen ihn, wie er ist.
-            if order.state == 'draft':
-                order.state = 'sent'
+            order.state = 'accept'
+            # Setzt auch explizit den Subscription Status, damit er in der Liste richtig angezeigt wird
+            if order.is_subscription:
+                order.subscription_state = '5_accepted'
     
     def action_reset_to_quotation(self):
         for record in self:
-            record.subscription_state = '1_draft'
             record.state = 'draft'
+            # Bei Reset wieder auf das Angebots-Badge setzen
+            if record.is_subscription:
+                record.subscription_state = '1_draft'
+
 
     # 3. KORREKTUR: Validierung für den neuen Status erlauben
     def _confirmation_error_message(self):
