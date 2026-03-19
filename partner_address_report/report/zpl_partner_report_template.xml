@@ -6,7 +6,7 @@
 ^XA
 ^CI28
 ^FWR
-^NB
+^POB
 
 ^FX Top section with company address.
 ^CF0,30
@@ -15,7 +15,7 @@
 <t t-if="doc.company_id.zip or user.company_id.zip"> | <t t-esc="doc.company_id.zip or user.company_id.zip"/></t> 
 <t t-if="doc.company_id.city or user.company_id.city"><t t-esc="doc.company_id.city or user.company_id.city"/></t>^FS
 
-^FO770,150^GB6,1500,6^FS
+^FO770,150^GB3,1500,6^FS
 
 ^FX Second section with client address.
 ^CF,60
@@ -23,45 +23,34 @@
 <!-- Start-X-Koordinate festlegen -->
 <t t-set="x_pos" t-value="600"/>
 <t t-set="line_spacing" t-value="60"/>
-<t t-set="char_limit" t-value="35"/> <!-- Maximale Zeichen pro Zeile anpassen -->
 
 <!-- 1. Firmenname (Parent) falls es eine Kontaktperson ist -->
 <t t-if="doc.company_type == 'person' and doc.parent_id">
-    <t t-foreach="doc.split_by_limit(doc.parent_id.name, char_limit)" t-as="parent_line">
-        ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="parent_line"/>^FS
-        <t t-set="x_pos" t-value="x_pos - line_spacing"/>
-    </t>
-</t>
-
-<!-- 2. Name des Partners (Umgebrochen) -->
-<t t-foreach="doc.split_by_limit(doc.name, char_limit)" t-as="name_line">
-    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="name_line"/>^FS
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.parent_id.name"/>^FS
     <t t-set="x_pos" t-value="x_pos - line_spacing"/>
 </t>
 
-<!-- 3. Strasse (Umgebrochen) -->
+<!-- 2. Partner Name (Einzeilig) -->
+^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.name"/>^FS
+<t t-set="x_pos" t-value="x_pos - line_spacing"/>
+
+<!-- 3. Strasse (Einzeilig) -->
 <t t-if="doc.street">
-    <t t-foreach="doc.split_by_limit(doc.street, char_limit)" t-as="street_line">
-        ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="street_line"/>^FS
-        <t t-set="x_pos" t-value="x_pos - line_spacing"/>
-    </t>
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.street"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
 </t>
 
-<!-- Strasse 2 (Optional) -->
+<!-- Strasse 2 (Einzeilig, optional) -->
 <t t-if="doc.street2">
-    <t t-foreach="doc.split_by_limit(doc.street2, char_limit)" t-as="street2_line">
-        ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="street2_line"/>^FS
-        <t t-set="x_pos" t-value="x_pos - line_spacing"/>
-    </t>
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.street2"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
 </t>
 
 <!-- 4. PLZ und Stadt -->
 <t t-set="city_string" t-value="(doc.zip + ' ' if doc.zip else '') + (doc.city if doc.city else '')"/>
 <t t-if="city_string.strip()">
-    <t t-foreach="doc.split_by_limit(city_string, char_limit)" t-as="city_line">
-        ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="city_line"/>^FS
-        <t t-set="x_pos" t-value="x_pos - line_spacing"/>
-    </t>
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="city_string"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
 </t>
 
 <!-- 5. Land -->
