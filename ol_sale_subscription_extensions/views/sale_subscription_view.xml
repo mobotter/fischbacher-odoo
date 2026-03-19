@@ -87,21 +87,22 @@
         </field>
     </record>
 
-    <!-- ============================================== -->
+        <!-- ============================================== -->
     <!-- 2. ANPASSUNG DER LISTENANSICHT (TREE VIEW)     -->
     <!-- ============================================== -->
     <record id="sale_subscription_tree_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.tree.inherit</field>
         <field name="model">sale.order</field>
-        <!-- Wir erben direkt von der Odoo-Standard-Aboliste -->
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
             
-            <!-- Den Badge für subscription_state auf Grün setzen, wenn '5_accepted' -->
+            <!-- Badge-Widget mit Colors konfigurieren -->
             <xpath expr="//field[@name='subscription_state']" position="attributes">
-                <attribute name="decoration-success">subscription_state == '3_progress' or subscription_state == '5_accepted'</attribute>
+                <!-- Die bestehenden Attribute bleiben (widget="badge"), aber wir fügen die options hinzu -->
+                <attribute name="options">{'color_field': 'color', 'custom_colors': {'5_accepted': 'success', '3_progress': 'success', '4_paused': 'warning', '6_churn': 'danger', '1_draft': 'info'}}</attribute>
             </xpath>
 
         </field>
     </record>
+
 </odoo>
