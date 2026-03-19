@@ -17,7 +17,7 @@ class SaleOrder(models.Model):
     # HIER MUSS DIE EINRÜCKUNG EXAKT STIMMEN (4 Leerzeichen)
     subscription_state = fields.Selection(
         selection_add=[('5_accepted', "Accepted by Client")],
-        ondelete={'5_accepted': 'set default'}
+        ondelete={'5_accepted': 'set null'}
     )
 
     quotation_line_ids = fields.One2many(
