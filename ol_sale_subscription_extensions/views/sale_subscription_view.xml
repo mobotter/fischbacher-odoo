@@ -13,7 +13,7 @@
             <xpath expr="//header" position="inside">
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
-                    invisible="state != 'accept'"/>
+                    invisible="state != 'accepted'"/>
                 
                 <button
                     name="action_accept_by_client"
@@ -28,7 +28,7 @@
                     type="object"
                     string="Reset to Quotation"
                     class="btn-primary"
-                    invisible="state != 'accept'"
+                    invisible="state != 'accepted'"
                 />
                 
                 <button 
@@ -44,7 +44,7 @@
 
             <!-- Statusbar Reihenfolge anpassen -->
             <xpath expr="//field[@name='state']" position="attributes">
-                <attribute name="statusbar_visible">draft,sent,accept,sale,cancel</attribute>
+                <attribute name="statusbar_visible">draft,sent,accepted,sale,cancel</attribute>
             </xpath>
 
             <!-- Grünes Bändchen (Ribbon) oben rechts im Formular -->
@@ -115,18 +115,17 @@
     <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
         <field name="domain">[
             ('is_subscription', '=', True), 
-            ('state', 'in', ['draft', 'sent', 'accept'])
+            ('state', 'in', ['draft', 'sent', 'accepted'])
         ]</field>
     </record>
 
     <!-- B) Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
     <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
-        <!-- Wir erlauben explizit state 'accept' ODER den Custom subscription_state 'accepted' -->
         <field name="domain">[
             ('is_subscription', '=', True), 
             '|', '|',
             ('subscription_state', 'not in', ['1_draft', '2_renewal', '7_upsell']), 
-            ('state', '=', 'accept'),
+            ('state', '=', 'accepted'),
             ('subscription_state', '=', 'accepted')
         ]</field>
     </record>
@@ -138,7 +137,7 @@
         <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='draft']" position="attributes">
-                 <attribute name="domain">[('state', 'in', ('draft', 'sent', 'accept'))]</attribute>
+                 <attribute name="domain">[('state', 'in', ('draft', 'sent', 'accepted'))]</attribute>
             </xpath>
         </field>
     </record>
