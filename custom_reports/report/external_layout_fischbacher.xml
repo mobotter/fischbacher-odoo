@@ -151,7 +151,7 @@
               <td>
                 <ul class="list-inline">
                   <li style="color:#0069b4;">Kontakt</li>
-                  <li><span style="color:#0069b4;">Telefon</span> <t t-esc="company.phone or '089 / 14 99 08-0'"/>
+                  <li><span style="color:#0069b4;">Telefon</span> <t t-esc="company.phone or '089 / 14 99 08-0'"/></li>
                   <li><span style="color:#0069b4;">Telefax</span> <t t-esc="company.fax or '089 / 14 99 08-36'"/></li>
                 </ul>
               </td>
