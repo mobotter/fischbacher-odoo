@@ -23,7 +23,7 @@
                                 <span class="fw-bold">Shipping Address:</span>
                                 <t t-if="delivery_partner">
 
-                                    <div t-raw="delivery_partner.replace('\n', '&lt;br/&gt;')" />
+                                    <div t-field="doc.delivery_address" t-options="{'widget': 'text'}" />
                                 </t>
                                 <t t-else="">
                                     <address t-esc="o.partner_shipping_id"
