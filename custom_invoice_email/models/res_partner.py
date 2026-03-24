@@ -13,7 +13,7 @@ class ResPartner(models.Model):
     # Task Id 50960
     # Computed field: auto-fetch invoice address email
     invoice_address_email = fields.Char(
-        string="Invoice Email",
+        string="Invoice Email Address",
         store=True
     )
 
