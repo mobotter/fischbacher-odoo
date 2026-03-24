@@ -10,11 +10,15 @@
         EXTERNAL ID: studio_customization.web_studio_report_ed_bb9632ba-b884-41fd-b7d0-b3fbd04ced70
     """,
     "license": "LGPL-3",
-    "depends": [
+        "depends": [
         "base", 
         "contacts", 
         "stock", 
-        "stock_delivery"
+        "stock_delivery",
+        "sale",                 # Fehlt: Für sale.order und sale_order.xml
+        "account",              # Fehlt: Für account.move (Rechnungen)
+        "l10n_din5008",         # Fehlt: Für report_invoice_document.xml (inherit)
+        "l10n_din5008_sale"     # Fehlt: Für report_saleorder_document.xml (inherit)
     ],
     "data": [
         "security/ir.model.access.csv",
