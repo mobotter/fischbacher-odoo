@@ -2,7 +2,7 @@
     <template id="report_invoice_document_inherit"
         inherit_id="l10n_din5008.report_invoice_document">
         <!-- TASK ID: 52132 -->
-        <xpath position="before" expr="//div[@class='information_block']">
+        <xpath position="before" expr="//div[hasclass('information_block')]">
             <br />
         </xpath>
         <!-- TASK ID: 52132 -->
