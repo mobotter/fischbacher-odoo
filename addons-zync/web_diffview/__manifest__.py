@@ -12,6 +12,7 @@
     "demo": [],
     "depends": ["web"],
     "external_dependencies": {"bin": [], "python": []},
+    "license": "LGPL-3",
     "name": "web_diffview",
     "test": [],
     "version": "1.0",
