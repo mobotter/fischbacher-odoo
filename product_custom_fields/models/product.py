@@ -91,7 +91,7 @@ class ProductWebsiteAttributeValue(models.Model):
 
 class ProductWebsiteAttributeProduct(models.Model):
     _name = "product.website.attribute.product"
-
+    _description = "Website Attribute for Products"
 
     product_id = fields.Many2one("product.product","Product")
     attribute_id = fields.Many2one("product.website.attribute","Attribute")
