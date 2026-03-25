@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="sale_order_preview_inherit" inherit_id="sale_subscription.subscription_portal_content">
-        <xpath expr="//div[@id='sale_info']/table/tbody/tr[4]" position="replace">
-            <tr t-if="sale_order.client_order_ref or sale_order.subscription_id.name">
-                <th class="ps-0 pb-0">Reference:</th>
-                <td class="w-100 pb-0" style="white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><em t-out="sale_order.client_order_ref or sale_order.subscription_id.name"/></td>
-            </tr>
+        <!-- Odoo 19 sucht nach den konkreten Referenz-Elementen anstatt starren tr[4] Strukturen -->
+        <xpath expr="//div[@id='sale_info']//strong[contains(text(), 'Reference')]/../.." position="replace">
+            <div t-if="sale_order.client_order_ref" class="mb-2">
+                <strong class="d-block mb-1">Reference:</strong>
+                <span style="white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;" t-out="sale_order.client_order_ref"/>
+            </div>
         </xpath>
-            
-        
     </template>
 </odoo>
