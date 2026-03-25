@@ -1,4 +1,4 @@
-from odoo import fields , models , api 
+from odoo import fields, models, api 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -9,12 +9,12 @@ class SaleOrder(models.Model):
     hide_total = fields.Boolean(string="Hide Total Amount")
     german_payment_term = fields.Char(string="Zahlungsbedingungen")
 
-
     # Task Id 33897 JC
     client_order_name = fields.Text(string="Ordered by")
-    client_order_number = fields.Char(string=" Your Order Number")
+    client_order_number = fields.Char(string="Your Order Number")
 
-    def _find_mail_template(self):
+    # Odoo 19 benötigt **kwargs in der Signatur, da Core-Module Parameter übergeben!
+    def _find_mail_template(self, **kwargs):
         self.ensure_one()
 
         # ONLY change behavior when proforma button is used
@@ -22,8 +22,7 @@ class SaleOrder(models.Model):
             return self.env.ref(
                 'ol_invoice_report_changes.email_template_edi_sale_proforma',
                 raise_if_not_found=False
-            )
+            ).id  # WICHTIG: Die Methode muss eine ID oder ein Recordset zurückgeben, .id ist sicherer.
 
         # Otherwise keep original logic
-        return super()._find_mail_template()
-
+        return super()._find_mail_template(**kwargs)
