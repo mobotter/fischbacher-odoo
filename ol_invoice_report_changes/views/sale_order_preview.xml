@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="sale_order_preview_inherit" inherit_id="sale_subscription.subscription_portal_content">
-        <!-- Odoo 19 sucht nach den konkreten Referenz-Elementen anstatt starren tr[4] Strukturen -->
-        <xpath expr="//div[@id='sale_info']//strong[contains(text(), 'Reference')]/../.." position="replace">
-            <div t-if="sale_order.client_order_ref" class="mb-2">
-                <strong class="d-block mb-1">Reference:</strong>
-                <span style="white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;" t-out="sale_order.client_order_ref"/>
+    <template id="sale_order_preview_inherit" inherit_id="sale.sale_order_portal_content">
+        <!-- Odoo 19 sucht nach dem div mit id="informations". 
+             Wir fügen die Referenz am Ende dieses Informations-Blocks ein -->
+        <xpath expr="//div[@id='informations']" position="inside">
+            
+            <div t-if="sale_order.client_order_ref or sale_order.subscription_id.name" class="row mb-3">
+                <div class="col-12">
+                    <strong>Reference:</strong>
+                    <br/>
+                    <span class="text-muted" style="white-space:normal; word-wrap:break-word; word-break:break-word;">
+                        <t t-out="sale_order.client_order_ref or sale_order.subscription_id.name"/>
+                    </span>
+                </div>
             </div>
+            
         </xpath>
     </template>
 </odoo>
