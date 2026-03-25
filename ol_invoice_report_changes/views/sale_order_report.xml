@@ -27,7 +27,7 @@
                                         </div>
                     
                                         <strong>
-                                            <t t-esc="doc.partner_id.name"/>
+                                            <t t-out="doc.partner_id.name"/>
                                         </strong><br/>
                                         <t t-esc="doc.partner_id.street"/><br/>
                                         <t t-if="doc.partner_id.street2">
@@ -45,7 +45,7 @@
                                         <t t-if="doc.name">
                                             <tr>
                                                 <td style="width:55%;font-size:13px;">Order Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.name"/></td>
+                                                <td style="font-size:13px;padding-left:3px;"><t t-out="doc.name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.date_order">
@@ -156,7 +156,7 @@
                                         </t>
                                     </th>
                                     <th colspan="4" style="text-align:right; font-size:12px; font-weight:600; ">
-                                            Order Number: <t t-esc="doc.name"/>
+                                            Order Number: <t t-out="doc.name"/>
                                     </th>
                                 </tr>
                                 <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
@@ -302,8 +302,6 @@
                     </div>
                 </main>
 
-            
-            
                 </t>
             </t> 
         </xpath>
