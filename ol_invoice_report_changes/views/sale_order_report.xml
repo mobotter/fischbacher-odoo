@@ -5,6 +5,17 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
                     <main>
+                        <style>
+                            table {
+                                border: none !important;
+                            }
+                            table td, table th {
+                                border: none !important;
+                            }
+                            tr {
+                                border: none !important;
+                            }
+                        </style>
                         <div class="page">
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
