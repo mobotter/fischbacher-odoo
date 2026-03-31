@@ -19,12 +19,12 @@
                                     box-shadow: none !important;
                                     outline: none !important;
                                 }
-                            
+
                                 .page table {
                                     border-spacing: 0 !important;
                                     background: transparent !important;
                                 }
-                            
+
                                 .page pre {
                                     border: 0 !important;
                                     border-style: none !important;
@@ -33,15 +33,15 @@
                                     padding: 0 !important;
                                     white-space: pre-wrap;
                                 }
-                            
+
                                 .page .head-bottom th {
                                     border-bottom: 1px solid #ccc !important;
                                 }
-                            
+
                                 .page .line-bottom td {
                                     border-bottom: 1px solid #e0e0e0 !important;
                                 }
-                            
+
                                 .page .line-bottom th {
                                     border-bottom: 1px solid #e0e0e0 !important;
                                 }
@@ -293,52 +293,6 @@
                                 </tr>
                             </table>
 
-                            <t t-set="sale_order_option_ids" t-value="doc._fields.get('sale_order_option_ids') and doc.sale_order_option_ids or []"/>
-                            <div t-if="not (sale_order_option_ids and doc.state in ['draft', 'sent'])" class="oe_structure">​</div>
-                            <div t-else="" style="margin-top:4mm; font-size:11px; line-height:1.2; width:100%; page-break-inside:avoid;">
-                                <t t-set="has_option_discount" t-value="any(option.discount != 0.0 for option in sale_order_option_ids)"/>
-                                <h4 style="font-size:16px;">
-                                    <span>Optional Products</span>
-                                </h4>
-                                <table name="table_optional_products" style="width:100%; border-collapse:collapse; font-size:14px; padding:10px;">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="3" style="text-align:right; font-size:12px; font-weight:600;">
-                                                Order Number: <t t-esc="doc.name"/>
-                                            </th>
-                                        </tr>
-                                        <tr class="head-bottom">
-                                            <th name="th_option_name" style="width:75%; text-align:left;font-size:14px">Description</th>
-                                            <th t-if="has_option_discount" name="th_option_discount">Disc.%</th>
-                                            <th name="th_option_price_unit" style="width:25%; text-align:right;">Unit Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="line-bottom" t-foreach="sale_order_option_ids" t-as="option">
-                                            <td name="td_option_name" style="white-space:normal; word-wrap:break-word; word-break:break-word;max-width:20px;padding:7px;padding-bottom:7px;">
-                                                <pre t-field="option.name">Extra Chips</pre>
-                                            </td>
-                                            <td t-if="has_option_discount" name="td_option_discount" style="text-align:right;">
-                                                <strong t-if="option.discount != 0.0" class="text-info">
-                                                    <t t-out="((option.discount % 1) and '%s' or '%d') % option.discount"/>%
-                                                </strong>
-                                            </td>
-                                            <td name="td_option_price_unit" style="text-align:right;">
-                                                <strong>
-                                                    <div t-field="option.price_unit"
-                                                         t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
-                                                         t-att-style="option.discount and 'text-decoration: line-through' or None"
-                                                         t-att-class="option.discount and 'text-danger' or None"/>
-                                                    <div t-if="option.discount">
-                                                        <t t-out="((1-option.discount / 100.0) * option.price_unit)"
-                                                           t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                                    </div>
-                                                </strong>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </main>
                 </t>
