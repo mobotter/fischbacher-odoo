@@ -12,31 +12,41 @@
                                 .page td,
                                 .page th {
                                     border: 0 !important;
+                                    border-width: 0 !important;
+                                    border-style: none !important;
+                                    border-color: transparent !important;
                                     border-collapse: collapse !important;
                                     box-shadow: none !important;
                                     outline: none !important;
                                 }
-
+                            
                                 .page table {
+                                    border-spacing: 0 !important;
                                     background: transparent !important;
                                 }
-
+                            
                                 .page pre {
                                     border: 0 !important;
+                                    border-style: none !important;
                                     background: transparent !important;
                                     margin: 0 !important;
                                     padding: 0 !important;
                                     white-space: pre-wrap;
                                 }
-
+                            
                                 .page .head-bottom th {
                                     border-bottom: 1px solid #ccc !important;
                                 }
-
+                            
                                 .page .line-bottom td {
                                     border-bottom: 1px solid #e0e0e0 !important;
                                 }
+                            
+                                .page .line-bottom th {
+                                    border-bottom: 1px solid #e0e0e0 !important;
+                                }
                             </style>
+
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
                                 <tr>
