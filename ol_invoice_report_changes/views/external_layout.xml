@@ -6,25 +6,46 @@
             <head>
                 <meta charset="utf-8"/>
                 <style>
-                    .header table,
-                    .header td,
-                    .header th,
-                    .footer table,
-                    .footer td,
-                    .footer th,
-                    .company_header,
-                    .company_header td,
-                    .company_header th {
-                        border: 0 !important;
-                        border-collapse: collapse !important;
-                        box-shadow: none !important;
-                        outline: none !important;
-                    }
+                                .page table,
+                                .page tr,
+                                .page td,
+                                .page th {
+                                    border: 0 !important;
+                                    border-width: 0 !important;
+                                    border-style: none !important;
+                                    border-color: transparent !important;
+                                    border-collapse: collapse !important;
+                                    box-shadow: none !important;
+                                    outline: none !important;
+                                }
+                            
+                                .page table {
+                                    border-spacing: 0 !important;
+                                    background: transparent !important;
+                                }
+                            
+                                .page pre {
+                                    border: 0 !important;
+                                    border-style: none !important;
+                                    background: transparent !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                    white-space: pre-wrap;
+                                }
+                            
+                                .page .head-bottom th {
+                                    border-bottom: 1px solid #ccc !important;
+                                }
+                            
+                                .page .line-bottom td {
+                                    border-bottom: 1px solid #e0e0e0 !important;
+                                }
+                            
+                                .page .line-bottom th {
+                                    border-bottom: 1px solid #e0e0e0 !important;
+                                }
+                            </style>
 
-                    .footer table {
-                        background: transparent !important;
-                    }
-                </style>
             </head>
 
             <div class="header">
