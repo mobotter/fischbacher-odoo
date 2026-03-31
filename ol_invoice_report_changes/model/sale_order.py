@@ -22,8 +22,8 @@ class SaleOrder(models.Model):
             next_invoice_date = getattr(order, 'next_invoice_date', False)
 
             if next_invoice_date:
-                order.billing_period_start = next_invoice_date - relativedelta(days=28)
-                order.billing_period_end = next_invoice_date - relativedelta(days=1)
+                order.billing_period_start = next_invoice_date 
+                order.billing_period_end = next_invoice_date + relativedelta(days=27)
             else:
                 order.billing_period_start = False
                 order.billing_period_end = False
