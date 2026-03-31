@@ -187,6 +187,17 @@
                                                 Rental price /
                                                 <t t-out="sale_orders.plan_id.name"/>
                                                 <br/>
+                                                <t t-if="doc.is_subscription">
+                                                    Rental Period:
+                                                    <t t-esc="doc.plan_id.name"/>
+                                                    from
+                                                    <t t-esc="doc.billing_period_start" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                    to
+                                                    <t t-esc="doc.billing_period_end" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                </t>
+
+
+                                                <!--
                                                 Rental period from
                                                 <t t-if="first_line and first_line.deferred_start_date">
                                                     <t t-out="first_line.deferred_start_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
@@ -195,6 +206,8 @@
                                                 <t t-if="first_line and first_line.deferred_end_date">
                                                     <t t-out="first_line.deferred_end_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                                 </t>
+                                                -->
+                                                
                                             </t>
                                         </th>
 
