@@ -145,7 +145,7 @@
                             <thead>
                                 <tr>
                                     <th colspan="3" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                        <t t-if="doc.is_subscription">
+                                        <!--<t t-if="doc.is_subscription">
                                             Rental Period:
                                                 <t t-esc="doc.plan_id.name"/>
                                                 from
@@ -154,6 +154,16 @@
                                                 <t t-esc="doc.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
 
                                         </t>
+                                        -->
+
+                                    <t t-if="doc.is_subscription">
+                                        Rental Period:
+                                        <t t-esc="doc.plan_id.name"/>
+                                        from
+                                        <t t-esc="doc.billing_period_start" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        to
+                                        <t t-esc="doc.billing_period_end" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                    </t>
                                     </th>
                                     <th colspan="4" style="text-align:right; font-size:12px; font-weight:600; ">
                                             Order Number: <t t-esc="doc.name"/>
