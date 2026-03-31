@@ -175,10 +175,10 @@
                                     <tr class="head-bottom">
                                         <th style="width:5%; text-align:left;font-size:14px; font-weight:600;">POS</th>
                                         <th style="width:45%; text-align:left;font-size:14px; font-weight:600;">Description</th>
-                                        <th style="width:15%; text-align:right;font-size:14px; font-weight:600;">Quantity</th>
+                                        <th style="width:12%; text-align:right;font-size:14px; font-weight:600;">Quantity</th>
                                         <th style="width:12%; text-align:right;font-size:14px; font-weight:600;">Unit Price</th>
                                         <th style="width:10%; text-align:right;font-size:14px; font-weight:600;" t-if="display_discount">Disc.%</th>
-                                        <th style="width:13%; text-align:right;font-size:14px; font-weight:600;">Sum</th>
+                                        <th style="width:16%; text-align:right;font-size:14px; font-weight:600;">Amount</th>
                                     </tr>
                                 </thead>
 
@@ -193,7 +193,7 @@
                                         <t t-if="line.display_type == 'line_section'">
                                             <t t-if="section_title">
                                                 <tr class="line-bottom">
-                                                    <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px;" colspan="5">
+                                                    <td t-attf-colspan="#{5 if display_discount else 5}" style="background-color:#E5E5E5; font-weight:bold; font-size:14px;">
                                                         <span t-esc="section_title"/>
                                                         <t t-if="section_hide_prices">
                                                             <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
@@ -202,10 +202,11 @@
                                                             <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
                                                         </t>
                                                     </td>
-                                                    <td t-if="not section_hide_prices" style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;">
-                                                        <t t-esc="section_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;">
+                                                        <t t-if="not section_hide_prices">
+                                                            <t t-esc="section_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        </t>
                                                     </td>
-                                                    <td t-if="section_hide_prices" style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;"></td>
                                                 </tr>
                                             </t>
                                 
@@ -215,7 +216,7 @@
                                             <t t-set="section_subtotal" t-value="0.0"/>
                                 
                                             <tr class="line-bottom">
-                                                <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px;" colspan="5">
+                                                <td t-attf-colspan="#{5 if display_discount else 5}" style="background-color:#E5E5E5; font-weight:bold; font-size:14px;">
                                                     <span t-esc="section_title"/>
                                                     <t t-if="section_hide_prices">
                                                         <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
@@ -224,15 +225,13 @@
                                                         <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
                                                     </t>
                                                 </td>
-                                                <td t-if="not section_hide_prices" style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;">
-                                                </td>
-                                                <td t-if="section_hide_prices" style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;"></td>
+                                                <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;"></td>
                                             </tr>
                                         </t>
                                 
                                         <t t-elif="line.display_type == 'line_note'">
                                             <tr class="line-bottom">
-                                                <td colspan="99" style="font-style:italic; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                                <td t-attf-colspan="#{6 if display_discount else 6}" style="font-style:italic; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
                                                     <span t-field="line.name"/>
                                                 </td>
                                             </tr>
@@ -274,7 +273,7 @@
                                 
                                     <t t-if="section_title">
                                         <tr class="line-bottom">
-                                            <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px;" colspan="5">
+                                            <td t-attf-colspan="#{5 if display_discount else 5}" style="background-color:#E5E5E5; font-weight:bold; font-size:14px;">
                                                 <span t-esc="section_title"/>
                                                 <t t-if="section_hide_prices">
                                                     <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
@@ -283,10 +282,11 @@
                                                     <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
                                                 </t>
                                             </td>
-                                            <td t-if="not section_hide_prices" style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;">
-                                                <t t-esc="section_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                            <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;">
+                                                <t t-if="not section_hide_prices">
+                                                    <t t-esc="section_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                </t>
                                             </td>
-                                            <td t-if="section_hide_prices" style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;"></td>
                                         </tr>
                                     </t>
                                 </tbody>
