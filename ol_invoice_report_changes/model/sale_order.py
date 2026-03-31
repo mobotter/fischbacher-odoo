@@ -1,4 +1,6 @@
-from odoo import fields , models , api 
+from odoo import api, fields, models
+from dateutil.relativedelta import relativedelta
+
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -8,22 +10,27 @@ class SaleOrder(models.Model):
     is_rent = fields.Boolean(string="Rent")
     hide_total = fields.Boolean(string="Hide Total Amount")
     german_payment_term = fields.Char(string="Zahlungsbedingungen")
-
-
-    # Task Id 33897 JC
     client_order_name = fields.Text(string="Ordered by")
-    client_order_number = fields.Char(string=" Your Order Number")
+    client_order_number = fields.Char(string="Your Order Number")
+
+    billing_period_start = fields.Date(compute='_compute_billing_period', store=True)
+    billing_period_end = fields.Date(compute='_compute_billing_period', store=True)
+
+    @api.depends('start_date', 'next_invoice_date')
+    def _compute_billing_period(self):
+        for order in self:
+            if order.next_invoice_date:
+                order.billing_period_start = order.next_invoice_date - relativedelta(days=28)
+                order.billing_period_end = order.next_invoice_date - relativedelta(days=1)
+            else:
+                order.billing_period_start = order.start_date
+                order.billing_period_end = order.start_date
 
     def _find_mail_template(self):
         self.ensure_one()
-
-        # ONLY change behavior when proforma button is used
         if self.env.context.get('proforma'):
             return self.env.ref(
                 'ol_invoice_report_changes.email_template_edi_sale_proforma',
                 raise_if_not_found=False
             )
-
-        # Otherwise keep original logic
         return super()._find_mail_template()
-
