@@ -60,7 +60,7 @@
                                                 <span t-field="doc.company_id.zip"/>
                                                 <span t-field="doc.company_id.city"/>
                                             </div>
-
+                            
                                             <strong>
                                                 <t t-esc="doc.partner_id.name"/>
                                             </strong><br/>
@@ -73,7 +73,7 @@
                                             <t t-esc="doc.partner_id.country_id.name"/>
                                         </div>
                                     </td>
-
+                            
                                     <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
                                         <table style="width:100%; border-collapse:collapse;">
                                             <t t-if="doc.name">
@@ -108,6 +108,56 @@
                                                 <tr>
                                                     <td style="font-size:13px">Client Number: </td>
                                                     <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.partner_id.id"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.client_order_name">
+                                                <tr>
+                                                    <td style="font-size:13px">Ordered by: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.client_order_name"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.client_order_number">
+                                                <tr>
+                                                    <td style="font-size:13px">Your Order Number: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.client_order_number"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.carrier_id">
+                                                <tr>
+                                                    <td style="font-size:13px">Shipping Method: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.carrier_id.name"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.incoterm">
+                                                <tr>
+                                                    <td style="font-size:13px">Delivery Terms: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.incoterm.name"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.user_id.name">
+                                                <tr>
+                                                    <td style="font-size:13px">Salesperson: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.user_id.name"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.user_id.phone">
+                                                <tr>
+                                                    <td style="font-size:13px">Phone: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.user_id.phone"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.user_id.login">
+                                                <tr>
+                                                    <td style="font-size:13px">Email: </td>
+                                                    <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.user_id.login"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="doc.client_order_ref">
+                                                <tr>
+                                                    <td style="font-size:13px;vertical-align:top;">Project: </td>
+                                                    <td style="font-size:13px;padding-left:3px;white-space:normal;word-wrap:break-word;word-break:break-word;vertical-align:top;">
+                                                        <t t-esc="doc.client_order_ref"/>
+                                                    </td>
                                                 </tr>
                                             </t>
                                         </table>
