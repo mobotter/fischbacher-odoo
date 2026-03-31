@@ -244,7 +244,7 @@
 
                                     <t t-foreach="doc.invoice_line_ids" t-as="line">
                                         <t t-if="line.display_type == 'line_section'">
-                                            <t t-set="hide_prices_for_section" t-value="getattr(line, 'hide_price_section', False)"/>
+                                            <t t-set="hide_prices_for_section" t-value="'hide_price_section' in line._fields and line.hide_price_section or False"/>
                                             <tr class="line-bottom">
                                                 <td colspan="99" style="background-color:#D3D3D3; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
                                                     <span t-field="line.name"/>
