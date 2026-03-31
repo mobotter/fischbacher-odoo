@@ -188,9 +188,9 @@
 
                                     <t t-foreach="doc.order_line" t-as="line">
                                         <t t-if="line.display_type == 'line_section'">
-                                            <t t-set="hide_prices_for_section" t-value="getattr(line, 'hide_price_section', False)"/>
-                                            <t t-set="hide_composition_for_section" t-value="getattr(line, 'hide_composition_section', False)"/>
-                                            <t t-set="in_optional_section" t-value="getattr(line, 'is_optional_section', False)"/>
+                                            <t t-set="hide_prices_for_section" t-value="'hide_price_section' in line._fields and line.hide_price_section or False"/>
+                                            <t t-set="hide_composition_for_section" t-value="'hide_composition_section' in line._fields and line.hide_composition_section or False"/>
+                                            <t t-set="in_optional_section" t-value="'is_optional_section' in line._fields and line.is_optional_section or False"/>
                                             <tr class="line-bottom">
                                                 <td colspan="99" style="background-color:#D3D3D3; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
                                                     <span t-field="line.name"/>
@@ -268,7 +268,7 @@
                                                         <t t-esc="doc.german_payment_term"/>
                                                     </t>
                                                     <t t-else="">
-                                                        Payable immediately, or at the latest within 10 days net.
+                                                        Zahlbar 10 Tage Skonto netto.
                                                     </t>
                                                 </t>
                                                 <t t-else="">
@@ -276,7 +276,7 @@
                                                         <t t-esc="doc.payment_term_id.name"/>
                                                     </t>
                                                     <t t-else="">
-                                                        Payable immediately, or at the latest within 10 days net.
+                                                        Zahlbar 10 Tage Skonto netto.
                                                     </t>
                                                 </t>
                                             </div>
