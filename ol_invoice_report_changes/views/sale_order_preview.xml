@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="sale_order_preview_inherit" inherit_id="sale.sale_order_portal_content">
-        <!-- Odoo 19 sucht nach dem div mit id="informations". 
-             Wir fügen die Referenz am Ende dieses Informations-Blocks ein -->
         <xpath expr="//div[@id='informations']" position="inside">
-            
             <div t-if="sale_order.client_order_ref or sale_order.subscription_id.name" class="row mb-3">
                 <div class="col-12">
                     <strong>Reference:</strong>
@@ -14,7 +11,6 @@
                     </span>
                 </div>
             </div>
-            
         </xpath>
     </template>
 </odoo>
