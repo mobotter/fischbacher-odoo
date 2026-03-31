@@ -27,7 +27,7 @@
                                         </div>
                     
                                         <strong>
-                                            <t t-out="doc.partner_id.name"/>
+                                            <t t-esc="doc.partner_id.name"/>
                                         </strong><br/>
                                         <t t-esc="doc.partner_id.street"/><br/>
                                         <t t-if="doc.partner_id.street2">
@@ -45,7 +45,7 @@
                                         <t t-if="doc.name">
                                             <tr>
                                                 <td style="width:55%;font-size:13px;">Order Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-out="doc.name"/></td>
+                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="doc.name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.date_order">
@@ -145,7 +145,7 @@
                             <thead>
                                 <tr>
                                     <th colspan="3" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                        <t t-if="doc.is_subscription">
+                                        <!--<t t-if="doc.is_subscription">
                                             Rental Period:
                                                 <t t-esc="doc.plan_id.name"/>
                                                 from
@@ -154,9 +154,19 @@
                                                 <t t-esc="doc.next_invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
 
                                         </t>
+                                        -->
+
+                                    <t t-if="doc.is_subscription">
+                                        Rental Period:
+                                        <t t-esc="doc.plan_id.name"/>
+                                        from
+                                        <t t-esc="doc.billing_period_start" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        to
+                                        <t t-esc="doc.billing_period_end" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                    </t>
                                     </th>
                                     <th colspan="4" style="text-align:right; font-size:12px; font-weight:600; ">
-                                            Order Number: <t t-out="doc.name"/>
+                                            Order Number: <t t-esc="doc.name"/>
                                     </th>
                                 </tr>
                                 <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
@@ -188,7 +198,7 @@
                             
                                            <td style="text-align:right;font-size:14px;">
                                                 <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/> 
-                                                <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
                                             </td>
 
                             
@@ -297,11 +307,52 @@
                             </tr>
                         </table>
                         
-                        <div class="oe_structure"></div>
-                        
+                        <div t-if="not (doc.sale_order_option_ids and doc.state in ['draft', 'sent'])" class="oe_structure">​</div>
+                        <div t-else="" style="margin-top:4mm; font-size:11px; line-height:1.2; width:100%; page-break-inside: avoid;">
+                            <t t-set="has_option_discount" t-value="any(option.discount != 0.0 for option in doc.sale_order_option_ids)"/>
+                            <h4 style="font-size:16px;">
+                                <span>Optional Products</span>
+                            </h4>
+                            <table name="table_optional_products" style="width:100%; border-collapse:collapse; font-size:14px; padding:10px;">
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right; font-size:12px; font-weight:600;">
+                                            Order Number: <t t-esc="doc.name"/>
+                                        </th>
+                                    </tr>
+                                    <tr style="border-bottom:1px solid #ccc;margin-bottom:1px;">
+                                        <th name="th_option_name" style="width:75%; text-align:left;font-size:14px">Description</th>
+                                        <th t-if="has_option_discount" name="th_option_discount" >Disc.%</th>
+                                        <th name="th_option_price_unit" style="width:25%; text-align:right;">Unit Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.sale_order_option_ids" t-as="option" style="border-bottom:1px solid #e0e0e0;margin-bottom:20px;">
+                                        <td name="td_option_name" style="white-space:normal; word-wrap: break-word; word-break: break-word;max-width:20px;padding:7px;padding-bottom:7px;">
+                                            <pre t-field="option.name">Extra Chips</pre>
+                                        </td>
+                                        <td t-if="has_option_discount" name="td_option_discount" style="text-align:right;">
+                                            <strong t-if="option.discount != 0.0" class="text-info">
+                                                <t t-out="((option.discount % 1) and '%s' or '%d') % option.discount">-</t>%
+                                            </strong>
+                                        </td>
+                                        <td name="td_option_price_unit" style="text-align:right;">
+                                            <strong>
+                                                <div t-field="option.price_unit" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.currency_id}" t-att-style="option.discount and 'text-decoration: line-through' or None" t-att-class="option.discount and 'text-danger' or None">1.5</div>
+                                                <div t-if="option.discount">
+                                                    <t t-out="((1-option.discount / 100.0) * option.price_unit)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: doc.currency_id}"> </t>
+                                                </div>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </main>
 
+            
+            
                 </t>
             </t> 
         </xpath>
