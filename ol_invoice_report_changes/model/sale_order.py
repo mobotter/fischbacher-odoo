@@ -16,15 +16,20 @@ class SaleOrder(models.Model):
     billing_period_start = fields.Date(compute='_compute_billing_period', store=True)
     billing_period_end = fields.Date(compute='_compute_billing_period', store=True)
 
-    @api.depends('start_date', 'next_invoice_date')
+    @api.depends('start_date')
     def _compute_billing_period(self):
         for order in self:
-            if order.next_invoice_date:
-                order.billing_period_start = order.next_invoice_date - relativedelta(days=28)
-                order.billing_period_end = order.next_invoice_date - relativedelta(days=1)
-            else:
+            next_invoice_date = getattr(order, 'next_invoice_date', False)
+
+            if next_invoice_date:
+                order.billing_period_start = next_invoice_date - relativedelta(days=28)
+                order.billing_period_end = next_invoice_date - relativedelta(days=1)
+            elif order.start_date:
                 order.billing_period_start = order.start_date
                 order.billing_period_end = order.start_date
+            else:
+                order.billing_period_start = False
+                order.billing_period_end = False
 
     def _find_mail_template(self):
         self.ensure_one()
