@@ -194,6 +194,72 @@
                                     </t>
                                 </tbody>
                             </table>
+                            <table style="margin-top:4mm; font-size:12px; line-height:1.1; width:100%; page-break-inside:avoid;">
+                                <tr>
+                                    <td style="width:60%; vertical-align:top;">
+                                        <div style="white-space:normal; font-size:12px; word-wrap:break-word; word-break:break-word; max-width:100%;">
+                                            Prices:
+                                            <div>Ex works, conditions as described above,</div>
+                                            <div>subject to prior sale, plus statutory VAT.</div>
+                                        </div>
+                                        <br/>
+                                        <div style="white-space:normal;">
+                                            Payment Terms:
+                                            <div>
+                                                <t t-if="doc.is_subscription">
+                                                    <t t-if="doc.german_payment_term">
+                                                        <t t-esc="doc.german_payment_term"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        Payable immediately, or at the latest within 10 days net.
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-if="doc.payment_term_id.name">
+                                                        <t t-esc="doc.payment_term_id.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        Payable immediately, or at the latest within 10 days net.
+                                                    </t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div style="white-space:normal;">
+                                            <div>
+                                                <t t-if="doc.note">
+                                                    <t t-esc="doc.note"/>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </td>
+                            
+                                    <td style="width:40%; vertical-align:top; padding-left:10mm;">
+                                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                                            <t t-if="not doc.hide_total">
+                                                <tr style="font-size:14px;">
+                                                    <td style="text-align:left;">Untaxed Amount:</td>
+                                                    <td style="text-align:right;">
+                                                        <t t-esc="doc.amount_untaxed" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr style="font-size:14px;">
+                                                    <td style="text-align:left;">VAT 19%:</td>
+                                                    <td style="text-align:right;">
+                                                        <t t-esc="doc.amount_tax" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr style="font-weight:bold; font-size:14px;">
+                                                    <td style="text-align:left;">Total:</td>
+                                                    <td style="text-align:right;">
+                                                        <t t-esc="doc.amount_total" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </main>
                 </t>
