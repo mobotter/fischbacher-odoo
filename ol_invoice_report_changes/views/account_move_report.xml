@@ -308,7 +308,7 @@
                                                     <t t-out="doc.invoice_payment_term_id.name"/>
                                                 </t>
                                                 <t t-else="">
-                                                    Zahlbar 10 Tage Skonto netto.
+                                                    Payable immediately, or at the latest within 10 days net.
                                                 </t>
                                             </div>
                                             <t t-if="doc.invoice_payment_term_id.early_discount and doc.state == 'posted'">
