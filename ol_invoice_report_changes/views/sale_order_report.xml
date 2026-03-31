@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-        Datei: sale_order_report.xml
-        Zweck: Custom QWeb-Report für Angebots-/Auftragsdruck
-        Ausgabe: PDF mit Adressblock, Positionsliste, Sections/Notes, Summen und Zahlungsbedingungen
-    -->
+    Datei: sale_order_report.xml
+    Zweck: Custom QWeb-Report für Angebots-/Auftragsdruck
+    Ausgabe: PDF mit Adressblock, Positionsliste, Sections/Notes, Summen und Zahlungsbedingungen
+-->
 <odoo>
     <template id="sale_report_new" inherit_id="sale.report_saleorder" priority="30">
         <xpath expr="//t[@t-call='sale.report_saleorder_raw']" position="replace">
@@ -188,13 +188,34 @@
                                     <t t-set="pos" t-value="0"/>
                                     <t t-set="section_hide_prices" t-value="False"/>
                                     <t t-set="section_hide_composition" t-value="False"/>
+                                    <t t-set="section_subtotal" t-value="0.0"/>
 
                                     <t t-foreach="doc.order_line" t-as="line">
                                         <t t-if="line.display_type == 'line_section'">
+                                            <t t-if="section_hide_composition">
+                                                <tr class="line-bottom">
+                                                    <td colspan="99" style="background-color:#E5E5E5; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                                        <span t-field="line.name"/>
+                                                        <t t-if="section_hide_prices">
+                                                            <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
+                                                        </t>
+                                                        <t t-if="section_hide_composition">
+                                                            <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
+                                                        </t>
+                                                        <t t-if="section_subtotal">
+                                                            <span style="font-weight:normal;"> — </span>
+                                                            <t t-esc="section_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
                                             <t t-set="section_hide_prices" t-value="'hide_price_section' in line._fields and line.hide_price_section or False"/>
                                             <t t-set="section_hide_composition" t-value="'hide_composition_section' in line._fields and line.hide_composition_section or False"/>
+                                            <t t-set="section_subtotal" t-value="0.0"/>
+
                                             <tr class="line-bottom">
-                                                <td colspan="99" style="background-color:#D3D3D3; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                                <td colspan="99" style="background-color:#E5E5E5; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
                                                     <span t-field="line.name"/>
                                                     <t t-if="section_hide_prices">
                                                         <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
@@ -215,45 +236,51 @@
                                         </t>
 
                                         <t t-elif="not line.display_type">
+                                            <t t-set="section_subtotal" t-value="section_subtotal + line.price_subtotal"/>
                                             <t t-set="pos" t-value="pos + 1"/>
-                                            <tr class="line-bottom">
-                                                <td style="font-size:14px;"><t t-esc="pos"/></td>
 
-                                                <td>
-                                                    <t t-if="section_hide_composition">
-                                                        <span t-esc="line.product_id.display_name or line.name"/>
-                                                    </t>
-                                                    <t t-else="">
+                                            <t t-if="not section_hide_composition">
+                                                <tr class="line-bottom">
+                                                    <td style="font-size:14px;"><t t-esc="pos"/></td>
+
+                                                    <td>
                                                         <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;" t-out="line.name"/>
-                                                    </t>
-                                                </td>
+                                                    </td>
 
-                                                <td style="text-align:right;font-size:14px;">
-                                                    <t t-if="not section_hide_composition">
+                                                    <td style="text-align:right;font-size:14px;">
                                                         <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
                                                         <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
-                                                    </t>
-                                                </td>
+                                                    </td>
 
-                                                <td style="text-align:right;font-size:14px;">
-                                                    <t t-if="not section_hide_prices">
-                                                        <t t-esc="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                                    </t>
-                                                </td>
+                                                    <td style="text-align:right;font-size:14px;">
+                                                        <t t-if="not section_hide_prices">
+                                                            <t t-esc="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                        </t>
+                                                    </td>
 
-                                                <td style="text-align:right;font-size:14px;" t-if="display_discount">
-                                                    <t t-if="not section_hide_prices">
-                                                        <t t-esc="line.discount"/>%
-                                                    </t>
-                                                </td>
+                                                    <td style="text-align:right;font-size:14px;" t-if="display_discount">
+                                                        <t t-if="not section_hide_prices">
+                                                            <t t-esc="line.discount"/>%
+                                                        </t>
+                                                    </td>
 
-                                                <td style="text-align:right;font-size:14px;">
-                                                    <t t-if="not section_hide_prices">
-                                                        <t t-esc="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                                    </t>
-                                                </td>
-                                            </tr>
+                                                    <td style="text-align:right;font-size:14px;">
+                                                        <t t-if="not section_hide_prices">
+                                                            <t t-esc="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
                                         </t>
+                                    </t>
+
+                                    <t t-if="section_hide_composition">
+                                        <tr class="line-bottom">
+                                            <td colspan="99" style="text-align:right; font-weight:bold; font-size:14px; padding-top:7px; padding-bottom:7px;">
+                                                Section subtotal:
+                                                <t t-esc="section_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                        </tr>
                                     </t>
                                 </tbody>
                             </table>
