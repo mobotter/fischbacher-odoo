@@ -60,7 +60,7 @@
                                                 <span t-field="doc.company_id.zip"/>
                                                 <span t-field="doc.company_id.city"/>
                                             </div>
-                            
+
                                             <strong>
                                                 <t t-esc="doc.partner_id.name"/>
                                             </strong><br/>
@@ -73,7 +73,7 @@
                                             <t t-esc="doc.partner_id.country_id.name"/>
                                         </div>
                                     </td>
-                            
+
                                     <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
                                         <table style="width:100%; border-collapse:collapse;">
                                             <t t-if="doc.name">
@@ -212,38 +212,47 @@
                                         <t t-elif="not line.display_type">
                                             <t t-set="pos" t-value="pos + 1"/>
                                             <tr class="line-bottom">
-                                                <td style="font-size:14px;"><t t-out="pos"/></td>
+                                                <td style="font-size:14px;"><t t-esc="pos"/></td>
 
                                                 <td>
                                                     <t t-if="section_hide_composition">
-                                                        <span t-esc="line.product_id.display_name"/>
+                                                        <span t-esc="line.product_id.display_name or line.name"/>
                                                     </t>
                                                     <t t-else="">
                                                         <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;" t-out="line.name"/>
                                                     </t>
                                                 </td>
 
-                                                <td style="text-align:right;font-size:14px;" t-if="not section_hide_composition">
-                                                    <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
-                                                    <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
-                                                </td>
-                                                <td style="text-align:right;font-size:14px;" t-else="">
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <t t-if="not section_hide_composition">
+                                                        <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
+                                                        <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                    </t>
                                                 </td>
 
-                                                <td t-if="not section_hide_prices" style="text-align:right;font-size:14px;">
-                                                    <t t-esc="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <t t-if="not section_hide_prices">
+                                                        <t t-esc="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                    </t>
                                                 </td>
-                                                <td t-if="display_discount and not section_hide_prices" style="text-align:right;font-size:14px;">
-                                                    <t t-esc="line.discount"/>%
+
+                                                <td style="text-align:right;font-size:14px;" t-if="display_discount">
+                                                    <t t-if="not section_hide_prices">
+                                                        <t t-esc="line.discount"/>%
+                                                    </t>
                                                 </td>
-                                                <td t-if="not section_hide_prices" style="text-align:right;font-size:14px;">
-                                                    <t t-esc="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <t t-if="not section_hide_prices">
+                                                        <t t-esc="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                    </t>
                                                 </td>
                                             </tr>
                                         </t>
                                     </t>
                                 </tbody>
                             </table>
+
                             <table style="margin-top:4mm; font-size:12px; line-height:1.1; width:100%; page-break-inside:avoid;">
                                 <tr>
                                     <td style="width:60%; vertical-align:top;">
@@ -283,7 +292,7 @@
                                             </div>
                                         </div>
                                     </td>
-                            
+
                                     <td style="width:40%; vertical-align:top; padding-left:10mm;">
                                         <table style="width:100%; border-collapse:collapse; font-size:12px;">
                                             <t t-if="not doc.hide_total">
