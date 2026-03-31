@@ -39,7 +39,7 @@
                     <t t-else="">
                         <t t-if="doc.partner_invoice_id == doc.partner_shipping_id">
                             <td class="shipping_address">
-                                <span class="fw-bold">Invoicing and Shipping Addressss:</span>
+                                <span class="fw-bold">Invoicing and Shipping Address:</span>
                                 <t t-if="delivery_partner">
 
                                     <div t-raw="delivery_partner.replace('\n', '&lt;br/&gt;')" />
