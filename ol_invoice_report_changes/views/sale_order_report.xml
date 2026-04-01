@@ -263,6 +263,68 @@
                                 </tbody>
                             </table>
 
+                            <t t-set="debug_lines" t-value="doc._get_report_debug_lines()"/>
+
+                            <div style="margin-top:8mm; page-break-inside:avoid;">
+                                <h3 style="font-size:14px; color:#b30000; margin-bottom:3mm;">DEBUG ORDER LINES</h3>
+                            
+                                <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                                    <thead>
+                                        <tr class="head-bottom">
+                                            <th style="text-align:left;">ID</th>
+                                            <th style="text-align:left;">Seq</th>
+                                            <th style="text-align:left;">Type</th>
+                                            <th style="text-align:left;">Name</th>
+                                            <th style="text-align:right;">Qty</th>
+                                            <th style="text-align:right;">Unit</th>
+                                            <th style="text-align:right;">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="debug_lines" t-as="dline">
+                                            <tr class="line-bottom">
+                                                <td style="vertical-align:top;"><t t-esc="dline['id']"/></td>
+                                                <td style="vertical-align:top;"><t t-esc="dline['sequence']"/></td>
+                                                <td style="vertical-align:top;"><t t-esc="dline['display_type']"/></td>
+                                                <td style="vertical-align:top; white-space:normal; word-break:break-word;">
+                                                    <t t-esc="dline['name']"/>
+                                                </td>
+                                                <td style="vertical-align:top; text-align:right;">
+                                                    <t t-esc="dline['qty']"/>
+                                                </td>
+                                                <td style="vertical-align:top; text-align:right;">
+                                                    <t t-esc="dline['price_unit']"/>
+                                                </td>
+                                                <td style="vertical-align:top; text-align:right;">
+                                                    <t t-esc="dline['price_subtotal']"/>
+                                                </td>
+                                            </tr>
+                            
+                                            <tr class="line-bottom">
+                                                <td colspan="7" style="font-size:9px; color:#444; padding:2mm 0 2mm 0;">
+                                                    <strong>Interesting fields:</strong><br/>
+                                                    <t t-if="dline['interesting_fields']">
+                                                        <t t-foreach="dline['interesting_fields'].items()" t-as="item">
+                                                            <span>
+                                                                <t t-esc="item[0]"/> = <t t-esc="item[1]"/>
+                                                            </span><br/>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span>Keine relevanten Felder gefunden.</span><br/>
+                                                    </t>
+                            
+                                                    <span style="color:#999;">
+                                                        All fields: <t t-esc="dline['all_field_names']"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            
                             <table style="margin-top:4mm; font-size:12px; line-height:1.1; width:100%; page-break-inside:avoid;">
                                 <tr>
                                     <td style="width:60%; vertical-align:top;">
