@@ -297,6 +297,12 @@
                                                         Payable immediately, or at the latest within 10 days net.
                                                     </t>
                                                 </t>
+                                                <!-- Notiz der Zahlungsbedingung, nur wenn display_on_invoice aktiv -->
+                                                <t t-if="doc.payment_term_id and doc.payment_term_id.display_on_invoice and doc.payment_term_id.note">
+                                                    <div style="margin-top:2px;">
+                                                        <span t-field="doc.payment_term_id.note"/>
+                                                    </div>
+                                                </t>
                                             </div>
                                         </div>
                                         <br/>
