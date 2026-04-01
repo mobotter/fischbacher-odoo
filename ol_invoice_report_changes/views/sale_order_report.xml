@@ -202,12 +202,16 @@
                                                     <t t-if="section['is_optional']">
                                                         <span style="font-weight:normal; font-style:italic; color:#875A7B;"> (Optional)</span>
                                                     </t>
+                                                    <t t-if="section['hide_prices']">
+                                                        <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
+                                                    </t>
+                                                    <t t-if="section['hide_composition']">
+                                                        <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
+                                                    </t>
                                                 </td>
                                                 <td style="text-align:right;">
-                                                    <t t-if="not section['hide_prices']">
-                                                        <t t-esc="section['subtotal']"
-                                                           t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                                                    </t>
+                                                    <t t-esc="section['subtotal']"
+                                                       t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                 </td>
                                             </tr>
                                         </t>
