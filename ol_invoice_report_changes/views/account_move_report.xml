@@ -323,9 +323,10 @@
                                                     without deduction.
                                                 </div>
                                             </t>
-                                            <t t-if="doc.invoice_payment_term_id">
-                                                <div style="font-size:12px;">
-                                                    <t t-out="doc.invoice_payment_term_id.note"/>
+                                            <!-- Notiz der Zahlungsbedingung, nur wenn display_on_invoice aktiv -->
+                                            <t t-if="doc.payment_term_id and doc.payment_term_id.display_on_invoice and doc.payment_term_id.note">
+                                                <div style="margin-top:2px;">
+                                                    <span t-field="doc.payment_term_id.note"/>
                                                 </div>
                                             </t>
                                         </t>
