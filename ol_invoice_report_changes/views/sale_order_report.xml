@@ -196,13 +196,15 @@
                                     <t t-set="section_hide_composition" t-value="False"/>
                                     <t t-set="section_is_optional" t-value="False"/>
                                     <t t-set="section_subtotal" t-value="0.0"/>
+                                    <t t-set="section_open" t-value="False"/>
                                 
                                     <t t-foreach="lines_to_report" t-as="line">
                                 
                                         <!-- Neue Section -->
                                         <t t-if="line.display_type == 'line_section'">
+                                
                                             <!-- Vorherige hide_composition-Section abschließen -->
-                                            <t t-if="section_title and section_hide_composition">
+                                            <t t-if="section_open and section_hide_composition">
                                                 <tr class="line-bottom section-row">
                                                     <td t-attf-colspan="#{5 if display_discount else 4}">
                                                         <span t-esc="section_title"/>
@@ -234,25 +236,26 @@
                                             <t t-set="section_is_optional"
                                                t-value="'is_optional' in line._fields and line.is_optional or ('optional_section' in line._fields and line.optional_section) or False"/>
                                             <t t-set="section_subtotal" t-value="0.0"/>
+                                            <t t-set="section_open" t-value="True"/>
                                 
-                                            <!-- Section-Titel immer sofort anzeigen -->
-                                            <tr class="line-bottom section-row">
-                                                <td t-attf-colspan="#{5 if display_discount else 4}">
-                                                    <span t-esc="section_title"/>
-                                                    <t t-if="section_is_optional">
-                                                        <span style="font-weight:normal; font-style:italic; color:#875A7B;"> (Optional)</span>
-                                                    </t>
-                                                    <t t-if="section_hide_prices">
-                                                        <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
-                                                    </t>
-                                                    <t t-if="section_hide_composition">
-                                                        <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
-                                                    </t>
-                                                </td>
-                                                <td style="text-align:right;">
-                                                    <t t-if="False"/>
-                                                </td>
-                                            </tr>
+                                            <!-- Section-Titel immer sofort anzeigen, aber nur wenn NICHT hide_composition -->
+                                            <t t-if="not section_hide_composition">
+                                                <tr class="line-bottom section-row">
+                                                    <td t-attf-colspan="#{5 if display_discount else 4}">
+                                                        <span t-esc="section_title"/>
+                                                        <t t-if="section_is_optional">
+                                                            <span style="font-weight:normal; font-style:italic; color:#875A7B;"> (Optional)</span>
+                                                        </t>
+                                                        <t t-if="section_hide_prices">
+                                                            <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
+                                                        </t>
+                                                        <t t-if="section_hide_composition">
+                                                            <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="text-align:right;"></td>
+                                                </tr>
+                                            </t>
                                         </t>
                                 
                                         <!-- Note -->
@@ -269,7 +272,7 @@
                                         <t t-elif="not line.display_type">
                                             <t t-set="section_subtotal" t-value="section_subtotal + line.price_subtotal"/>
                                 
-                                            <!-- hide_composition: keine Produktzeilen -->
+                                            <!-- Nur wenn composition NICHT versteckt ist, Produktzeile anzeigen -->
                                             <t t-if="not section_hide_composition">
                                                 <t t-set="pos" t-value="pos + 1"/>
                                                 <tr t-att-class="'line-bottom optional-row' if section_is_optional else 'line-bottom'">
@@ -306,8 +309,8 @@
                                         </t>
                                     </t>
                                 
-                                    <!-- Letzte hide_composition-Section am Ende abschließen -->
-                                    <t t-if="section_title and section_hide_composition">
+                                    <!-- Letzte Section abschließen -->
+                                    <t t-if="section_open and section_hide_composition">
                                         <tr class="line-bottom section-row">
                                             <td t-attf-colspan="#{5 if display_discount else 4}">
                                                 <span t-esc="section_title"/>
