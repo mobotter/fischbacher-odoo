@@ -268,7 +268,7 @@
                                                         <t t-esc="doc.german_payment_term"/>
                                                     </t>
                                                     <t t-else="">
-                                                        Zahlbar 10 Tage Skonto netto.
+                                                        Payable immediately, or at the latest within 10 days net.
                                                     </t>
                                                 </t>
                                                 <t t-else="">
@@ -276,8 +276,14 @@
                                                         <t t-esc="doc.payment_term_id.name"/>
                                                     </t>
                                                     <t t-else="">
-                                                        Zahlbar 10 Tage Skonto netto.
+                                                        Payable immediately, or at the latest within 10 days net.
                                                     </t>
+                                                </t>
+                                                <!-- Notiz der Zahlungsbedingung, nur wenn display_on_invoice aktiv -->
+                                                <t t-if="doc.payment_term_id and doc.payment_term_id.display_on_invoice and doc.payment_term_id.note">
+                                                    <div style="margin-top:2px;">
+                                                        <span t-field="doc.payment_term_id.note"/>
+                                                    </div>
                                                 </t>
                                             </div>
                                         </div>
