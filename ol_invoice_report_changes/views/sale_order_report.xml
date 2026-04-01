@@ -213,6 +213,8 @@
                                         <t t-if="not section['hide_composition']">
                                             <t t-foreach="section['product_lines']" t-as="product">
                                                 <t t-set="line" t-value="product['line']"/>
+                                                <t t-set="show_prices" t-value="product['show_prices']"/>
+                                                <t t-set="show_discount" t-value="display_discount and show_prices"/>
                                                 <t t-set="pos" t-value="pos + 1"/>
 
                                                 <tr t-att-class="'line-bottom optional-row' if section['is_optional'] else 'line-bottom'">
@@ -228,18 +230,18 @@
                                                         <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
-                                                        <t t-if="product['show_prices']">
+                                                        <t t-if="show_prices">
                                                             <t t-esc="line.price_unit"
                                                                t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                         </t>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;" t-if="display_discount">
-                                                        <t t-if="product['show_prices']">
+                                                        <t t-if="show_discount">
                                                             <t t-esc="line.discount"/>%
                                                         </t>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
-                                                        <t t-if="product['show_prices']">
+                                                        <t t-if="show_prices">
                                                             <t t-esc="line.price_subtotal"
                                                                t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                         </t>
