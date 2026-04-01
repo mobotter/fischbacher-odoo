@@ -49,12 +49,24 @@ class SaleOrder(models.Model):
                     return True
             return False
 
+        def _get_hide_prices_flag(record):
+            for field_name in ('collapse_prices', 'hide_price_section', 'hide_prices'):
+                if _field_is_true(record, field_name):
+                    return True
+            return False
+
+        def _get_hide_composition_flag(record):
+            for field_name in ('collapse_composition', 'hide_composition_section', 'hide_composition'):
+                if _field_is_true(record, field_name):
+                    return True
+            return False
+
         def _new_block(section_line=None):
             return {
                 'title': section_line.name if section_line else False,
                 'is_optional': _get_optional_flag(section_line) if section_line else False,
-                'hide_prices': _field_is_true(section_line, 'hide_price_section') if section_line else False,
-                'hide_composition': _field_is_true(section_line, 'hide_composition_section') if section_line else False,
+                'hide_prices': _get_hide_prices_flag(section_line) if section_line else False,
+                'hide_composition': _get_hide_composition_flag(section_line) if section_line else False,
                 'subtotal': 0.0,
                 'product_lines': [],
                 'note_lines': [],
@@ -97,7 +109,7 @@ class SaleOrder(models.Model):
                 low = fname.lower()
                 if any(k in low for k in [
                     'hide', 'price', 'compos', 'option', 'section',
-                    'display', 'note', 'sequence'
+                    'display', 'note', 'sequence', 'collapse'
                 ]):
                     try:
                         interesting_fields[fname] = line[fname]
