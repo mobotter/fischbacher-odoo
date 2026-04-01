@@ -196,69 +196,75 @@
                                     <t t-set="current_section_hide_composition" t-value="False"/>
                                     <t t-set="current_section_title" t-value="''"/>
                                     <t t-set="current_section_subtotal" t-value="0.0"/>
-                                
+
                                     <t t-foreach="lines_to_report" t-as="line">
+
                                         <t t-if="line.display_type == 'line_section'">
-                                            <!-- Vorherige Section finalisieren -->
                                             <t t-if="current_section_title">
                                                 <tr class="line-bottom section-row">
                                                     <td t-attf-colspan="#{5 if display_discount else 4}">
                                                         <span t-esc="current_section_title"/>
                                                     </td>
                                                     <td style="text-align:right;">
-                                                        <t t-esc="current_section_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        <t t-esc="current_section_subtotal"
+                                                           t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                     </td>
                                                 </tr>
                                             </t>
-                                
-                                            <!-- Neue Section setzen -->
-                                            <t t-set="current_section_hide_prices" t-value="getattr(line, 'hide_price_section', False)"/>
-                                            <t t-set="current_section_hide_composition" t-value="getattr(line, 'hide_composition_section', False)"/>
+
+                                            <t t-set="current_section_hide_prices" t-value="'hide_price_section' in line._fields and line.hide_price_section or False"/>
+                                            <t t-set="current_section_hide_composition" t-value="'hide_composition_section' in line._fields and line.hide_composition_section or False"/>
                                             <t t-set="current_section_title" t-value="line.name"/>
                                             <t t-set="current_section_subtotal" t-value="0.0"/>
-                                
-                                            <!-- Section-Titel ausgeben (ohne Subtotal, der kommt später) -->
+
                                             <tr class="line-bottom section-row">
                                                 <td t-attf-colspan="#{5 if display_discount else 4}">
                                                     <span t-esc="line.name"/>
                                                 </td>
                                                 <td></td>
                                             </tr>
-                                
+                                        </t>
+
                                         <t t-elif="line.display_type == 'line_note'">
                                             <tr class="line-bottom">
-                                                <td t-attf-colspan="#{6 if display_discount else 5}" style="font-style:italic; padding:7px 0;">
+                                                <td t-attf-colspan="#{6 if display_discount else 5}"
+                                                    style="font-style:italic; padding:7px 0;">
                                                     <span t-field="line.name"/>
                                                 </td>
                                             </tr>
-                                
+                                        </t>
+
                                         <t t-else="">
-                                            <!-- Produktzeile nur wenn Composition nicht versteckt -->
                                             <t t-if="not current_section_hide_composition">
                                                 <t t-set="pos" t-value="pos + 1"/>
                                                 <t t-set="current_section_subtotal" t-value="current_section_subtotal + line.price_subtotal"/>
+
                                                 <tr class="line-bottom">
-                                                    <td style="font-size:14px;"><t t-esc="pos"/></td>
-                                                    <td><pre t-out="line.name" style="margin:0; padding:7px 0;"/></td>
+                                                    <td style="font-size:14px;">
+                                                        <t t-esc="pos"/>
+                                                    </td>
+                                                    <td>
+                                                        <pre t-out="line.name" style="margin:0; padding:7px 0;"/>
+                                                    </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
                                                         <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-if="not current_section_hide_prices">
-                                                            <t t-esc="line.price_unit" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                            <t t-esc="line.price_unit"
+                                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                         </t>
                                                     </td>
-                                                    <t t-if="display_discount">
-                                                        <td style="text-align:right;font-size:14px;">
-                                                            <t t-if="not current_section_hide_prices">
-                                                                <t t-esc="line.discount"/>%
-                                                            </t>
-                                                        </td>
-                                                    </t>
+                                                    <td style="text-align:right;font-size:14px;" t-if="display_discount">
+                                                        <t t-if="not current_section_hide_prices">
+                                                            <t t-esc="line.discount"/>%
+                                                        </t>
+                                                    </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-if="not current_section_hide_prices">
-                                                            <t t-esc="line.price_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                            <t t-esc="line.price_subtotal"
+                                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                                         </t>
                                                     </td>
                                                 </tr>
@@ -267,16 +273,17 @@
                                                 <t t-set="current_section_subtotal" t-value="current_section_subtotal + line.price_subtotal"/>
                                             </t>
                                         </t>
+
                                     </t>
-                                
-                                    <!-- Letzte Section finalisieren -->
+
                                     <t t-if="current_section_title">
                                         <tr class="line-bottom section-row">
                                             <td t-attf-colspan="#{5 if display_discount else 4}">
                                                 <span t-esc="current_section_title"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="current_section_subtotal" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                <t t-esc="current_section_subtotal"
+                                                   t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                                             </td>
                                         </tr>
                                     </t>
