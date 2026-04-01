@@ -40,6 +40,10 @@ class SaleOrder(models.Model):
     def _get_report_sections_for_pdf(self):
         self.ensure_one()
 
+        # DEBUG: Welche Felder hat eine Section-Line wirklich?
+        for line in self.order_line.filtered(lambda l: l.display_type == 'line_section'):
+            print(f"Section '{line.name}': fields={list(line._fields.keys())}")
+        
         def _field_is_true(record, field_name):
             return bool(record and field_name in record._fields and record[field_name])
 
