@@ -40,10 +40,6 @@ class SaleOrder(models.Model):
     def _get_report_sections_for_pdf(self):
         self.ensure_one()
 
-        # DEBUG: Welche Felder hat eine Section-Line wirklich?
-        for line in self.order_line.filtered(lambda l: l.display_type == 'line_section'):
-            print(f"Section '{line.name}': fields={list(line._fields.keys())}")
-        
         def _field_is_true(record, field_name):
             return bool(record and field_name in record._fields and record[field_name])
 
@@ -88,3 +84,36 @@ class SaleOrder(models.Model):
             result.append(current)
 
         return result
+
+    def _get_report_debug_lines(self):
+        self.ensure_one()
+
+        debug_lines = []
+
+        for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
+            interesting_fields = {}
+
+            for fname in sorted(line._fields.keys()):
+                low = fname.lower()
+                if any(k in low for k in [
+                    'hide', 'price', 'compos', 'option', 'section',
+                    'display', 'note', 'sequence'
+                ]):
+                    try:
+                        interesting_fields[fname] = line[fname]
+                    except Exception as e:
+                        interesting_fields[fname] = 'ERROR: %s' % e
+
+            debug_lines.append({
+                'id': line.id,
+                'sequence': line.sequence,
+                'display_type': line.display_type or '',
+                'name': line.name or '',
+                'qty': getattr(line, 'product_uom_qty', 0.0),
+                'price_unit': getattr(line, 'price_unit', 0.0),
+                'price_subtotal': getattr(line, 'price_subtotal', 0.0),
+                'interesting_fields': interesting_fields,
+                'all_field_names': ', '.join(sorted(line._fields.keys())),
+            })
+
+        return debug_lines
