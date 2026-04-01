@@ -48,10 +48,6 @@
                                     font-weight: bold;
                                     font-size: 14px;
                                 }
-
-                                .page .optional-row td {
-                                    color: #875A7B;
-                                }
                             </style>
 
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
@@ -206,9 +202,6 @@
                                             <tr class="line-bottom section-row">
                                                 <td t-attf-colspan="#{5 if display_discount else 4}">
                                                     <span t-esc="section['title']"/>
-                                                    <t t-if="section['is_optional']">
-                                                        <span style="font-weight:normal; font-style:italic; color:#875A7B;"> (Optional)</span>
-                                                    </t>
                                                     <t t-if="section['hide_prices']">
                                                         <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
                                                     </t>
@@ -230,7 +223,7 @@
                                                 <t t-set="show_discount" t-value="display_discount and show_prices"/>
                                                 <t t-set="pos" t-value="pos + 1"/>
 
-                                                <tr t-att-class="'line-bottom optional-row' if section['is_optional'] else 'line-bottom'">
+                                                <tr class="line-bottom">
                                                     <td style="font-size:14px;">
                                                         <t t-esc="pos"/>
                                                     </td>
