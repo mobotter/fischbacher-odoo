@@ -218,8 +218,8 @@
                                                     </td>
                                                 </tr>
                                             </t>
-                                
-                                            <!-- Neue Section initialisieren -->
+                                        
+                                            <!-- Nur Status für die nächste Section setzen, NICHT direkt ausgeben -->
                                             <t t-set="section_title" t-value="line.name"/>
                                             <t t-set="section_line" t-value="line"/>
                                             <t t-set="section_hide_prices"
@@ -230,25 +230,6 @@
                                                t-value="'is_optional' in line._fields and line.is_optional or
                                                         'optional_section' in line._fields and line.optional_section or False"/>
                                             <t t-set="section_subtotal" t-value="0.0"/>
-                                
-                                            <tr class="line-bottom">
-                                                <td t-attf-colspan="#{5 if display_discount else 4}"
-                                                    style="background-color:#E5E5E5; font-weight:bold; font-size:14px;">
-                                                    <span t-esc="section_title"/>
-                                                    <t t-if="section_is_optional">
-                                                        <span style="font-weight:normal; font-style:italic; color:#875A7B;"> (Optional)</span>
-                                                    </t>
-                                                    <t t-if="section_hide_prices">
-                                                        <span style="font-weight:normal; font-style:italic;"> (Prices hidden)</span>
-                                                    </t>
-                                                    <t t-if="section_hide_composition">
-                                                        <span style="font-weight:normal; font-style:italic;"> (Composition hidden)</span>
-                                                    </t>
-                                                </td>
-                                                <td style="background-color:#E5E5E5; font-weight:bold; font-size:14px; text-align:right;">
-                                                    <t t-if="False"></t>
-                                                </td>
-                                            </tr>
                                         </t>
                                 
                                         <!-- Note -->
