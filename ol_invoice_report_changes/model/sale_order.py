@@ -49,50 +49,38 @@ class SaleOrder(models.Model):
                     return True
             return False
 
-        def _empty_block():
+        def _new_block(section_line=None):
             return {
-                'line': False,
-                'title': False,
-                'is_optional': False,
-                'hide_prices': False,
-                'hide_composition': False,
-                'subtotal': 0.0,
-                'product_lines': [],
-                'note_lines': [],
-            }
-
-        def _make_section(section_line):
-            return {
-                'line': section_line,
-                'title': section_line.name,
-                'is_optional': _get_optional_flag(section_line),
-                'hide_prices': _field_is_true(section_line, 'hide_price_section'),
-                'hide_composition': _field_is_true(section_line, 'hide_composition_section'),
+                'title': section_line.name if section_line else False,
+                'is_optional': _get_optional_flag(section_line) if section_line else False,
+                'hide_prices': _field_is_true(section_line, 'hide_price_section') if section_line else False,
+                'hide_composition': _field_is_true(section_line, 'hide_composition_section') if section_line else False,
                 'subtotal': 0.0,
                 'product_lines': [],
                 'note_lines': [],
             }
 
         result = []
-        current_block = _empty_block()
+        current = _new_block()
 
-        for line in self._get_order_lines_to_report():
+        for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
             if line.display_type == 'line_section':
-                if current_block['title'] or current_block['product_lines'] or current_block['note_lines']:
-                    result.append(current_block)
-                current_block = _make_section(line)
+                if current['title'] or current['product_lines'] or current['note_lines']:
+                    result.append(current)
+                current = _new_block(line)
 
             elif line.display_type == 'line_note':
-                current_block['note_lines'].append(line)
+                current['note_lines'].append(line)
 
             else:
-                current_block['subtotal'] += line.price_subtotal
-                current_block['product_lines'].append({
+                line_dict = {
                     'line': line,
-                    'show_prices': not current_block['hide_prices'],
-                })
+                    'show_prices': not current['hide_prices'],
+                }
+                current['product_lines'].append(line_dict)
+                current['subtotal'] += line.price_subtotal
 
-        if current_block['title'] or current_block['product_lines'] or current_block['note_lines']:
-            result.append(current_block)
+        if current['title'] or current['product_lines'] or current['note_lines']:
+            result.append(current)
 
         return result
