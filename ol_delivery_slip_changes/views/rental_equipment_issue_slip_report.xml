@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--
-        Rental equipment issue slip report
-        Additional report for subscription deliveries.
-        Based on the delivery slip layout with adapted title and line columns.
-    -->
     <template id="rental_equipment_issue_slip_report">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
                     <t t-set="o" t-value="doc.with_context(lang=doc._get_report_lang())"/>
-                    <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
-
                     <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
                     <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
                     <t t-set="shipping_partner" t-value="o.partner_id"/>
-                    <t t-set="inv" t-value="sale_order and sale_order.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1] or False"/>
 
                     <main>
                         <div class="page">
@@ -62,31 +54,31 @@
                                 }
 
                                 .page .top-table {
-                                    margin-top: 10mm;
+                                    margin-top: 8mm;
                                 }
 
                                 .page .left-col {
                                     width: 50%;
                                     vertical-align: top;
-                                    height: 45mm;
-                                    max-height: 45mm;
+                                    height: 42mm;
+                                    max-height: 42mm;
                                     overflow: hidden;
-                                    font-size: 13px;
+                                    font-size: 11px;
                                 }
 
                                 .page .right-col {
                                     width: 45%;
                                     vertical-align: top;
-                                    padding-left: 15mm;
-                                    line-height: 1.5;
+                                    padding-left: 12mm;
+                                    line-height: 1.35;
                                 }
 
                                 .page .address-wrap {
-                                    margin-top: 5mm;
+                                    margin-top: 4mm;
                                 }
 
                                 .page .company-line {
-                                    font-size: 10.5px;
+                                    font-size: 9px;
                                     margin-bottom: 4px;
                                     border-bottom: 1px solid #ccc;
                                 }
@@ -94,7 +86,7 @@
                                 .page .meta-label,
                                 .page .meta-value,
                                 .page .cell-sm {
-                                    font-size: 13px;
+                                    font-size: 11px;
                                 }
 
                                 .page .meta-value {
@@ -105,10 +97,11 @@
                                     width: 55%;
                                 }
 
-                                .page .title-red {
-                                    color: #c9392b;
+                                .page .title-blue {
+                                    color: #1f6fd2;
                                     font-weight: 500;
-                                    margin: 10mm 0 5mm 0;
+                                    margin: 8mm 0 4mm 0;
+                                    font-size: 20px;
                                 }
 
                                 .page .center {
@@ -124,57 +117,47 @@
                                 }
 
                                 .page .line-cell {
-                                    font-size: 14px;
-                                    padding-top: 6px;
-                                    padding-bottom: 6px;
+                                    font-size: 11px;
+                                    padding-top: 5px;
+                                    padding-bottom: 5px;
                                     vertical-align: top;
                                 }
 
                                 .page .line-pos {
-                                    width: 5%;
+                                    width: 6%;
                                 }
 
                                 .page .line-product {
-                                    width: 47%;
-                                }
-
-                                .page .line-qty-order {
-                                    width: 16%;
+                                    width: 54%;
                                 }
 
                                 .page .line-qty-output {
-                                    width: 16%;
+                                    width: 20%;
                                 }
 
                                 .page .line-other {
-                                    width: 16%;
+                                    width: 20%;
                                 }
 
                                 .page .spacer-row td {
-                                    height: 20px;
+                                    height: 14px;
                                     padding: 0;
                                     border: none;
                                 }
 
-                                .page .project-cell {
-                                    white-space: normal;
-                                    word-wrap: break-word;
-                                    word-break: break-word;
-                                    vertical-align: top;
-                                }
-
                                 .page .signature-wrap {
-                                    margin-top: 50px;
+                                    margin-top: 35px;
                                     page-break-inside: avoid;
                                 }
 
                                 .page .signature-note {
-                                    margin-bottom: 10px;
+                                    margin-bottom: 8px;
+                                    font-size: 11px;
                                 }
 
                                 .page .signature-table {
                                     width: 100%;
-                                    max-width: 760px;
+                                    max-width: 680px;
                                     margin: auto;
                                     border-collapse: collapse;
                                 }
@@ -182,21 +165,22 @@
                                 .page .signature-date-col,
                                 .page .signature-sign-col {
                                     width: 35%;
-                                    padding-bottom: 40px;
+                                    padding-bottom: 28px;
                                 }
 
                                 .page .signature-gap-col {
                                     width: 30%;
-                                    padding-bottom: 40px;
+                                    padding-bottom: 28px;
                                 }
 
-                                .page .signature-sign-col {
-                                    font-size: 14px;
+                                .page .signature-sign-col,
+                                .page .signature-date-col {
+                                    font-size: 11px;
                                 }
 
                                 .page .signature-line {
-                                    border-bottom: 2px solid black !important;
-                                    height: 35px;
+                                    border-bottom: 1.5px solid black !important;
+                                    height: 28px;
                                 }
                             </style>
 
@@ -254,12 +238,12 @@
 
                                             <t t-if="invoice_partner">
                                                 <t t-if="shipping_partner and invoice_partner.id == shipping_partner.id">
-                                                    <p style="margin-bottom:0; margin-top:6px;">
+                                                    <p style="margin-bottom:0; margin-top:4px; font-size:11px;">
                                                         <strong>Customer &amp; Delivery Address:</strong>
                                                     </p>
                                                 </t>
                                                 <t t-else="">
-                                                    <p style="margin-bottom:0; margin-top:6px;">
+                                                    <p style="margin-bottom:0; margin-top:4px; font-size:11px;">
                                                         <strong>Customer Address:</strong>
                                                     </p>
                                                 </t>
@@ -371,20 +355,19 @@
                                 </tr>
                             </table>
 
-                            <h2 class="title-red">
-                                <span t-if="o.env.lang and o.env.lang.startswith('de')">Mietausgabeschein</span>
-                                <span t-else="">Rental equipment issue slip</span>
+                            <h2 class="title-blue">
+                                Rental Equipment Issue Slip
                             </h2>
 
-                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:14px;">
-                                <thead>
+                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:11px;">
+                                <thead style="display: table-header-group;">
                                     <tr style="margin-bottom:10px;">
                                         <td t-if="o.origin" colspan="1" class="center">
                                             <strong>Order</strong><br/>
                                             <span t-esc="o.origin"/>
                                         </td>
 
-                                        <td t-if="o.state" colspan="2" class="center">
+                                        <td t-if="o.state" colspan="1" class="center">
                                             <strong>Delivery Slip Date</strong><br/>
                                             <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                             <span t-else="" t-field="o.scheduled_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
@@ -397,30 +380,14 @@
                                     </tr>
 
                                     <tr class="spacer-row">
-                                        <td colspan="5"/>
+                                        <td colspan="4"/>
                                     </tr>
 
                                     <tr class="head-bottom">
-                                        <th class="line-pos left cell-sm">
-                                            <span t-if="o.env.lang and o.env.lang.startswith('de')">POS</span>
-                                            <span t-else="">POS</span>
-                                        </th>
-                                        <th class="line-product left cell-sm">
-                                            <span t-if="o.env.lang and o.env.lang.startswith('de')">Produkt</span>
-                                            <span t-else="">Product</span>
-                                        </th>
-                                        <th class="line-qty-order left cell-sm">
-                                            <span t-if="o.env.lang and o.env.lang.startswith('de')">Auftragsmenge</span>
-                                            <span t-else="">Order Quantity</span>
-                                        </th>
-                                        <th class="line-qty-output left cell-sm">
-                                            <span t-if="o.env.lang and o.env.lang.startswith('de')">Ausgabemenge</span>
-                                            <span t-else="">Output quantity</span>
-                                        </th>
-                                        <th class="line-other left cell-sm">
-                                            <span t-if="o.env.lang and o.env.lang.startswith('de')">Sonstiges</span>
-                                            <span t-else="">Other</span>
-                                        </th>
+                                        <th class="line-pos left cell-sm">POS</th>
+                                        <th class="line-product left cell-sm">Product</th>
+                                        <th class="line-qty-output left cell-sm">Output Quantity</th>
+                                        <th class="line-other left cell-sm">Other</th>
                                     </tr>
                                 </thead>
 
@@ -448,11 +415,7 @@
                                             <span t-field="move.product_uom"/>
                                         </td>
 
-                                        <td class="line-cell">
-                                        </td>
-
-                                        <td class="line-cell">
-                                        </td>
+                                        <td class="line-cell"></td>
                                     </tr>
                                 </tbody>
                             </table>
