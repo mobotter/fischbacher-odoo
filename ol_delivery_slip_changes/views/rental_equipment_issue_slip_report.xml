@@ -13,174 +13,181 @@
 
                     <main>
                         <div class="page">
-                            <style>
-                                .page table,
-                                .page tr,
-                                .page td,
-                                .page th {
-                                    border: 0 !important;
-                                    border-width: 0 !important;
-                                    border-style: none !important;
-                                    border-color: transparent !important;
-                                    border-collapse: collapse !important;
-                                    box-shadow: none !important;
-                                    outline: none !important;
-                                }
+                           <style>
+    .page table,
+    .page tr,
+    .page td,
+    .page th {
+        border: 0 !important;
+        border-width: 0 !important;
+        border-style: none !important;
+        border-color: transparent !important;
+        border-collapse: collapse !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
 
-                                .page table {
-                                    border-spacing: 0 !important;
-                                    background: transparent !important;
-                                }
+    .page table {
+        border-spacing: 0 !important;
+        background: transparent !important;
+    }
 
-                                .page pre {
-                                    border: 0 !important;
-                                    border-style: none !important;
-                                    background: transparent !important;
-                                    margin: 0 !important;
-                                    padding: 0 !important;
-                                    white-space: pre-wrap;
-                                }
+    .page pre {
+        border: 0 !important;
+        border-style: none !important;
+        background: transparent !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        white-space: pre-wrap;
+    }
 
-                                .page .head-bottom th {
-                                    border-bottom: 1px solid #ccc !important;
-                                }
+    .page .head-bottom th {
+        border-bottom: 1px solid #ccc !important;
+    }
 
-                                .page .line-bottom td,
-                                .page .line-bottom th {
-                                    border-bottom: 1px solid #e0e0e0 !important;
-                                }
+    .page .line-bottom td,
+    .page .line-bottom th {
+        border-bottom: 1px solid #e0e0e0 !important;
+    }
 
-                                .page .layout-table {
-                                    width: 100%;
-                                    border-collapse: collapse;
-                                }
+    .page .layout-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-                                .page .top-table {
-                                    margin-top: 10mm;
-                                }
+    .page .top-table {
+        margin-top: 8mm;
+    }
 
-                                .page .left-col {
-                                    width: 50%;
-                                    vertical-align: top;
-                                    height: 45mm;
-                                    max-height: 45mm;
-                                    overflow: hidden;
-                                    font-size: 13px;
-                                }
+    .page .left-col {
+        width: 50%;
+        vertical-align: top;
+        height: 42mm;
+        max-height: 42mm;
+        overflow: hidden;
+        font-size: 11px;
+    }
 
-                                .page .right-col {
-                                    width: 45%;
-                                    vertical-align: top;
-                                    padding-left: 15mm;
-                                    line-height: 1.5;
-                                }
+    .page .right-col {
+        width: 45%;
+        vertical-align: top;
+        padding-left: 12mm;
+        line-height: 1.35;
+    }
 
-                                .page .address-wrap {
-                                    margin-top: 5mm;
-                                }
+    .page .address-wrap {
+        margin-top: 4mm;
+    }
 
-                                .page .company-line {
-                                    font-size: 10.5px;
-                                    margin-bottom: 4px;
-                                    border-bottom: 1px solid #ccc;
-                                }
+    .page .company-line {
+        font-size: 9px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid #ccc;
+    }
 
-                                .page .meta-label,
-                                .page .meta-value,
-                                .page .cell-sm {
-                                    font-size: 13px;
-                                }
+    .page .meta-label,
+    .page .meta-value,
+    .page .cell-sm {
+        font-size: 11px;
+    }
 
-                                .page .meta-value {
-                                    padding-left: 3px;
-                                }
+    .page .meta-value {
+        padding-left: 3px;
+    }
 
-                                .page .meta-label-wide {
-                                    width: 55%;
-                                }
+    .page .meta-label-wide {
+        width: 55%;
+    }
 
-                                .page .title-blue {
-                                    color: #1f6fd2;
-                                    font-weight: 500;
-                                    margin: 10mm 0 5mm 0;
-                                }
+    .page .project-cell {
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+        vertical-align: top;
+    }
 
-                                .page .center {
-                                    text-align: center;
-                                }
+    .page .title-blue {
+        color: #1f6fd2;
+        font-weight: 500;
+        margin: 8mm 0 4mm 0;
+        font-size: 20px;
+    }
 
-                                .page .left {
-                                    text-align: left;
-                                }
+    .page .center {
+        text-align: center;
+    }
 
-                                .page .text-end {
-                                    text-align: right;
-                                }
+    .page .left {
+        text-align: left;
+    }
 
-                                .page .line-cell {
-                                    font-size: 14px;
-                                    padding-top: 6px;
-                                    padding-bottom: 6px;
-                                }
+    .page .text-end {
+        text-align: right;
+    }
 
-                                .page .line-pos {
-                                    width: 5%;
-                                }
+    .page .line-cell {
+        font-size: 11px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        vertical-align: top;
+    }
 
-                                .page .line-product {
-                                    width: 63%;
-                                }
+    .page .line-pos {
+        width: 6%;
+    }
 
-                                .page .line-qty-output {
-                                    width: 17%;
-                                }
+    .page .line-product {
+        width: 54%;
+    }
 
-                                .page .line-other {
-                                    width: 15%;
-                                }
+    .page .line-qty-output {
+        width: 20%;
+    }
 
-                                .page .spacer-row td {
-                                    height: 20px;
-                                    padding: 0;
-                                    border: none;
-                                }
+    .page .line-other {
+        width: 20%;
+    }
 
-                                .page .signature-wrap {
-                                    margin-top: 50px;
-                                    page-break-inside: avoid;
-                                }
+    .page .spacer-row td {
+        height: 14px;
+        padding: 0;
+        border: none;
+    }
 
-                                .page .signature-note {
-                                    margin-bottom: 10px;
-                                }
+    .page .signature-wrap {
+        margin-top: 35px;
+        page-break-inside: avoid;
+    }
 
-                                .page .signature-table {
-                                    width: 100%;
-                                    max-width: 600px;
-                                    margin: auto;
-                                    border-collapse: collapse;
-                                }
+    .page .signature-note {
+        margin-bottom: 8px;
+        font-size: 11px;
+    }
 
-                                .page .signature-date-col,
-                                .page .signature-sign-col {
-                                    width: 35%;
-                                    padding-bottom: 40px;
-                                }
+    .page .signature-table {
+        width: 100%;
+        max-width: 680px;
+        margin: auto;
+        border-collapse: collapse;
+    }
 
-                                .page .signature-gap-col {
-                                    width: 30%;
-                                    padding-bottom: 40px;
-                                }
+    .page .signature-date-col,
+    .page .signature-sign-col {
+        width: 35%;
+        padding-bottom: 28px;
+        font-size: 11px;
+    }
 
-                                .page .signature-sign-col {
-                                    font-size: 14px;
-                                }
+    .page .signature-gap-col {
+        width: 30%;
+        padding-bottom: 28px;
+    }
 
-                                .page .signature-line {
-                                    border-bottom: 2px solid black !important;
-                                    height: 35px;
-                                }
-                            </style>
+    .page .signature-line {
+        border-bottom: 1.5px solid black !important;
+        height: 28px;
+    }
+</style>
 
                             <table class="layout-table top-table">
                                 <tr>
@@ -295,7 +302,7 @@
                                                     </td>
                                                 </tr>
                                             </t>
-
+                                    
                                             <t t-if="sale_order and sale_order.date_order">
                                                 <tr>
                                                     <td class="meta-label">Order Date:</td>
@@ -304,7 +311,7 @@
                                                     </td>
                                                 </tr>
                                             </t>
-
+                                    
                                             <t t-if="o.partner_id.ref">
                                                 <tr>
                                                     <td class="meta-label">Client Number:</td>
@@ -321,7 +328,43 @@
                                                     </td>
                                                 </tr>
                                             </t>
-
+                                    
+                                            <t t-if="sale_order and sale_order.client_order_name">
+                                                <tr>
+                                                    <td class="meta-label">Ordered by:</td>
+                                                    <td class="meta-value">
+                                                        <t t-esc="sale_order.client_order_name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                    
+                                            <t t-if="sale_order and sale_order.client_order_number">
+                                                <tr>
+                                                    <td class="meta-label">Your Order Number:</td>
+                                                    <td class="meta-value">
+                                                        <t t-esc="sale_order.client_order_number"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                    
+                                            <t t-if="sale_order and sale_order.carrier_id">
+                                                <tr>
+                                                    <td class="meta-label">Shipping Method:</td>
+                                                    <td class="meta-value">
+                                                        <t t-esc="sale_order.carrier_id.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                    
+                                            <t t-if="sale_order and sale_order.incoterm">
+                                                <tr>
+                                                    <td class="meta-label">Delivery Terms:</td>
+                                                    <td class="meta-value">
+                                                        <t t-esc="sale_order.incoterm.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                    
                                             <t t-if="sale_order and sale_order.user_id and sale_order.user_id.name">
                                                 <tr>
                                                     <td class="meta-label">Salesperson:</td>
@@ -330,7 +373,7 @@
                                                     </td>
                                                 </tr>
                                             </t>
-
+                                    
                                             <t t-if="sale_order and sale_order.user_id and sale_order.user_id.phone">
                                                 <tr>
                                                     <td class="meta-label">Phone:</td>
@@ -339,12 +382,21 @@
                                                     </td>
                                                 </tr>
                                             </t>
-
+                                    
                                             <t t-if="sale_order and sale_order.user_id and sale_order.user_id.login">
                                                 <tr>
                                                     <td class="meta-label">Email:</td>
                                                     <td class="meta-value">
                                                         <t t-esc="sale_order.user_id.login"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                    
+                                            <t t-if="sale_order and sale_order.client_order_ref">
+                                                <tr>
+                                                    <td class="meta-label project-cell">Project:</td>
+                                                    <td class="meta-value project-cell">
+                                                        <t t-esc="sale_order.client_order_ref"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -366,13 +418,13 @@
                                         </td>
 
                                         <td t-if="o.state" colspan="1" class="center">
-                                            <strong>Delivery Slip Date</strong><br/>
+                                            <strong>Issue Date</strong><br/>
                                             <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                             <span t-else="" t-field="o.scheduled_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                         </td>
 
                                         <td t-if="o.name" colspan="2" class="center">
-                                            <strong>Delivery Slip No.</strong><br/>
+                                            <strong>Issue Slip No.</strong><br/>
                                             <span t-field="o.name"/>
                                         </td>
                                     </tr>
