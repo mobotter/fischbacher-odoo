@@ -5,6 +5,8 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
                     <t t-set="o" t-value="doc.with_context(lang=doc._get_report_lang())"/>
+                    <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
+
                     <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
                     <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
                     <t t-set="shipping_partner" t-value="o.partner_id"/>
@@ -54,31 +56,31 @@
                                 }
 
                                 .page .top-table {
-                                    margin-top: 8mm;
+                                    margin-top: 10mm;
                                 }
 
                                 .page .left-col {
                                     width: 50%;
                                     vertical-align: top;
-                                    height: 42mm;
-                                    max-height: 42mm;
+                                    height: 45mm;
+                                    max-height: 45mm;
                                     overflow: hidden;
-                                    font-size: 11px;
+                                    font-size: 13px;
                                 }
 
                                 .page .right-col {
                                     width: 45%;
                                     vertical-align: top;
-                                    padding-left: 12mm;
-                                    line-height: 1.35;
+                                    padding-left: 15mm;
+                                    line-height: 1.5;
                                 }
 
                                 .page .address-wrap {
-                                    margin-top: 4mm;
+                                    margin-top: 5mm;
                                 }
 
                                 .page .company-line {
-                                    font-size: 9px;
+                                    font-size: 10.5px;
                                     margin-bottom: 4px;
                                     border-bottom: 1px solid #ccc;
                                 }
@@ -86,7 +88,7 @@
                                 .page .meta-label,
                                 .page .meta-value,
                                 .page .cell-sm {
-                                    font-size: 11px;
+                                    font-size: 13px;
                                 }
 
                                 .page .meta-value {
@@ -100,8 +102,7 @@
                                 .page .title-blue {
                                     color: #1f6fd2;
                                     font-weight: 500;
-                                    margin: 8mm 0 4mm 0;
-                                    font-size: 20px;
+                                    margin: 10mm 0 5mm 0;
                                 }
 
                                 .page .center {
@@ -117,47 +118,45 @@
                                 }
 
                                 .page .line-cell {
-                                    font-size: 11px;
-                                    padding-top: 5px;
-                                    padding-bottom: 5px;
-                                    vertical-align: top;
+                                    font-size: 14px;
+                                    padding-top: 6px;
+                                    padding-bottom: 6px;
                                 }
 
                                 .page .line-pos {
-                                    width: 6%;
+                                    width: 5%;
                                 }
 
                                 .page .line-product {
-                                    width: 54%;
+                                    width: 63%;
                                 }
 
                                 .page .line-qty-output {
-                                    width: 20%;
+                                    width: 17%;
                                 }
 
                                 .page .line-other {
-                                    width: 20%;
+                                    width: 15%;
                                 }
 
                                 .page .spacer-row td {
-                                    height: 14px;
+                                    height: 20px;
                                     padding: 0;
                                     border: none;
                                 }
 
                                 .page .signature-wrap {
-                                    margin-top: 35px;
+                                    margin-top: 50px;
                                     page-break-inside: avoid;
                                 }
 
                                 .page .signature-note {
-                                    margin-bottom: 8px;
-                                    font-size: 11px;
+                                    margin-bottom: 10px;
                                 }
 
                                 .page .signature-table {
                                     width: 100%;
-                                    max-width: 680px;
+                                    max-width: 600px;
                                     margin: auto;
                                     border-collapse: collapse;
                                 }
@@ -165,22 +164,21 @@
                                 .page .signature-date-col,
                                 .page .signature-sign-col {
                                     width: 35%;
-                                    padding-bottom: 28px;
+                                    padding-bottom: 40px;
                                 }
 
                                 .page .signature-gap-col {
                                     width: 30%;
-                                    padding-bottom: 28px;
+                                    padding-bottom: 40px;
                                 }
 
-                                .page .signature-sign-col,
-                                .page .signature-date-col {
-                                    font-size: 11px;
+                                .page .signature-sign-col {
+                                    font-size: 14px;
                                 }
 
                                 .page .signature-line {
-                                    border-bottom: 1.5px solid black !important;
-                                    height: 28px;
+                                    border-bottom: 2px solid black !important;
+                                    height: 35px;
                                 }
                             </style>
 
@@ -238,12 +236,12 @@
 
                                             <t t-if="invoice_partner">
                                                 <t t-if="shipping_partner and invoice_partner.id == shipping_partner.id">
-                                                    <p style="margin-bottom:0; margin-top:4px; font-size:11px;">
+                                                    <p style="margin-bottom:0; margin-top:6px;">
                                                         <strong>Customer &amp; Delivery Address:</strong>
                                                     </p>
                                                 </t>
                                                 <t t-else="">
-                                                    <p style="margin-bottom:0; margin-top:4px; font-size:11px;">
+                                                    <p style="margin-bottom:0; margin-top:6px;">
                                                         <strong>Customer Address:</strong>
                                                     </p>
                                                 </t>
@@ -291,7 +289,7 @@
                                         <table class="layout-table">
                                             <t t-if="sale_order and sale_order.name">
                                                 <tr>
-                                                    <td class="meta-label meta-label-wide">Quote Number:</td>
+                                                    <td class="meta-label meta-label-wide">Order Number:</td>
                                                     <td class="meta-value">
                                                         <t t-esc="sale_order.name"/>
                                                     </td>
@@ -300,7 +298,7 @@
 
                                             <t t-if="sale_order and sale_order.date_order">
                                                 <tr>
-                                                    <td class="meta-label">Quote Date:</td>
+                                                    <td class="meta-label">Order Date:</td>
                                                     <td class="meta-value">
                                                         <span t-field="sale_order.date_order" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                                     </td>
@@ -359,8 +357,8 @@
                                 Rental Equipment Issue Slip
                             </h2>
 
-                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:11px;">
-                                <thead style="display: table-header-group;">
+                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:14px;">
+                                <thead>
                                     <tr style="margin-bottom:10px;">
                                         <td t-if="o.origin" colspan="1" class="center">
                                             <strong>Order</strong><br/>
@@ -410,7 +408,7 @@
                                             </t>
                                         </td>
 
-                                        <td class="line-cell">
+                                        <td class="line-cell text-end">
                                             <span t-field="move.product_uom_qty"/>
                                             <span t-field="move.product_uom"/>
                                         </td>
@@ -421,9 +419,7 @@
                             </table>
 
                             <div class="signature-wrap">
-                                <p class="signature-note">
-                                    The proper receipt of the goods is hereby confirmed.
-                                </p>
+                                <p class="signature-note">The proper receipt of the goods is hereby confirmed.</p>
 
                                 <table class="signature-table">
                                     <tr>
