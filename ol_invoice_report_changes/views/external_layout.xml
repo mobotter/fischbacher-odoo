@@ -175,4 +175,10 @@
                     </tr>
                 </table>
 
-                <div sty
+                <div style="text-align:center; font-weight:bold; margin-top:8px;">
+                    Seite <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
