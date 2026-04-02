@@ -11,6 +11,7 @@
         'views/stock_picking.xml',
         'views/delivery_slip_new_report.xml',
         'views/picking_operation_new_report.xml',
+        'views/rental_equipment_issue_slip_report.xml',
     ],
     'installable': True,
     'application': False,
