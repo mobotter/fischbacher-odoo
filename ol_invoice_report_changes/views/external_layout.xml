@@ -2,8 +2,8 @@
 <odoo>
     <!--
         Shared external layout for Odoo PDF reports.
-        Adds the Fischbacher company header, a minimal document reference line,
-        and a unified footer with company details and page numbering.
+        Adds the Fischbacher company header and a unified footer
+        with company details and page numbering.
     -->
     <template id="external_layout_for_invoice">
         <t t-set="company" t-value="env.company"/>
@@ -46,22 +46,6 @@
                     .page .line-bottom th {
                         border-bottom: 1px solid #e0e0e0 !important;
                     }
-
-                    .doc-ref {
-                        margin-top: 4px;
-                        font-size: 10.5px;
-                        line-height: 1.3;
-                        text-align: right;
-                        color: #444;
-                    }
-
-                    .doc-ref-title {
-                        font-weight: 600;
-                    }
-
-                    .doc-ref-sep {
-                        padding: 0 6px;
-                    }
                 </style>
             </head>
 
@@ -72,41 +56,6 @@
                             <img t-if="company.logo"
                                  t-att-src="image_data_uri(company.logo)"
                                  style="height:80px;"/>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <t t-if="o and o._name == 'stock.picking'">
-                                <div class="doc-ref">
-                                    <span class="doc-ref-title">Delivery Slip</span>
-                                    <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-esc="o.name"/></span>
-                                    <t t-if="o.origin">
-                                        <span class="doc-ref-sep">|</span>
-                                        <span>Order <t t-esc="o.origin"/></span>
-                                    </t>
-                                </div>
-                            </t>
-
-                            <t t-elif="o and o._name == 'sale.order'">
-                                <div class="doc-ref">
-                                    <span class="doc-ref-title">
-                                        <t t-if="o.state in ('sale', 'done')">Order Confirmation</t>
-                                        <t t-else="">Quotation</t>
-                                    </span>
-                                    <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-esc="o.name"/></span>
-                                </div>
-                            </t>
-
-                            <t t-elif="o and o._name == 'account.move'">
-                                <div class="doc-ref">
-                                    <span class="doc-ref-title">Invoice</span>
-                                    <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-esc="o.name"/></span>
-                                </div>
-                            </t>
                         </td>
                     </tr>
                 </table>
@@ -177,22 +126,6 @@
                     .footer table {
                         background: transparent !important;
                     }
-
-                    .doc-ref {
-                        margin-top: 4px;
-                        font-size: 10.5px;
-                        line-height: 1.3;
-                        text-align: right;
-                        color: #444;
-                    }
-
-                    .doc-ref-title {
-                        font-weight: 600;
-                    }
-
-                    .doc-ref-sep {
-                        padding: 0 6px;
-                    }
                 </style>
             </head>
 
@@ -203,21 +136,6 @@
                             <img t-if="company.logo"
                                  t-att-src="image_data_uri(company.logo)"
                                  style="height:80px;"/>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <t t-if="doc and doc._name == 'sale.order'">
-                                <div class="doc-ref">
-                                    <span class="doc-ref-title">
-                                        <t t-if="doc.state in ('sale', 'done')">Order Confirmation</t>
-                                        <t t-else="">Quotation</t>
-                                    </span>
-                                    <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-esc="doc.name"/></span>
-                                </div>
-                            </t>
                         </td>
                     </tr>
                 </table>
@@ -257,10 +175,4 @@
                     </tr>
                 </table>
 
-                <div style="text-align:center; font-weight:bold; margin-top:8px;">
-                    Seite <span class="page"/> / <span class="topage"/>
-                </div>
-            </div>
-        </t>
-    </template>
-</odoo>
+                <div sty
