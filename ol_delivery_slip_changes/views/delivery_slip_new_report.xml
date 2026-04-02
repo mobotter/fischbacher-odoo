@@ -1,385 +1,407 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--
+        Delivery Slip Report Changes
+        This template overrides the standard delivery slip from stock.report_deliveryslip.
+        Output:
+        - Company header and address block
+        - Invoice and order data from the linked sale order
+        - Delivery slip metadata such as order, date, and delivery slip number
+        - Line list with product, ordered quantity, delivered quantity, and backorder
+        - Signature area at the end of the document
+    -->
     <template id="delivery_slip_new" inherit_id="stock.report_deliveryslip">
         <xpath expr="//t" position="replace">
-            <t t-foreach="docs" t-as="doc"> 
+            <t t-foreach="docs" t-as="doc">
                 <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
                     <t t-set="o" t-value="doc.with_context(lang=doc._get_report_lang())"/>
                     <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
 
-                <main>
-                    <div class="page"> 
-                        <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
-                            <tr>
-                                <td style="width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
-                                    <div style="margin-top:5mm;">
-                                        <div style="font-size:10.5px; margin-bottom:4px;border-bottom:1px solid #ccc;">
-                                            <span t-field="o.company_id.name"/> |
-                                            <span t-field="o.company_id.street"/> |
-                                            <span t-field="o.company_id.zip"/>
-                                            <span t-field="o.company_id.city"/>
+                    <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
+                    <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
+                    <t t-set="shipping_partner" t-value="o.partner_id"/>
+                    <t t-set="inv" t-value="sale_order and sale_order.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1] or False"/>
+
+                    <main>
+                        <div class="page">
+                            <style>
+                                .page table,
+                                .page tr,
+                                .page td,
+                                .page th {
+                                    border: 0 !important;
+                                    border-width: 0 !important;
+                                    border-style: none !important;
+                                    border-color: transparent !important;
+                                    border-collapse: collapse !important;
+                                    box-shadow: none !important;
+                                    outline: none !important;
+                                }
+
+                                .page table {
+                                    border-spacing: 0 !important;
+                                    background: transparent !important;
+                                }
+
+                                .page pre {
+                                    border: 0 !important;
+                                    border-style: none !important;
+                                    background: transparent !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                    white-space: pre-wrap;
+                                }
+
+                                .page .head-bottom th {
+                                    border-bottom: 1px solid #ccc !important;
+                                }
+
+                                .page .line-bottom td,
+                                .page .line-bottom th {
+                                    border-bottom: 1px solid #e0e0e0 !important;
+                                }
+                            </style>
+
+                            <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
+                                <tr>
+                                    <td style="width:50%; vertical-align:top; height:45mm; max-height:45mm; overflow:hidden; font-size:13px;">
+                                        <div style="margin-top:5mm;">
+                                            <div style="font-size:10.5px; margin-bottom:4px; border-bottom:1px solid #ccc;">
+                                                <span t-field="o.company_id.name"/> |
+                                                <span t-field="o.company_id.street"/> |
+                                                <span t-field="o.company_id.zip"/>
+                                                <span t-field="o.company_id.city"/>
+                                            </div>
+
+                                            <t t-if="sale_order and sale_order.print_delivery_address">
+                                                <span>
+                                                    <t t-out="shipping_partner.display_name or ''"/><br/>
+                                                    <t t-if="shipping_partner.street or shipping_partner.street2">
+                                                        <t t-out="shipping_partner.street or ''"/>
+                                                        <t t-if="shipping_partner.street and shipping_partner.street2">&nbsp;</t>
+                                                        <t t-out="shipping_partner.street2 or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="shipping_partner.zip or shipping_partner.city">
+                                                        <t t-out="shipping_partner.zip or ''"/>
+                                                        <t t-if="shipping_partner.zip and shipping_partner.city">&nbsp;</t>
+                                                        <t t-out="shipping_partner.city or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="shipping_partner.country_id">
+                                                        <t t-out="shipping_partner.country_id.name or ''"/>
+                                                    </t>
+                                                </span>
+                                            </t>
+
+                                            <t t-elif="invoice_partner and shipping_partner and invoice_partner.id != shipping_partner.id">
+                                                <span>
+                                                    <t t-out="shipping_partner.display_name or ''"/><br/>
+                                                    <t t-if="shipping_partner.street or shipping_partner.street2">
+                                                        <t t-out="shipping_partner.street or ''"/>
+                                                        <t t-if="shipping_partner.street and shipping_partner.street2">&nbsp;</t>
+                                                        <t t-out="shipping_partner.street2 or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="shipping_partner.zip or shipping_partner.city">
+                                                        <t t-out="shipping_partner.zip or ''"/>
+                                                        <t t-if="shipping_partner.zip and shipping_partner.city">&nbsp;</t>
+                                                        <t t-out="shipping_partner.city or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="shipping_partner.country_id">
+                                                        <t t-out="shipping_partner.country_id.name or ''"/>
+                                                    </t>
+                                                </span>
+                                            </t>
+
+                                            <br/>
+                                            <br/>
+
+                                            <t t-if="invoice_partner">
+                                                <t t-if="shipping_partner and invoice_partner.id == shipping_partner.id">
+                                                    <p style="margin-bottom:0; margin-top:6px;">
+                                                        <strong>Customer &amp; Delivery Address:</strong>
+                                                    </p>
+                                                </t>
+                                                <t t-else="">
+                                                    <p style="margin-bottom:0; margin-top:6px;">
+                                                        <strong>Customer Address:</strong>
+                                                    </p>
+                                                </t>
+
+                                                <span>
+                                                    <t t-out="invoice_partner.name or ''"/><br/>
+                                                    <t t-if="invoice_partner.street or invoice_partner.street2">
+                                                        <t t-out="invoice_partner.street or ''"/>
+                                                        <t t-if="invoice_partner.street and invoice_partner.street2">&nbsp;</t>
+                                                        <t t-out="invoice_partner.street2 or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="invoice_partner.zip or invoice_partner.city">
+                                                        <t t-out="invoice_partner.zip or ''"/>
+                                                        <t t-if="invoice_partner.zip and invoice_partner.city">&nbsp;</t>
+                                                        <t t-out="invoice_partner.city or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="invoice_partner.country_id">
+                                                        <t t-out="invoice_partner.country_id.name or ''"/>
+                                                    </t>
+                                                </span>
+                                            </t>
+
+                                            <t t-if="not invoice_partner">
+                                                <span>
+                                                    <t t-out="o.partner_id.name or ''"/><br/>
+                                                    <t t-if="o.partner_id.street or o.partner_id.street2">
+                                                        <t t-out="o.partner_id.street or ''"/>
+                                                        <t t-if="o.partner_id.street and o.partner_id.street2">&nbsp;</t>
+                                                        <t t-out="o.partner_id.street2 or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="o.partner_id.zip or o.partner_id.city">
+                                                        <t t-out="o.partner_id.zip or ''"/>
+                                                        <t t-if="o.partner_id.zip and o.partner_id.city">&nbsp;</t>
+                                                        <t t-out="o.partner_id.city or ''"/><br/>
+                                                    </t>
+                                                    <t t-if="o.partner_id.country_id">
+                                                        <t t-out="o.partner_id.country_id.name or ''"/>
+                                                    </t>
+                                                </span>
+                                            </t>
                                         </div>
-                                        
-                                        <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
-                                        <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
-                                        <t t-set="shipping_partner" t-value="o.partner_id"/>
-                                        
-                                        <!-- Shipping Address -->
-                                        <t t-if="sale_order and sale_order.print_delivery_address">
-                                            <!-- <p style="margin-bottom:0px; margin-top:6px;">
-                                                <strong>Delivery Address:</strong>
-                                            </p> -->
-                                            <span>
-                                                <t t-out="shipping_partner.display_name"/><br/>
-                                                <t t-out="shipping_partner.street"/> <t t-out="shipping_partner.street2"/><br/>
-                                                <t t-out="shipping_partner.zip"/> <t t-out="shipping_partner.city"/><br/>
-                                                <t t-out="shipping_partner.country_id.name"/>
-                                            </span>
-                                        </t>
+                                    </td>
 
+                                    <td style="width:45%; vertical-align:top; padding-left:15mm; line-height:1.5;">
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <t t-if="inv">
+                                                <tr>
+                                                    <td style="font-size:13px;">Invoice Number:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="inv.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
+                                            <t t-if="inv and inv.invoice_date">
+                                                <tr>
+                                                    <td style="font-size:13px;">Invoice Date:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <span t-field="inv.invoice_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                        <t t-elif="invoice_partner and shipping_partner and invoice_partner.id != shipping_partner.id">
-                                            <!-- <p style="margin-bottom:0px; margin-top:6px;">
-                                                <strong>Delivery Address:</strong>
-                                            </p> -->
-                                            <span>
-                                                <t t-out="shipping_partner.display_name"/><br/>
-                                                <t t-out="shipping_partner.street"/> <t t-out="shipping_partner.street2"/><br/>
-                                                <t t-out="shipping_partner.zip"/> <t t-out="shipping_partner.city"/><br/>
-                                                <t t-out="shipping_partner.country_id.name"/>
-                                            </span>
-                                        </t>
-                                        <br/>
-                                        <br/>
-                                        <!--Billing Address -->
-                                        <t t-if="invoice_partner">
-                                            <t t-if="invoice_partner and shipping_partner and invoice_partner.id == shipping_partner.id">
-                                                <p style="margin-bottom:0px; margin-top:6px;">
-                                                    <strong>Customer &amp; Delivery Address:</strong>
-                                                </p>
+                                            <t t-if="sale_order and sale_order.name">
+                                                <tr>
+                                                    <td style="width:55%; font-size:13px;">Order Number:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+                                            <t t-if="sale_order and sale_order.date_order">
+                                                <tr>
+                                                    <td style="font-size:13px;">Order Date:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <span t-field="sale_order.date_order" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+                                            <t t-if="inv and inv.invoice_date_due">
+                                                <tr>
+                                                    <td style="font-size:13px;">Due Date:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <span t-field="inv.invoice_date_due" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+                                            <t t-if="o.partner_id.ref">
+                                                <tr>
+                                                    <td style="font-size:13px;">Client Number:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="o.partner_id.ref"/>
+                                                    </td>
+                                                </tr>
                                             </t>
                                             <t t-else="">
-                                                <p style="margin-bottom:0px; margin-top:6px;">
-                                                    <strong>Customer Address:</strong>
-                                                </p>
+                                                <tr>
+                                                    <td style="font-size:13px;">Client Number:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="o.partner_id.id"/>
+                                                    </td>
+                                                </tr>
                                             </t>
-                                            <span>
-                                                <t t-out="invoice_partner.name"/><br/>
-                                                <t t-out="invoice_partner.street"/> <t t-out="invoice_partner.street2"/><br/>
-                                                <t t-out="invoice_partner.zip"/> <t t-out="invoice_partner.city"/><br/>
-                                                <t t-out="invoice_partner.country_id.name"/>
-                                            </span>
-                                        </t>
 
-                                        <t t-if="not invoice_partner">
-                                            <span>
-                                                <t t-out="o.partner_id.name"/><br/>
-                                                <t t-out="o.partner_id.street"/> <t t-out="o.partner_id.street2"/><br/>
-                                                <t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/> <br/>
-                                                <t t-out="o.partner_id.country_id.name"/>
-                                            </span>
-                                        </t>
-                                        <!-- Shipping address -->
-                                    
-                                    </div>
-                                </td>
-                
-                                <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
-                
-                                    <table style="width:100%; border-collapse:collapse;">
-                                        <!-- <t t-set="inv" t-value="o.sale_id.invoice_ids.sorted('invoice_date')[:1]"/> -->
-                                        <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
-                                        <t t-if="inv">
-                                            <tr>
-                                                <td style="font-size:13px">Invoice Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;">
-                                                    <t t-esc="inv.name"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                        <t t-if="inv.invoice_date">
-                                            <tr>
-                                                <td style="font-size:13px">Invoice Date: </td>
-                                                <td style="font-size:13px;padding-left:3px;">
-                                                    <t t-esc="inv.invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                                </td>
-                                            </tr>
-                                        </t>
+                                            <t t-if="sale_order and sale_order.client_order_name">
+                                                <tr>
+                                                    <td style="font-size:13px;">Ordered by:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.client_order_name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                        <t t-if="o.sale_id.name">
-                                            <tr>
-                                                <td style="width:55%;font-size:13px;">Quote Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.date_order">
-                                            <tr>
-                                                <td style="font-size:13px">Quote Date: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="inv.invoice_date_due">
-                                            <tr>
-                                                <td style="font-size:13px">Due Date: </td>
-                                                <td style="font-size:13px;padding-left:3px;">
-                                                    <t t-esc="inv.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.partner_id.ref">
-                                            <tr>
-                                                <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.ref"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-else="not o.partner_id.ref">
-                                            <tr>
-                                                <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.id"/></td>
-                                            </tr>
-                                        </t>
+                                            <t t-if="sale_order and sale_order.client_order_number">
+                                                <tr>
+                                                    <td style="font-size:13px;">Your Order Number:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.client_order_number"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                        <t t-if="o.sale_id.client_order_name">
-                                            <tr>
-                                                <td style="font-size:13px">Ordered by: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.client_order_number">
-                                            <tr>
-                                                <td style="font-size:13px">Your Order Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_number"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.carrier_id">
-                                            <tr>
-                                                <td style="font-size:13px">Shipping Method: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.carrier_id.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.incoterm">
-                                            <tr>
-                                                <td style="font-size:13px">Delivery Terms: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.incoterm.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.user_id.name">
-                                            <tr>
-                                                <td style="font-size:13px">Salesperson: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.name"/></td>
-                                            </tr>
-                                        </t>
+                                            <t t-if="sale_order and sale_order.carrier_id">
+                                                <tr>
+                                                    <td style="font-size:13px;">Shipping Method:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.carrier_id.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                        <t t-if="o.sale_id.user_id.phone">
-                                            <tr>
-                                                <td style="font-size:13px">Phone: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.phone"/></td>
-                                            </tr>
-                                        </t>
+                                            <t t-if="sale_order and sale_order.incoterm">
+                                                <tr>
+                                                    <td style="font-size:13px;">Delivery Terms:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.incoterm.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                        <t t-if="o.sale_id.user_id.login">
-                                            <tr>
-                                                <td style="font-size:13px">Email: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.login"/></td>
-                                            </tr>
-                                        </t>
+                                            <t t-if="sale_order and sale_order.user_id and sale_order.user_id.name">
+                                                <tr>
+                                                    <td style="font-size:13px;">Salesperson:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.user_id.name"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                        <t t-if="o.sale_id.client_order_ref">
-                                            <tr>
-                                                <td style="font-size:13px;vertical-align:top;">Project: </td>
-                                                <td style="font-size:13px;padding-left:3px;white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><t t-esc="o.sale_id.client_order_ref"/></td>
-                                            </tr>
-                                        </t>
+                                            <t t-if="sale_order and sale_order.user_id and sale_order.user_id.phone">
+                                                <tr>
+                                                    <td style="font-size:13px;">Phone:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.user_id.phone"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                                    </table>
-                
-                                </td>
-                            </tr>
-                        </table>
-                        <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                            <!-- Lieferschein -->
-                            Delivery Slip
-                        </h2>
-                        <!--<table style="width:100%; border-collapse: collapse; margin-bottom: 20px; font-size:14px;">-->
-                        <!--    <tr>-->
-                        <!--        <td style="width:50%; padding: 2px 5px;">-->
-                        <!--            <strong>Bestellnummer:</strong> <span t-field="o.sale_id.order_number"/>-->
-                        <!--        </td>-->
-                        <!--        <td style="width:50%; padding: 2px 5px;">-->
-                        <!--            <strong>Lieferbedingung:</strong> <span t-field="o.sale_id.incoterm"/>-->
-                        <!--        </td>-->
-                        <!--    </tr>-->
-                        <!--    <tr>-->
-                        <!--        <td style="width:30%; padding: 2px 5px;">-->
-                        <!--            <strong>Bestelldatum:</strong> <span t-field="o.sale_id.date_order" t-options="{'format': 'dd.MM.yyyy'}"/>-->
-                        <!--        </td>-->
-                        <!--        <td style="width:70%; padding: 2px 5px;" rowspan="2">-->
-                        <!--            <strong>Versandbedingungen:</strong> <span t-field="o.sale_id.carrier_id"/>-->
-                        <!--        </td>-->
-                        <!--    </tr>-->
-                        <!--    <tr>-->
-                        <!--        <td style="width:50%; padding: 2px 5px;">-->
-                        <!--            <strong>Bestellt durch:</strong> <span t-field="o.sale_id.order_door"/>-->
-                        <!--        </td>-->
-                                <!--<td style="width:70%; padding: 2px 5px;">-->
-                                    <!-- Agar dusra field nahi hai to empty -->
-                                <!--</td>-->
-                        <!--    </tr>-->
-                        <!--    <tr>-->
-                        <!--        <td style="width:50%; padding: 2px 5px;">-->
-                        <!--            <strong>Kundennummer:</strong> <span t-field="o.sale_id.client_order_ref"/>-->
-                        <!--        </td>-->
-                                <!--<td style="width:70%; padding: 2px 5px;">-->
-                                    <!-- Agar dusra field nahi hai to empty -->
-                                <!--</td>-->
-                        <!--    </tr>-->
-                        <!--</table>-->
+                                            <t t-if="sale_order and sale_order.user_id and sale_order.user_id.login">
+                                                <tr>
+                                                    <td style="font-size:13px;">Email:</td>
+                                                    <td style="font-size:13px; padding-left:3px;">
+                                                        <t t-esc="sale_order.user_id.login"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
 
-                        <!--<table style="width:100%; border-collapse: collapse; margin-bottom: 20px; margin-top: 20px; font-size:14px;">-->
-                        <!--    <tr>-->
-                                <!-- Column 1: Auftrag -->
-                        <!--        <td t-if="o.origin" style="width:33%; padding: 5px;">-->
-                        <!--            <strong>Auftrag</strong><br/>-->
-                        <!--            <span t-field="o.origin">S0001</span>-->
-                        <!--        </td>-->
-                        
-                                <!-- Column 2: Lieferscheindatum -->
-                        <!--        <td t-if="o.state" style="width:33%; padding: 5px;">-->
-                        <!--            <strong>Lieferscheindatum</strong><br/>-->
-                        <!--            <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'format': 'dd.MM.yyyy'}"/>-->
-                        <!--            <span t-else="" t-field="o.scheduled_date" t-options="{'format': 'dd.MM.yyyy'}"/>-->
-                        <!--        </td>-->
-                        
-                                <!-- Column 3: Lieferschein Nr. -->
-                        <!--        <td t-if="o.name" style="width:33%; padding: 5px;">-->
-                        <!--            <strong>Lieferschein Nr.</strong><br/>-->
-                        <!--            <span t-field="o.name"/>-->
-                        <!--        </td>-->
-                        <!--    </tr>-->
-                        <!--</table>-->
-                        
-                        <table class="table table-borderless" name="stock_move_table" style="width:100%; border-collapse: collapse; font-size:14px;">
-                            <thead>
-                                 <tr style="margin-bottom:10px;">
-                                    <!-- Column 1: Auftrag -->
-                                    <td t-if="o.origin" colspan="1" style="text-align:center;">
-                                        <strong>Order</strong><br/>
-                                        <span t-field="o.origin">S0001</span>
-                                    </td>
-                            
-                                    <!-- Column 2: Lieferscheindatum -->
-                                    <td t-if="o.state" colspan="2" style="text-align:center;">
-                                        <strong>Delivery Slip Date</strong><br/>
-                                        <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'format': 'dd.MM.yyyy'}"/>
-                                        <span t-else="" t-field="o.scheduled_date" t-options="{'format': 'dd.MM.yyyy'}"/>
-                                    </td>
-                            
-                                    <!-- Column 3: Lieferschein Nr. -->
-                                    <td t-if="o.name" colspan="2" style="text-align:center;">
-                                        <strong>Delivery Slip No.</strong><br/>
-                                        <span t-field="o.name"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" style="height:20px; padding:0; border:none;"/>
-                                </tr>
-
-                                
-                                <tr style="border-bottom:1px solid #ccc;margin-bottom:10px;">
-                                    <th style="width:5%; text-align:left;font-size:14px;">POS</th>
-                                    <th style="width:48%; text-align:left;font-size:14px;">Product</th>
-                                    <th style="width:15%; text-align:left;font-size:14px;">Order Quantity</th>
-                                    <th style="width:17%; text-align:left;font-size:14px;">Delivery Quantity</th>
-                                    <th style="width:15%; text-align:left;font-size:14px;">Backorder</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
-                                <t t-set="pos" t-value="0"/>
-                                
-                                <tr t-foreach="lines" t-as="move" style="border-bottom:1px solid #e0e0e0;margin-bottom:10px;">
-                                    <t t-set="pos" t-value="pos + 1"/>
-                                    <t t-set="complete_pr_name" t-value="''"/>
-                                    <t t-if="o.sale_id">
-                                        <t t-set="sale_pr" t-value="o.sale_id.order_line.filtered(lambda line:line.product_id == move.product_id)"/>
-                                        <t t-if="sale_pr">
-                                            <t t-set="complete_pr_name" t-value="sale_pr[0].name"/>
-                                        </t>
-                                    </t>
-                                    <td style="font-size:14px;">
-                                            <t t-esc="pos"/>
-                                    </td>
-                                    <td style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                        <span t-field="move.product_id.display_name"/>
-                                        <t t-if="not o.is_description_report">
-                                            <span t-field="move.product_id.description"/>
-                                        </t>
-                                    </td>
-                            
-                                    <!-- Order Quantity -->
-                                    <td class="text-end">
-                                      <span t-field="move.product_uom_qty"/> <span t-field="move.product_uom"/>
-                                    </td>
-                                    
-                                    <!-- Delivery Quantity -->
-                                    <td class="text-end">
-                                      <span t-field="move.quantity"/> <span t-field="move.product_uom"/>
-                                    </td>
-                                    
-                                    <!-- Backorder -->
-                                    <td class="text-end">
-                                      <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/> 
-                                      <span t-field="move.product_uom"/>
-                                    </td>
-
-
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <div style="margin-top: 50px; page-break-inside: avoid; ">
-                            <p style="margin-bottom: 10px;">The proper receipt of the goods is hereby confirmed.</p>
-                            
-                            <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
-                                <tr style="margin-top: 20px;">
-                                    <td style="width:35%; padding-bottom:40px; ">
-                                        <div>Date</div>
-                                        <div style="border-bottom:2px solid black; height:35px;">
-                                            <field name="signature_date_field" widget="date" style="border:none;width:100%;"/>
-                                        </div>
-                                    </td>
-                                    <td style="width:30%; padding-bottom:40px;">
-                                    </td>
-                                    <td style="width:35%; padding-bottom:40px; font-size:14px;">
-                                        <div>Signature</div>
-                                        <div style="border-bottom:2px solid black; height:35;">
-                                            <field name="signature_field" widget="signature" style="border:none;width:100%;"/>
-                                        </div>
+                                            <t t-if="sale_order and sale_order.client_order_ref">
+                                                <tr>
+                                                    <td style="font-size:13px; vertical-align:top;">Project:</td>
+                                                    <td style="font-size:13px; padding-left:3px; white-space:normal; word-wrap:break-word; word-break:break-word; vertical-align:top;">
+                                                        <t t-esc="sale_order.client_order_ref"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
+
+                            <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
+                                Delivery Slip
+                            </h2>
+
+                            <table class="table table-borderless" name="stock_move_table" style="width:100%; border-collapse:collapse; font-size:14px;">
+                                <thead>
+                                    <tr style="margin-bottom:10px;">
+                                        <td t-if="o.origin" colspan="1" style="text-align:center;">
+                                            <strong>Order</strong><br/>
+                                            <span t-field="o.origin"/>
+                                        </td>
+
+                                        <td t-if="o.state" colspan="2" style="text-align:center;">
+                                            <strong>Delivery Slip Date</strong><br/>
+                                            <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                            <span t-else="" t-field="o.scheduled_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        </td>
+
+                                        <td t-if="o.name" colspan="2" style="text-align:center;">
+                                            <strong>Delivery Slip No.</strong><br/>
+                                            <span t-field="o.name"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="5" style="height:20px; padding:0; border:none;"/>
+                                    </tr>
+
+                                    <tr class="head-bottom" style="margin-bottom:10px;">
+                                        <th style="width:5%; text-align:left; font-size:14px;">POS</th>
+                                        <th style="width:48%; text-align:left; font-size:14px;">Product</th>
+                                        <th style="width:15%; text-align:left; font-size:14px;">Order Quantity</th>
+                                        <th style="width:17%; text-align:left; font-size:14px;">Delivery Quantity</th>
+                                        <th style="width:15%; text-align:left; font-size:14px;">Backorder</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
+                                    <t t-set="pos" t-value="0"/>
+
+                                    <tr t-foreach="lines" t-as="move" class="line-bottom">
+                                        <t t-set="pos" t-value="pos + 1"/>
+
+                                        <td style="font-size:14px; padding-top:10px; padding-bottom:10px;">
+                                            <t t-esc="pos"/>
+                                        </td>
+
+                                        <td style="font-size:14px; padding-top:10px; padding-bottom:10px;">
+                                            <span t-field="move.product_id.display_name"/>
+                                            <t t-if="not o.is_description_report and move.product_id.description">
+                                                <br/>
+                                                <span t-field="move.product_id.description"/>
+                                            </t>
+                                        </td>
+
+                                        <td class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
+                                            <span t-field="move.product_uom_qty"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+
+                                        <td class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
+                                            <span t-field="move.quantity"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+
+                                        <td class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
+                                            <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div style="margin-top:50px; page-break-inside:avoid;">
+                                <p style="margin-bottom:10px;">The proper receipt of the goods is hereby confirmed.</p>
+
+                                <table style="width:100%; max-width:600px; margin:auto; border-collapse:collapse;">
+                                    <tr style="margin-top:20px;">
+                                        <td style="width:35%; padding-bottom:40px;">
+                                            <div>Date</div>
+                                            <div style="border-bottom:2px solid black; height:35px;"></div>
+                                        </td>
+
+                                        <td style="width:30%; padding-bottom:40px;"></td>
+
+                                        <td style="width:35%; padding-bottom:40px; font-size:14px;">
+                                            <div>Signature</div>
+                                            <div style="border-bottom:2px solid black; height:35px;"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-
-
-                
-                    </div>
-                </main>
-            
-                </t>  
+                    </main>
+                </t>
             </t>
         </xpath>
     </template>
 </odoo>
-
-
-
-
