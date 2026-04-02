@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Shared external layout for Odoo PDF reports.
-    Adds the Fischbacher company header, document reference in the page header,
-    a unified footer with legal/company information, and page numbers on every page.
--->
 <odoo>
+    <!--
+        Shared external layout for Odoo PDF reports.
+        Adds the Fischbacher company header, a minimal document reference line,
+        and a unified footer with company details and page numbering.
+    -->
     <template id="external_layout_for_invoice">
         <t t-set="company" t-value="env.company"/>
         <t t-call="web.html_container">
@@ -42,10 +42,7 @@
                         border-bottom: 1px solid #ccc !important;
                     }
 
-                    .page .line-bottom td {
-                        border-bottom: 1px solid #e0e0e0 !important;
-                    }
-
+                    .page .line-bottom td,
                     .page .line-bottom th {
                         border-bottom: 1px solid #e0e0e0 !important;
                     }
@@ -84,7 +81,7 @@
                                 <div class="doc-ref">
                                     <span class="doc-ref-title">Delivery Slip</span>
                                     <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-field="o.name"/></span>
+                                    <span>No. <t t-esc="o.name"/></span>
                                     <t t-if="o.origin">
                                         <span class="doc-ref-sep">|</span>
                                         <span>Order <t t-esc="o.origin"/></span>
@@ -99,7 +96,7 @@
                                         <t t-else="">Quotation</t>
                                     </span>
                                     <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-field="o.name"/></span>
+                                    <span>No. <t t-esc="o.name"/></span>
                                 </div>
                             </t>
 
@@ -107,7 +104,7 @@
                                 <div class="doc-ref">
                                     <span class="doc-ref-title">Invoice</span>
                                     <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-field="o.name"/></span>
+                                    <span>No. <t t-esc="o.name"/></span>
                                 </div>
                             </t>
                         </td>
@@ -218,7 +215,7 @@
                                         <t t-else="">Quotation</t>
                                     </span>
                                     <span class="doc-ref-sep">|</span>
-                                    <span>No. <t t-field="doc.name"/></span>
+                                    <span>No. <t t-esc="doc.name"/></span>
                                 </div>
                             </t>
                         </td>
