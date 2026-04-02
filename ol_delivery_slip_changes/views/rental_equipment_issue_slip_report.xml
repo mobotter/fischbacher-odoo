@@ -409,7 +409,7 @@
                                 Rental Equipment Issue Slip
                             </h2>
 
-                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:14px;">
+                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:11px;">
                                 <thead>
                                     <tr style="margin-bottom:10px;">
                                         <td t-if="o.origin" colspan="1" class="center">
