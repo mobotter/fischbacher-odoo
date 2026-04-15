@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 {
     'name': 'Point of Sale Customizations',
-    'version': '1.0.1',
-    'category': 'Sales/Point of Sale',
+    'version': '18.0.1.0.0',
+    'category': 'Point of Sale',
     'sequence': 40,
-    'author':'Baqar Hussain',
-    'summary': 'Button To Open A Drawer, Show internal refernce on product card',
-    'depends': ['point_of_sale' ,'web' , 'base'],
+    'author': 'Baqar Hussain',
+    'summary': 'POS drawer button and internal reference on product cards',
+    'depends': ['point_of_sale'],
     'data': [],
-    'installable': True,
-    'application': True,
     'assets': {
         'point_of_sale._assets_pos': [
-            'pos_customization/static/src/**/',
-            
+            'pos_customization/static/src/js/**/*.js',
+            'pos_customization/static/src/xml/**/*.xml',
+            'pos_customization/static/src/scss/**/*.scss',
         ],
     },
+    'installable': True,
+    'application': False,
     'license': 'LGPL-3',
 }
