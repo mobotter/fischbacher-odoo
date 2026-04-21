@@ -21,9 +21,11 @@
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
         <field name="print_report_name">'PRO-FORMA - %s' % (object.name)</field>
     </record> -->
+    <!--
     <record id="sale_pdf_quote_builder.action_report_saleorder_raw" model="ir.actions.report">
         <field name="name" eval="'Order Confirmation'"/>
     </record>
+    -->
     <!-- Task id 35114 Jc -->
 
 </odoo>
