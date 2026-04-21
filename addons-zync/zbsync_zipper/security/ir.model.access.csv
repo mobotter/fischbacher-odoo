@@ -1,2 +1,0 @@
-model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
-model_zbs_grabber_zipper,zbsync.group_manager,access_zbs_zipper_manager,n/a,1,1,1,1

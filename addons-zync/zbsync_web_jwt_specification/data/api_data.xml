@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<odoo>
-  <data noupdate="0">
-    <record id="jwt_authorize" model="zbs.receive.authorizer">
-      <field name="name">JWT</field>
-    </record>
-  </data>
-</odoo>

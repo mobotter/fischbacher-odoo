@@ -1,4 +1,0 @@
-model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
-model_zbs_wiz_fileupload,zbsync.group_manager,zbs_wiz_fileupload_zbsync_group_manager,n/a,1,1,1,1
-model_zbs_pipeline_button,zbsync.group_manager,zbs_pipeline_button_zbsync_group_manager,n/a,1,1,1,1
-model_zbs_pipeline_fileupload,zbsync.group_manager,zbs_pipeline_fileupload_zbsync_group_manager,n/a,1,1,1,1

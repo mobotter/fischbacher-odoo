@@ -1,4 +1,0 @@
-model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
-model_zbs_transformer_helper,zbsync.group_manager,access_zbs_transformer_helper_zbsync.group_manager,n/a,1,1,1,1
-model_zbs_transformer_keyvaluepair,zbsync.group_manager,access_zbs_transformer_keyvaluepair_zbsync.group_manager,n/a,1,1,1,1
-model_code_helper_mixin,zbsync.group_manager,access_code_helper_mixin.group_manager,n/a,1,1,1,1
