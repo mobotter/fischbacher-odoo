@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-
     <t t-name="point_of_sale_custom_button.ControlButtons"
        t-inherit="point_of_sale.ControlButtons"
        t-inherit-mode="extension">
-       
         <xpath expr="//div[contains(@class, 'control-buttons-modal')]/button[4]" position="after">
-                <button class="btn btn-secondary btn-lg py-5" t-on-click="() => this.OpenDrawer()">
-                    <i class="fa fa-expand me-1" role="img" /> Kasse öffnen
-                </button>
+            <button class="btn btn-secondary btn-lg py-5" t-on-click="openDrawer">
+                <i class="fa fa-expand me-1" role="img"/> Kasse öffnen
+            </button>
         </xpath>
-        
     </t>
-    
 </templates>
