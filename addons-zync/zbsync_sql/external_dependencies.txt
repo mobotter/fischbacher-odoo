@@ -1,5 +1,0 @@
-{
-	"deb": ["unixodbc", "odbc-postgresql"],
-	"python": ["pymysql", "python-tds", "bitarray", "pyodbc"]
-
-}

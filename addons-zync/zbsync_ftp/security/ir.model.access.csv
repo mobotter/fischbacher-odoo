@@ -1,4 +1,0 @@
-model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
-model_zbs_grabber_file_ftp,zbsync.group_manager,zbs_grabber_file_ftp_zbsync_group_manager,n/a,1,1,1,1
-model_zbs_dumper_file_ftp,zbsync.group_manager,zbs_dumper_file_ftp_zbsync_group_manager,n/a,1,1,1,1
-model_zbs_connection_ftp,zbsync.group_manager,zbs.connection.manager,n/a,1,1,1,1

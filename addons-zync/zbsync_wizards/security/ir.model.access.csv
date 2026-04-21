@@ -1,2 +1,0 @@
-model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
-model_zbsync_wiz_import_excel,base.group_user,access_zbsync_wiz_import_excel_group_id,n/a,1,1,1,0

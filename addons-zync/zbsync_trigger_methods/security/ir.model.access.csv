@@ -1,3 +1,0 @@
-model_id:id,group_id:id,id,name,perm_read,perm_write,perm_create,perm_unlink
-model_zbs_trigger_methodhook,zbsync.group_manager,zbs_trigger_methodhook_zbsync_group_manager,n/a,1,1,1,1
-model_zbs_trigger_fieldhook,zbsync.group_manager,zbs_trigger_fieldhook_zbsync_group_manager,n/a,1,1,1,1
