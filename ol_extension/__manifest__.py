@@ -1,6 +1,6 @@
 {
     "name": "Fischbacher Extension",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "summary": "A custom module for Fischbacher customization",
     "author": "Sana Khalid",
     "category": "Customizations",
@@ -10,15 +10,15 @@
         EXTERNAL ID: studio_customization.web_studio_report_ed_bb9632ba-b884-41fd-b7d0-b3fbd04ced70
     """,
     "license": "LGPL-3",
-        "depends": [
+    "depends": [
         "base", 
         "contacts", 
         "stock", 
         "stock_delivery",
-        "sale",                 # Fehlt: Für sale.order und sale_order.xml
-        "account",              # Fehlt: Für account.move (Rechnungen)
-        "l10n_din5008",         # Fehlt: Für report_invoice_document.xml (inherit)
-        "l10n_din5008_sale"     # Fehlt: Für report_saleorder_document.xml (inherit)
+        "sale",
+        "account",
+        "l10n_din5008",
+        "l10n_din5008_sale"
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -30,6 +30,6 @@
         "views/client_info.xml"
     ],
     "installable": True,
-    "application": True,
+    "application": False,
     "auto_install": False
 }
