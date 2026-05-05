@@ -1,7 +1,7 @@
 {
     'name': 'Delivery Slip Report Changes',
     'version': '19.0.1.0.0',
-    'depends': ['base','stock','l10n_din5008','ol_invoice_report_changes','sale','product'],
+    'depends': ['base','stock','l10n_din5008','ol_invoice_report_changes','sale','product','ol_extension'],
     'author': 'Johi Chawla',
     'license': 'LGPL-3',
     'category': 'stock',
