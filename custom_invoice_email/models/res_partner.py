@@ -8,10 +8,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     invoice_address_email = fields.Char(
-        string="Invoice Email",
-        compute="_compute_invoice_address_email",
-        inverse="_inverse_invoice_address_email",
-        store=True,
+        string="Invoice Email Address",
+        store=True
     )
 
     invoice_email_manual = fields.Char(
@@ -148,3 +146,4 @@ class MailBlacklistRemove(models.TransientModel):
                 )
 
         return result
+# task Id 50975

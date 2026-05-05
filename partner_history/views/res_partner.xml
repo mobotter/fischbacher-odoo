@@ -1,0 +1,26 @@
+<odoo>
+    <record id="partner_form_view_inherit_partner_history" model="ir.ui.view">
+        <field name="name">partner.form.view.inherit.partner.history</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="History">
+                    <field name="partner_history_ids">
+                        <!-- editable="bottom" für direkte Inline-Bearbeitung -->
+                        <list editable="bottom">
+                            <!-- Währung unsichtbar laden, damit das Widget funktioniert -->
+                            <field name="currency_id" column_invisible="True"/>
+                            
+                            <field name="year"/>
+                            <field name="category_id"/>
+                            <field name="total_turnover" widget="monetary"/>               
+                            <field name="total_margin" widget="monetary"/>
+                            <field name="note"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

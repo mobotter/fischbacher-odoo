@@ -1,8 +1,17 @@
 {
     'name': 'Invoice Report Change',
-    'version': '18.0',
-    'depends': ['base','account','l10n_din5008','sale','mail'],
+    'version': '19.0.1.0.0',
+    'depends': [
+        'base',
+        'account',
+        'l10n_din5008',
+        'sale',
+        'mail',
+        'sale_pdf_quote_builder',
+        'sale_subscription'
+    ],
     'author': 'Baqar Hussain and Johi Chawla',
+    'license': 'LGPL-3',
     'category': 'Account',
     'summary': 'Changes on the invoice report',
     'data': [
@@ -16,11 +25,9 @@
         'views/sale_order.xml',
         'views/sale_order_preview.xml',
         'views/res_partner_view.xml',
-        'data/mail_template_data.xml',
-
-
+        'data/mail_template_data.xml'
     ],
     'installable': True,
     'application': False,
-    'sequence' : -10,
+    'sequence': -10
 }

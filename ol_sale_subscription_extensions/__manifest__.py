@@ -1,28 +1,26 @@
 {
     "name": "Sale Subscription Fischbacher Extension",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "summary": "A custom module for Fischbacher customization",
+    "author": "Johi Chawla",
+    "category": "Sales",
+    "license": "LGPL-3",
     "depends": [
         "base",
-        "sale",
+        "sale_management",  # Geändert von 'sale' für sichereren Subscription-Support
         "stock",
-        "ol_invoice_report_changes",
-        "sale_subscription",
-        "mail",
-
+        "sale_subscription", 
+        "mail"
     ],
-    "author": "Johi Chawla",
-    "category": "",
     "data": [
         "security/ir.model.access.csv",
         "reports/report_action.xml",
         "reports/sale_subscription_report.xml",
         "data/mail_template_data.xml",
-        "views/sale_subscription_view.xml",
-        "views/sale_order.xml",
+        "views/sale_subscription_view.xml"
     ],
     "installable": True,
-    "application": True,
+    "application": False,  # Custom Extensions sollten keine eigene 'App' im Dashboard sein
     "auto_install": False,
-    "sequence" : -1,
+    "sequence": -1,
 }

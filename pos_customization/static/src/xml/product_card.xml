@@ -5,16 +5,18 @@
        t-inherit="point_of_sale.ProductCard"
        t-inherit-mode="extension">
 
-        <xpath expr="//div[contains(@class, 'product-information-tag')]" position="after">
+        <!-- In Odoo 19 ist der äußere Container der Karte meist 'product-content' oder wir setzen es vor das Bild -->
+        <xpath expr="//div[hasclass('product-img')]" position="before">
       
-            <!--  Add product default code -->
-            <div t-if="props.product.default_code" class="mt-1" style="font-weight:bold; text-align:center;">
+            <!-- Kopfzeile: Artikelnummer GANZ OBEN auf der Karte -->
+            <div t-if="props.product.default_code" 
+                 class="w-100 px-2 py-1 text-muted fw-bold bg-light" 
+                 style="font-size: 0.85em; text-align: center; border-bottom: 1px solid #dee2e6; border-top-left-radius: 5px; border-top-right-radius: 5px;">
                 <t t-esc="props.product.default_code"/>
             </div>
+            
         </xpath>
-
 
     </t>
 <!-- TASK ID: 51581 -->
-
 </templates>

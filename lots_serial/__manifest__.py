@@ -1,6 +1,8 @@
 {
     'name': 'Lots Serial',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
+    'author': 'Odolution',
+    'license': 'LGPL-3',
     'category': 'invoice',
     'sequence': 10,
     'summary': 'serial numbers / lots',

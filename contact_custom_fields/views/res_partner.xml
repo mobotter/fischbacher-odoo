@@ -1,0 +1,21 @@
+<odoo>
+    
+    <record id="partner_form_view_inherit_base_fb" model="ir.ui.view">
+        <field name="name">partner.form.view.inherit.base.fb</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Alle Custom-Felder gesammelt NACH dem Feld 'website' platzieren -->
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="x_telefax" widget="phone"/>
+                <field name="supplier_customer_number"/>
+            </xpath>
+            <!-- Auskommentiert für Odoo 19 Upgrade, da Feld dsp3_id nicht existiert:
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="dsp3_id"/>
+            </xpath>
+            -->
+        </field>
+        </record>
+</odoo>

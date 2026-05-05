@@ -1,11 +1,14 @@
-from odoo import models,api,fields,_
-from odoo.exceptions import UserError
+from odoo import models, fields, api, _
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    def split_by_limit(self,text, limit):
-        words = text.split()
+    def split_by_limit(self, text, limit):
+        # Wichtig: Abfangen, falls text False/None ist (z.B. wenn keine Straße hinterlegt ist)
+        if not text:
+            return []
+            
+        words = str(text).split()
         result = []
         current = ""
     

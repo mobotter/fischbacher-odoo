@@ -2,7 +2,7 @@ arrow
 faker
 oauthlib
 pyyaml
-requests
+requests==2.31.0
 requests_oauth2client>1.5.0
 requests_oauthlib
 xmltodict

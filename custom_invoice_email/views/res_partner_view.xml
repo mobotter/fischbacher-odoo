@@ -1,34 +1,30 @@
 <odoo>
-<record id="view_partner_form_inherit_invoice_email" model="ir.ui.view">
-    <field name="name">res.partner.form.invoice.email</field>
-    <field name="model">res.partner</field>
-    <field name="inherit_id" ref="base.view_partner_form"/>
-    <field name="arch" type="xml">
-        <!-- # Task id 50960 -->
-        <!-- <xpath expr="//group[1]//group[2]//field[@name='email']" position="after">
-            <label for="invoice_address_email" string="Invoice Address Email"/>
-            <field name="invoice_address_email"/>
-        </xpath> -->
-        <!-- # Task id 50960 -->
-        
-        <xpath expr="//field[@name='category_id']" position="after">
-            <!-- Task id 50960  -->
-            <field name="invoice_address_email"/>
-            <!-- Task id 50960  -->
-
-            <!-- Task Id 51018 JC -->
-            <field name="advertising_email" widget="email"/> 
-            <!-- Task Id 51018 JC -->
+    <record id="view_partner_form_inherit_invoice_email" model="ir.ui.view">
+        <field name="name">res.partner.form.invoice.email</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
             
-            <!-- task Id 50975 -->
-            <field name="advertising_exclusion"/> 
-            <!-- task Id 50975 -->
-        </xpath>
-          
-        <xpath expr="//field[@name='telefax']" position="attributes">
-            <attribute name="invisible">True</attribute>
-        </xpath>
-        
-    </field>
-</record>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <!-- Task id 50960  -->
+                <field name="invoice_address_email"/>
+                <!-- Task id 50960  -->
+
+                <!-- Task Id 51018 JC -->
+                <field name="advertising_email" widget="email"/> 
+                <!-- Task Id 51018 JC -->
+                
+                <!-- task Id 50975 -->
+                <field name="advertising_exclusion"/> 
+                <!-- task Id 50975 -->
+            </xpath>
+            
+            <!-- Der Block zum Ausblenden von telefax wurde hier entfernt, 
+                <xpath expr="//field[@name='telefax']" position="attributes">
+                <attribute name="invisible">True</attribute>
+                </xpath>
+                 da das Feld in Odoo 19 nicht mehr existiert. -->
+            
+        </field>
+    </record>
 </odoo>

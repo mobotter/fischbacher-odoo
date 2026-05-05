@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dein bestehender Code bleibt unverändert bis zu den Preis-Templates -->
+
+    <!-- FIX: ODOO 19 - report_simple_label_dymo_price (Zeile ~243) -->
+    <template id="report_simple_label_dymo_price">
+        <t t-name="report_simple_label_dymo_full_price">
+            <t t-set="barcode_size" t-value="'width:65mm;height:8mm'"/>
+            <t t-set="table_style" t-value="'width:69mm;height:30.2mm;padding:0;font-family: Open Sans;'"/>
+            <t t-set="padding_page" t-value="'padding: 2mm'"/>
+            
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+                    <div class="text-start o_label_name" style="font-size: 16px; line-height: 100%;background-color: transparent;">
+                        <strong style="font-size: 16px; line-height: 100%;background-color: transparent;" t-if="product.is_product_variant" t-field="product.default_code"/><strong t-else="" t-field="product.default_code"/>
+                        <span class="float-end" style="font-size: 10px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+                    <div class="o_label_name text-nowrap" style="font-size: 14px; line-height: 90%; background-color: transparent; padding: 4px 0;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/><span t-else="" t-field="product.name"/>
+                    </div>
+                            
+                    <div class="align-bottom" style="width: 100%; line-height: 100%; padding:0;">
+                        <!-- ODOO 19 FIX: currency= als Keyword-Argument -->
+                        <span class="text-start netto">
+                            <strong class="text-nowrap o_label_price_small" style="font-size: 16px!important; padding: 2px 0 1px 0;" 
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id)" 
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size: 10px;">zzgl 19% MwSt</span>
+                        </span>
+                        <span class="float-end brutto">
+                            <strong class="o_label_price_small" style="font-size: 10px!important; padding: 2px 0 1px 0;" 
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id) * 1.19" 
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size: 10px;">inkl 19% MwSt</span>
+                        </span>
+                    </div>
+                    <div class="o_label_small_barcode" style="padding: 2px">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0" t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div class="o_label_name" style="font-size: 10px; height:1.4em;background-color: transparent;">
+                                <span class="text-center" t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="o_label_clear"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- FIX: ODOO 19 - report_simple_label_dymo_price_small -->
+    <template id="report_simple_label_dymo_price_small">
+        <t t-name="report_simple_label_dymo_full_price_small">
+            <t t-set="barcode_size" t-value="'width:60mm;height:10mm'"/>
+            <t t-set="table_style" t-value="'width:69mm;height:30.4mm;padding:0;font-family: Open Sans'"/>
+            <t t-set="padding_page" t-value="'padding: 3mm'"/>
+            
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+                    <div class="text-start o_label_name" style="font-size: 10px; line-height: 100%;background-color: transparent; padding-top: 2px;">
+                        <strong style="font-size: 16px; line-height: 100%;background-color: transparent;" t-if="product.is_product_variant" t-field="product.default_code"/><strong t-else="" t-field="product.default_code"/>
+                        <span class="float-end" style="font-size: 10px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+                    <div class="o_label_name text-nowrap" style="font-size: 14px; line-height: 90%; background-color: transparent; padding: 4px 0;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/><span t-else="" t-field="product.name"/>
+                    </div>
+                            
+                    <div class="align-bottom" style="width: 100%; line-height: 100%; padding: 3px 0;">
+                        <!-- ODOO 19 FIX: currency= als Keyword-Argument -->
+                        <span class="text-start netto">
+                            <strong class="text-nowrap o_label_price_small" style="font-size: 16px!important; padding: 3px 0;" 
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id)" 
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size: 10px;">zzgl 19% MwSt</span>
+                        </span>
+                        <span class="float-end brutto">
+                            <strong class="o_label_price_small" style="font-size: 10px!important; padding: 3px 0 0 0;" 
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id) * 1.19" 
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size: 10px;">inkl 19% MwSt</span>
+                        </span>
+                    </div>
+                    <div class="o_label_small_barcode" style="padding:4px;">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0" t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div class="o_label_name" style="font-size: 10px; height:1.4em;background-color: transparent;">
+                                <span class="text-center" t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="o_label_clear"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Dein restlicher Code bleibt unverändert (without_price, artikel_barcode, zpl etc.) -->
+</odoo>

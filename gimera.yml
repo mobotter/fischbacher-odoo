@@ -1,6 +1,6 @@
 common:
   vars:
-    VERSION: 18.0
+    VERSION: 19.0
 repos:
 - branch: ${VERSION}
   path: odoo
@@ -12,8 +12,3 @@ repos:
   sha: c4fd4e6d0a46365f13a7438c1e0d7664b94bc332
   type: integrated
   url: git@github.com:odoo/enterprise
-- branch: ${VERSION}
-  path: addons-zync
-  sha: c0d78fbcdb649af734ea6e1112806fc7e2b32bdc
-  type: integrated
-  url: git@github.com:Odoo-Ninjas/zync-stable.git

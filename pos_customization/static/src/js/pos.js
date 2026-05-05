@@ -6,8 +6,8 @@ import { useService } from "@web/core/utils/hooks";
 
 patch(ControlButtons.prototype, {
     setup() {
-        super.setup();
-        this.hardwareProxy = useService("hardware_proxy");
+        super.setup(...arguments); // In Odoo 19 arguments weiterreichen
+        this.hardwareproxy = useService("hardware_proxy");
     },
 
     async openDrawer() {
@@ -16,5 +16,5 @@ patch(ControlButtons.prototype, {
         } catch (error) {
             console.error("Error while opening cash drawer:", error);
         }
-    },
+    }
 });

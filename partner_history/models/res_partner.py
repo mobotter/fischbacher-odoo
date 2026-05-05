@@ -1,0 +1,46 @@
+from odoo import api, fields, models, _
+
+class ContactCustom(models.Model):
+    _inherit = 'res.partner'
+
+    partner_history_ids = fields.One2many(
+        'partner.history.fs', 
+        'partner_id', 
+        string='Partner History'
+    )
+
+
+class PartnerHistory(models.Model):
+    _name = 'partner.history.fs'
+    _description = 'Partner History'
+
+    @api.model
+    def _get_year_selection(self):
+        # Zeitzonen-sicheres Jahr ermitteln
+        current = fields.Date.context_today(self).year
+        return [(str(y), str(y)) for y in range(1900, current + 1)]
+
+    year = fields.Selection(
+        selection=_get_year_selection,
+        string='Year',
+        # Zeitzonen-sicheres Jahr als Default
+        default=lambda self: str(fields.Date.context_today(self).year),
+        help="Select the year"
+    )
+    category_id = fields.Many2one("product.category", string="Categories")
+    
+    # --- NEU HINZUGEFÜGT ---
+    # Notwendig für das widget="monetary" in der XML-Ansicht
+    currency_id = fields.Many2one(
+        'res.currency', 
+        string='Currency', 
+        default=lambda self: self.env.company.currency_id.id
+    )
+    
+    # --- ANGEPASST --- 
+    # Von Float auf Monetary geändert, damit Odoo die Währung korrekt anzeigt
+    total_turnover = fields.Monetary(string="Total Turnover", currency_field="currency_id")
+    total_margin = fields.Monetary(string="Total Margin", currency_field="currency_id")
+    
+    partner_id = fields.Many2one("res.partner", string="Partner")
+    note = fields.Char(string="Note")

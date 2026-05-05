@@ -1,36 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="zpl_partner_address_template">
-<t t-foreach="docs" t-as="doc">
-<t t-translation="off">
+        <t t-foreach="docs" t-as="doc">
+            <t t-translation="off">
 ^XA
 ^CI28
 ^FWR
 ^POB
-^FX Top section with address.
+
+^FX Top section with company address.
 ^CF0,30
 ^FO820,150^FD<t t-esc="doc.company_id.name or user.company_id.name"/>
 <t t-if="doc.company_id.street or user.company_id.street"> | <t t-esc="doc.company_id.street or user.company_id.street"/></t>
 <t t-if="doc.company_id.zip or user.company_id.zip"> | <t t-esc="doc.company_id.zip or user.company_id.zip"/></t> 
 <t t-if="doc.company_id.city or user.company_id.city"><t t-esc="doc.company_id.city or user.company_id.city"/></t>^FS
 
-^FO770, 150^GB3,1500,6^FS
+^FO770,150^GB3,1500,6^FS
 
-^FX Second section with client address 
+^FX Second section with client address.
 ^CF,60
-<t t-if="doc.company_type== 'person' and doc.parent_id">
-^FO600, 150^FD<t t-esc="doc.parent_id.name" />^FS
+
+<!-- Start-X-Koordinate festlegen -->
+<t t-set="x_pos" t-value="600"/>
+<t t-set="line_spacing" t-value="60"/>
+
+<!-- 1. Firmenname (Parent) falls es eine Kontaktperson ist -->
+<t t-if="doc.company_type == 'person' and doc.parent_id">
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.parent_id.name"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
 </t>
-^FO500, 150^FD<t t-esc="doc.name"/>^FS
-^FO400, 150^FD<t t-esc="doc.street"/>^FS
-^FO300, 150^FD<t t-if="doc.zip"><t t-esc="doc.zip"/> </t><t t-esc="doc.city"/>^FS
-^FO200, 150^FD<t t-esc="doc.country_id.name"/>^FS
+
+<!-- 2. Partner Name (Einzeilig) -->
+^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.name"/>^FS
+<t t-set="x_pos" t-value="x_pos - line_spacing"/>
+
+<!-- 3. Strasse (Einzeilig) -->
+<t t-if="doc.street">
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.street"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
+</t>
+
+<!-- Strasse 2 (Einzeilig, optional) -->
+<t t-if="doc.street2">
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.street2"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
+</t>
+
+<!-- 4. PLZ und Stadt -->
+<t t-set="city_string" t-value="(doc.zip + ' ' if doc.zip else '') + (doc.city if doc.city else '')"/>
+<t t-if="city_string.strip()">
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="city_string"/>^FS
+    <t t-set="x_pos" t-value="x_pos - line_spacing"/>
+</t>
+
+<!-- 5. Land -->
+<t t-if="doc.country_id">
+    ^FO<t t-esc="x_pos"/>,150^FD<t t-esc="doc.country_id.name"/>^FS
+</t>
 
 ^XZ
-</t>
-</t>
+            </t>
+        </t>
     </template>
-
 </odoo>
+
 
  <!-- <t t-foreach="docs" t-as="doc">
 <t t-translation="off">

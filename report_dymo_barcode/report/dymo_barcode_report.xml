@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Papierformate -->
+
+    <!-- Standard Dymo Größe (Preis + ohne Preis, große Version) -->
+    <record id="paperformat_label_sheet_dymo" model="report.paperformat">
+        <field name="name">Dymo Label Sheet</field>
+        <field name="default" eval="True" />
+        <field name="format">custom</field>
+        <field name="page_height">100</field>
+        <field name="page_width">70</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_spacing">0</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Dymo – kleine Label (Preis + ohne Preis) -->
+    <record id="paperformat_label_sheet_dymo_small" model="report.paperformat">
+        <field name="name">Dymo Label Sheet Small</field>
+        <field name="default" eval="False" />
+        <field name="format">custom</field>
+        <field name="page_height">54</field>
+        <field name="page_width">70</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="disable_shrinking" eval="True"/>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Dymo – nur Artikel‑Barcode (schmal) -->
+    <record id="paperformat_label_sheet_dymo_artikel_barcode" model="report.paperformat">
+        <field name="name">Dymo Artikel Barcode Label Sheet</field>
+        <field name="default" eval="False" />
+        <field name="format">custom</field>
+        <field name="page_height">54</field>
+        <field name="page_width">24</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">5</field>
+        <field name="header_spacing">0</field>
+        <field name="disable_shrinking" eval="False"/>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- ZPL – ohne Preis -->
+    <record id="paperformat_label_sheet_zpl_without_price" model="report.paperformat">
+        <field name="name">ZPL Without Price Label Sheet</field>
+        <field name="default" eval="False" />
+        <field name="format">custom</field>
+        <field name="page_height">80</field>
+        <field name="page_width">30</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">5</field>
+        <field name="header_spacing">0</field>
+        <field name="disable_shrinking" eval="False"/>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Dymo Reports – Produkt (mit/ohne Preis) -->
+
+    <record id="report_product_template_label_dymo_price" model="ir.actions.report">
+        <field name="name">Product Label Price (PDF)</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">report_dymo_barcode.dymo_price</field>
+        <field name="report_file">report_dymo_barcode.dymo_price</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo"/>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_product_template_label_dymo_without_price" model="ir.actions.report">
+        <field name="name">Product Label Without Price (PDF)</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">report_dymo_barcode.dymo_without_price</field>
+        <field name="report_file">report_dymo_barcode.dymo_without_price</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo"/>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_product_template_label_dymo_artikel_barcode" model="ir.actions.report">
+        <field name="name">Product Label Artikel Barcode (PDF)</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">report_dymo_barcode.dymo_artikel_barcode</field>
+        <field name="report_file">report_dymo_barcode.dymo_artikel_barcode</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_artikel_barcode"/>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_product_template_label_dymo_price_small" model="ir.actions.report">
+        <field name="name">Product Label Price (PDF) Small</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">report_dymo_barcode.dymo_price_small</field>
+        <field name="report_file">report_dymo_barcode.dymo_price_small</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_small"/>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_product_template_label_dymo_small" model="ir.actions.report">
+        <field name="name">Product Label (PDF) Small</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">report_dymo_barcode.dymo_small</field>
+        <field name="report_file">report_dymo_barcode.dymo_small</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_small"/>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ZPL Reports – Produkt -->
+
+    <record id="report_product_template_label_zpl_without_price" model="ir.actions.report">
+        <field name="name">ZPL Without Price</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-text</field>
+        <field name="report_name">report_dymo_barcode.zpl_without_price</field>
+        <field name="report_file">report_dymo_barcode.zpl_without_price</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_zpl_without_price"/>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_product_template_label_zpl_small" model="ir.actions.report">
+        <field name="name">Product Label (ZPL) Small</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-text</field>
+        <field name="report_name">report_dymo_barcode.zpl_small</field>
+        <field name="report_file">report_dymo_barcode.zpl_small</field>
+        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Lagerorte (Stock Locations) -->
+
+    <record id="action_report_location_barcode_dymo" model="ir.actions.report">
+        <field name="name">Location Barcode Dymo</field>
+        <field name="model">stock.location</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">report_dymo_barcode.report_location_barcode_dymo</field>
+        <field name="report_file">report_dymo_barcode.report_location_barcode_dymo</field>
+        <field name="paperformat_id" ref="product.paperformat_label_sheet_dymo"/>
+        <field name="print_report_name">'Location - %s' % object.name</field>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_location_barcode_zpl" model="ir.actions.report">
+        <field name="name">Location Barcode (ZPL)</field>
+        <field name="model">stock.location</field>
+        <field name="report_type">qweb-text</field>
+        <field name="report_name">report_dymo_barcode.report_location_barcode_zpl</field>
+        <field name="report_file">report_dymo_barcode.report_location_barcode_zpl</field>
+        <field name="print_report_name">'Location - %s' % object.name</field>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

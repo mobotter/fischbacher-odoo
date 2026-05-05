@@ -1,354 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="picking_operation_new" inherit_id="stock.report_picking">
-        <!--task id 34124 Jc this report new done my johi chawla  -->
+        <!-- Task ID 34124: New picking report by Johi Chawla -->
         <xpath expr="//t" position="replace">
-            <t t-foreach="docs" t-as="doc"> 
+            <t t-foreach="docs" t-as="doc">
                 <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
                     <t t-set="o" t-value="doc.with_context(lang=doc._get_report_lang())"/>
                     <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
 
-                <main>
-                    <div class="page"> 
-                        <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
-                            <tr>
-                                <td style="width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
-                                    <div style="margin-top:5mm;">
-                                        
-                                        <div style="font-size:10.5px; margin-bottom:4px;border-bottom:1px solid #ccc;">
-                                            <span t-field="o.company_id.name"/> |
-                                            <span t-field="o.company_id.street"/> |
-                                            <span t-field="o.company_id.zip"/>
-                                            <span t-field="o.company_id.city"/>
-                                        </div>
-                                        
-                                        <!--Billing Address -->
-                                        <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
-                                        <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
-                                        <t t-set="shipping_partner" t-value="o.partner_id"/>
-                                        <t t-set="customer" t-value="sale_order.partner_invoice_id"/>
-                                        
-                                        <t t-if="customer">
-                                            <span>
-                                                <t t-out="customer.name"/><br/>
-                                                <t t-out="customer.street"/> <t t-out="customer.street2"/><br/>
-                                                <t t-out="customer.zip"/> <t t-out="customer.city"/><br/>
-                                                <t t-out="customer.country_id.name"/>
-                                            </span>
-                                        </t>
-
-                                        <!--<t t-if="not invoice_partner">-->
-                                        <!--    <span>-->
-                                        <!--        <t t-out="o.partner_id.name"/><br/>-->
-                                        <!--        <t t-out="o.partner_id.street"/> <t t-out="o.partner_id.street2"/><br/>-->
-                                        <!--        <t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/> <br/>-->
-                                        <!--        <t t-out="o.partner_id.country_id.name"/>-->
-                                        <!--    </span>-->
-                                        <!--</t>-->
-                                        <!-- Shipping address -->
-                                        <!-- Shipping Address -->
-                                        <!--<t t-if="sale_order and sale_order.print_delivery_address">-->
-                                        <!--    <p style="margin-bottom:0px; margin-top:6px;">-->
-                                        <!--        <strong>Delivery Address:</strong>-->
-                                        <!--         Lieferadresse -->
-                                        <!--    </p>-->
-                                        <!--    <span t-out="sale_order.delivery_address"/>-->
-                                        <!--</t>-->
-
-                                        <!--<t t-elif="invoice_partner and shipping_partner and invoice_partner.id != shipping_partner.id">-->
-                                        <!--    <p style="margin-bottom:0px; margin-top:6px;">-->
-                                        <!--        <strong>Delivery Address:</strong>-->
-                                        <!--    </p>-->
-                                        <!--    <span>-->
-                                        <!--        <t t-out="shipping_partner.name"/><br/>-->
-                                        <!--        <t t-out="shipping_partner.street"/> <t t-out="shipping_partner.street2"/><br/>-->
-                                        <!--        <t t-out="shipping_partner.zip"/> <t t-out="shipping_partner.city"/><br/>-->
-                                        <!--        <t t-out="shipping_partner.country_id.name"/>-->
-                                        <!--    </span>-->
-                                        <!--</t>-->
-                                    </div>
-                                </td>
-                
-                                <td style="width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
-                
-                                    <table style="width:100%; border-collapse:collapse;">
-                                        <!-- <t t-set="inv" t-value="o.sale_id.invoice_ids.sorted('invoice_date')[:1]"/> -->
-                                        <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
-                                        <t t-if="inv">
-                                            <tr>
-                                                <td style="font-size:13px">Invoice Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;">
-                                                    <t t-esc="inv.name"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                        <t t-if="inv.invoice_date">
-                                            <tr>
-                                                <td style="font-size:13px">Invoice Date: </td>
-                                                <td style="font-size:13px;padding-left:3px;">
-                                                    <t t-esc="inv.invoice_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-
-                                        <t t-if="o.sale_id.name">
-                                            <tr>
-                                                <td style="width:55%;font-size:13px;">Quote Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.date_order">
-                                            <tr>
-                                                <td style="font-size:13px">Quote Date: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.date_order" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <!--<t t-if="inv.invoice_date_due">-->
-                                        <!--    <tr>-->
-                                        <!--        <td style="font-size:13px">Due Date: </td>-->
-                                        <!--        <td style="font-size:13px;padding-left:3px;">-->
-                                        <!--            <t t-esc="inv.invoice_date_due" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>-->
-                                        <!--        </td>-->
-                                        <!--    </tr>-->
-                                        <!--</t>-->
-                                        
-                                        <t t-if="o.partner_id.ref">
-                                            <tr>
-                                                <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.ref"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-else="not o.partner_id.ref">
-                                            <tr>
-                                                <td style="font-size:13px">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.id"/></td>
-                                            </tr>
-                                        </t>
-
-                                        <t t-if="o.sale_id.client_order_name">
-                                            <tr>
-                                                <td style="font-size:13px">Ordered by: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.client_order_number">
-                                            <tr>
-                                                <td style="font-size:13px">Your Order Number: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_number"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.carrier_id">
-                                            <tr>
-                                                <td style="font-size:13px">Shipping Method: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.carrier_id.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.incoterm">
-                                            <tr>
-                                                <td style="font-size:13px">Delivery Terms: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.incoterm.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.sale_id.user_id.name">
-                                            <tr>
-                                                <td style="font-size:13px">Salesperson: </td>
-                                                <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.name"/></td>
-                                            </tr>
-                                        </t>
-                                        
-                                        <t t-if="o.scheduled_date">
-                                            <tr>
-                                                <td style="font-size:13px">Est: Delivery Date: </td>
-                                                <td style="font-size:13px;padding-left:3px;">
-                                                    <t t-esc="o.scheduled_date" t-options="{'widget': 'date' , 'format': 'dd.MM.yyyy'}"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-
-                                        <!--<t t-if="o.sale_id.user_id.phone">-->
-                                        <!--    <tr>-->
-                                        <!--        <td style="font-size:13px">Phone: </td>-->
-                                        <!--        <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.phone"/></td>-->
-                                        <!--    </tr>-->
-                                        <!--</t>-->
-
-                                        <!--<t t-if="o.sale_id.user_id.login">-->
-                                        <!--    <tr>-->
-                                        <!--        <td style="font-size:13px">Email: </td>-->
-                                        <!--        <td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.login"/></td>-->
-                                        <!--    </tr>-->
-                                        <!--</t>-->
-
-                                        <!--<t t-if="o.sale_id.client_order_ref">-->
-                                        <!--    <tr>-->
-                                        <!--        <td style="font-size:13px;vertical-align:top;">Project: </td>-->
-                                        <!--        <td style="font-size:13px;padding-left:3px;white-space:normal;word-wrap: break-word; word-break: break-word; vertical-align:top;"><t t-esc="o.sale_id.client_order_ref"/></td>-->
-                                        <!--    </tr>-->
-                                        <!--</t>-->
-
-                                    </table>
-                
-                                </td>
-                            </tr>
-                        </table>
-                        
-                        <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                            Comissioning Slip
-                        </h2> 
-                        <div style="margin-top:2mm; text-align:left; margin-left:-40px;">
-                            <div t-field="o.name"
-                                 t-options="{
-                                     'widget': 'barcode',
-                                     'width': 600,
-                                     'height': 100,
-                                     'img_style': 'width:300px;height:50px;'
-                                 }"/>
-                        </div>
-                        
-
-                        <table class=" table-borderless mt-5" style="width:100%; border-collapse:collapse;  font-size:12px; margin-bottom:20px; margin-top:20px;">
-                            
-                            <tr>
-                                <t>
-                                    <td style="vertical-align:top; width:50%;">
-                                        <strong class="d-block mt-3">Warehouse Address</strong><br/>
-                                        <!-- warehouse Address -->
-                                        <div t-field="o.picking_type_id.warehouse_id.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}">
-                                            <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
-                                                <strong>Warehouse address</strong>
-                                                <div>Presence depends on the type of operation.</div>
+                    <main>
+                        <div class="page">
+                            <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
+                                <tr>
+                                    <td style="width:50%; vertical-align:top; height:45mm; max-height:45mm; overflow:hidden; font-size:13px;">
+                                        <div style="margin-top:5mm;">
+                                            <div style="font-size:10.5px; margin-bottom:4px; border-bottom:1px solid #ccc;">
+                                                <span t-field="o.company_id.name"/> |
+                                                <span t-field="o.company_id.street"/> |
+                                                <span t-field="o.company_id.zip"/>
+                                                <span t-field="o.company_id.city"/>
                                             </div>
+                                            
+                                            <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
+                                            <t t-set="customer" t-value="sale_order.partner_invoice_id if sale_order else o.partner_id"/>
+                                            
+                                            <t t-if="customer">
+                                                <span>
+                                                    <t t-out="customer.name"/><br/>
+                                                    <t t-out="customer.street"/> <t t-out="customer.street2"/><br/>
+                                                    <t t-out="customer.zip"/> <t t-out="customer.city"/><br/>
+                                                    <t t-out="customer.country_id.name"/>
+                                                </span>
+                                            </t>
                                         </div>
                                     </td>
-                                </t>
-                                <t>
-                                    <td style="vertical-align:top;width:50%;">
+
+                                    <td style="width:45%; vertical-align:top; padding-left:15mm; line-height:1.5;">
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
+                                            <t t-if="inv">
+                                                <tr><td style="font-size:13px">Invoice Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="inv.name"/></td></tr>
+                                            </t>
+                                            <t t-if="inv and inv.invoice_date">
+                                                <tr><td style="font-size:13px">Invoice Date: </td><td style="font-size:13px;padding-left:3px;">
+                                                    <t t-esc="inv.invoice_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
+                                                </td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.name">
+                                                <tr><td style="width:55%;font-size:13px;">Quote Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.name"/></td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.date_order">
+                                                <tr><td style="font-size:13px">Quote Date: </td><td style="font-size:13px;padding-left:3px;">
+                                                    <t t-esc="o.sale_id.date_order" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
+                                                </td></tr>
+                                            </t>
+                                            <t t-if="o.partner_id.ref">
+                                                <tr><td style="font-size:13px">Client Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.ref"/></td></tr>
+                                            </t>
+                                            <t t-else="">
+                                                <tr><td style="font-size:13px">Client Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.id"/></td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.client_order_name">
+                                                <tr><td style="font-size:13px">Ordered by: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_name"/></td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.client_order_number">
+                                                <tr><td style="font-size:13px">Your Order Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_number"/></td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.carrier_id">
+                                                <tr><td style="font-size:13px">Shipping Method: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.carrier_id.name"/></td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.incoterm">
+                                                <tr><td style="font-size:13px">Delivery Terms: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.incoterm.name"/></td></tr>
+                                            </t>
+                                            <t t-if="o.sale_id.user_id.name">
+                                                <tr><td style="font-size:13px">Salesperson: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.name"/></td></tr>
+                                            </t>
+                                            <t t-if="o.scheduled_date">
+                                                <tr><td style="font-size:13px">Est. Delivery Date: </td><td style="font-size:13px;padding-left:3px;">
+                                                    <t t-esc="o.scheduled_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
+                                                </td></tr>
+                                            </t>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Commissioning Slip</h2>
+                            <div style="margin-top:2mm; text-align:left; margin-left:-40px;">
+                                <div t-field="o.name" t-options='{"widget": "barcode", "width": 600, "height": 100, "img_style": "width:300px; height:50px;"}'/>
+                            </div>
+
+                            <table class="table-borderless mt-5" style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; margin-top:20px;">
+                                <tr>
+                                    <td style="vertical-align:top; width:50%;">
+                                        <strong class="d-block mt-3">Warehouse Address</strong><br/>
+                                        <div t-field="o.picking_type_id.warehouse_id.partner_id" 
+                                             t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": true, "phone_icons": true}'/>
+                                    </td>
+                                    <td style="vertical-align:top; width:50%;">
                                         <strong class="d-block">Delivery Address</strong><br/>
                                         <t t-if="sale_order and sale_order.print_delivery_address">
                                             <pre t-out="sale_order.delivery_address"/>
                                         </t>
-
                                         <t t-elif="o.partner_id">
-                                            <div 
-                                                t-field="o.partner_id"
-                                                t-options="{
-                                                    'widget': 'contact',
-                                                    'fields': ['address', 'name', 'phone'],
-                                                    'no_marker': True,
-                                                    'phone_icons': True
-                                                }"/>
+                                            <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": true, "phone_icons": true}'/>
                                         </t>
                                     </td>
+                                </tr>
+                            </table>
 
-                                </t>
-                            </tr>
-                        </table>
-                        <table class="table table-borderless" name="stock_move_table_picking" style="width:100%; border-collapse: collapse; font-size:14px;">
-                                <t t-set="has_barcode" t-value="any(move_line.product_id and move_line.product_id.sudo().barcode or move_line.package_id for move_line in o.move_line_ids)"/>
-                                <t t-set="has_serial_number" t-value="any(move_line.lot_id or move_line.lot_name for move_line in o.move_line_ids)" groups="stock.group_production_lot"/>
+                            <table class="table table-borderless" name="stock_move_table_picking" style="width:100%; border-collapse:collapse; font-size:14px;">
+                                <t t-set="has_barcode" t-value="any(ml.product_id.barcode for ml in o.move_line_ids)"/>
+                                <t t-set="has_serial_number" t-value="any(ml.lot_id or ml.lot_name for ml in o.move_line_ids)" groups="stock.group_production_lot"/>
                                 <thead>
-                                    <tr style="border-bottom:1px solid #ccc;margin-bottom:10px;">
-                                        <th name="th_product" style="width:50%; text-align:left;font-size:14px;">
-                                            <div align="left"><strong>Product</strong></div>
-                                        </th>
-                                        <th class="text-end" style="width:15%; text-align:left;font-size:14px;">
-                                            <strong>Quantity</strong>
-                                        </th>
-                                        <th name="th_from" style="width:15%; text-align:left;font-size:14px;" t-if="o.picking_type_id.code != 'incoming'" align="left" groups="stock.group_stock_multi_locations" class="text-start">
+                                    <tr style="border-bottom:1px solid #ccc; margin-bottom:10px;">
+                                        <th style="width:50%; text-align:left; font-size:14px;"><strong>Product</strong></th>
+                                        <th style="width:15%; text-align:right; font-size:14px;"><strong>Quantity</strong></th>
+                                        <th style="width:15%; text-align:left; font-size:14px;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
                                             <strong>From</strong>
                                         </th>
-                                        <th name="th_to" style="width:15%; text-align:left;font-size:14px;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" class="text-start">
+                                        <th style="width:15%; text-align:left; font-size:14px;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">
                                             <strong>To</strong>
                                         </th>
-                                        <th name="th_serial_number" class="text-center" t-if="has_serial_number" style="width:15%; text-align:left;font-size:14px;">
-                                           <strong>Lot/Serial Number</strong>
+                                        <th style="width:15%; text-align:center; font-size:14px;" t-if="has_serial_number">
+                                            <strong>Lot/Serial Number</strong>
                                         </th>
-                                        <th name="th_barcode" class="text-center" t-if="has_barcode" style="width:15%; text-align:left;font-size:14px;">
+                                        <th style="width:15%; text-align:center; font-size:14px;" t-if="has_barcode">
                                             <strong>Product Barcode</strong>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- In case you come across duplicated lines, ask NIM or LAP -->
-                                    <tr t-foreach="o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" style="border-bottom:1px solid #e0e0e0;margin-bottom:10px;">
-                                        <t t-set="complete_pr_name" t-value="''"/>
-                                        <!--<t t-if="o.sale_id">-->
-                                        <!--    <t t-set="sale_pr" t-value="o.sale_id.order_line.filtered(lambda line:line.product_id == ml.product_id)"/>-->
-                                        <!--    <t t-if="sale_pr">-->
-                                        <!--        <t t-set="complete_pr_name" t-value="sale_pr[0].name"/>-->
-                                        <!--    </t>-->
-                                        <!--</t>-->
-                                        <td style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <span t-esc="ml.product_id.display_name">Customizable Desk</span><br/>
-                                            <!--<span t-if="ml.product_id.name" t-field="ml.product_id.name"/>-->
-                                            <span t-if="complete_pr_name and complete_pr_name != ml.product_id.display_name" t-esc="complete_pr_name"/>
+                                    <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" 
+                                        style="border-bottom:1px solid #e0e0e0;">
+                                        <td style="font-size:14px; padding:10px;">
+                                            <span t-esc="ml.product_id.display_name"/>
                                         </td>
-                                        <td class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <span t-field="ml.quantity">3.00</span>
-                                            <span t-field="ml.product_uom_id" groups="uom.group_uom">units</span>
-                                            <span t-if="ml.move_id.product_packaging_id">
-                                                <span t-if="o.state != 'done'">
-                                                    (<span t-field="ml.product_packaging_qty" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/> <span t-field="ml.move_id.product_packaging_id.name"/>)
-                                                </span>
-                                                <span t-if="o.state == 'done'">
-                                                    (<span t-field="ml.product_packaging_qty" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/> <span t-field="ml.move_id.product_packaging_id.name"/>)
-                                                </span>
-                                            </span>
-                                        </td>
-                                        <td t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations" class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <span t-esc="ml.location_id.display_name">WH/Stock</span>
-                                                <t t-if="ml.package_id">
-                                                    <span t-field="ml.package_id">Package A</span>
-                                                </t>
-                                        </td>
-                                        <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" class="text-end" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <div>
-                                                <span t-field="ml.location_dest_id">WH/Outgoing</span>
-                                                <t t-if="ml.result_package_id">
-                                                    <span t-field="ml.result_package_id">Package B</span>
-                                                </t>
-                                            </div>
-                                        </td>
-                                        <td class=" text-center h6" t-if="has_serial_number" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <span t-if="has_serial_number and (ml.lot_id or ml.lot_name)" t-esc="ml.lot_id.name or ml.lot_name" t-options="{'widget': 'barcode', 'humanreadable': 1, 'width': 400, 'height': 100, 'img_style': 'width:100%;height:35px;'}">
-                                                <div class="bg-light border-1 rounded d-flex flex-column align-items-center justify-content-center px-1 py-2 opacity-75 text-muted text-center">
-                                                    (serial barcode)
-                                                </div>
-                                            </span>
-                                        </td>
-                                        <td class="text-center" t-if="has_barcode" style="font-size:14px; padding-top:10px; padding-bottom:10px;">
-                                            <t t-if="product_barcode != ml.product_id.barcode">
-                                                <span t-if="ml.product_id and ml.product_id.barcode">
-                                                    <div t-field="ml.product_id.barcode" t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}">
-                                                        <div class="bg-light border-1 rounded d-flex flex-column align-items-center justify-content-center px-1 py-2 opacity-75 text-muted text-center">
-                                                            (product barcode)
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                                <t t-set="product_barcode" t-value="ml.product_id.barcode"/>
+                                        <td style="font-size:14px; padding:10px; text-align:right;">
+                                            <span t-field="ml.qty_done" t-options='{"widget": "float", "precision": 2}'/>
+                                            <span t-field="ml.product_uom_id"/>
+                                            <t t-if="ml.result_package_id">
+                                                (<t t-esc="ml.result_package_id.name"/>)
                                             </t>
                                         </td>
+                                        <td t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px;">
+                                            <span t-esc="ml.location_id.display_name"/>
+                                            <t t-if="ml.package_id"> / <t t-esc="ml.package_id.name"/></t>
+                                        </td>
+                                        <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px;">
+                                            <span t-esc="ml.location_dest_id.display_name"/>
+                                            <t t-if="ml.result_package_id"> / <t t-esc="ml.result_package_id.name"/></t>
+                                        </td>
+                                        <td t-if="has_serial_number" style="font-size:14px; padding:10px; text-align:center;">
+                                            <t t-if="ml.lot_id">
+                                                <span t-esc="ml.lot_id.name"/>
+                                            </t>
+                                            <t t-elif="ml.lot_name">
+                                                <span t-esc="ml.lot_name"/>
+                                            </t>
+                                        </td>
+                                        <td t-if="has_barcode and ml.product_id.barcode" style="font-size:14px; padding:10px; text-align:center;">
+                                            <span t-esc="ml.product_id.barcode" t-options='{"widget": "barcode", "width": 400, "height": 100, "img_style": "height:35px;"}'/>
+                                        </td>
                                     </tr>
-                                  </tbody>
+                                </tbody>
                             </table>
-                
-                
-                    </div>
-                </main>
-            
-                </t>  
+                        </div>
+                    </main>
+                </t>
             </t>
         </xpath>
     </template>
 </odoo>
-
-
-
-
