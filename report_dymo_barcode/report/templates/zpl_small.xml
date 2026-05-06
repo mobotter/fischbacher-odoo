@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="zpl_small_template" name="ZPL Small Label">
+    <!-- FIX: id geändert von "zpl_small_template" zu "zpl_small" -->
+    <template id="zpl_small" name="ZPL Small Label">
         <t t-name="report_dymo_barcode.zpl_small">
             <t t-foreach="quantity" t-as="product">
                 <t t-foreach="quantity[product]" t-as="barcode_info">
