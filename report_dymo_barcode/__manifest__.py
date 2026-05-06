@@ -1,7 +1,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Adds Dymo Barcode Report',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'category': 'Inventory/Delivery',
     'summary': 'Fügt spezielle Dymo- und ZPL-Etiketten für Produkte und Lagerorte hinzu',
     'description': """
@@ -16,15 +16,15 @@
         'sale', 
         'stock'
     ],
-        'data': [
+    'data': [
         'report/dymo_barcode_report.xml',
         'report/report_simple_label_dymo.xml',
         'report/report_stock_label_dymo.xml',
         'report/zpl_product_report.xml',
-        'report/label_product_product_view_small.xml',
+        # 'report/label_product_product_view_small.xml',  # AUSKOMMENTIERT: Inhalt ist jetzt in zpl_product_report.xml
         'views/product_label_wizard_action.xml',
-        'actions/product_label_layout.xml',
-        'report/templates/zpl_small.xml',  # neu
+        # 'actions/product_label_layout.xml',             # AUSKOMMENTIERT: Action existiert bereits in views/product_label_wizard_action.xml
+        'report/templates/zpl_small.xml',  
         'views/product_form_print_label_button.xml',
     ],
     'external_dependencies': {},
