@@ -10,8 +10,12 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     # Status erweitern - ondelete auf 'set null' gesetzt
+    # Durch ('sale',) wird 'accepted' genau vor 'sale' in der Statusbar einsortiert
     state = fields.Selection(
-        selection_add=[('accepted', "Order Accepted by Client")],
+        selection_add=[
+            ('accepted', "Order Accepted by Client"),
+            ('sale',)
+        ],
         ondelete={'accepted': 'set null'}
     )
     
