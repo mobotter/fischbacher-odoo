@@ -10,33 +10,20 @@ class ProductLabelLayout(models.TransientModel):
         ondelete={'dymo_price': 'set default','dymo_without_price': 'set default','dymo_artikel_barcode': 'set default','dymo_price_small': 'set default', 'dymo_small': 'set default', 'zpl_small': 'set default', 'zpl_without_price': 'set default'})
 
     # Task Id 34020 JC add dymo_without_price selection and if condition
-    def _prepare_report_data(self):
+        def _prepare_report_data(self):
         xml_id, data = super()._prepare_report_data()
-        if self.print_format == 'dymo_price':
-            xml_id = 'report_dymo_barcode.report_product_template_label_dymo_price'
-        # task id 34020 JC
-        if self.print_format == 'dymo_without_price':
-            xml_id = 'report_dymo_barcode.report_product_template_label_dymo_without_price'
-        # task id 34020 JC
-        # task id 34092 JC
-        if self.print_format == 'dymo_artikel_barcode':
-            xml_id = 'report_dymo_barcode.report_product_template_label_dymo_artikel_barcode'
-        # task id 34092 JC
-        if self.print_format == 'dymo_price_small':
-            xml_id = 'report_dymo_barcode.report_product_template_label_dymo_price_small'
-        if self.print_format == 'dymo_small':
-            xml_id = 'report_dymo_barcode.report_product_template_label_dymo_small'
-        if self.print_format ==  'zpl_small':
-            xml_id = 'report_dymo_barcode.report_product_template_label_zpl_small'
-        # Task id 34163 JC 
-        if self.print_format ==  'zpl_without_price':
-            xml_id = 'report_dymo_barcode.report_product_template_label_zpl_without_price'  
-        # Task id 34163 JC 
+        
+        report_mapping = {
+            'dymo_price': 'report_dymo_barcode.report_product_template_label_dymo_price',
+            'dymo_without_price': 'report_dymo_barcode.report_product_template_label_dymo_without_price',
+            'dymo_artikel_barcode': 'report_dymo_barcode.report_product_template_label_dymo_artikel_barcode',
+            'dymo_price_small': 'report_dymo_barcode.report_product_template_label_dymo_price_small',
+            'dymo_small': 'report_dymo_barcode.report_product_template_label_dymo_small',
+            'zpl_small': 'report_dymo_barcode.report_product_template_label_zpl_small',
+            'zpl_without_price': 'report_dymo_barcode.report_product_template_label_zpl_without_price'
+        }
+        
+        if self.print_format in report_mapping:
+            xml_id = report_mapping[self.print_format]
+            
         return xml_id, data
-
-    
-
-
-
-    
-
