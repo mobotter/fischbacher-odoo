@@ -14,9 +14,9 @@
     ],
     "data": [
         "security/ir.model.access.csv",
-        #"reports/report_action.xml",
-        #"reports/sale_subscription_report.xml",
-        #"data/mail_template_data.xml",
+        "reports/report_action.xml",
+        "reports/sale_subscription_report.xml",
+        "data/mail_template_data.xml",
         "views/sale_subscription_view.xml"
     ],
     "installable": True,
