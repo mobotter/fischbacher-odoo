@@ -142,9 +142,7 @@
                                 <t t-set="has_serial_number" t-value="any(ml.lot_id or ml.lot_name for ml in o.move_line_ids)" groups="stock.group_production_lot"/>
                                 <thead>
                                     <tr style="margin-bottom:10px; border:0 !important;">
-                                        <!-- NEU: Spalte für ID (Pos.) -->
                                         <th style="width:5%; text-align:left; font-size:14px; border:0 !important;"><strong>POS</strong></th>
-                                        <!-- Breite des Produkts auf 45% reduziert, um Platz für ID zu machen -->
                                         <th style="width:45%; text-align:left; font-size:14px; border:0 !important;"><strong>Product</strong></th>
                                         <th style="width:15%; text-align:right; font-size:14px; border:0 !important;"><strong>Quantity</strong></th>
                                         <th style="width:10%; text-align:left; padding-left:10px; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
@@ -164,7 +162,6 @@
                                 <tbody>
                                     <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" 
                                         style="border:0 !important;">
-                                        <!-- NEU: Ausgabe der Laufnummer (ml_index + 1) -->
                                         <td style="font-size:14px; padding:10px 0; border:0 !important;">
                                             <span t-esc="ml_index + 1"/>
                                         </td>
