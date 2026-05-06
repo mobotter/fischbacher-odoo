@@ -62,7 +62,11 @@
                                     border-bottom: 1px solid #e0e0e0 !important;
                                 }
 
-                                .page .layout-table {
+                                .page .layout-table,
+                                .page .layout-table tr,
+                                .page .layout-table td,
+                                .page .layout-table th {
+                                    border: none !important;
                                     width: 100%;
                                     border-collapse: collapse;
                                 }
@@ -94,7 +98,8 @@
                                 .page .company-line {
                                     font-size: 10.5px;
                                     margin-bottom: 4px;
-                                    border-bottom: 1px solid #ccc;
+                                    border-bottom: none !important;
+                                    border: none !important;
                                 }
 
                                 .page .meta-label,
