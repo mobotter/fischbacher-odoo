@@ -137,23 +137,26 @@
                                 </tr>
                             </table>
 
-                            <table class="table table-borderless" name="stock_move_table_picking" style="width:100%; border-collapse:collapse; font-size:14px; border:0 !important;">
+                            <table class="table-borderless" name="stock_move_table_picking" style="width:100%; border-collapse:collapse; font-size:14px; border:0 !important;">
                                 <t t-set="has_barcode" t-value="any(ml.product_id.barcode for ml in o.move_line_ids)"/>
                                 <t t-set="has_serial_number" t-value="any(ml.lot_id or ml.lot_name for ml in o.move_line_ids)" groups="stock.group_production_lot"/>
                                 <thead>
                                     <tr style="margin-bottom:10px; border:0 !important;">
-                                        <th style="width:50%; text-align:left; font-size:14px; border:0 !important;"><strong>Product</strong></th>
+                                        <!-- NEU: Spalte für ID (Pos.) -->
+                                        <th style="width:5%; text-align:left; font-size:14px; border:0 !important;"><strong>ID</strong></th>
+                                        <!-- Breite des Produkts auf 45% reduziert, um Platz für ID zu machen -->
+                                        <th style="width:45%; text-align:left; font-size:14px; border:0 !important;"><strong>Product</strong></th>
                                         <th style="width:15%; text-align:right; font-size:14px; border:0 !important;"><strong>Quantity</strong></th>
-                                        <th style="width:15%; text-align:left; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
+                                        <th style="width:10%; text-align:left; padding-left:10px; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
                                             <strong>From</strong>
                                         </th>
-                                        <th style="width:15%; text-align:left; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">
+                                        <th style="width:10%; text-align:left; padding-left:10px; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">
                                             <strong>To</strong>
                                         </th>
                                         <th style="width:15%; text-align:center; font-size:14px; border:0 !important;" t-if="has_serial_number">
                                             <strong>Lot/Serial Number</strong>
                                         </th>
-                                        <th style="width:15%; text-align:center; font-size:14px; border:0 !important;" t-if="has_barcode">
+                                        <th style="width:10%; text-align:center; font-size:14px; border:0 !important;" t-if="has_barcode">
                                             <strong>Product Barcode</strong>
                                         </th>
                                     </tr>
@@ -161,6 +164,10 @@
                                 <tbody>
                                     <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" 
                                         style="border:0 !important;">
+                                        <!-- NEU: Ausgabe der Laufnummer (ml_index + 1) -->
+                                        <td style="font-size:14px; padding:10px 0; border:0 !important;">
+                                            <span t-esc="ml_index + 1"/>
+                                        </td>
                                         <td style="font-size:14px; padding:10px; border:0 !important;">
                                             <span t-esc="ml.product_id.display_name"/>
                                         </td>
@@ -171,11 +178,11 @@
                                                 (<t t-esc="ml.result_package_id.name"/>)
                                             </t>
                                         </td>
-                                        <td t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px; border:0 !important;">
+                                        <td t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px 10px 10px 20px; border:0 !important;">
                                             <span t-esc="ml.location_id.display_name"/>
                                             <t t-if="ml.package_id"> / <t t-esc="ml.package_id.name"/></t>
                                         </td>
-                                        <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px; border:0 !important;">
+                                        <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px 10px 10px 20px; border:0 !important;">
                                             <span t-esc="ml.location_dest_id.display_name"/>
                                             <t t-if="ml.result_package_id"> / <t t-esc="ml.result_package_id.name"/></t>
                                         </td>
