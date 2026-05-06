@@ -1,14 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<record id="view_picking_form_inherit" model="ir.ui.view">
-    <field name="name">stock.picking.form.inherit</field>
-    <field name="model">stock.picking</field>
-    <field name="inherit_id" ref="stock.view_picking_form"/>
-    <field name="arch" type="xml">
-        <!-- TASK ID JC -->
-        <xpath expr="//field[@name='partner_id']" position="after">
-            <field name="is_description_report"/>
-        </xpath>
-       <!-- TASK ID Jc -->
-    </field>
-</record>
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Feld nach partner_id eingefügt (Odoo 19 sicher) -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_description_report" string="Hide Description"/>
+            </xpath>
+            
+        </field>
+    </record>
 </odoo> 
