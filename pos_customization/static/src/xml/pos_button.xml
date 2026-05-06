@@ -3,11 +3,14 @@
     <t t-name="pos_customization.ControlButtons"
        t-inherit="point_of_sale.ControlButtons"
        t-inherit-mode="extension">
-        <!-- Am besten nach einem spezifischen Button wie dem 'Refund' Button suchen -->
+        
+        <!-- Dein existierender XPath -->
         <xpath expr="//div[contains(@class, 'control-buttons-modal')]" position="inside">
-            <button class="btn btn-secondary btn-lg py-5" t-on-click="() => this.OpenDrawer()">
+            <!-- Korrekte OWL Event-Syntax (ohne this. und als direkte Referenz) -->
+            <button class="btn btn-secondary btn-lg py-5" t-on-click="openDrawer">
                 <i class="fa fa-expand me-1" role="img" /> Kasse öffnen
             </button>
         </xpath>
+        
     </t>
 </templates>
