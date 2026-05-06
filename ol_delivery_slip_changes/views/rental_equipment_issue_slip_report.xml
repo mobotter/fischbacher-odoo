@@ -11,6 +11,18 @@
                     <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
                     <t t-set="shipping_partner" t-value="o.partner_id"/>
 
+                    <!-- WICHTIG: Footer-Style zwingend VOR <main> und <div class="page"> setzen! -->
+                    <style>
+                        .footer, 
+                        .footer p, 
+                        .footer span, 
+                        .footer td, 
+                        .footer div {
+                            font-size: 8px !important;
+                            line-height: 1.2 !important;
+                        }
+                    </style>
+
                     <main>
                         <div class="page">
                             <style>
@@ -53,6 +65,17 @@
                                 .page .layout-table {
                                     width: 100%;
                                     border-collapse: collapse;
+                                    border: none !important;
+                                }
+
+                                /* NEU: Optimiertes Padding für die Kopf-Tabellen */
+                                .page .layout-table td, 
+                                .page .layout-table th {
+                                    padding-top: 2px !important;
+                                    padding-bottom: 2px !important;
+                                    padding-left: 0 !important;
+                                    padding-right: 0 !important;
+                                    line-height: 1.35 !important;
                                 }
 
                                 .page .top-table {
@@ -72,7 +95,6 @@
                                     width: 45%;
                                     vertical-align: top;
                                     padding-left: 12mm;
-                                    line-height: 1.35;
                                 }
 
                                 .page .address-wrap {
@@ -82,7 +104,8 @@
                                 .page .company-line {
                                     font-size: 9px;
                                     margin-bottom: 4px;
-                                    border-bottom: 1px solid #ccc;
+                                    border-bottom: 1px solid #666 !important;
+                                    margin-right: 20px;
                                 }
 
                                 .page .meta-label,
@@ -127,8 +150,8 @@
 
                                 .page .line-cell {
                                     font-size: 11px;
-                                    padding-top: 5px;
-                                    padding-bottom: 5px;
+                                    padding-top: 5px !important;
+                                    padding-bottom: 5px !important;
                                     vertical-align: top;
                                 }
 
@@ -149,9 +172,9 @@
                                 }
 
                                 .page .spacer-row td {
-                                    height: 14px;
-                                    padding: 0;
-                                    border: none;
+                                    height: 14px !important;
+                                    padding: 0 !important;
+                                    border: none !important;
                                 }
 
                                 .page .signature-wrap {
@@ -189,7 +212,7 @@
                                 }
                             </style>
 
-                            <table class="layout-table top-table">
+                            <table class="layout-table top-table table-borderless">
                                 <tr>
                                     <td class="left-col">
                                         <div class="address-wrap">
@@ -410,21 +433,22 @@
                                 Rental Equipment Issue Slip
                             </h2>
 
-                            <table class="table table-borderless layout-table" name="rental_issue_table" style="font-size:11px;">
+                            <!-- HIER: Klasse 'table' entfernt, um Bootstrap-Rahmen zu verhindern! -->
+                            <table class="layout-table table-borderless" name="rental_issue_table" style="font-size:11px; width:100%; border-collapse:collapse; border:none !important;">
                                 <thead>
                                     <tr style="margin-bottom:10px;">
-                                        <td t-if="o.origin" colspan="1" class="center">
+                                        <td t-if="o.origin" colspan="1" class="center" style="padding-bottom:10px;">
                                             <strong>Order</strong><br/>
                                             <span t-esc="o.origin"/>
                                         </td>
 
-                                        <td t-if="o.state" colspan="1" class="center">
+                                        <td t-if="o.state" colspan="1" class="center" style="padding-bottom:10px;">
                                             <strong>Issue Date</strong><br/>
                                             <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                             <span t-else="" t-field="o.scheduled_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                         </td>
 
-                                        <td t-if="o.name" colspan="2" class="center">
+                                        <td t-if="o.name" colspan="2" class="center" style="padding-bottom:10px;">
                                             <strong>Issue Slip No.</strong><br/>
                                             <span t-field="o.name"/>
                                         </td>
