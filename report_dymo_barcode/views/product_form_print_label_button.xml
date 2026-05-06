@@ -11,7 +11,7 @@
                         string="Etiketten drucken"
                         class="oe_stat_button"
                         icon="fa-tags"
-                        context="{'active_model': 'product.template', 'default_product_tmpl_ids': active_ids}"/>
+                        context="{'active_model': 'product.template', 'default_product_tmpl_ids': [id]}"/>
             </xpath>
         </field>
     </record>
