@@ -13,35 +13,10 @@
             
             <!-- A. Buttons im Header hinzufügen -->
             <xpath expr="//header" position="inside">
-                <button name="action_confirm" data-hotkey="q"
-                    string="Confirm" type="object" context="{'validate_analytic': True}"
-                    invisible="state != 'accepted'"/>
-                
-                <button
-                    name="action_accept_by_client"
-                    type="object"
-                    string="Accepted by Client"
-                    class="btn-primary"
-                    invisible="state not in ('draft', 'sent')" 
-                />
-                
-                <button
-                    name="action_reset_to_quotation"
-                    type="object"
-                    string="Reset to Quotation"
-                    class="btn-primary"
-                    invisible="state != 'accepted'"
-                />
-                
-                <button 
-                    name="action_quotation_send_subscription" 
-                    id="send_by_email_subscription" 
-                    string="Quotation send by email" 
-                    class="btn-primary"
-                    type="object" 
-                    invisible="state not in ('sent', 'sale', 'draft')" 
-                    data-hotkey="g" 
-                    context="{'validate_analytic': True, 'check_document_layout': True}"/>
+                <button name="action_confirm" data-hotkey="q" string="Confirm" type="object" context="{'validate_analytic': True}" invisible="state != 'accepted'"/>
+                <button name="action_accept_by_client" type="object" string="Accepted by Client" class="btn-primary" invisible="state not in ('draft', 'sent')" />
+                <button name="action_reset_to_quotation" type="object" string="Reset to Quotation" class="btn-primary" invisible="state != 'accepted'"/>
+                <button name="action_quotation_send_subscription" id="send_by_email_subscription" string="Quotation send by email" class="btn-primary" type="object" invisible="state not in ('sent', 'sale', 'draft')" data-hotkey="g" context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
             <!-- B. Grünes Bändchen (Ribbon) im Formular -->
@@ -49,12 +24,10 @@
                 <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != 'accepted'"/>
             </xpath>
 
-            <!-- C. Neuer Tab 'Quotation Lines' ins Notebook einfügen -->
-            <xpath expr="//notebook" position="inside">
+            <!-- C. Neuer Tab 'Quotation Lines' als ERSTEN Tab ins Notebook einfügen -->
+            <xpath expr="//notebook/page[1]" position="before">
                 <page name="quotation_page" string="Quotation Lines">
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="tree,kanban" readonly="state == 'cancel' or locked">
-                        
-                        <!-- Tree-Ansicht für die Tabellenzeilen -->
                         <tree editable="bottom" limit="200">
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
@@ -64,10 +37,7 @@
                             
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
-                            <field name="product_id" 
-                                required="not display_type" 
-                                options="{'no_open': True}" 
-                                force_save="1"/> 
+                            <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1"/> 
                             <field name="name"/>
                             <field name="product_uom_qty"/>
                             <field name="product_uom"/>
@@ -98,17 +68,10 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
-            
             <!-- Überschreibt das Badge in der Abo-Übersicht -->
             <xpath expr="//field[@name='subscription_state']" position="replace">
-                <field name="subscription_state" 
-                       widget="badge" 
-                       decoration-success="subscription_state in ('3_progress', 'accepted')"
-                       decoration-warning="subscription_state == '4_paused'"
-                       decoration-danger="subscription_state == '6_churn'"
-                       decoration-info="subscription_state == '1_draft'"/>
+                <field name="subscription_state" widget="badge" decoration-success="subscription_state in ('3_progress', 'accepted')" decoration-warning="subscription_state == '4_paused'" decoration-danger="subscription_state == '6_churn'" decoration-info="subscription_state == '1_draft'"/>
             </xpath>
-            
         </field>
     </record>
 
@@ -118,17 +81,13 @@
     
     <!-- A. Für den Menüpunkt: Subscriptions -> Quotations -->
     <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
-        <field name="domain">[
-            ('is_subscription', '=', True), 
-            ('state', 'in', ['draft', 'sent', 'accepted'])
-        ]</field>
+        <field name="domain">[('is_subscription', '=', True), ('state', 'in', ['draft', 'sent', 'accepted'])]</field>
     </record>
 
     <!-- B. Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
     <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
         <field name="domain">[('is_subscription', '=', True)]</field>
     </record>
-
 
     <!-- C. Erweitert die Standard-Suche, damit Filter nicht stören -->
     <record id="sale_subscription_search_inherit_accept" model="ir.ui.view">
@@ -142,7 +101,6 @@
         </field>
     </record>
 
-
     <!-- ============================================== -->
     <!-- 4. FARBE FÜR DEN 'ACCEPTED' STATUS IN VERKAUF  -->
     <!-- ============================================== -->
@@ -153,7 +111,6 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_quotation_tree"/>
         <field name="arch" type="xml">
-            <!-- Sucht nach dem state-Feld und fügt accepted in die grüne Liste ein -->
             <xpath expr="//field[@name='state']" position="attributes">
                 <attribute name="decoration-success">state in ('sale', 'done', 'accepted')</attribute>
             </xpath>
