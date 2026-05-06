@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Action, die den Standard-Label-Wizard öffnet -->
+    <!-- Erweitert die Standard-Ansicht des Wizards, damit alle Formate sichtbar sind -->
+    <record id="product_label_layout_form_inherit_dymo_zpl" model="ir.ui.view">
+        <field name="name">product.label.layout.form.inherit.dymo.zpl</field>
+        <field name="model">product.label.layout</field>
+        <field name="inherit_id" ref="product.product_label_layout_form"/>
+        <field name="arch" type="xml">
+            <!-- Wir suchen das Feld print_format und stellen sicher, dass es alle Werte anzeigen darf -->
+            <xpath expr="//field[@name='print_format']" position="replace">
+                <field name="print_format" widget="radio" options="{'horizontal': true}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Deine bisherige Action bleibt hier unangetastet -->
     <record id="action_open_product_label_layout_wizard" model="ir.actions.act_window">
         <field name="name">Print Labels</field>
         <field name="res_model">product.label.layout</field>
