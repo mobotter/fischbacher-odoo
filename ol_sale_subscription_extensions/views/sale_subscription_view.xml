@@ -7,8 +7,8 @@
     <record id="sale_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
-        <!-- WICHTIG: Wir erben vom Basis-Verkaufsformular, das von Abos geteilt wird -->
-        <field name="inherit_id" ref="sale.view_order_form" />
+        <!-- WICHTIG: Zurück auf die spezifische Abo-Maske -->
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
         <field name="arch" type="xml">
             
             <!-- A. Buttons im Header hinzufügen -->
