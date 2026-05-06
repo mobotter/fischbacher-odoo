@@ -30,12 +30,11 @@
                                 }
                             </style>
                     
-                            <table style="width:100%; border-collapse:collapse; margin-top:10mm; border:0 !important;">
+                            <table class="table table-borderless" style="width:100%; border-collapse:collapse; margin-top:10mm; border:0 !important;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top; height:45mm; max-height:45mm; overflow:hidden; font-size:13px; border:0 !important;">
                                         <div style="margin-top:5mm;">
-                                            <!-- Hier habe ich den Rahmen-Code entfernt -->
-                                            <div class="company-line" style="font-size:10.5px; margin-bottom:4px;">
+                                            <div class="company-line" style="font-size:10.5px; margin-bottom:4px; border-bottom: 2px solid #666;">
                                                 <span t-field="o.company_id.name"/> |
                                                 <span t-field="o.company_id.street"/> |
                                                 <span t-field="o.company_id.zip"/>
@@ -57,7 +56,7 @@
                                     </td>
 
                                     <td style="width:45%; vertical-align:top; padding-left:15mm; line-height:1.5; border:0 !important;">
-                                        <table style="width:100%; border-collapse:collapse; border:0 !important;">
+                                        <table class="table table-borderless" style="width:100%; border-collapse:collapse; border:0 !important;">
                                             <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
                                             <t t-if="inv">
                                                 <tr><td style="font-size:13px; border:0 !important;">Invoice Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="inv.name"/></td></tr>
