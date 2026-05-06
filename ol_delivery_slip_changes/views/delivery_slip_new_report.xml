@@ -46,11 +46,10 @@
                                     white-space: pre-wrap;
                                 }
 
-                                /* WICHTIG: Reduziert die Zeilenhöhe in den oberen Tabellen */
                                 .page .layout-table td, 
                                 .page .layout-table th {
-                                    padding-top: 3px !important;
-                                    padding-bottom: 3px !important;
+                                    padding-top: 2px !important;
+                                    padding-bottom: 2px !important;
                                     padding-left: 0 !important;
                                     padding-right: 0 !important;
                                     line-height: 1.4 !important;
@@ -97,7 +96,8 @@
                                 .page .company-line {
                                     font-size: 10.5px;
                                     margin-bottom: 4px;
-                                    border-bottom: 2px solid #666 !important; /* Unterstrich wieder eingefügt */
+                                    border-bottom: 1px solid #666 !important;
+                                    margin-right: 20px;
                                 }
 
                                 .page .meta-label,
