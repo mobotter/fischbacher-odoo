@@ -10,6 +10,7 @@
         <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
         <field name="arch" type="xml">
             
+            <!-- A. Buttons im Header hinzufügen -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
@@ -42,32 +43,36 @@
                     context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
-            <!-- Statusbar Reihenfolge anpassen -->
+            <!-- B. Statusbar Reihenfolge anpassen -->
             <xpath expr="//field[@name='state']" position="attributes">
                 <attribute name="statusbar_visible">draft,sent,accepted,sale,cancel</attribute>
             </xpath>
 
-            <!-- Grünes Bändchen (Ribbon) oben rechts im Formular -->
+            <!-- C. Grünes Bändchen (Ribbon) oben rechts im Formular -->
             <xpath expr="//sheet" position="inside">
                 <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != 'accepted'"/>
             </xpath>
 
-           <xpath expr="//notebook/page[@name='order_lines']" position="before">
-                <page name="quatation_page" string="Quotation Lines">
-                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
-                        <list editable="bottom" limit="200">
+            <!-- D. Neuer Tab 'Quotation Lines' VOR den 'Order Lines' einfügen -->
+            <xpath expr="//notebook/page[@name='order_lines']" position="before">
+                <page name="quotation_page" string="Quotation Lines">
+                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="tree,kanban" readonly="state == 'cancel' or locked">
+                        
+                        <!-- Die Tabellenansicht (Tree) innerhalb des One2Many Feldes -->
+                        <tree editable="bottom" limit="200">
+                            <!-- Steuerung für normale Produkte, Sektionen (Überschriften) und Notizen -->
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
+                            
                             <field name="sequence" widget="handle"/>
                             <field name="display_type" column_invisible="True"/>
                             <field name="product_id" 
                                 required="not display_type" 
                                 options="{'no_open': True}" 
-                                force_save="1" 
-                                widget="many2one"/> 
+                                force_save="1"/> 
                             <field name="name"/>
                             <field name="product_uom_qty"/>
                             <field name="product_uom"/>
@@ -75,8 +80,10 @@
                             <field name="discount"/>
                             <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"/>
                             <field name="price_subtotal" readonly="1"/>
-                        </list>
+                        </tree>
                     </field>
+                    
+                    <!-- Platz für Notizen/Bedingungen unterhalb der Tabelle -->
                     <group name="note_group" col="6" class="mt-2 mt-md-0">
                         <group colspan="4" class="order-1 order-lg-0" col="6">
                             <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
@@ -95,6 +102,7 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
+            
             <!-- Überschreibt das Badge in der Abo-Übersicht -->
             <xpath expr="//field[@name='subscription_state']" position="replace">
                 <field name="subscription_state" 
@@ -104,6 +112,7 @@
                        decoration-danger="subscription_state == '6_churn'"
                        decoration-info="subscription_state == '1_draft'"/>
             </xpath>
+            
         </field>
     </record>
 
@@ -112,7 +121,7 @@
     <!-- 3. MENÜ-AKTIONEN & FILTER                      -->
     <!-- ============================================== -->
     
-    <!-- A) Für den Menüpunkt: Subscriptions -> Quotations -->
+    <!-- A. Für den Menüpunkt: Subscriptions -> Quotations -->
     <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
         <field name="domain">[
             ('is_subscription', '=', True), 
@@ -120,13 +129,13 @@
         ]</field>
     </record>
 
-    <!-- B) Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
+    <!-- B. Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
     <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
         <field name="domain">[('is_subscription', '=', True)]</field>
     </record>
 
 
-    <!-- C) Erweitert die Standard-Suche, damit Filter nicht stören -->
+    <!-- C. Erweitert die Standard-Suche, damit Filter nicht stören -->
     <record id="sale_subscription_search_inherit_accept" model="ir.ui.view">
         <field name="name">sale.subscription.search.inherit.accept</field>
         <field name="model">sale.order</field>
@@ -143,7 +152,7 @@
     <!-- 4. FARBE FÜR DEN 'ACCEPTED' STATUS IN VERKAUF  -->
     <!-- ============================================== -->
     
-    <!-- Für die Quotations-Liste (Angebote) -->
+    <!-- A. Für die Quotations-Liste (Angebote) -->
     <record id="sale_order_tree_view_inherit_accepted" model="ir.ui.view">
         <field name="name">sale.order.tree.inherit.accepted</field>
         <field name="model">sale.order</field>
@@ -156,7 +165,7 @@
         </field>
     </record>
 
-    <!-- Für die Sales-Order-Liste (Verkaufsaufträge) -->
+    <!-- B. Für die Sales-Order-Liste (Verkaufsaufträge) -->
     <record id="sale_order_tree_view_inherit_accepted_orders" model="ir.ui.view">
         <field name="name">sale.order.tree.inherit.accepted.orders</field>
         <field name="model">sale.order</field>
