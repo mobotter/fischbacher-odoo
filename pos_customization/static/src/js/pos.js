@@ -12,7 +12,13 @@ patch(ControlButtons.prototype, {
 
     async openDrawer() {
         try {
-            await this.hardwareProxy.openCashbox();
+            // Versuche direkt das Kassensignal über den Drucker (Hardware Proxy) zu senden
+            if (this.hardwareProxy.printer) {
+                await this.hardwareProxy.printer.openCashbox();
+            } else {
+                // Fallback, falls Odoo IoT die Kasse direkt steuert
+                await this.hardwareProxy.openCashbox();
+            }
         } catch (error) {
             console.error("Error while opening cash drawer:", error);
         }
