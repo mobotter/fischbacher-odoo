@@ -6,7 +6,6 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
-                <!-- Die ID muss mit %(modul.id)d referenziert werden -->
                 <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
                         type="action"
                         string="Etiketten drucken"
