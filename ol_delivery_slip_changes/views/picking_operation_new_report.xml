@@ -26,11 +26,11 @@
                                 }
                                 .page td, 
                                 .page th {
-                                    padding-top: 1px !important;
-                                    padding-bottom: 1px !important;
+                                    padding-top: 3px !important;
+                                    padding-bottom: 3px !important;
                                     padding-left: 0 !important; /* Kein Abstand nach links */
                                     padding-right: 0 !important;
-                                    line-height: 1.2 !important; /* Verringert Zeilenhöhe */
+                                    line-height: 1.4 !important; /* Verringert Zeilenhöhe */
                                 }
                                 .page .company-line {
                                     border-bottom: none !important;
