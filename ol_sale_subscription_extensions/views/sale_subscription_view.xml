@@ -7,10 +7,11 @@
     <record id="sale_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
+        <!-- WICHTIG: Erbe vom Standard-Sales-Formular, nicht vom Primary Subscription Form -->
+        <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             
-            <!-- A. Buttons im Header hinzufügen -->
+            <!-- Buttons am Ende des Headers einfügen -->
             <xpath expr="//header" position="inside">
                 <button name="action_confirm" data-hotkey="q"
                     string="Confirm" type="object" context="{'validate_analytic': True}"
@@ -43,24 +44,23 @@
                     context="{'validate_analytic': True, 'check_document_layout': True}"/>
             </xpath>
 
-            <!-- B. Statusbar Reihenfolge anpassen -->
+            <!-- Statusbar anpassen -->
             <xpath expr="//field[@name='state']" position="attributes">
+                <!-- Fallback: falls statusbar_visible in v19 anders gesetzt wird -->
                 <attribute name="statusbar_visible">draft,sent,accepted,sale,cancel</attribute>
             </xpath>
 
-            <!-- C. Grünes Bändchen (Ribbon) oben rechts im Formular -->
+            <!-- Grünes Bändchen -->
             <xpath expr="//sheet" position="inside">
                 <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != 'accepted'"/>
             </xpath>
 
-            <!-- D. Neuer Tab 'Quotation Lines' VOR den 'Order Lines' einfügen -->
-            <xpath expr="//notebook/page[@name='order_lines']" position="before">
+            <!-- Neuer Tab 'Quotation Lines' -->
+            <!-- Hier fügen wir den Tab in das Notebook ein, am besten GANZ VORNE (erste Position) -->
+            <xpath expr="//notebook" position="inside">
                 <page name="quotation_page" string="Quotation Lines">
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="tree,kanban" readonly="state == 'cancel' or locked">
-                        
-                        <!-- Die Tabellenansicht (Tree) innerhalb des One2Many Feldes -->
                         <tree editable="bottom" limit="200">
-                            <!-- Steuerung für normale Produkte, Sektionen (Überschriften) und Notizen -->
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
@@ -83,7 +83,6 @@
                         </tree>
                     </field>
                     
-                    <!-- Platz für Notizen/Bedingungen unterhalb der Tabelle -->
                     <group name="note_group" col="6" class="mt-2 mt-md-0">
                         <group colspan="4" class="order-1 order-lg-0" col="6">
                             <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
@@ -91,6 +90,7 @@
                     </group>
                 </page>
             </xpath>
+            
         </field>
     </record>
 
