@@ -3,13 +3,6 @@
     <!--
         Delivery Slip Report Changes
         This template overrides the standard delivery slip from stock.report_deliveryslip.
-        Output:
-        - Company header and address block
-        - Invoice and order data from the linked sale order
-        - Delivery slip metadata such as order, date, and delivery slip number
-        - Additional compact page header from page 2 onwards
-        - Line list with product, ordered quantity, delivered quantity, and backorder
-        - Signature area at the end of the document
     -->
     <template id="delivery_slip_new" inherit_id="stock.report_deliveryslip">
         <xpath expr="//t" position="replace">
@@ -53,6 +46,16 @@
                                     white-space: pre-wrap;
                                 }
 
+                                /* WICHTIG: Reduziert die Zeilenhöhe in den oberen Tabellen */
+                                .page .layout-table td, 
+                                .page .layout-table th {
+                                    padding-top: 1px !important;
+                                    padding-bottom: 1px !important;
+                                    padding-left: 0 !important;
+                                    padding-right: 0 !important;
+                                    line-height: 1.2 !important;
+                                }
+
                                 .page .head-bottom th {
                                     border-bottom: 1px solid #ccc !important;
                                 }
@@ -62,13 +65,10 @@
                                     border-bottom: 1px solid #e0e0e0 !important;
                                 }
 
-                                .page .layout-table,
-                                .page .layout-table tr,
-                                .page .layout-table td,
-                                .page .layout-table th {
-                                    border: none !important;
+                                .page .layout-table {
                                     width: 100%;
                                     border-collapse: collapse;
+                                    border: none !important;
                                 }
 
                                 .page .top-table {
@@ -88,7 +88,6 @@
                                     width: 45%;
                                     vertical-align: top;
                                     padding-left: 15mm;
-                                    line-height: 1.5;
                                 }
 
                                 .page .address-wrap {
@@ -98,8 +97,7 @@
                                 .page .company-line {
                                     font-size: 10.5px;
                                     margin-bottom: 4px;
-                                    border-bottom: none !important;
-                                    border: none !important;
+                                    border-bottom: 2px solid #666 !important; /* Unterstrich wieder eingefügt */
                                 }
 
                                 .page .meta-label,
@@ -136,8 +134,8 @@
 
                                 .page .line-cell {
                                     font-size: 14px;
-                                    padding-top: 6px;
-                                    padding-bottom: 6px;
+                                    padding-top: 6px !important;
+                                    padding-bottom: 6px !important;
                                 }
 
                                 .page .line-product {
@@ -161,9 +159,9 @@
                                 }
 
                                 .page .spacer-row td {
-                                    height: 20px;
-                                    padding: 0;
-                                    border: none;
+                                    height: 20px !important;
+                                    padding: 0 !important;
+                                    border: none !important;
                                 }
 
                                 .page .project-cell {
@@ -216,7 +214,7 @@
 
                                 .page .continued-header td {
                                     text-align: right;
-                                    padding: 0;
+                                    padding: 0 !important;
                                     font-size: 10.5px;
                                     color: #444;
                                 }
@@ -495,21 +493,22 @@
                                 </table>
                             </div>
 
-                            <table class="table table-borderless layout-table" name="stock_move_table" style="font-size:14px;">
+                            <!-- HIER: Klasse 'table' entfernt, um ungewollte Rahmen zu vermeiden -->
+                            <table class="layout-table" name="stock_move_table" style="font-size:14px; width:100%; border-collapse:collapse; border:none !important;">
                                 <thead>
                                     <tr style="margin-bottom:10px;">
-                                        <td t-if="o.origin" colspan="1" class="center">
+                                        <td t-if="o.origin" colspan="1" class="center" style="padding-bottom:15px;">
                                             <strong>Order</strong><br/>
                                             <span t-field="o.origin"/>
                                         </td>
 
-                                        <td t-if="o.state" colspan="2" class="center">
+                                        <td t-if="o.state" colspan="2" class="center" style="padding-bottom:15px;">
                                             <strong>Delivery Slip Date</strong><br/>
                                             <span t-if="o.state == 'done'" t-field="o.date_done" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                             <span t-else="" t-field="o.scheduled_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                         </td>
 
-                                        <td t-if="o.name" colspan="2" class="center">
+                                        <td t-if="o.name" colspan="2" class="center" style="padding-bottom:15px;">
                                             <strong>Delivery Slip No.</strong><br/>
                                             <span t-field="o.name"/>
                                         </td>
@@ -533,6 +532,7 @@
                                     <t t-set="pos" t-value="0"/>
 
                                     <tr t-foreach="lines" t-as="move" class="line-bottom">
+                                        <!-- HIER: Das pos=pos+1 Konstrukt ist schon drin, fungiert als ID -->
                                         <t t-set="pos" t-value="pos + 1"/>
 
                                         <td class="line-cell">
