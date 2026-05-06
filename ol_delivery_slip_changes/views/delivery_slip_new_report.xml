@@ -222,6 +222,13 @@
                                 .page .continued-sep {
                                     padding: 0 6px;
                                 }
+                                .footer, 
+                                .footer p, 
+                                .footer span, 
+                                .footer td, 
+                                .footer div {
+                                    font-size: 10px !important;
+                                }
                             </style>
 
                             <table class="layout-table top-table table-borderless">
