@@ -27,7 +27,7 @@ class ProductLabelLayout(models.TransientModel):
         if self.print_format == 'dymo_small':
             xml_id = 'report_dymo_barcode.report_product_template_label_dymo_small'
         if self.print_format ==  'zpl_small':
-            xml_id = 'report_dymo_barcode.label_product_product_view_small'
+            xml_id = 'report_dymo_barcode.report_product_template_label_zpl_small'
         # Task id 34163 JC 
         if self.print_format ==  'zpl_without_price':
             xml_id = 'report_dymo_barcode.report_product_template_label_zpl_without_price'  
