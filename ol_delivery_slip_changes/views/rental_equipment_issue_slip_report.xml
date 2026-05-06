@@ -285,7 +285,7 @@
 
                 <!-- 3. EIGENER EINGEBETTETER FOOTER (100% kontrollierbar) -->
                 <!-- Die Schriftgröße ist hier hardcoded auf 8px. Falls noch zu groß: einfach auf 6px oder 7px ändern! -->
-                <div class="footer" style="font-size: 6px !important; line-height: 1.1 !important; color: #000;">
+                <div class="footer" style="font-size: 8px !important; line-height: 1.2 !important; color: #000;">
                     <p style="margin-bottom: 4px;">
                         Kommanditgesellschaft · Sitz München, HRA 116761 · Persönlich haftende Gesellschafterin: Fischbacher GmbH · Sitz München · HRB 278787<br/>
                         USt-Id. DE355684446 · St-Nr. 143/518/60562 · Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez
