@@ -10,11 +10,32 @@
 
                     <main>
                         <div class="page">
-                            <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
+                            <!-- FÜGE DIESEN STYLE-BLOCK HINZU -->
+                            <style>
+                                .page table,
+                                .page tr,
+                                .page td,
+                                .page th {
+                                    border: 0 !important;
+                                    border-width: 0 !important;
+                                    border-style: none !important;
+                                    border-color: transparent !important;
+                                    border-collapse: collapse !important;
+                                    box-shadow: none !important;
+                                    outline: none !important;
+                                }
+                                .page .company-line {
+                                    border-bottom: none !important;
+                                    border: none !important;
+                                }
+                            </style>
+                    
+                            <table style="width:100%; border-collapse:collapse; margin-top:10mm; border:0 !important;">
                                 <tr>
-                                    <td style="width:50%; vertical-align:top; height:45mm; max-height:45mm; overflow:hidden; font-size:13px;">
+                                    <td style="width:50%; vertical-align:top; height:45mm; max-height:45mm; overflow:hidden; font-size:13px; border:0 !important;">
                                         <div style="margin-top:5mm;">
-                                            <div style="font-size:10.5px; margin-bottom:4px; border-bottom:1px solid #ccc;">
+                                            <!-- Hier habe ich den Rahmen-Code entfernt -->
+                                            <div class="company-line" style="font-size:10.5px; margin-bottom:4px;">
                                                 <span t-field="o.company_id.name"/> |
                                                 <span t-field="o.company_id.street"/> |
                                                 <span t-field="o.company_id.zip"/>
@@ -35,48 +56,48 @@
                                         </div>
                                     </td>
 
-                                    <td style="width:45%; vertical-align:top; padding-left:15mm; line-height:1.5;">
-                                        <table style="width:100%; border-collapse:collapse;">
+                                    <td style="width:45%; vertical-align:top; padding-left:15mm; line-height:1.5; border:0 !important;">
+                                        <table style="width:100%; border-collapse:collapse; border:0 !important;">
                                             <t t-set="inv" t-value="o.sale_id.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1]"/>
                                             <t t-if="inv">
-                                                <tr><td style="font-size:13px">Invoice Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="inv.name"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Invoice Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="inv.name"/></td></tr>
                                             </t>
                                             <t t-if="inv and inv.invoice_date">
-                                                <tr><td style="font-size:13px">Invoice Date: </td><td style="font-size:13px;padding-left:3px;">
+                                                <tr><td style="font-size:13px; border:0 !important;">Invoice Date: </td><td style="font-size:13px;padding-left:3px; border:0 !important;">
                                                     <t t-esc="inv.invoice_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                 </td></tr>
                                             </t>
                                             <t t-if="o.sale_id.name">
-                                                <tr><td style="width:55%;font-size:13px;">Quote Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.name"/></td></tr>
+                                                <tr><td style="width:55%;font-size:13px; border:0 !important;">Quote Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.name"/></td></tr>
                                             </t>
                                             <t t-if="o.sale_id.date_order">
-                                                <tr><td style="font-size:13px">Quote Date: </td><td style="font-size:13px;padding-left:3px;">
+                                                <tr><td style="font-size:13px; border:0 !important;">Quote Date: </td><td style="font-size:13px;padding-left:3px; border:0 !important;">
                                                     <t t-esc="o.sale_id.date_order" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                 </td></tr>
                                             </t>
                                             <t t-if="o.partner_id.ref">
-                                                <tr><td style="font-size:13px">Client Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.ref"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Client Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.partner_id.ref"/></td></tr>
                                             </t>
                                             <t t-else="">
-                                                <tr><td style="font-size:13px">Client Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.partner_id.id"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Client Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.partner_id.id"/></td></tr>
                                             </t>
                                             <t t-if="o.sale_id.client_order_name">
-                                                <tr><td style="font-size:13px">Ordered by: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_name"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Ordered by: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.client_order_name"/></td></tr>
                                             </t>
                                             <t t-if="o.sale_id.client_order_number">
-                                                <tr><td style="font-size:13px">Your Order Number: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.client_order_number"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Your Order Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.client_order_number"/></td></tr>
                                             </t>
                                             <t t-if="o.sale_id.carrier_id">
-                                                <tr><td style="font-size:13px">Shipping Method: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.carrier_id.name"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Shipping Method: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.carrier_id.name"/></td></tr>
                                             </t>
                                             <t t-if="o.sale_id.incoterm">
-                                                <tr><td style="font-size:13px">Delivery Terms: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.incoterm.name"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Delivery Terms: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.incoterm.name"/></td></tr>
                                             </t>
                                             <t t-if="o.sale_id.user_id.name">
-                                                <tr><td style="font-size:13px">Salesperson: </td><td style="font-size:13px;padding-left:3px;"><t t-esc="o.sale_id.user_id.name"/></td></tr>
+                                                <tr><td style="font-size:13px; border:0 !important;">Salesperson: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.user_id.name"/></td></tr>
                                             </t>
                                             <t t-if="o.scheduled_date">
-                                                <tr><td style="font-size:13px">Est. Delivery Date: </td><td style="font-size:13px;padding-left:3px;">
+                                                <tr><td style="font-size:13px; border:0 !important;">Est. Delivery Date: </td><td style="font-size:13px;padding-left:3px; border:0 !important;">
                                                     <t t-esc="o.scheduled_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                 </td></tr>
                                             </t>
@@ -90,14 +111,14 @@
                                 <div t-field="o.name" t-options='{"widget": "barcode", "width": 600, "height": 100, "img_style": "width:300px; height:50px;"}'/>
                             </div>
 
-                            <table class="table-borderless mt-5" style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; margin-top:20px;">
+                            <table class="table-borderless mt-5" style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; margin-top:20px; border:0 !important;">
                                 <tr>
-                                    <td style="vertical-align:top; width:50%;">
+                                    <td style="vertical-align:top; width:50%; border:0 !important;">
                                         <strong class="d-block mt-3">Warehouse Address</strong><br/>
                                         <div t-field="o.picking_type_id.warehouse_id.partner_id" 
                                              t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": true, "phone_icons": true}'/>
                                     </td>
-                                    <td style="vertical-align:top; width:50%;">
+                                    <td style="vertical-align:top; width:50%; border:0 !important;">
                                         <strong class="d-block">Delivery Address</strong><br/>
                                         <t t-if="sale_order and sale_order.print_delivery_address">
                                             <pre t-out="sale_order.delivery_address"/>
@@ -109,23 +130,23 @@
                                 </tr>
                             </table>
 
-                            <table class="table table-borderless" name="stock_move_table_picking" style="width:100%; border-collapse:collapse; font-size:14px;">
+                            <table class="table table-borderless" name="stock_move_table_picking" style="width:100%; border-collapse:collapse; font-size:14px; border:0 !important;">
                                 <t t-set="has_barcode" t-value="any(ml.product_id.barcode for ml in o.move_line_ids)"/>
                                 <t t-set="has_serial_number" t-value="any(ml.lot_id or ml.lot_name for ml in o.move_line_ids)" groups="stock.group_production_lot"/>
                                 <thead>
                                     <tr style="border-bottom:1px solid #ccc; margin-bottom:10px;">
-                                        <th style="width:50%; text-align:left; font-size:14px;"><strong>Product</strong></th>
-                                        <th style="width:15%; text-align:right; font-size:14px;"><strong>Quantity</strong></th>
-                                        <th style="width:15%; text-align:left; font-size:14px;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
+                                        <th style="width:50%; text-align:left; font-size:14px; border:0 !important; border-bottom:1px solid #ccc !important;"><strong>Product</strong></th>
+                                        <th style="width:15%; text-align:right; font-size:14px; border:0 !important; border-bottom:1px solid #ccc !important;"><strong>Quantity</strong></th>
+                                        <th style="width:15%; text-align:left; font-size:14px; border:0 !important; border-bottom:1px solid #ccc !important;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
                                             <strong>From</strong>
                                         </th>
-                                        <th style="width:15%; text-align:left; font-size:14px;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">
+                                        <th style="width:15%; text-align:left; font-size:14px; border:0 !important; border-bottom:1px solid #ccc !important;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">
                                             <strong>To</strong>
                                         </th>
-                                        <th style="width:15%; text-align:center; font-size:14px;" t-if="has_serial_number">
+                                        <th style="width:15%; text-align:center; font-size:14px; border:0 !important; border-bottom:1px solid #ccc !important;" t-if="has_serial_number">
                                             <strong>Lot/Serial Number</strong>
                                         </th>
-                                        <th style="width:15%; text-align:center; font-size:14px;" t-if="has_barcode">
+                                        <th style="width:15%; text-align:center; font-size:14px; border:0 !important; border-bottom:1px solid #ccc !important;" t-if="has_barcode">
                                             <strong>Product Barcode</strong>
                                         </th>
                                     </tr>
@@ -133,25 +154,25 @@
                                 <tbody>
                                     <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" 
                                         style="border-bottom:1px solid #e0e0e0;">
-                                        <td style="font-size:14px; padding:10px;">
+                                        <td style="font-size:14px; padding:10px; border:0 !important; border-bottom:1px solid #e0e0e0 !important;">
                                             <span t-esc="ml.product_id.display_name"/>
                                         </td>
-                                        <td style="font-size:14px; padding:10px; text-align:right;">
+                                        <td style="font-size:14px; padding:10px; text-align:right; border:0 !important; border-bottom:1px solid #e0e0e0 !important;">
                                             <span t-field="ml.qty_done" t-options='{"widget": "float", "precision": 2}'/>
                                             <span t-field="ml.product_uom_id"/>
                                             <t t-if="ml.result_package_id">
                                                 (<t t-esc="ml.result_package_id.name"/>)
                                             </t>
                                         </td>
-                                        <td t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px;">
+                                        <td t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px; border:0 !important; border-bottom:1px solid #e0e0e0 !important;">
                                             <span t-esc="ml.location_id.display_name"/>
                                             <t t-if="ml.package_id"> / <t t-esc="ml.package_id.name"/></t>
                                         </td>
-                                        <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px;">
+                                        <td t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations" style="font-size:14px; padding:10px; border:0 !important; border-bottom:1px solid #e0e0e0 !important;">
                                             <span t-esc="ml.location_dest_id.display_name"/>
                                             <t t-if="ml.result_package_id"> / <t t-esc="ml.result_package_id.name"/></t>
                                         </td>
-                                        <td t-if="has_serial_number" style="font-size:14px; padding:10px; text-align:center;">
+                                        <td t-if="has_serial_number" style="font-size:14px; padding:10px; text-align:center; border:0 !important; border-bottom:1px solid #e0e0e0 !important;">
                                             <t t-if="ml.lot_id">
                                                 <span t-esc="ml.lot_id.name"/>
                                             </t>
@@ -159,7 +180,7 @@
                                                 <span t-esc="ml.lot_name"/>
                                             </t>
                                         </td>
-                                        <td t-if="has_barcode and ml.product_id.barcode" style="font-size:14px; padding:10px; text-align:center;">
+                                        <td t-if="has_barcode and ml.product_id.barcode" style="font-size:14px; padding:10px; text-align:center; border:0 !important; border-bottom:1px solid #e0e0e0 !important;">
                                             <span t-esc="ml.product_id.barcode" t-options='{"widget": "barcode", "width": 400, "height": 100, "img_style": "height:35px;"}'/>
                                         </td>
                                     </tr>
