@@ -553,7 +553,8 @@
                                         </td>
 
                                         <td class="line-cell text-end">
-                                            <t t-esc="'{:.2f}'.format(max(move.product_uom_qty - move.quantity, 0.0))"/>
+                                            <t t-set="backorder_qty" t-value="move.product_uom_qty - move.quantity"/>
+                                            <t t-esc="'{:.2f}'.format(backorder_qty if backorder_qty > 0 else 0.0)"/>
                                             <span t-field="move.product_uom"/>
                                         </td>
                                     </tr>
