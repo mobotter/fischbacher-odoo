@@ -143,7 +143,7 @@
                                 <thead>
                                     <tr style="margin-bottom:10px; border:0 !important;">
                                         <!-- NEU: Spalte für ID (Pos.) -->
-                                        <th style="width:5%; text-align:left; font-size:14px; border:0 !important;"><strong>ID</strong></th>
+                                        <th style="width:5%; text-align:left; font-size:14px; border:0 !important;"><strong>POS</strong></th>
                                         <!-- Breite des Produkts auf 45% reduziert, um Platz für ID zu machen -->
                                         <th style="width:45%; text-align:left; font-size:14px; border:0 !important;"><strong>Product</strong></th>
                                         <th style="width:15%; text-align:right; font-size:14px; border:0 !important;"><strong>Quantity</strong></th>
