@@ -11,11 +11,9 @@
                 <field name="x_telefax" widget="phone"/>
                 <field name="supplier_customer_number"/>
             </xpath>
-            <!-- Auskommentiert für Odoo 19 Upgrade, da Feld dsp3_id nicht existiert:
             <xpath expr="//field[@name='ref']" position="after">
                 <field name="dsp3_id"/>
             </xpath>
-            -->
         </field>
         </record>
 </odoo>
