@@ -281,11 +281,13 @@
                         </div>
                     
                         <div style="font-size:12px; margin-bottom:5mm;">
-                            <t t-if="'billing_period_start' in sale_order._fields and 'billing_period_end' in sale_order._fields and sale_order.billing_period_start and sale_order.billing_period_end">
-                                Rental period from
-                                <span t-field="sale_order.billing_period_start" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
-                                to
-                                <span t-field="sale_order.billing_period_end" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                            <t t-if="sale_order and sale_order.billing_period_start and sale_order.billing_period_end">
+                                <div style="font-size:12px; margin-bottom:5mm;">
+                                    Rental period from
+                                    <t t-esc="sale_order.billing_period_start.strftime('%d.%m.%Y')"/>
+                                    to
+                                    <t t-esc="sale_order.billing_period_end.strftime('%d.%m.%Y')"/>
+                                </div>
                             </t>
                         </div>
                     </t>
