@@ -6,12 +6,21 @@ class SaleOrder(models.Model):
 
     purchase_no = fields.Char(string="Purchase")
     order_number = fields.Char(string="Order Number")
+    
+    # DUMMY-FELD ZURÜCKGEBRACHT, um UI-Crashes zu vermeiden (falls noch alte Views existieren)
+    is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent")
+    
     hide_total = fields.Boolean(string="Hide Total Amount")
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
 
     billing_period_start = fields.Date(compute='_compute_billing_period', store=True)
     billing_period_end = fields.Date(compute='_compute_billing_period', store=True)
+
+    @api.depends('plan_id')
+    def _compute_is_rent(self):
+        for order in self:
+            order.is_rent = bool(order.plan_id)
 
     @api.depends('next_invoice_date', 'start_date')
     def _compute_billing_period(self):
