@@ -1,15 +1,16 @@
 from odoo import api, fields, models
 from dateutil.relativedelta import relativedelta
 
+
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     purchase_no = fields.Char(string="Purchase")
     order_number = fields.Char(string="Order Number")
-    
-    # DUMMY-FELD ZURÜCKGEBRACHT, um UI-Crashes zu vermeiden (falls noch alte Views existieren)
+
+    # Temporäres Kompatibilitätsfeld für alte Views / Studio-Reste
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent")
-    
+
     hide_total = fields.Boolean(string="Hide Total Amount")
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
@@ -17,18 +18,21 @@ class SaleOrder(models.Model):
     billing_period_start = fields.Date(compute='_compute_billing_period', store=True)
     billing_period_end = fields.Date(compute='_compute_billing_period', store=True)
 
-    @api.depends('plan_id')
+    @api.depends('plan_id', 'is_subscription')
     def _compute_is_rent(self):
         for order in self:
-            order.is_rent = bool(order.plan_id)
+            order.is_rent = bool(
+                ('plan_id' in order._fields and order.plan_id) or
+                ('is_subscription' in order._fields and order.is_subscription)
+            )
 
     @api.depends('next_invoice_date', 'start_date')
     def _compute_billing_period(self):
         for order in self:
-            if order.next_invoice_date:
+            if 'next_invoice_date' in order._fields and order.next_invoice_date:
                 order.billing_period_end = order.next_invoice_date - relativedelta(days=1)
                 order.billing_period_start = order.next_invoice_date - relativedelta(days=28)
-            elif hasattr(order, 'start_date') and order.start_date:
+            elif 'start_date' in order._fields and order.start_date:
                 order.billing_period_start = order.start_date
                 order.billing_period_end = order.start_date
             else:
@@ -64,17 +68,17 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        # Standard-Fallback auf die Verkaufsauftragszeilen
         lines_to_process = self.order_line
+        is_sub = (
+            ('plan_id' in self._fields and self.plan_id) or
+            ('is_subscription' in self._fields and self.is_subscription)
+        )
 
-        # Nativer Odoo 19 Abo-Check (plan_id oder is_subscription)
-        is_sub = getattr(self, 'plan_id', False) or getattr(self, 'is_subscription', False)
-        
         if is_sub:
-            if 'quotation_lines' in self._fields and getattr(self, 'quotation_lines'):
-                lines_to_process = getattr(self, 'quotation_lines')
-            elif 'quotation_line_ids' in self._fields and getattr(self, 'quotation_line_ids'):
-                lines_to_process = getattr(self, 'quotation_line_ids')
+            if 'quotation_lines' in self._fields and self.quotation_lines:
+                lines_to_process = self.quotation_lines
+            elif 'quotation_line_ids' in self._fields and self.quotation_line_ids:
+                lines_to_process = self.quotation_line_ids
 
         if 'sequence' in lines_to_process._fields:
             lines_to_process = lines_to_process.sorted(lambda l: (l.sequence, l.id))
@@ -86,15 +90,17 @@ class SaleOrder(models.Model):
                 if current['title'] or current['product_lines'] or current['note_lines']:
                     result.append(current)
                 current = _new_block(line)
+
             elif display_type == 'line_note':
                 current['note_lines'].append(line)
+
             else:
                 line_dict = {
                     'line': line,
                     'show_prices': not current['hide_prices'],
                 }
                 current['product_lines'].append(line_dict)
-                
+
                 if 'price_subtotal' in line._fields:
                     current['subtotal'] += line.price_subtotal
                 else:
