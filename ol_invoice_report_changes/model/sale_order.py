@@ -41,7 +41,7 @@ class SaleOrder(models.Model):
             )
         return super()._find_mail_template()
 
-    def _get_report_sections_for_pdf(self):
+        def _get_report_sections_for_pdf(self):
         self.ensure_one()
 
         def _field_is_true(record, field_name):
@@ -61,13 +61,19 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        if getattr(self, 'is_subscription', False) and hasattr(self, 'quotation_lines') and self.quotation_lines:
-            lines_to_process = self.quotation_lines.sorted(lambda l: (l.sequence, l.id))
+        # SICHERE PRÜFUNG: Wir prüfen is_rent (unser eigenes Feld) ODER is_subscription.
+        is_sub = self.is_rent or getattr(self, 'is_subscription', False)
+        has_quote_lines = 'quotation_lines' in self._fields and len(self.quotation_lines) > 0
+
+        if is_sub and has_quote_lines:
+            lines_to_process = self.quotation_lines
+            # Falls die Abo-Zeilen ein sequence Feld haben, sortieren wir danach
+            if 'sequence' in self.quotation_lines._fields:
+                lines_to_process = lines_to_process.sorted(lambda l: (l.sequence, l.id))
         else:
             lines_to_process = self.order_line.sorted(lambda l: (l.sequence, l.id))
 
         for line in lines_to_process:
-            # Check if display_type exists, otherwise treat as normal line (False/None)
             display_type = line.display_type if 'display_type' in line._fields else False
 
             if display_type == 'line_section':
@@ -82,11 +88,11 @@ class SaleOrder(models.Model):
                     'show_prices': not current['hide_prices'],
                 }
                 current['product_lines'].append(line_dict)
-                # handle missing price_subtotal on custom quotation_lines
+                
+                # Sicherer Subtotal-Abruf für Custom-Lines
                 if 'price_subtotal' in line._fields:
                     current['subtotal'] += line.price_subtotal
                 else:
-                    # fallback to qty * price if subtotal field is missing
                     qty = getattr(line, 'product_uom_qty', getattr(line, 'quantity', 0.0))
                     price = getattr(line, 'price_unit', 0.0)
                     current['subtotal'] += (qty * price)
