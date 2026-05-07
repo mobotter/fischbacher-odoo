@@ -59,10 +59,11 @@
                                 }
                             </style>
 
-                            <!-- KORREKTUR: Dynamische Zuweisung der Lines! -->
+                            <!-- KORREKTUR: Dynamische Zuweisung OHNE doc.is_rent -->
+                            <t t-set="is_sub" t-value="('plan_id' in doc._fields and doc.plan_id) or ('is_subscription' in doc._fields and doc.is_subscription)"/>
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
                             <t t-set="custom_lines" t-value="doc.quotation_lines if 'quotation_lines' in doc._fields else (doc.quotation_line_ids if 'quotation_line_ids' in doc._fields else False)"/>
-                            <t t-set="lines_to_report" t-value="custom_lines if (doc.is_rent and custom_lines) else doc.order_line"/>
+                            <t t-set="lines_to_report" t-value="custom_lines if (is_sub and custom_lines) else doc.order_line"/>
                             <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report if 'display_type' in l._fields and not l.display_type)"/>
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
@@ -178,10 +179,14 @@
                                 </tr>
                             </table>
 
-                            <!-- KORREKTUR: Dynamische Überschrift! -->
+                            <!-- KORREKTUR: Dynamische und übersetzbare Überschrift! -->
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                                <t t-if="doc.is_rent">Mietangebot</t>
-                                <t t-else="">Angebot</t>
+                                <t t-if="is_sub">
+                                    <t t-out="doc.env._('Rental Quote')"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-out="doc.env._('Quotation')"/>
+                                </t>
                             </h2>
 
                             <table style="width:100%; border-collapse:collapse; font-size:12px;">
