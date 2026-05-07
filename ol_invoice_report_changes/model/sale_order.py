@@ -42,7 +42,7 @@ class SaleOrder(models.Model):
             )
         return super()._find_mail_template()
 
-    def _get_report_sections_for_pdf(self):
+        def _get_report_sections_for_pdf(self):
         self.ensure_one()
 
         def _field_is_true(record, field_name):
@@ -62,7 +62,8 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        if self.is_rent and hasattr(self, 'quotation_lines') and self.quotation_lines:
+        # HIER IST DIE WICHTIGE ÄNDERUNG: Wir nutzen is_subscription
+        if getattr(self, 'is_subscription', False) and hasattr(self, 'quotation_lines') and self.quotation_lines:
             lines_to_process = self.quotation_lines.sorted(lambda l: (l.sequence, l.id))
         else:
             lines_to_process = self.order_line.sorted(lambda l: (l.sequence, l.id))
