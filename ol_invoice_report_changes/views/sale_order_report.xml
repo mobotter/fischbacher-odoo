@@ -23,9 +23,11 @@
 
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
                             
-                            <!-- ODOO 19 FIX: Weiche für normale Order Lines vs Subscription Quotation Lines -->
-                            <t t-set="lines_to_report" t-value="doc.quotation_lines if (doc.is_subscription and hasattr(doc, 'quotation_lines') and doc.quotation_lines) else doc.order_line"/>
-                            <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report if not l.display_type)"/>
+                            <t t-set="is_sub" t-value="doc.is_subscription if 'is_subscription' in doc._fields else False"/>
+                            <t t-set="has_quote_lines" t-value="'quotation_lines' in doc._fields and doc.quotation_lines"/>
+                            <t t-set="lines_to_report" t-value="doc.quotation_lines if (is_sub and has_quote_lines) else doc.order_line"/>
+                            
+                            <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report if 'display_type' in l._fields and not l.display_type)"/>
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
                                 <tr>
