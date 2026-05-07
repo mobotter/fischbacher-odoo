@@ -67,6 +67,17 @@ class SaleOrder(models.Model):
             billing_end.strftime('%d.%m.%Y'),
         )
 
+    def _prepare_invoice(self):
+        self.ensure_one()
+        vals = super()._prepare_invoice()
+
+        billing_start, billing_end = self._get_billing_period_dates_for_report()
+        vals.update({
+            'rental_billing_period_start': billing_start,
+            'rental_billing_period_end': billing_end,
+        })
+        return vals
+
     def _find_mail_template(self):
         self.ensure_one()
         if self.env.context.get('proforma'):
