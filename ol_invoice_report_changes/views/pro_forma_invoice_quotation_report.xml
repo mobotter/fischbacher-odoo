@@ -4,8 +4,6 @@
         <xpath expr="//t" position="replace">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
-                    <main>
-                        <div class="page">
                             <style>
                                 .page table,
                                 .page tr,
@@ -322,8 +320,6 @@
                                     </td>
                                 </tr>
                             </table>
-                        </div>
-                    </main>
                 </t>
             </t>
         </xpath>
