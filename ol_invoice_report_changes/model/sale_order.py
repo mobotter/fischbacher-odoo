@@ -8,7 +8,6 @@ class SaleOrder(models.Model):
     purchase_no = fields.Char(string="Purchase")
     order_number = fields.Char(string="Order Number")
 
-    # Temporäres Kompatibilitätsfeld für alte Views / Studio-Reste
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent")
 
     hide_total = fields.Boolean(string="Hide Total Amount")
@@ -26,15 +25,12 @@ class SaleOrder(models.Model):
                 ('is_subscription' in order._fields and order.is_subscription)
             )
 
-    @api.depends('next_invoice_date', 'start_date')
+    @api.depends('next_invoice_date')
     def _compute_billing_period(self):
         for order in self:
-            if 'next_invoice_date' in order._fields and order.next_invoice_date:
+            if order.next_invoice_date:
                 order.billing_period_end = order.next_invoice_date - relativedelta(days=1)
-                order.billing_period_start = order.next_invoice_date - relativedelta(days=28)
-            elif 'start_date' in order._fields and order.start_date:
-                order.billing_period_start = order.start_date
-                order.billing_period_end = order.start_date
+                order.billing_period_start = order.billing_period_end - relativedelta(days=27)
             else:
                 order.billing_period_start = False
                 order.billing_period_end = False
