@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Datei: sale_order_report.xml
-    Zweck: Custom QWeb-Report für Angebots-/Auftragsdruck
-    Ausgabe: PDF mit Adressblock, Positionsliste, Sections/Notes, Summen und Zahlungsbedingungen
--->
 <odoo>
     <template id="sale_report_new" inherit_id="sale.report_saleorder" priority="30">
         <xpath expr="//t[@t-call='sale.report_saleorder_raw']" position="replace">
@@ -59,7 +54,6 @@
                                 }
                             </style>
 
-                            <!-- KORREKTUR: Dynamische Zuweisung OHNE doc.is_rent -->
                             <t t-set="is_sub" t-value="('plan_id' in doc._fields and doc.plan_id) or ('is_subscription' in doc._fields and doc.is_subscription)"/>
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
                             <t t-set="custom_lines" t-value="doc.quotation_lines if 'quotation_lines' in doc._fields else (doc.quotation_line_ids if 'quotation_line_ids' in doc._fields else False)"/>
@@ -179,7 +173,6 @@
                                 </tr>
                             </table>
 
-                            <!-- KORREKTUR: Dynamische und übersetzbare Überschrift! -->
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
                                 <t t-if="is_sub">
                                     <t t-out="doc.env._('Rental Quote')"/>
@@ -240,14 +233,16 @@
                                                     </td>
                                                     <td>
                                                         <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
-                                                             t-out="line.name"/>
+                                                             t-out="line.name if 'name' in line._fields and line.name else (line.description if 'description' in line._fields and line.description else (line.product_id.display_name if 'product_id' in line._fields and line.product_id else ''))"/>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-set="qty" t-value="line.product_uom_qty if 'product_uom_qty' in line._fields else (line.quantity if 'quantity' in line._fields else 0.0)"/>
                                                         <t t-esc="'{:.2f}'.format(qty)"/>
-                                                    
                                                         <t t-if="'product_uom_id' in line._fields and line.product_uom_id">
                                                             <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                        </t>
+                                                        <t t-elif="'product_uom' in line._fields and line.product_uom and 'name' in line.product_uom._fields">
+                                                            <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
                                                         </t>
                                                         <t t-elif="'product_uom' in line._fields and line.product_uom">
                                                             <t t-esc="line.product_uom"/>
@@ -298,7 +293,6 @@
                                         <br/>
                                         <div style="white-space:normal;">
                                             Payment Terms:
-                                            <!-- KORREKTUR: Standard Payment Term ID -->
                                             <div>
                                                 <t t-if="doc.payment_term_id.name">
                                                     <t t-esc="doc.payment_term_id.name"/>
