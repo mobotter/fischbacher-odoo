@@ -32,21 +32,21 @@
             (
              object.env._('Rental Invoice - %s') % (object.name or 'Draft')
              if (
-                 ('invoice_line_ids' in object._fields and any(
-                     (
-                         ('sale_line_ids' in line._fields and any(
-                             (
-                                 ('is_subscription' in sale_line._fields and sale_line.is_subscription) or
-                                 ('order_id' in sale_line._fields and sale_line.order_id and (
-                                     ('is_subscription' in sale_line.order_id._fields and sale_line.order_id.is_subscription) or
-                                     ('plan_id' in sale_line.order_id._fields and sale_line.order_id.plan_id)
-                                 ))
-                             )
-                             for sale_line in line.sale_line_ids
-                         ))
+                 'invoice_line_ids' in object._fields and any(
+                     'sale_line_ids' in line._fields and any(
+                         (
+                             ('is_subscription' in sale_line._fields and sale_line.is_subscription)
+                             or
+                             ('order_id' in sale_line._fields and sale_line.order_id and (
+                                 ('is_subscription' in sale_line.order_id._fields and sale_line.order_id.is_subscription)
+                                 or
+                                 ('plan_id' in sale_line.order_id._fields and sale_line.order_id.plan_id)
+                             ))
+                         )
+                         for sale_line in line.sale_line_ids
                      )
                      for line in object.invoice_line_ids
-                 ))
+                 )
              )
              else object.env._('Invoice - %s') % (object.name or 'Draft')
             )
