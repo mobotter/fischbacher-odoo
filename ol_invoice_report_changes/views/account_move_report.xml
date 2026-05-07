@@ -280,22 +280,13 @@
                             </t>
                         </div>
                     
-                        <!-- Rental-Zusatzinfos unter dem Titel -->
-                        <t t-if="is_rental_invoice and sale_order">
-                            <div style="font-size:12px; margin-bottom:2px;">
-                                <t t-if="'plan_id' in sale_order._fields and sale_order.plan_id">
-                                    Rental price / <t t-esc="sale_order.plan_id.name"/>
-                                </t>
-                            </div>
-                        
-                            <div style="font-size:12px; margin-bottom:5mm;"
-                                 t-if="doc.rental_billing_period_start and doc.rental_billing_period_end">
-                                Billing period from
-                                <t t-esc="doc.rental_billing_period_start.strftime('%d.%m.%Y')"/>
-                                to
-                                <t t-esc="doc.rental_billing_period_end.strftime('%d.%m.%Y')"/>
-                            </div>
-                        </t>
+                        <div style="font-size:12px; margin-bottom:5mm;"
+                             t-if="doc.rental_billing_period_start and doc.rental_billing_period_end">
+                            Billing period from
+                            <t t-esc="doc.rental_billing_period_start.strftime('%d.%m.%Y')"/>
+                            to
+                            <t t-esc="doc.rental_billing_period_end.strftime('%d.%m.%Y')"/>
+                        </div>
                     </t>
 
                     <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report)"/>
