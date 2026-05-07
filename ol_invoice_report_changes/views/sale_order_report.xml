@@ -242,24 +242,15 @@
                                                         <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
                                                              t-out="line.name"/>
                                                     </td>
-                                                    <!-- NEU/SICHER -->
                                                     <td style="text-align:right;font-size:14px;">
-                                                        <!-- Menge dynamisch laden -->
                                                         <t t-set="qty" t-value="line.product_uom_qty if 'product_uom_qty' in line._fields else (line.quantity if 'quantity' in line._fields else 0.0)"/>
-                                                        <t t-esc="'{:.2f}'.format(qty)"/> 
-                                                        
-                                                        <!-- Einheit dynamisch laden -->
+                                                        <t t-esc="'{:.2f}'.format(qty)"/>
+                                                    
                                                         <t t-if="'product_uom_id' in line._fields and line.product_uom_id">
                                                             <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
                                                         </t>
                                                         <t t-elif="'product_uom' in line._fields and line.product_uom">
-                                                            <!-- Prüfen, ob es ein relationales Feld oder nur ein Text-Feld ist -->
-                                                            <t t-if="hasattr(line.product_uom, 'name')">
-                                                                <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
-                                                            </t>
-                                                            <t t-else="">
-                                                                <t t-esc="line.product_uom"/>
-                                                            </t>
+                                                            <t t-esc="line.product_uom"/>
                                                         </t>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
