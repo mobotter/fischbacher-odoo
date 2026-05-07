@@ -5,9 +5,9 @@
         <field name="print_report_name">
             (
              object.env._('Rental Quote - %s') % (object.name)
-             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id)) and object.state in ('draft', 'sent')
+             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan)) and object.state in ('draft', 'sent')
              else object.env._('Rental Order - %s') % (object.name)
-             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id)) and object.state not in ('draft', 'sent')
+             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan)) and object.state not in ('draft', 'sent')
              else object.env._('Quotation - %s') % (object.name)
              if object.state in ('draft', 'sent')
              else object.env._('Order - %s') % (object.name)
@@ -20,7 +20,7 @@
         <field name="print_report_name">
             (
              object.env._('Rental Pro-Forma Invoice - %s') % (object.name)
-             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id))
+             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan))
              else object.env._('Pro-Forma Invoice - %s') % (object.name)
             )
         </field>
@@ -31,23 +31,7 @@
         <field name="print_report_name">
             (
              object.env._('Rental Invoice - %s') % (object.name or 'Draft')
-             if (
-                 'invoice_line_ids' in object._fields and any(
-                     'sale_line_ids' in line._fields and any(
-                         (
-                             ('is_subscription' in sale_line._fields and sale_line.is_subscription)
-                             or
-                             ('order_id' in sale_line._fields and sale_line.order_id and (
-                                 ('is_subscription' in sale_line.order_id._fields and sale_line.order_id.is_subscription)
-                                 or
-                                 ('plan_id' in sale_line.order_id._fields and sale_line.order_id.plan_id)
-                             ))
-                         )
-                         for sale_line in line.sale_line_ids
-                     )
-                     for line in object.invoice_line_ids
-                 )
-             )
+             if (object.invoice_origin and ('RENT' in object.invoice_origin or 'SUB' in object.invoice_origin))
              else object.env._('Invoice - %s') % (object.name or 'Draft')
             )
         </field>
