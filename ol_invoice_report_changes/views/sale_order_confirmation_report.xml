@@ -50,7 +50,6 @@
                                 }
                             </style>
 
-                            <!-- KORREKTUR: Nativer Odoo 19 Abo-Check -->
                             <t t-set="is_sub" t-value="('plan_id' in doc._fields and doc.plan_id) or ('is_subscription' in doc._fields and doc.is_subscription)"/>
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
                             <t t-set="custom_lines" t-value="doc.quotation_lines if 'quotation_lines' in doc._fields else (doc.quotation_line_ids if 'quotation_line_ids' in doc._fields else False)"/>
@@ -170,7 +169,6 @@
                                 </tr>
                             </table>
 
-                            <!-- KORREKTUR: Dynamische und übersetzbare Überschrift -->
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
                                 <t t-if="is_sub">
                                     <t t-out="doc.env._('Rental Order Confirmation')"/>
@@ -237,23 +235,13 @@
                                                              t-out="line.name"/>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
-                                                        <!-- Menge dynamisch laden -->
                                                         <t t-set="qty" t-value="line.product_uom_qty if 'product_uom_qty' in line._fields else (line.quantity if 'quantity' in line._fields else 0.0)"/>
-                                                        <t t-esc="'{:.2f}'.format(qty)"/> 
-                                                        
-                                                        <!-- Einheit dynamisch laden -->
+                                                        <t t-esc="'{:.2f}'.format(qty)"/>
                                                         <t t-if="'product_uom_id' in line._fields and line.product_uom_id">
                                                             <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
                                                         </t>
                                                         <t t-elif="'product_uom' in line._fields and line.product_uom">
-                                                            <!-- QWeb-sicherer Check: Ist es ein Recordset mit _fields oder ein reiner String? -->
-                                                            <t t-if="isinstance(line.product_uom, str)">
-                                                                <t t-esc="line.product_uom"/>
-                                                            </t>
-                                                            <t t-else="">
-                                                                <!-- Wenn es kein String ist, nehmen wir an, dass es ein Odoo-Einheiten-Objekt ist -->
-                                                                <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
-                                                            </t>
+                                                            <t t-esc="line.product_uom"/>
                                                         </t>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
