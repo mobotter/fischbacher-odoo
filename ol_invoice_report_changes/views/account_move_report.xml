@@ -58,8 +58,10 @@
                     </style>
 
                     <!-- Rechnung -> Sale Order robust über invoice lines ableiten -->
-                    <t t-set="sale_orders" t-value="doc.invoice_line_ids.mapped('sale_line_ids.order_id')"/>
-                    <t t-set="sale_order" t-value="sale_orders[:1] if sale_orders else False"/>
+                    <t t-set="sale_order" t-value="doc.env['sale.order']"/>
+                    <t t-if="doc.invoice_origin">
+                        <t t-set="sale_order" t-value="doc.env['sale.order'].search([('name', '=', doc.invoice_origin)], limit=1)"/>
+                    </t>
 
                     <!-- Miet-Erkennung nur über bestehende Felder -->
                     <t t-set="is_rental_invoice"
@@ -277,7 +279,7 @@
                                 Rental price / <t t-esc="sale_order.plan_id.name"/>
                             </t>
                         </div>
-
+                    
                         <div style="font-size:12px; margin-bottom:5mm;">
                             <t t-if="'billing_period_start' in sale_order._fields and 'billing_period_end' in sale_order._fields and sale_order.billing_period_start and sale_order.billing_period_end">
                                 Rental period from
