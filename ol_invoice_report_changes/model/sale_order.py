@@ -41,7 +41,7 @@ class SaleOrder(models.Model):
             )
         return super()._find_mail_template()
 
-        def _get_report_sections_for_pdf(self):
+    def _get_report_sections_for_pdf(self):
         self.ensure_one()
 
         def _field_is_true(record, field_name):
@@ -61,13 +61,11 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        # SICHERE PRÜFUNG: Wir prüfen is_rent (unser eigenes Feld) ODER is_subscription.
         is_sub = self.is_rent or getattr(self, 'is_subscription', False)
         has_quote_lines = 'quotation_lines' in self._fields and len(self.quotation_lines) > 0
 
         if is_sub and has_quote_lines:
             lines_to_process = self.quotation_lines
-            # Falls die Abo-Zeilen ein sequence Feld haben, sortieren wir danach
             if 'sequence' in self.quotation_lines._fields:
                 lines_to_process = lines_to_process.sorted(lambda l: (l.sequence, l.id))
         else:
@@ -89,7 +87,6 @@ class SaleOrder(models.Model):
                 }
                 current['product_lines'].append(line_dict)
                 
-                # Sicherer Subtotal-Abruf für Custom-Lines
                 if 'price_subtotal' in line._fields:
                     current['subtotal'] += line.price_subtotal
                 else:
