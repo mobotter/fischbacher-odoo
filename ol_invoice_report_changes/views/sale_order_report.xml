@@ -174,12 +174,8 @@
                             </table>
 
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                                <t t-if="is_sub">
-                                    <t t-out="doc.env._('Rental Quote')"/>
-                                </t>
-                                <t t-else="">
-                                    <t t-out="doc.env._('Quotation')"/>
-                                </t>
+                                <t t-if="is_sub">Rental Quote</t>
+                                <t t-else="">Quotation</t>
                             </h2>
 
                             <table style="width:100%; border-collapse:collapse; font-size:12px;">
