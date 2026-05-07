@@ -345,7 +345,12 @@
                                         </td>
 
                                         <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; max-width:20px; padding-top:7px; padding-bottom:7px;">
-                                            <pre t-out="line.name"/>
+                                            <t t-if="line.product_id">
+                                                <span t-esc="line.product_id.display_name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="line.name"/>
+                                            </t>
                                         </td>
 
                                         <td style="text-align:right; font-size:14px;">
