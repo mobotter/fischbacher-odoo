@@ -6,19 +6,12 @@ class SaleOrder(models.Model):
 
     purchase_no = fields.Char(string="Purchase")
     order_number = fields.Char(string="Order Number")
-    is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent", store=True)
     hide_total = fields.Boolean(string="Hide Total Amount")
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
 
     billing_period_start = fields.Date(compute='_compute_billing_period', store=True)
     billing_period_end = fields.Date(compute='_compute_billing_period', store=True)
-
-    @api.depends('plan_id')
-    def _compute_is_rent(self):
-        for order in self:
-            # Wenn ein wiederkehrender Plan (plan_id) existiert, ist es ein Abonnement/Miete
-            order.is_rent = bool(order.plan_id)
 
     @api.depends('next_invoice_date', 'start_date')
     def _compute_billing_period(self):
@@ -62,22 +55,22 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        # 1. Standard-Fallback: Die normalen Auftragszeilen nutzen
+        # Standard-Fallback auf die Verkaufsauftragszeilen
         lines_to_process = self.order_line
 
-        # 2. Abo-Weiche: Wenn Miete/Abo, dann prüfe auf die Custom-Subscription-Felder
-        if self.is_rent:
-            if hasattr(self, 'quotation_lines') and self.quotation_lines:
-                lines_to_process = self.quotation_lines
-            elif hasattr(self, 'quotation_line_ids') and self.quotation_line_ids:
-                lines_to_process = self.quotation_line_ids
+        # Nativer Odoo 19 Abo-Check (plan_id oder is_subscription)
+        is_sub = getattr(self, 'plan_id', False) or getattr(self, 'is_subscription', False)
+        
+        if is_sub:
+            if 'quotation_lines' in self._fields and getattr(self, 'quotation_lines'):
+                lines_to_process = getattr(self, 'quotation_lines')
+            elif 'quotation_line_ids' in self._fields and getattr(self, 'quotation_line_ids'):
+                lines_to_process = getattr(self, 'quotation_line_ids')
 
-        # 3. Sortierung (falls die Zeilen eine Sequenz besitzen)
         if 'sequence' in lines_to_process._fields:
             lines_to_process = lines_to_process.sorted(lambda l: (l.sequence, l.id))
 
         for line in lines_to_process:
-            # Sichere Abfrage, da display_type bei Custom-Zeilen fehlen könnte
             display_type = line.display_type if 'display_type' in line._fields else False
 
             if display_type == 'line_section':
@@ -93,7 +86,6 @@ class SaleOrder(models.Model):
                 }
                 current['product_lines'].append(line_dict)
                 
-                # Sichere Berechnung des Zwischensummen-Werts
                 if 'price_subtotal' in line._fields:
                     current['subtotal'] += line.price_subtotal
                 else:
