@@ -67,11 +67,14 @@ class SaleOrder(models.Model):
             lines_to_process = self.order_line.sorted(lambda l: (l.sequence, l.id))
 
         for line in lines_to_process:
-            if line.display_type == 'line_section':
+            # Check if display_type exists, otherwise treat as normal line (False/None)
+            display_type = line.display_type if 'display_type' in line._fields else False
+
+            if display_type == 'line_section':
                 if current['title'] or current['product_lines'] or current['note_lines']:
                     result.append(current)
                 current = _new_block(line)
-            elif line.display_type == 'line_note':
+            elif display_type == 'line_note':
                 current['note_lines'].append(line)
             else:
                 line_dict = {
@@ -79,7 +82,14 @@ class SaleOrder(models.Model):
                     'show_prices': not current['hide_prices'],
                 }
                 current['product_lines'].append(line_dict)
-                current['subtotal'] += line.price_subtotal
+                # handle missing price_subtotal on custom quotation_lines
+                if 'price_subtotal' in line._fields:
+                    current['subtotal'] += line.price_subtotal
+                else:
+                    # fallback to qty * price if subtotal field is missing
+                    qty = getattr(line, 'product_uom_qty', getattr(line, 'quantity', 0.0))
+                    price = getattr(line, 'price_unit', 0.0)
+                    current['subtotal'] += (qty * price)
 
         if current['title'] or current['product_lines'] or current['note_lines']:
             result.append(current)
