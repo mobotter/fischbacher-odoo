@@ -8,7 +8,7 @@ class SaleOrder(models.Model):
     order_number = fields.Char(string="Order Number")
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent", store=True)
     hide_total = fields.Boolean(string="Hide Total Amount")
-    # german_payment_term = fields.Char(string="Zahlungsbedingungen")
+    # german_payment_term = fields.Char(string="Zahlungsbedingungen") <-- WURDE GELÖSCHT
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
 
@@ -18,12 +18,10 @@ class SaleOrder(models.Model):
     @api.depends('plan_id')
     def _compute_is_rent(self):
         for order in self:
-            # In Odoo 19, subscriptions have a recurring plan (plan_id)
             order.is_rent = bool(order.plan_id)
 
     @api.depends('next_invoice_date', 'start_date')
     def _compute_billing_period(self):
-        """ Consolidated billing period logic """
         for order in self:
             if order.next_invoice_date:
                 order.billing_period_end = order.next_invoice_date - relativedelta(days=1)
@@ -64,8 +62,6 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        # Switch between normal order lines and subscription quotation lines
-        # provided by ol_sale_subscription_extensions
         if self.is_rent and hasattr(self, 'quotation_lines') and self.quotation_lines:
             lines_to_process = self.quotation_lines.sorted(lambda l: (l.sequence, l.id))
         else:
@@ -76,10 +72,8 @@ class SaleOrder(models.Model):
                 if current['title'] or current['product_lines'] or current['note_lines']:
                     result.append(current)
                 current = _new_block(line)
-
             elif line.display_type == 'line_note':
                 current['note_lines'].append(line)
-
             else:
                 line_dict = {
                     'line': line,
