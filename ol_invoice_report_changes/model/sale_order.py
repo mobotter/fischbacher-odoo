@@ -8,14 +8,12 @@ class SaleOrder(models.Model):
     purchase_no = fields.Char(string="Purchase")
     order_number = fields.Char(string="Order Number")
 
+    # Temporäres Kompatibilitätsfeld für alte Views / Studio-Reste
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent")
 
     hide_total = fields.Boolean(string="Hide Total Amount")
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
-
-    billing_period_start = fields.Date(compute='_compute_billing_period', store=True)
-    billing_period_end = fields.Date(compute='_compute_billing_period', store=True)
 
     @api.depends('plan_id', 'is_subscription')
     def _compute_is_rent(self):
@@ -25,15 +23,24 @@ class SaleOrder(models.Model):
                 ('is_subscription' in order._fields and order.is_subscription)
             )
 
-    @api.depends('next_invoice_date')
-    def _compute_billing_period(self):
-        for order in self:
-            if order.next_invoice_date:
-                order.billing_period_end = order.next_invoice_date - relativedelta(days=1)
-                order.billing_period_start = order.billing_period_end - relativedelta(days=27)
-            else:
-                order.billing_period_start = False
-                order.billing_period_end = False
+    def _get_billing_period_dates_for_report(self):
+        self.ensure_one()
+        if not self.next_invoice_date:
+            return (False, False)
+
+        billing_end = self.next_invoice_date - relativedelta(days=1)
+        billing_start = billing_end - relativedelta(days=27)
+        return (billing_start, billing_end)
+
+    def _get_billing_period_label_for_report(self):
+        self.ensure_one()
+        billing_start, billing_end = self._get_billing_period_dates_for_report()
+        if not billing_start or not billing_end:
+            return False
+        return "Billing period from %s to %s" % (
+            billing_start.strftime('%d.%m.%Y'),
+            billing_end.strftime('%d.%m.%Y'),
+        )
 
     def _find_mail_template(self):
         self.ensure_one()
