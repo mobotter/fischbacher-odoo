@@ -15,7 +15,7 @@
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="is_rent" invisible="1"/>
                     <field name="hide_total"/>
-                    <field name="german_payment_term"/>
+                    <!-- german_payment_term GELOESCHT -->
                 </xpath>
             </field>
         </record>
