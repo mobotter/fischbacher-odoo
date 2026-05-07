@@ -47,10 +47,8 @@
                                 }
                             </style>
 
-                            <t t-set="sale_orders" t-value="doc.env['sale.order']"/>
-                            <t t-if="doc.invoice_origin">
-                                <t t-set="sale_orders" t-value="doc.env['sale.order'].search([('name', '=', doc.invoice_origin)], limit=1)"/>
-                            </t>
+                            <!-- KORREKTUR FÜR ODOO 19: Direkter relationaler Abruf statt String-Search -->
+                            <t t-set="sale_orders" t-value="doc.line_ids.mapped('sale_line_ids.order_id')[:1]"/>
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm; border:0 !important;">
                                 <tr>
@@ -201,6 +199,7 @@
                                 </tr>
                             </table>
 
+                            <!-- Dynamic Headers -->
                             <h2 t-if="doc.move_type == 'out_invoice' and doc.state == 'posted' and sale_orders and sale_orders.is_subscription" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Rental Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft' and sale_orders and sale_orders.is_subscription" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Rental Draft Invoice</h2>
                             <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'posted'" style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Invoice</h2>
@@ -323,7 +322,6 @@
                                                     without deduction.
                                                 </div>
                                             </t>
-                                            <!-- Notiz der Zahlungsbedingung, nur wenn display_on_invoice aktiv -->
                                             <t t-if="doc.invoice_payment_term_id and doc.invoice_payment_term_id.display_on_invoice and doc.invoice_payment_term_id.note">
                                                 <div style="margin-top:2px;">
                                                     <span t-field="doc.invoice_payment_term_id.note"/>
