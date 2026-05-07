@@ -96,7 +96,6 @@
                                 </tr>
                             </table>
 
-                            <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;"></h2>
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
                                 <t t-if="doc.is_subscription">Rental Quote</t>
                                 <t t-else="">Quote</t>
