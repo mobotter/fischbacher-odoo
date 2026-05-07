@@ -259,10 +259,7 @@
                                                         </td>
                                                         <td style="text-align:right;font-size:14px;">
                                                             <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
-                                                            <t t-if="'product_uom_id' in line._fields and line.product_uom_id">
-                                                                <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
-                                                            </t>
-                                                            <t t-elif="'product_uom' in line._fields and line.product_uom">
+                                                            <t t-if="'product_uom' in line._fields and line.product_uom">
                                                                 <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
                                                             </t>
                                                         </td>
