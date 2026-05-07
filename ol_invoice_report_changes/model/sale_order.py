@@ -15,6 +15,17 @@ class SaleOrder(models.Model):
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
 
+    billing_period_start = fields.Date(
+        string="Billing Period Start",
+        compute="_compute_billing_period",
+        store=True,
+    )
+    billing_period_end = fields.Date(
+        string="Billing Period End",
+        compute="_compute_billing_period",
+        store=True,
+    )
+
     @api.depends('plan_id', 'is_subscription')
     def _compute_is_rent(self):
         for order in self:
