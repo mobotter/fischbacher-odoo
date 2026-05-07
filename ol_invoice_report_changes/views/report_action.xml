@@ -1,30 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- <record id="action_report_invoices" model="ir.actions.report">
-        <field name="name">PDF New</field>
-        <field name="model">account.move</field>
-        <field name="binding_model_id" ref="account.model_account_move"/>
-        <field name="binding_type">report</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ol_invoice_report_changes.invoice_report_new</field>
-        <field name="report_file">ol_invoice_report_changes.invoice_report_new</field>
+    <!-- 1. Verkaufs-Report (Angebot / Auftrag) anpassen -->
+    <record id="sale.action_report_saleorder" model="ir.actions.report">
+        <!-- Zuweisung deines eigenen Papierformats (aus paperformat.xml) -->
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
-    </record> -->
-    <!-- Task id 35114 Jc -->
-    <!-- <record id="action_report_invoices" model="ir.actions.report">
-        <field name="name">Pro form invoice Sale</field>
-        <field name="model">sale.order</field>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
-        <field name="binding_type">report</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ol_invoice_report_changes.pro_forma_sale_order_report</field>
-        <field name="report_file">ol_invoice_report_changes.pro_forma_sale_order_report</field>
-        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
-        <field name="print_report_name">'PRO-FORMA - %s' % (object.name)</field>
-    </record> -->
-    <!--
-        <record id="sale.action_report_saleorder" model="ir.actions.report">
-        <field name="name">Order Confirmation</field>
+        
+        <!-- Dynamischer Dateiname beim PDF-Download -->
+        <field name="print_report_name">
+            (
+             'Mietangebot - %s' % (object.name) if object.is_rent and object.state in ('draft', 'sent') else 
+             'Mietauftrag - %s' % (object.name) if object.is_rent and object.state not in ('draft', 'sent') else 
+             'Angebot - %s' % (object.name) if object.state in ('draft', 'sent') else 
+             'Auftrag - %s' % (object.name)
+            )
+        </field>
     </record>
-    -->
-    <!-- Task id 35114 Jc -->
+
+    <!-- 2. Proforma-Rechnung (Verkauf) anpassen -->
+    <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
+        <!-- Zuweisung deines eigenen Papierformats -->
+        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+    </record>
+
+    <!-- 3. Rechnungs-Report anpassen -->
+    <record id="account.account_invoices" model="ir.actions.report">
+        <!-- Zuweisung deines eigenen Papierformats, damit Rechnungen auch richtig formatiert sind -->
+        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+    </record>
 </odoo>
