@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 1. Verkaufs-Report (Angebot / Auftrag) anpassen -->
     <record id="sale.action_report_saleorder" model="ir.actions.report">
-        <!-- Zuweisung deines eigenen Papierformats (aus paperformat.xml) -->
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
-        
-        <!-- Dynamischer Dateiname beim PDF-Download -->
         <field name="print_report_name">
             (
-             'Mietangebot - %s' % (object.name) if object.is_rent and object.state in ('draft', 'sent') else 
-             'Mietauftrag - %s' % (object.name) if object.is_rent and object.state not in ('draft', 'sent') else 
-             'Angebot - %s' % (object.name) if object.state in ('draft', 'sent') else 
-             'Auftrag - %s' % (object.name)
+             object.env._('Rental Quote - %s') % (object.name) if (object.is_subscription or object.plan_id) and object.state in ('draft', 'sent') else 
+             object.env._('Rental Order - %s') % (object.name) if (object.is_subscription or object.plan_id) and object.state not in ('draft', 'sent') else 
+             object.env._('Quotation - %s') % (object.name) if object.state in ('draft', 'sent') else 
+             object.env._('Order - %s') % (object.name)
             )
         </field>
     </record>
 
-    <!-- 2. Proforma-Rechnung (Verkauf) anpassen -->
     <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
-        <!-- Zuweisung deines eigenen Papierformats -->
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
     </record>
 
-    <!-- 3. Rechnungs-Report anpassen -->
     <record id="account.account_invoices" model="ir.actions.report">
-        <!-- Zuweisung deines eigenen Papierformats, damit Rechnungen auch richtig formatiert sind -->
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
     </record>
 </odoo>
