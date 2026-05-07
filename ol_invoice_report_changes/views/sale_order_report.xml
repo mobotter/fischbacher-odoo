@@ -24,7 +24,7 @@
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
                             
                             <!-- ODOO 19 FIX: Weiche für normale Order Lines vs Subscription Quotation Lines -->
-                            <t t-set="lines_to_report" t-value="doc.quotation_lines if (doc.is_rent and hasattr(doc, 'quotation_lines') and doc.quotation_lines) else doc.order_line"/>
+                            <t t-set="lines_to_report" t-value="doc.quotation_lines if (doc.is_subscription and hasattr(doc, 'quotation_lines') and doc.quotation_lines) else doc.order_line"/>
                             <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report if not l.display_type)"/>
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
@@ -96,8 +96,12 @@
                                 </tr>
                             </table>
 
-                            <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Quote</h2>
-
+                            <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;"></h2>
+                            <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
+                                <t t-if="doc.is_subscription">Rental Quote</t>
+                                <t t-else="">Quote</t>
+                            </h2>
+                            
                             <table style="width:100%; border-collapse:collapse; font-size:12px;">
                                 <thead>
                                     <tr class="head-bottom">
