@@ -25,8 +25,8 @@
                             
                             <t t-set="is_sub" t-value="doc.is_subscription if 'is_subscription' in doc._fields else False"/>
                             <t t-set="has_quote_lines" t-value="'quotation_lines' in doc._fields and doc.quotation_lines"/>
-                            <t t-set="lines_to_report" t-value="doc.quotation_lines if (is_sub and has_quote_lines) else doc.order_line"/>
-                            
+                            <t t-set="custom_lines" t-value="doc.quotation_lines if 'quotation_lines' in doc._fields else (doc.quotation_line_ids if 'quotation_line_ids' in doc._fields else False)"/>
+                            <t t-set="lines_to_report" t-value="custom_lines if (doc.is_rent and custom_lines) else doc.order_line"/>
                             <t t-set="display_discount" t-value="any(l.discount for l in lines_to_report if 'display_type' in l._fields and not l.display_type)"/>
 
                             <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
