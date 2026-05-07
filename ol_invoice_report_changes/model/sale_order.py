@@ -34,8 +34,22 @@ class SaleOrder(models.Model):
                 ('is_subscription' in order._fields and order.is_subscription)
             )
 
+    @api.depends('next_invoice_date')
+    def _compute_billing_period(self):
+        for order in self:
+            if order.next_invoice_date:
+                billing_end = order.next_invoice_date - relativedelta(days=1)
+                billing_start = billing_end - relativedelta(days=27)
+                order.billing_period_start = billing_start
+                order.billing_period_end = billing_end
+            else:
+                order.billing_period_start = False
+                order.billing_period_end = False
+
     def _get_billing_period_dates_for_report(self):
         self.ensure_one()
+        if self.billing_period_start and self.billing_period_end:
+            return (self.billing_period_start, self.billing_period_end)
         if not self.next_invoice_date:
             return (False, False)
 
