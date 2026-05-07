@@ -232,13 +232,16 @@
                                                     </td>
                                                     <td>
                                                         <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
-                                                             t-out="line.name"/>
+                                                             t-out="line.name if 'name' in line._fields and line.name else (line.description if 'description' in line._fields and line.description else (line.product_id.display_name if 'product_id' in line._fields and line.product_id else ''))"/>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-set="qty" t-value="line.product_uom_qty if 'product_uom_qty' in line._fields else (line.quantity if 'quantity' in line._fields else 0.0)"/>
                                                         <t t-esc="'{:.2f}'.format(qty)"/>
                                                         <t t-if="'product_uom_id' in line._fields and line.product_uom_id">
                                                             <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                        </t>
+                                                        <t t-elif="'product_uom' in line._fields and line.product_uom and 'name' in line.product_uom._fields">
+                                                            <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
                                                         </t>
                                                         <t t-elif="'product_uom' in line._fields and line.product_uom">
                                                             <t t-esc="line.product_uom"/>
