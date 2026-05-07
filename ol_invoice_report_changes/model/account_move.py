@@ -19,12 +19,10 @@ class AccountMove(models.Model):
     rental_billing_period_start = fields.Date(
         string="Rental Billing Period Start",
         copy=False,
-        readonly=True,
     )
     rental_billing_period_end = fields.Date(
         string="Rental Billing Period End",
         copy=False,
-        readonly=True,
     )
 
     @api.depends(
