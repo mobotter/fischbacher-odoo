@@ -16,31 +16,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: ol_invoice_report_changes
-#: model:ir.actions.report,print_report_name:sale.action_report_saleorder
 msgid "Rental Quote - %s"
 msgstr "Mietangebot - %s"
 
 #. module: ol_invoice_report_changes
-#: model:ir.actions.report,print_report_name:sale.action_report_saleorder
 msgid "Rental Order - %s"
 msgstr "Mietauftrag - %s"
 
 #. module: ol_invoice_report_changes
-#: model:ir.actions.report,print_report_name:sale.action_report_saleorder
 msgid "Quotation - %s"
 msgstr "Angebot - %s"
 
 #. module: ol_invoice_report_changes
-#: model:ir.actions.report,print_report_name:sale.action_report_saleorder
 msgid "Order - %s"
 msgstr "Auftrag - %s"
 
 #. module: ol_invoice_report_changes
-#: view:sale.order:ol_invoice_report_changes.sale_order_confirmation_report_new
 msgid "Rental Order Confirmation"
 msgstr "Mietauftragsbestätigung"
 
 #. module: ol_invoice_report_changes
-#: view:sale.order:ol_invoice_report_changes.sale_order_confirmation_report_new
 msgid "Order Confirmation"
 msgstr "Auftragsbestätigung"
