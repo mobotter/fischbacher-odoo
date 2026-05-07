@@ -280,15 +280,9 @@
                             </t>
                         </div>
                     
-                        <div style="font-size:12px; margin-bottom:5mm;"
-                             t-if="'billing_period_start' in sale_order._fields
-                                   and 'billing_period_end' in sale_order._fields
-                                   and sale_order.billing_period_start
-                                   and sale_order.billing_period_end">
-                            Billing period from
-                            <t t-esc="sale_order.billing_period_start.strftime('%d.%m.%Y')"/>
-                            to
-                            <t t-esc="sale_order.billing_period_end.strftime('%d.%m.%Y')"/>
+                        <t t-set="billing_period_label" t-value="sale_order._get_billing_period_label_for_report()"/>
+                        <div t-if="billing_period_label" style="font-size:12px; margin-bottom:5mm;">
+                            <t t-esc="billing_period_label"/>
                         </div>
                     </t>
 
