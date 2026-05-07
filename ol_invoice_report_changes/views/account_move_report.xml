@@ -281,9 +281,15 @@
                         </div>
                     
                         <div style="font-size:12px; margin-bottom:5mm;">
-                            <t t-if="sale_order and sale_order.billing_period_start and sale_order.billing_period_end">
+                            <t t-if="is_rental_invoice and sale_order and sale_order.billing_period_start and sale_order.billing_period_end">
+                                <div style="font-size:12px; margin-bottom:2px;">
+                                    <t t-if="'plan_id' in sale_order._fields and sale_order.plan_id">
+                                        Rental price / <t t-esc="sale_order.plan_id.name"/>
+                                    </t>
+                                </div>
+                            
                                 <div style="font-size:12px; margin-bottom:5mm;">
-                                    Rental period from
+                                    Billing period from
                                     <t t-esc="sale_order.billing_period_start.strftime('%d.%m.%Y')"/>
                                     to
                                     <t t-esc="sale_order.billing_period_end.strftime('%d.%m.%Y')"/>
