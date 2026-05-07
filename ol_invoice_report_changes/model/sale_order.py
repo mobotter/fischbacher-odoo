@@ -8,7 +8,6 @@ class SaleOrder(models.Model):
     order_number = fields.Char(string="Order Number")
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent", store=True)
     hide_total = fields.Boolean(string="Hide Total Amount")
-    # german_payment_term = fields.Char(string="Zahlungsbedingungen") <-- WURDE GELÖSCHT
     client_order_name = fields.Text(string="Ordered by")
     client_order_number = fields.Char(string="Your Order Number")
 
@@ -42,7 +41,7 @@ class SaleOrder(models.Model):
             )
         return super()._find_mail_template()
 
-        def _get_report_sections_for_pdf(self):
+    def _get_report_sections_for_pdf(self):
         self.ensure_one()
 
         def _field_is_true(record, field_name):
@@ -62,7 +61,6 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        # HIER IST DIE WICHTIGE ÄNDERUNG: Wir nutzen is_subscription
         if getattr(self, 'is_subscription', False) and hasattr(self, 'quotation_lines') and self.quotation_lines:
             lines_to_process = self.quotation_lines.sorted(lambda l: (l.sequence, l.id))
         else:
