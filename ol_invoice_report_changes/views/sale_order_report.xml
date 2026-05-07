@@ -59,22 +59,23 @@
                                 }
                             </style>
 
-                            <!-- Rental-Erkennung nur über bestehende Felder -->
+                            <!-- Rental-Erkennung nur über bestehende Standard-/Modulfelder -->
                             <t t-set="is_rental"
-                               t-value="('is_subscription' in doc._fields and doc.is_subscription) or ('has_plan' in doc._fields and doc.has_plan)"/>
+                               t-value="('is_subscription' in doc._fields and doc.is_subscription) or ('has_plan' in doc._fields and doc.has_plan) or ('plan_id' in doc._fields and doc.plan_id)"/>
 
-                            <!-- Standard weiterhin mit report_sections -->
+                            <!-- Standard: report_sections + order_line -->
                             <t t-if="not is_rental">
                                 <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
                                 <t t-set="lines_to_report" t-value="doc.order_line"/>
                             </t>
 
-                            <!-- Rental: direkt aus quotation_lines / quotation_line_ids -->
+                            <!-- Rental: nur dann quotation_lines / quotation_line_ids verwenden,
+                                 wenn dort wirklich Datensätze vorhanden sind -->
                             <t t-if="is_rental">
-                                <t t-if="'quotation_lines' in doc._fields">
+                                <t t-if="'quotation_lines' in doc._fields and doc.quotation_lines">
                                     <t t-set="lines_to_report" t-value="doc.quotation_lines"/>
                                 </t>
-                                <t t-elif="'quotation_line_ids' in doc._fields">
+                                <t t-elif="'quotation_line_ids' in doc._fields and doc.quotation_line_ids">
                                     <t t-set="lines_to_report" t-value="doc.quotation_line_ids"/>
                                 </t>
                                 <t t-else="">
@@ -217,7 +218,7 @@
                                 <tbody>
                                     <t t-set="pos" t-value="0"/>
 
-                                    <!-- STANDARD: bisherige Logik unverändert -->
+                                    <!-- STANDARD -->
                                     <t t-if="not is_rental">
                                         <t t-foreach="report_sections" t-as="section">
 
@@ -294,11 +295,11 @@
                                         </t>
                                     </t>
 
-                                    <!-- RENTAL: direkt aus quotation_lines / quotation_line_ids -->
+                                    <!-- RENTAL -->
                                     <t t-if="is_rental">
                                         <t t-foreach="lines_to_report" t-as="line">
 
-                                            <t t-if="line.display_type == 'line_section'">
+                                            <t t-if="'display_type' in line._fields and line.display_type == 'line_section'">
                                                 <tr class="line-bottom section-row">
                                                     <td t-attf-colspan="#{6 if display_discount else 5}">
                                                         <span t-field="line.name"/>
@@ -306,7 +307,7 @@
                                                 </tr>
                                             </t>
 
-                                            <t t-elif="line.display_type == 'line_note'">
+                                            <t t-elif="'display_type' in line._fields and line.display_type == 'line_note'">
                                                 <tr class="line-bottom">
                                                     <td t-attf-colspan="#{6 if display_discount else 5}"
                                                         style="font-style:italic; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
@@ -321,28 +322,60 @@
                                                     <td style="font-size:14px;">
                                                         <t t-esc="pos"/>
                                                     </td>
+
                                                     <td>
-                                                        <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
-                                                             t-out="line.name"/>
-                                                    </td>
-                                                    <td style="text-align:right;font-size:14px;">
-                                                        <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
-                                                        <t t-if="line.product_uom_id">
-                                                            <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                        <t t-if="'name' in line._fields and line.name">
+                                                            <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
+                                                                 t-out="line.name"/>
+                                                        </t>
+                                                        <t t-elif="'description' in line._fields and line.description">
+                                                            <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
+                                                                 t-out="line.description"/>
+                                                        </t>
+                                                        <t t-elif="'product_id' in line._fields and line.product_id">
+                                                            <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
+                                                                 t-out="line.product_id.display_name"/>
                                                         </t>
                                                     </td>
+
                                                     <td style="text-align:right;font-size:14px;">
-                                                        <t t-esc="line.price_unit"
-                                                           t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        <t t-if="'product_uom_qty' in line._fields">
+                                                            <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
+                                                        </t>
+                                                        <t t-elif="'quantity' in line._fields">
+                                                            <t t-esc="'{:.2f}'.format(line.quantity)"/>
+                                                        </t>
+
+                                                        <t t-if="'product_uom_id' in line._fields and line.product_uom_id">
+                                                            <t t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                        </t>
+                                                        <t t-elif="'product_uom' in line._fields and line.product_uom and 'name' in line.product_uom._fields">
+                                                            <t t-esc="line.product_uom.with_context(lang='de_DE').name"/>
+                                                        </t>
                                                     </td>
+
+                                                    <td style="text-align:right;font-size:14px;">
+                                                        <t t-if="'price_unit' in line._fields">
+                                                            <t t-esc="line.price_unit"
+                                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        </t>
+                                                    </td>
+
                                                     <td style="text-align:right;font-size:14px;" t-if="display_discount">
-                                                        <t t-if="line.discount">
+                                                        <t t-if="'discount' in line._fields and line.discount">
                                                             <t t-esc="line.discount"/>%
                                                         </t>
                                                     </td>
+
                                                     <td style="text-align:right;font-size:14px;">
-                                                        <t t-esc="line.price_subtotal"
-                                                           t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        <t t-if="'price_subtotal' in line._fields">
+                                                            <t t-esc="line.price_subtotal"
+                                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        </t>
+                                                        <t t-elif="'subtotal' in line._fields">
+                                                            <t t-esc="line.subtotal"
+                                                               t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                        </t>
                                                     </td>
                                                 </tr>
                                             </t>
