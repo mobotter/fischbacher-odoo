@@ -17,6 +17,7 @@ class SaleOrder(models.Model):
     @api.depends('plan_id')
     def _compute_is_rent(self):
         for order in self:
+            # Wenn ein wiederkehrender Plan (plan_id) existiert, ist es ein Abonnement/Miete
             order.is_rent = bool(order.plan_id)
 
     @api.depends('next_invoice_date', 'start_date')
@@ -61,17 +62,22 @@ class SaleOrder(models.Model):
         result = []
         current = _new_block()
 
-        is_sub = self.is_rent or getattr(self, 'is_subscription', False)
-        has_quote_lines = 'quotation_lines' in self._fields and len(self.quotation_lines) > 0
+        # 1. Standard-Fallback: Die normalen Auftragszeilen nutzen
+        lines_to_process = self.order_line
 
-        if is_sub and has_quote_lines:
-            lines_to_process = self.quotation_lines
-            if 'sequence' in self.quotation_lines._fields:
-                lines_to_process = lines_to_process.sorted(lambda l: (l.sequence, l.id))
-        else:
-            lines_to_process = self.order_line.sorted(lambda l: (l.sequence, l.id))
+        # 2. Abo-Weiche: Wenn Miete/Abo, dann prüfe auf die Custom-Subscription-Felder
+        if self.is_rent:
+            if hasattr(self, 'quotation_lines') and self.quotation_lines:
+                lines_to_process = self.quotation_lines
+            elif hasattr(self, 'quotation_line_ids') and self.quotation_line_ids:
+                lines_to_process = self.quotation_line_ids
+
+        # 3. Sortierung (falls die Zeilen eine Sequenz besitzen)
+        if 'sequence' in lines_to_process._fields:
+            lines_to_process = lines_to_process.sorted(lambda l: (l.sequence, l.id))
 
         for line in lines_to_process:
+            # Sichere Abfrage, da display_type bei Custom-Zeilen fehlen könnte
             display_type = line.display_type if 'display_type' in line._fields else False
 
             if display_type == 'line_section':
@@ -87,6 +93,7 @@ class SaleOrder(models.Model):
                 }
                 current['product_lines'].append(line_dict)
                 
+                # Sichere Berechnung des Zwischensummen-Werts
                 if 'price_subtotal' in line._fields:
                     current['subtotal'] += line.price_subtotal
                 else:
