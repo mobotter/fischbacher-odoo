@@ -25,6 +25,11 @@ class AccountMove(models.Model):
         copy=False,
     )
 
+    lease_agreement_no = fields.Char(
+        string="Lease Agreement No.",
+        copy=False,
+    )
+
     @api.depends(
         'invoice_date',
         'amount_total',
