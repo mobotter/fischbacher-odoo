@@ -6,15 +6,15 @@ class ProductLabelLayout(models.TransientModel):
 
     print_format = fields.Selection(
         selection_add=[
-            ('sep_dymo', '--- DYMO ETIKETTEN ---'),  # Visuelle Trennung
-            ('dymo_price', 'FB Dymo Price'),
-            ('dymo_without_price', 'FB Dymo without Price'),
-            ('dymo_artikel_barcode', 'FB Dymo Artikel Barcode'),
-            ('dymo_small', 'FB Dymo Small'),
-            ('dymo_price_small', 'FB Dymo Price Small'),
-            ('sep_zpl', '--- ZPL / ZEBRA ---'),     # Visuelle Trennung
+            ('sep_dymo', '--- PDF / DYMO ETIKETTEN ---'),  # Visuelle Trennung
+            ('dymo_price', 'FB Dymo Price (89x36mm)'),
+            ('dymo_without_price', 'FB Dymo without Price (89x36mm)'),
+            ('dymo_artikel_barcode', 'FB Dymo Artikel Barcode (89x36mm)'),
+            ('dymo_small', 'FB Dymo Small (54x25mm)'),
+            ('dymo_price_small', 'FB Dymo Price Small (54x25mm)'),
+            ('sep_zpl', '--- ZPL / ZEBRA ETIKETTEN---'),     # Visuelle Trennung
             ('zpl_small', 'FB ZPL Zebra small label'),
-            ('zpl_without_price', 'FB ZPL Zebra without price')
+            ('zpl_without_price', 'FB ZPL Zebra without Price')
         ], 
         ondelete={
             'sep_dymo': 'set default',
