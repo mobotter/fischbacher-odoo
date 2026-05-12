@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- 89 x 36 mm -->
+    <!-- 89 x 36 mm (Gross) -->
     <record id="paperformat_label_sheet_dymo" model="report.paperformat">
         <field name="name">Dymo Label 89x36</field>
         <field name="default" eval="False"/>
@@ -19,14 +19,14 @@
         <field name="dpi">96</field>
     </record>
 
-    <!-- 70 x 54 mm -->
+    <!-- 54 x 25 mm (Klein) -->
     <record id="paperformat_label_sheet_dymo_small" model="report.paperformat">
-        <field name="name">Dymo Label 70x54</field>
+        <field name="name">Dymo Label 54x25</field>
         <field name="default" eval="False"/>
         <field name="format">custom</field>
-        <field name="page_width">70</field>
-        <field name="page_height">54</field>
-        <field name="orientation">Landscape</field>
+        <field name="page_width">54</field>
+        <field name="page_height">25</field>
+        <field name="orientation">Portrait</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
@@ -37,14 +37,14 @@
         <field name="dpi">96</field>
     </record>
 
-    <!-- 54 x 25 mm -->
-    <record id="paperformat_label_sheet_dymo_small" model="report.paperformat">
-        <field name="name">Dymo Label 54x25</field>
+    <!-- 54 x 24 mm (Artikel Barcode / Schmal) -->
+    <record id="paperformat_label_sheet_dymo_artikel_barcode" model="report.paperformat">
+        <field name="name">Dymo Label 54x24</field>
         <field name="default" eval="False"/>
         <field name="format">custom</field>
         <field name="page_width">54</field>
-        <field name="page_height">25</field>
-        <field name="orientation">Landscape</field>
+        <field name="page_height">24</field>
+        <field name="orientation">Portrait</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
@@ -62,7 +62,7 @@
         <field name="format">custom</field>
         <field name="page_width">80</field>
         <field name="page_height">30</field>
-        <field name="orientation">Landscape</field>
+        <field name="orientation">Portrait</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
