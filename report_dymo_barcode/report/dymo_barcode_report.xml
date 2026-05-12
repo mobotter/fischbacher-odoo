@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Papierformate -->
+    <!-- ============================================================
+         PAPIERFORMATE
+         page_height = kurze Seite (mm)
+         page_width  = lange Seite (mm)
+         Orientation Landscape → Odoo dreht intern korrekt
+    ============================================================ -->
 
-    <!-- Dymo 89x36mm (Standard-Adressetikett, z.B. DYMO 99012) -->
+    <!-- Dymo 89x36mm (groß: Preis + ohne Preis) -->
     <record id="paperformat_label_sheet_dymo" model="report.paperformat">
         <field name="name">Dymo Label 89x36mm</field>
         <field name="default" eval="False"/>
@@ -19,28 +24,11 @@
         <field name="disable_shrinking" eval="True"/>
         <field name="dpi">96</field>
     </record>
-    
-    <!-- Standard Dymo Größe (Preis + ohne Preis, große Version) -->
-    <record id="paperformat_label_sheet_dymo" model="report.paperformat">
-        <field name="name">Dymo Label Sheet</field>
-        <field name="default" eval="True" />
-        <field name="format">custom</field>
-        <field name="page_height">100</field>
-        <field name="page_width">70</field>
-        <field name="orientation">Landscape</field>
-        <field name="margin_top">0</field>
-        <field name="margin_bottom">0</field>
-        <field name="margin_left">0</field>
-        <field name="margin_right">0</field>
-        <field name="header_spacing">0</field>
-        <field name="disable_shrinking" eval="True"/>
-        <field name="dpi">96</field>
-    </record>
 
-    <!-- Dymo – kleine Label (Preis + ohne Preis) -->
+    <!-- Dymo 54x70mm (klein: Preis + ohne Preis) -->
     <record id="paperformat_label_sheet_dymo_small" model="report.paperformat">
-        <field name="name">Dymo Label Sheet Small</field>
-        <field name="default" eval="False" />
+        <field name="name">Dymo Label 54x70mm Small</field>
+        <field name="default" eval="False"/>
         <field name="format">custom</field>
         <field name="page_height">54</field>
         <field name="page_width">70</field>
@@ -49,145 +37,159 @@
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
         <field name="margin_right">0</field>
+        <field name="header_spacing">0</field>
         <field name="disable_shrinking" eval="True"/>
         <field name="dpi">96</field>
     </record>
 
-    <!-- Dymo – nur Artikel‑Barcode (schmal) -->
+    <!-- Dymo 24x54mm (schmal, nur Artikel-Barcode) -->
     <record id="paperformat_label_sheet_dymo_artikel_barcode" model="report.paperformat">
-        <field name="name">Dymo Artikel Barcode Label Sheet</field>
-        <field name="default" eval="False" />
+        <field name="name">Dymo Label 24x54mm Artikel Barcode</field>
+        <field name="default" eval="False"/>
         <field name="format">custom</field>
-        <field name="page_height">54</field>
-        <field name="page_width">24</field>
+        <field name="page_height">24</field>
+        <field name="page_width">54</field>
         <field name="orientation">Landscape</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
-        <field name="margin_right">5</field>
+        <field name="margin_right">0</field>
         <field name="header_spacing">0</field>
         <field name="disable_shrinking" eval="False"/>
         <field name="dpi">96</field>
     </record>
 
-    <!-- ZPL – ohne Preis -->
+    <!-- ZPL 80x30mm (Metadaten; ZPL-Code steuert den Druck selbst) -->
     <record id="paperformat_label_sheet_zpl_without_price" model="report.paperformat">
-        <field name="name">ZPL Without Price Label Sheet</field>
-        <field name="default" eval="False" />
+        <field name="name">ZPL Label 80x30mm</field>
+        <field name="default" eval="False"/>
         <field name="format">custom</field>
-        <field name="page_height">80</field>
-        <field name="page_width">30</field>
+        <field name="page_height">30</field>
+        <field name="page_width">80</field>
         <field name="orientation">Landscape</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
-        <field name="margin_right">5</field>
+        <field name="margin_right">0</field>
         <field name="header_spacing">0</field>
         <field name="disable_shrinking" eval="False"/>
         <field name="dpi">96</field>
     </record>
 
-    <!-- Dymo Reports – Produkt (mit/ohne Preis) -->
+
+    <!-- ============================================================
+         DYMO REPORTS – PRODUKT (PDF)
+         FIX Dateiname: print_report_name ohne Leerzeichen/Sonderzeichen
+         → kein URL-Encoding wie %20 im Dateinamen mehr
+    ============================================================ -->
 
     <record id="report_product_template_label_dymo_price" model="ir.actions.report">
-        <field name="name">Product Label Price (PDF)</field>
+        <field name="name">Dymo Label: Preis (groß)</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.dymo_price</field>
         <field name="report_file">report_dymo_barcode.dymo_price</field>
         <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo"/>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'Etikett_Preis_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
     <record id="report_product_template_label_dymo_without_price" model="ir.actions.report">
-        <field name="name">Product Label Without Price (PDF)</field>
+        <field name="name">Dymo Label: Ohne Preis (groß)</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.dymo_without_price</field>
         <field name="report_file">report_dymo_barcode.dymo_without_price</field>
         <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo"/>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'Etikett_ohne_Preis_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
     <record id="report_product_template_label_dymo_artikel_barcode" model="ir.actions.report">
-        <field name="name">Product Label Artikel Barcode (PDF)</field>
+        <field name="name">Dymo Label: Artikel-Barcode (schmal)</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.dymo_artikel_barcode</field>
         <field name="report_file">report_dymo_barcode.dymo_artikel_barcode</field>
         <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_artikel_barcode"/>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'Etikett_Barcode_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
     <record id="report_product_template_label_dymo_price_small" model="ir.actions.report">
-        <field name="name">Product Label Price (PDF) Small</field>
+        <field name="name">Dymo Label: Preis (klein)</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.dymo_price_small</field>
         <field name="report_file">report_dymo_barcode.dymo_price_small</field>
         <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_small"/>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'Etikett_Preis_Klein_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
     <record id="report_product_template_label_dymo_small" model="ir.actions.report">
-        <field name="name">Product Label (PDF) Small</field>
+        <field name="name">Dymo Label: Ohne Preis (klein)</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.dymo_small</field>
         <field name="report_file">report_dymo_barcode.dymo_small</field>
         <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_small"/>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'Etikett_Klein_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
-    <!-- ZPL Reports – Produkt -->
+
+    <!-- ============================================================
+         ZPL REPORTS – PRODUKT (qweb-text)
+         Kein paperformat nötig – ZPL steuert Druck selbst via ^XA...^XZ
+    ============================================================ -->
 
     <record id="report_product_template_label_zpl_without_price" model="ir.actions.report">
-        <field name="name">ZPL Without Price</field>
+        <field name="name">ZPL Label: Ohne Preis</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-text</field>
         <field name="report_name">report_dymo_barcode.zpl_without_price</field>
         <field name="report_file">report_dymo_barcode.zpl_without_price</field>
-        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_zpl_without_price"/>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'ZPL_Etikett_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
     <record id="report_product_template_label_zpl_small" model="ir.actions.report">
-        <field name="name">Product Label (ZPL) Small</field>
+        <field name="name">ZPL Label: Small</field>
         <field name="model">product.template</field>
         <field name="report_type">qweb-text</field>
         <field name="report_name">report_dymo_barcode.zpl_small</field>
         <field name="report_file">report_dymo_barcode.zpl_small</field>
-        <field name="print_report_name">'Products Labels - %s' % (object.name)</field>
+        <field name="print_report_name">'ZPL_Etikett_Klein_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_type">report</field>
     </record>
 
-    <!-- Lagerorte (Stock Locations) -->
+
+    <!-- ============================================================
+         LAGERORTE (Stock Locations)
+         FIX: ref korrigiert von "product.paperformat_label_sheet_dymo"
+              auf eigenes Modul "report_dymo_barcode...."
+    ============================================================ -->
 
     <record id="action_report_location_barcode_dymo" model="ir.actions.report">
-        <field name="name">Location Barcode Dymo</field>
+        <field name="name">Lagerort Barcode (Dymo PDF)</field>
         <field name="model">stock.location</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.report_location_barcode_dymo</field>
         <field name="report_file">report_dymo_barcode.report_location_barcode_dymo</field>
-        <field name="paperformat_id" ref="product.paperformat_label_sheet_dymo"/>
-        <field name="print_report_name">'Location - %s' % object.name</field>
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo"/>
+        <field name="print_report_name">'Lagerort_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_model_id" ref="stock.model_stock_location"/>
         <field name="binding_type">report</field>
     </record>
 
     <record id="action_report_location_barcode_zpl" model="ir.actions.report">
-        <field name="name">Location Barcode (ZPL)</field>
+        <field name="name">Lagerort Barcode (ZPL)</field>
         <field name="model">stock.location</field>
         <field name="report_type">qweb-text</field>
         <field name="report_name">report_dymo_barcode.report_location_barcode_zpl</field>
         <field name="report_file">report_dymo_barcode.report_location_barcode_zpl</field>
-        <field name="print_report_name">'Location - %s' % object.name</field>
+        <field name="print_report_name">'Lagerort_ZPL_%s' % object.name.replace(' ', '_')</field>
         <field name="binding_model_id" ref="stock.model_stock_location"/>
         <field name="binding_type">report</field>
     </record>
