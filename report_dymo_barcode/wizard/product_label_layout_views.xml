@@ -1,0 +1,29 @@
+<record id="product_label_layout_form_inherit_dymo" model="ir.ui.view">
+    <field name="name">product.label.layout.form.inherit.dymo</field>
+    <field name="model">product.label.layout</field>
+    <field name="inherit_id" ref="product.product_label_layout_form"/>
+    <field name="arch" type="xml">
+        
+        <!-- Fügen Sie den Vorschau-Button ein (z.B. vor dem Footer oder in einer Gruppe) -->
+        <xpath expr="//group" position="after">
+            <group>
+                <!-- Der Button -->
+                <button name="action_generate_zpl_preview" 
+                        type="object" 
+                        string="ZPL Vorschau laden" 
+                        class="btn-secondary" 
+                        icon="fa-picture-o"
+                        invisible="print_format not in ['zpl', 'zpl_small']"/> 
+                        <!-- Passen Sie das 'invisible' an Ihr print_format Feld an! -->
+            </group>
+            
+            <!-- Das Vorschaubild -->
+            <group invisible="not zpl_preview_image">
+                <div style="border: 1px solid #ccc; padding: 10px; background: #f9f9f9; text-align: center; width: 100%;">
+                    <field name="zpl_preview_image" widget="image" options="{'size': [400, 150]}" nolabel="1"/>
+                </div>
+            </group>
+        </xpath>
+        
+    </field>
+</record>
