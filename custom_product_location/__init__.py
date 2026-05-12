@@ -1,1 +1,1 @@
-
+echo "from . import models"
