@@ -65,10 +65,14 @@
                 width: 100%;
             }
 
-            .dymo-nowrap {
-                white-space: nowrap;
+            /* NEU: Klasse für mehrzeiligen Produkttitel (max. 3 Zeilen) */
+            .dymo-title {
+                white-space: normal;
                 overflow: hidden;
-                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+                max-height: 3.4em; /* Fallback für wkhtmltopdf */
             }
 
             .dymo-center {
@@ -215,7 +219,7 @@
                 <span style="font-size:9px; text-align:right;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
             </div>
 
-            <div class="dymo-nowrap" style="font-size:12px; line-height:95%; padding:2px 0;">
+            <div class="dymo-title" style="font-size:12px; line-height:110%; padding:2px 0;">
                 <span t-if="product.is_product_variant" t-field="product.display_name"/>
                 <span t-else="" t-field="product.name"/>
             </div>
@@ -259,7 +263,7 @@
                 <span style="font-size:9px; text-align:right;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
             </div>
 
-            <div class="dymo-nowrap" style="font-size:12px; line-height:95%; padding:3px 0;">
+            <div class="dymo-title" style="font-size:12px; line-height:110%; padding:3px 0;">
                 <span t-if="product.is_product_variant" t-field="product.display_name"/>
                 <span t-else="" t-field="product.name"/>
             </div>
@@ -282,7 +286,7 @@
     <template id="report_simple_label_dymo_artikel_barcode">
         <t t-set="barcode_size" t-value="'width:48mm;height:14mm'"/>
         <div class="dymo-label dymo-54x24">
-            <div class="dymo-nowrap" style="font-size:10px; line-height:100%; padding:1px 0;">
+            <div class="dymo-title" style="font-size:10px; line-height:110%; padding:1px 0;">
                 <span t-if="product.is_product_variant" t-field="product.display_name"/>
                 <span t-else="" t-field="product.name"/>
             </div>
@@ -315,7 +319,7 @@
                 <span style="font-size:7px;" t-esc="datetime.datetime.now().strftime('%d.%m.%y')"/>
             </div>
 
-            <div class="dymo-nowrap" style="font-size:9px; line-height:90%; padding:2px 0;">
+            <div class="dymo-title" style="font-size:9px; line-height:110%; padding:2px 0;">
                 <span t-if="product.is_product_variant" t-field="product.display_name"/>
                 <span t-else="" t-field="product.name"/>
             </div>
@@ -359,7 +363,7 @@
                 <span style="font-size:7px;" t-esc="datetime.datetime.now().strftime('%d.%m.%y')"/>
             </div>
 
-            <div class="dymo-nowrap" style="font-size:9px; line-height:90%; padding:2px 0;">
+            <div class="dymo-title" style="font-size:9px; line-height:110%; padding:2px 0;">
                 <span t-if="product.is_product_variant" t-field="product.display_name"/>
                 <span t-else="" t-field="product.name"/>
             </div>
