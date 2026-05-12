@@ -3,19 +3,22 @@
 
     <!-- ============================================================
          EINSTIEGSPUNKT-TEMPLATES
-         Werden von dymo_barcode_report.xml über report_name aufgerufen.
          web.html_container liefert den <main>-Tag den Odoo 19 benötigt.
 
          Formate:
-           dymo_price          → 89x36mm
-           dymo_without_price  → 89x36mm
-           dymo_artikel_barcode→ 24x54mm (schmal)
-           dymo_price_small    → 54x70mm
-           dymo_small          → 54x70mm
+           dymo_price           → 89x36mm
+           dymo_without_price   → 89x36mm
+           dymo_artikel_barcode → 24x54mm (schmal)
+           dymo_price_small     → 54x70mm
+           dymo_small           → 54x70mm
+
+         UTF-8 FIX: <meta charset="utf-8"/> in jedem html_container
+         damit wkhtmltopdf Sonderzeichen (Euro etc.) korrekt rendert.
     ============================================================ -->
 
     <template id="dymo_price">
         <t t-call="web.html_container">
+            <meta charset="utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -35,6 +38,7 @@
 
     <template id="dymo_without_price">
         <t t-call="web.html_container">
+            <meta charset="utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -53,6 +57,7 @@
 
     <template id="dymo_artikel_barcode">
         <t t-call="web.html_container">
+            <meta charset="utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -71,6 +76,7 @@
 
     <template id="dymo_price_small">
         <t t-call="web.html_container">
+            <meta charset="utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -90,6 +96,7 @@
 
     <template id="dymo_small">
         <t t-call="web.html_container">
+            <meta charset="utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -109,9 +116,9 @@
 
     <!-- ============================================================
          LAYOUT-TEMPLATES
-         89x36mm  → page_width:88mm; height:35mm (1mm Puffer)
-         54x70mm  → page_width:69mm; height:53mm (1mm Puffer)
-         24x54mm  → page_width:53mm; height:23mm (1mm Puffer)
+         89x36mm  → table: width:88mm; height:35mm
+         54x70mm  → table: width:69mm; height:53mm
+         24x54mm  → table: width:53mm; height:23mm
     ============================================================ -->
 
     <!-- ─── DYMO 89x36mm – MIT PREIS ─────────────────────────── -->
@@ -122,8 +129,6 @@
 
         <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             <div class="o_label_full" t-att-style="table_style">
-
-                <!-- Zeile 1: Artikelnummer + Datum -->
                 <div class="text-start o_label_name"
                      style="font-size:13px;line-height:100%;background-color:transparent;">
                     <strong style="font-size:13px;line-height:100%;background-color:transparent;"
@@ -132,15 +137,11 @@
                     <span class="float-end" style="font-size:9px;"
                           t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
                 </div>
-
-                <!-- Zeile 2: Produktname -->
                 <div class="o_label_name text-nowrap"
                      style="font-size:12px;line-height:95%;background-color:transparent;padding:2px 0;">
                     <span t-if="product.is_product_variant" t-field="product.display_name"/>
                     <span t-else="" t-field="product.name"/>
                 </div>
-
-                <!-- Zeile 3: Preise (Netto + Brutto) -->
                 <div class="align-bottom" style="width:100%;line-height:100%;padding:1px 0;">
                     <span class="text-start netto">
                         <strong class="text-nowrap o_label_price_small"
@@ -157,8 +158,6 @@
                         <span style="font-size:9px;">inkl 19% MwSt</span>
                     </span>
                 </div>
-
-                <!-- Zeile 4: Barcode -->
                 <div class="o_label_small_barcode" style="padding:1px 0 0 0;">
                     <t t-if="barcode">
                         <div t-out="barcode" style="padding:0"
@@ -169,7 +168,6 @@
                         </div>
                     </t>
                 </div>
-
                 <div class="o_label_clear"/>
             </div>
         </div>
@@ -184,8 +182,6 @@
 
         <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             <div class="o_label_full" t-att-style="table_style">
-
-                <!-- Zeile 1: Artikelnummer + Datum -->
                 <div class="text-start o_label_name"
                      style="font-size:13px;line-height:100%;background-color:transparent;">
                     <strong style="font-size:13px;line-height:100%;background-color:transparent;"
@@ -194,15 +190,11 @@
                     <span class="float-end" style="font-size:9px;"
                           t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
                 </div>
-
-                <!-- Zeile 2: Produktname -->
                 <div class="o_label_name text-nowrap"
                      style="font-size:12px;line-height:95%;background-color:transparent;padding:3px 0;">
                     <span t-if="product.is_product_variant" t-field="product.display_name"/>
                     <span t-else="" t-field="product.name"/>
                 </div>
-
-                <!-- Zeile 3: Barcode (mehr Platz da kein Preis) -->
                 <div class="o_label_small_barcode" style="padding:2px 0 0 0;">
                     <t t-if="barcode">
                         <div t-out="barcode" style="padding:0"
@@ -213,7 +205,6 @@
                         </div>
                     </t>
                 </div>
-
                 <div class="o_label_clear"/>
             </div>
         </div>
@@ -228,13 +219,11 @@
 
         <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             <div class="o_label_full" t-att-style="table_style">
-
                 <div class="o_label_name text-nowrap"
                      style="font-size:10px;line-height:100%;background-color:transparent;padding:1px 0;">
                     <span t-if="product.is_product_variant" t-field="product.display_name"/>
                     <span t-else="" t-field="product.name"/>
                 </div>
-
                 <div class="o_label_small_barcode" style="padding:1px 0;">
                     <t t-if="barcode">
                         <div t-out="barcode" style="padding:0"
@@ -245,7 +234,6 @@
                         </div>
                     </t>
                 </div>
-
                 <div class="o_label_clear"/>
             </div>
         </div>
@@ -260,8 +248,6 @@
 
         <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             <div class="o_label_full" t-att-style="table_style">
-
-                <!-- Zeile 1: Artikelnummer + Datum -->
                 <div class="text-start o_label_name"
                      style="font-size:10px;line-height:100%;background-color:transparent;padding-top:2px;">
                     <strong style="font-size:14px;line-height:100%;background-color:transparent;"
@@ -270,15 +256,11 @@
                     <span class="float-end" style="font-size:9px;"
                           t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
                 </div>
-
-                <!-- Zeile 2: Produktname -->
                 <div class="o_label_name text-nowrap"
                      style="font-size:13px;line-height:90%;background-color:transparent;padding:4px 0;">
                     <span t-if="product.is_product_variant" t-field="product.display_name"/>
                     <span t-else="" t-field="product.name"/>
                 </div>
-
-                <!-- Zeile 3: Preise -->
                 <div class="align-bottom" style="width:100%;line-height:100%;padding:3px 0;">
                     <span class="text-start netto">
                         <strong class="text-nowrap o_label_price_small"
@@ -295,8 +277,6 @@
                         <span style="font-size:9px;">inkl 19% MwSt</span>
                     </span>
                 </div>
-
-                <!-- Zeile 4: Barcode -->
                 <div class="o_label_small_barcode" style="padding:3px 0 0 0;">
                     <t t-if="barcode">
                         <div t-out="barcode" style="padding:0"
@@ -307,7 +287,6 @@
                         </div>
                     </t>
                 </div>
-
                 <div class="o_label_clear"/>
             </div>
         </div>
@@ -322,8 +301,6 @@
 
         <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             <div class="o_label_full" t-att-style="table_style">
-
-                <!-- Zeile 1: Artikelnummer + Datum -->
                 <div class="text-start o_label_name"
                      style="font-size:10px;line-height:100%;background-color:transparent;padding-top:2px;">
                     <strong style="font-size:14px;line-height:100%;background-color:transparent;"
@@ -332,15 +309,11 @@
                     <span class="float-end" style="font-size:9px;"
                           t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
                 </div>
-
-                <!-- Zeile 2: Produktname -->
                 <div class="o_label_name text-nowrap"
                      style="font-size:13px;line-height:90%;background-color:transparent;padding:4px 0;">
                     <span t-if="product.is_product_variant" t-field="product.display_name"/>
                     <span t-else="" t-field="product.name"/>
                 </div>
-
-                <!-- Zeile 3: Barcode (mehr Platz da kein Preis) -->
                 <div class="o_label_small_barcode" style="padding:4px 0 0 0;">
                     <t t-if="barcode">
                         <div t-out="barcode" style="padding:0"
@@ -351,7 +324,6 @@
                         </div>
                     </t>
                 </div>
-
                 <div class="o_label_clear"/>
             </div>
         </div>
