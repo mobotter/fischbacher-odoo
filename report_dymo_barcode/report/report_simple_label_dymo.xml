@@ -58,15 +58,24 @@
                 padding: 1mm;
             }
 
+            /* wkhtmltopdf-sicheres Layout statt Flexbox */
             .dymo-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
                 width: 100%;
+                overflow: hidden; /* Clears the floats */
             }
 
-            /* NEU: Klasse für mehrzeiligen Produkttitel (max. 3 Zeilen) */
+            .pull-left {
+                float: left;
+            }
+
+            .pull-right {
+                float: right;
+                text-align: right;
+            }
+
+            /* Mehrzeiliger Produkttitel (max. 3 Zeilen) */
             .dymo-title {
+                clear: both; /* Stellt sicher, dass der Titel nach den floats der Zeile darüber startet */
                 white-space: normal;
                 overflow: hidden;
                 display: -webkit-box;
@@ -77,17 +86,19 @@
 
             .dymo-center {
                 text-align: center;
+                clear: both;
             }
 
             .dymo-barcode {
                 line-height: 0;
                 padding: 0;
+                clear: both;
             }
         </style>
     </template>
 
 
-    <!-- ENTRY: 89x36 MIT PREIS -->
+    <!-- ENTRY-Templates (bleiben unverändert, inkl. meta charset) -->
     <template id="dymo_price">
         <t t-call="web.html_container">
             <t t-call="report_dymo_barcode.dymo_label_common_styles"/>
@@ -111,7 +122,6 @@
         </t>
     </template>
 
-    <!-- ENTRY: 89x36 OHNE PREIS -->
     <template id="dymo_without_price">
         <t t-call="web.html_container">
             <t t-call="report_dymo_barcode.dymo_label_common_styles"/>
@@ -134,7 +144,6 @@
         </t>
     </template>
 
-    <!-- ENTRY: 54x24 ARTIKEL-BARCODE -->
     <template id="dymo_artikel_barcode">
         <t t-call="web.html_container">
             <t t-call="report_dymo_barcode.dymo_label_common_styles"/>
@@ -157,7 +166,6 @@
         </t>
     </template>
 
-    <!-- ENTRY: 54x25 MIT PREIS (Small) -->
     <template id="dymo_price_small">
         <t t-call="web.html_container">
             <t t-call="report_dymo_barcode.dymo_label_common_styles"/>
@@ -181,7 +189,6 @@
         </t>
     </template>
 
-    <!-- ENTRY: 54x25 OHNE PREIS (Small) -->
     <template id="dymo_small">
         <t t-call="web.html_container">
             <t t-call="report_dymo_barcode.dymo_label_common_styles"/>
@@ -214,9 +221,13 @@
 
         <div class="dymo-label dymo-89x36">
             <div class="dymo-row" style="font-size:13px; line-height:100%;">
-                <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
-                <strong t-else="" t-field="product.default_code"/>
-                <span style="font-size:9px; text-align:right;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                <div class="pull-left">
+                    <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+                    <strong t-else="" t-field="product.default_code"/>
+                </div>
+                <div class="pull-right">
+                    <span style="font-size:9px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                </div>
             </div>
 
             <div class="dymo-title" style="font-size:12px; line-height:110%; padding:2px 0;">
@@ -225,18 +236,18 @@
             </div>
 
             <div class="dymo-row" style="line-height:100%; padding:1px 0;">
-                <span>
+                <div class="pull-left">
                     <strong style="font-size:13px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
                     </strong>
                     <span style="font-size:8px;"> € zzgl. 19% MwSt.</span>
-                </span>
-                <span style="text-align:right;">
+                </div>
+                <div class="pull-right">
                     <strong style="font-size:9px;">
                         <t t-esc="('%.2f' % gross_price).replace('.', ',')"/>
                     </strong>
                     <span style="font-size:8px;"> € inkl. 19% MwSt.</span>
-                </span>
+                </div>
             </div>
 
             <div style="padding-top:1px;">
@@ -258,9 +269,13 @@
         <t t-set="barcode_size" t-value="'width:78mm;height:12mm'"/>
         <div class="dymo-label dymo-89x36">
             <div class="dymo-row" style="font-size:13px; line-height:100%;">
-                <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
-                <strong t-else="" t-field="product.default_code"/>
-                <span style="font-size:9px; text-align:right;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                <div class="pull-left">
+                    <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+                    <strong t-else="" t-field="product.default_code"/>
+                </div>
+                <div class="pull-right">
+                    <span style="font-size:9px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                </div>
             </div>
 
             <div class="dymo-title" style="font-size:12px; line-height:110%; padding:3px 0;">
@@ -314,9 +329,13 @@
 
         <div class="dymo-label dymo-54x25">
             <div class="dymo-row" style="font-size:8px; line-height:100%; padding-top:1px;">
-                <strong style="font-size:10px;" t-if="product.is_product_variant" t-field="product.default_code"/>
-                <strong t-else="" t-field="product.default_code"/>
-                <span style="font-size:7px;" t-esc="datetime.datetime.now().strftime('%d.%m.%y')"/>
+                <div class="pull-left">
+                    <strong style="font-size:10px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+                    <strong t-else="" t-field="product.default_code"/>
+                </div>
+                <div class="pull-right">
+                    <span style="font-size:7px;" t-esc="datetime.datetime.now().strftime('%d.%m.%y')"/>
+                </div>
             </div>
 
             <div class="dymo-title" style="font-size:9px; line-height:110%; padding:2px 0;">
@@ -325,18 +344,18 @@
             </div>
 
             <div class="dymo-row" style="line-height:100%; padding:2px 0;">
-                <span>
+                <div class="pull-left">
                     <strong style="font-size:10px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
                     </strong>
                     <span style="font-size:7px;"> € zzgl. 19%</span>
-                </span>
-                <span style="text-align:right;">
+                </div>
+                <div class="pull-right">
                     <strong style="font-size:8px;">
                         <t t-esc="('%.2f' % gross_price).replace('.', ',')"/>
                     </strong>
                     <span style="font-size:7px;"> € inkl.</span>
-                </span>
+                </div>
             </div>
 
             <div style="padding-top:1px;">
@@ -358,9 +377,13 @@
         <t t-set="barcode_size" t-value="'width:45mm;height:8mm'"/>
         <div class="dymo-label dymo-54x25">
             <div class="dymo-row" style="font-size:8px; line-height:100%; padding-top:1px;">
-                <strong style="font-size:10px;" t-if="product.is_product_variant" t-field="product.default_code"/>
-                <strong t-else="" t-field="product.default_code"/>
-                <span style="font-size:7px;" t-esc="datetime.datetime.now().strftime('%d.%m.%y')"/>
+                <div class="pull-left">
+                    <strong style="font-size:10px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+                    <strong t-else="" t-field="product.default_code"/>
+                </div>
+                <div class="pull-right">
+                    <span style="font-size:7px;" t-esc="datetime.datetime.now().strftime('%d.%m.%y')"/>
+                </div>
             </div>
 
             <div class="dymo-title" style="font-size:9px; line-height:110%; padding:2px 0;">
