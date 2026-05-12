@@ -3,347 +3,431 @@
 
     <!-- ============================================================
          EINSTIEGSPUNKT-TEMPLATES
-         web.html_container liefert den <main>-Tag den Odoo 19 benötigt.
-         @page CSS erzwingt Querformat + exakte Maße für wkhtmltopdf.
+         KEIN web.html_container – stattdessen vollständiges HTML-Gerüst
+         selbst geschrieben, damit @page CSS nicht von Odoo überschrieben
+         wird. Das ist die einzig zuverlässige Methode auf Odoo.sh für
+         Querformat-Etiketten.
 
          Formate:
-           dymo_price           → 89x36mm  (Landscape)
-           dymo_without_price   → 89x36mm  (Landscape)
-           dymo_artikel_barcode → 24x54mm  (Landscape)
-           dymo_price_small     → 54x70mm  (Landscape)
-           dymo_small           → 54x70mm  (Landscape)
+           dymo_price           → 89x36mm  Landscape
+           dymo_without_price   → 89x36mm  Landscape
+           dymo_artikel_barcode → 24x54mm  Landscape
+           dymo_price_small     → 54x70mm  Landscape
+           dymo_small           → 54x70mm  Landscape
     ============================================================ -->
 
+    <!-- ─── DYMO 89x36mm – MIT PREIS ─────────────────────────── -->
     <template id="dymo_price">
-        <t t-call="web.html_container">
-            <meta charset="utf-8"/>
-            <!-- CSS @page erzwingt Querformat 89x36mm direkt in wkhtmltopdf -->
-            <style>
-                @page { size: 89mm 36mm landscape; margin: 0; }
-                body  { margin: 0; padding: 0; }
-            </style>
-            <t t-foreach="quantity.items()" t-as="product_barcode_info">
-                <t t-set="product" t-value="product_barcode_info[0]"/>
-                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                    <t t-set="barcode" t-value="barcode_qty[0]"/>
-                    <t t-set="qty" t-value="barcode_qty[1]"/>
-                    <t t-foreach="range(qty)" t-as="i">
-                        <t t-call="report_dymo_barcode.report_simple_label_dymo_price">
-                            <t t-set="product" t-value="product"/>
-                            <t t-set="barcode" t-value="barcode"/>
-                            <t t-set="pricelist" t-value="pricelist"/>
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    @page {
+                        size: 89mm 36mm;
+                        margin: 0mm;
+                    }
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        width: 89mm;
+                        height: 36mm;
+                        overflow: hidden;
+                    }
+                </style>
+            </head>
+            <body>
+                <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                    <t t-set="product" t-value="product_barcode_info[0]"/>
+                    <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                        <t t-set="barcode" t-value="barcode_qty[0]"/>
+                        <t t-set="qty" t-value="barcode_qty[1]"/>
+                        <t t-foreach="range(qty)" t-as="i">
+                            <t t-call="report_dymo_barcode.report_simple_label_dymo_price">
+                                <t t-set="product" t-value="product"/>
+                                <t t-set="barcode" t-value="barcode"/>
+                                <t t-set="pricelist" t-value="pricelist"/>
+                            </t>
                         </t>
                     </t>
                 </t>
-            </t>
-        </t>
+            </body>
+        </html>
     </template>
 
+
+    <!-- ─── DYMO 89x36mm – OHNE PREIS ────────────────────────── -->
     <template id="dymo_without_price">
-        <t t-call="web.html_container">
-            <meta charset="utf-8"/>
-            <style>
-                @page { size: 89mm 36mm landscape; margin: 0; }
-                body  { margin: 0; padding: 0; }
-            </style>
-            <t t-foreach="quantity.items()" t-as="product_barcode_info">
-                <t t-set="product" t-value="product_barcode_info[0]"/>
-                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                    <t t-set="barcode" t-value="barcode_qty[0]"/>
-                    <t t-set="qty" t-value="barcode_qty[1]"/>
-                    <t t-foreach="range(qty)" t-as="i">
-                        <t t-call="report_dymo_barcode.report_simple_label_dymo_without_price">
-                            <t t-set="product" t-value="product"/>
-                            <t t-set="barcode" t-value="barcode"/>
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    @page {
+                        size: 89mm 36mm;
+                        margin: 0mm;
+                    }
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        width: 89mm;
+                        height: 36mm;
+                        overflow: hidden;
+                    }
+                </style>
+            </head>
+            <body>
+                <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                    <t t-set="product" t-value="product_barcode_info[0]"/>
+                    <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                        <t t-set="barcode" t-value="barcode_qty[0]"/>
+                        <t t-set="qty" t-value="barcode_qty[1]"/>
+                        <t t-foreach="range(qty)" t-as="i">
+                            <t t-call="report_dymo_barcode.report_simple_label_dymo_without_price">
+                                <t t-set="product" t-value="product"/>
+                                <t t-set="barcode" t-value="barcode"/>
+                            </t>
                         </t>
                     </t>
                 </t>
-            </t>
-        </t>
+            </body>
+        </html>
     </template>
 
+
+    <!-- ─── DYMO 24x54mm – NUR ARTIKEL-BARCODE (schmal) ─────── -->
     <template id="dymo_artikel_barcode">
-        <t t-call="web.html_container">
-            <meta charset="utf-8"/>
-            <style>
-                @page { size: 54mm 24mm landscape; margin: 0; }
-                body  { margin: 0; padding: 0; }
-            </style>
-            <t t-foreach="quantity.items()" t-as="product_barcode_info">
-                <t t-set="product" t-value="product_barcode_info[0]"/>
-                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                    <t t-set="barcode" t-value="barcode_qty[0]"/>
-                    <t t-set="qty" t-value="barcode_qty[1]"/>
-                    <t t-foreach="range(qty)" t-as="i">
-                        <t t-call="report_dymo_barcode.report_simple_label_dymo_artikel_barcode">
-                            <t t-set="product" t-value="product"/>
-                            <t t-set="barcode" t-value="barcode"/>
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    @page {
+                        size: 54mm 24mm;
+                        margin: 0mm;
+                    }
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        width: 54mm;
+                        height: 24mm;
+                        overflow: hidden;
+                    }
+                </style>
+            </head>
+            <body>
+                <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                    <t t-set="product" t-value="product_barcode_info[0]"/>
+                    <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                        <t t-set="barcode" t-value="barcode_qty[0]"/>
+                        <t t-set="qty" t-value="barcode_qty[1]"/>
+                        <t t-foreach="range(qty)" t-as="i">
+                            <t t-call="report_dymo_barcode.report_simple_label_dymo_artikel_barcode">
+                                <t t-set="product" t-value="product"/>
+                                <t t-set="barcode" t-value="barcode"/>
+                            </t>
                         </t>
                     </t>
                 </t>
-            </t>
-        </t>
+            </body>
+        </html>
     </template>
 
+
+    <!-- ─── DYMO 54x70mm – MIT PREIS (klein) ─────────────────── -->
     <template id="dymo_price_small">
-        <t t-call="web.html_container">
-            <meta charset="utf-8"/>
-            <style>
-                @page { size: 70mm 54mm landscape; margin: 0; }
-                body  { margin: 0; padding: 0; }
-            </style>
-            <t t-foreach="quantity.items()" t-as="product_barcode_info">
-                <t t-set="product" t-value="product_barcode_info[0]"/>
-                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                    <t t-set="barcode" t-value="barcode_qty[0]"/>
-                    <t t-set="qty" t-value="barcode_qty[1]"/>
-                    <t t-foreach="range(qty)" t-as="i">
-                        <t t-call="report_dymo_barcode.report_simple_label_dymo_price_small">
-                            <t t-set="product" t-value="product"/>
-                            <t t-set="barcode" t-value="barcode"/>
-                            <t t-set="pricelist" t-value="pricelist"/>
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    @page {
+                        size: 70mm 54mm;
+                        margin: 0mm;
+                    }
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        width: 70mm;
+                        height: 54mm;
+                        overflow: hidden;
+                    }
+                </style>
+            </head>
+            <body>
+                <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                    <t t-set="product" t-value="product_barcode_info[0]"/>
+                    <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                        <t t-set="barcode" t-value="barcode_qty[0]"/>
+                        <t t-set="qty" t-value="barcode_qty[1]"/>
+                        <t t-foreach="range(qty)" t-as="i">
+                            <t t-call="report_dymo_barcode.report_simple_label_dymo_price_small">
+                                <t t-set="product" t-value="product"/>
+                                <t t-set="barcode" t-value="barcode"/>
+                                <t t-set="pricelist" t-value="pricelist"/>
+                            </t>
                         </t>
                     </t>
                 </t>
-            </t>
-        </t>
+            </body>
+        </html>
     </template>
 
+
+    <!-- ─── DYMO 54x70mm – OHNE PREIS (klein) ────────────────── -->
     <template id="dymo_small">
-        <t t-call="web.html_container">
-            <meta charset="utf-8"/>
-            <style>
-                @page { size: 70mm 54mm landscape; margin: 0; }
-                body  { margin: 0; padding: 0; }
-            </style>
-            <t t-foreach="quantity.items()" t-as="product_barcode_info">
-                <t t-set="product" t-value="product_barcode_info[0]"/>
-                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                    <t t-set="barcode" t-value="barcode_qty[0]"/>
-                    <t t-set="qty" t-value="barcode_qty[1]"/>
-                    <t t-foreach="range(qty)" t-as="i">
-                        <t t-call="report_dymo_barcode.report_simple_label_dymo_small">
-                            <t t-set="product" t-value="product"/>
-                            <t t-set="barcode" t-value="barcode"/>
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    @page {
+                        size: 70mm 54mm;
+                        margin: 0mm;
+                    }
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        width: 70mm;
+                        height: 54mm;
+                        overflow: hidden;
+                    }
+                </style>
+            </head>
+            <body>
+                <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                    <t t-set="product" t-value="product_barcode_info[0]"/>
+                    <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                        <t t-set="barcode" t-value="barcode_qty[0]"/>
+                        <t t-set="qty" t-value="barcode_qty[1]"/>
+                        <t t-foreach="range(qty)" t-as="i">
+                            <t t-call="report_dymo_barcode.report_simple_label_dymo_small">
+                                <t t-set="product" t-value="product"/>
+                                <t t-set="barcode" t-value="barcode"/>
+                            </t>
                         </t>
                     </t>
                 </t>
-            </t>
-        </t>
+            </body>
+        </html>
     </template>
 
 
     <!-- ============================================================
          LAYOUT-TEMPLATES
-         89x36mm  → table: width:88mm; height:35mm
-         54x70mm  → table: width:69mm; height:53mm
-         24x54mm  → table: width:53mm; height:23mm
+         Nur das visuelle Design – kein HTML-Gerüst hier.
+         89x36mm  → wrapper: width:88mm; height:35mm
+         54x70mm  → wrapper: width:69mm; height:53mm
+         24x54mm  → wrapper: width:53mm; height:23mm
     ============================================================ -->
 
-    <!-- ─── DYMO 89x36mm – MIT PREIS ─────────────────────────── -->
+    <!-- ─── LAYOUT: 89x36mm MIT PREIS ────────────────────────── -->
     <template id="report_simple_label_dymo_price">
         <t t-set="barcode_size"  t-value="'width:78mm;height:8mm'"/>
-        <t t-set="table_style"   t-value="'width:88mm;height:35mm;padding:0;font-family:Open Sans;'"/>
-        <t t-set="padding_page"  t-value="'padding:1mm 2mm'"/>
+        <t t-set="table_style"   t-value="'width:88mm;height:35mm;padding:0;font-family:Open Sans;box-sizing:border-box;overflow:hidden;'"/>
+        <t t-set="padding_page"  t-value="'padding:1mm 2mm;'"/>
 
-        <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
-            <div class="o_label_full" t-att-style="table_style">
-                <div class="text-start o_label_name"
-                     style="font-size:13px;line-height:100%;background-color:transparent;">
-                    <strong style="font-size:13px;line-height:100%;background-color:transparent;"
-                            t-if="product.is_product_variant" t-field="product.default_code"/>
-                    <strong t-else="" t-field="product.default_code"/>
-                    <span class="float-end" style="font-size:9px;"
-                          t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+        <div style="page-break-after:always;">
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+
+                    <div style="font-size:13px;line-height:100%;background-color:transparent;display:flex;justify-content:space-between;">
+                        <strong style="font-size:13px;"
+                                t-if="product.is_product_variant" t-field="product.default_code"/>
+                        <strong t-else="" t-field="product.default_code"/>
+                        <span style="font-size:9px;"
+                              t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+
+                    <div style="font-size:12px;line-height:95%;background-color:transparent;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/>
+                        <span t-else="" t-field="product.name"/>
+                    </div>
+
+                    <div style="width:100%;line-height:100%;padding:1px 0;display:flex;justify-content:space-between;align-items:baseline;">
+                        <span>
+                            <strong style="font-size:13px;font-weight:bold;"
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id)"
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size:8px;"> zzgl 19% MwSt</span>
+                        </span>
+                        <span style="text-align:right;">
+                            <strong style="font-size:9px;"
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id) * 1.19"
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size:8px;"> inkl 19% MwSt</span>
+                        </span>
+                    </div>
+
+                    <div style="padding:1px 0 0 0;">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0;line-height:0;"
+                                 t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div style="font-size:8px;height:1.3em;background-color:transparent;text-align:center;">
+                                <span t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+
                 </div>
-                <div class="o_label_name text-nowrap"
-                     style="font-size:12px;line-height:95%;background-color:transparent;padding:2px 0;">
-                    <span t-if="product.is_product_variant" t-field="product.display_name"/>
-                    <span t-else="" t-field="product.name"/>
-                </div>
-                <div class="align-bottom" style="width:100%;line-height:100%;padding:1px 0;">
-                    <span class="text-start netto">
-                        <strong class="text-nowrap o_label_price_small"
-                                style="font-size:14px!important;padding:1px 0;"
-                                t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id)"
-                                t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
-                        <span style="font-size:9px;">zzgl 19% MwSt</span>
-                    </span>
-                    <span class="float-end brutto">
-                        <strong class="o_label_price_small"
-                                style="font-size:9px!important;padding:1px 0;"
-                                t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id) * 1.19"
-                                t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
-                        <span style="font-size:9px;">inkl 19% MwSt</span>
-                    </span>
-                </div>
-                <div class="o_label_small_barcode" style="padding:1px 0 0 0;">
-                    <t t-if="barcode">
-                        <div t-out="barcode" style="padding:0"
-                             t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                        <div class="o_label_name"
-                             style="font-size:9px;height:1.3em;background-color:transparent;">
-                            <span class="text-center" t-out="barcode"/>
-                        </div>
-                    </t>
-                </div>
-                <div class="o_label_clear"/>
             </div>
         </div>
     </template>
 
 
-    <!-- ─── DYMO 89x36mm – OHNE PREIS ────────────────────────── -->
+    <!-- ─── LAYOUT: 89x36mm OHNE PREIS ──────────────────────── -->
     <template id="report_simple_label_dymo_without_price">
         <t t-set="barcode_size"  t-value="'width:78mm;height:12mm'"/>
-        <t t-set="table_style"   t-value="'width:88mm;height:35mm;padding:0;font-family:Open Sans;'"/>
-        <t t-set="padding_page"  t-value="'padding:1mm 2mm'"/>
+        <t t-set="table_style"   t-value="'width:88mm;height:35mm;padding:0;font-family:Open Sans;box-sizing:border-box;overflow:hidden;'"/>
+        <t t-set="padding_page"  t-value="'padding:1mm 2mm;'"/>
 
-        <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
-            <div class="o_label_full" t-att-style="table_style">
-                <div class="text-start o_label_name"
-                     style="font-size:13px;line-height:100%;background-color:transparent;">
-                    <strong style="font-size:13px;line-height:100%;background-color:transparent;"
-                            t-if="product.is_product_variant" t-field="product.default_code"/>
-                    <strong t-else="" t-field="product.default_code"/>
-                    <span class="float-end" style="font-size:9px;"
-                          t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+        <div style="page-break-after:always;">
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+
+                    <div style="font-size:13px;line-height:100%;background-color:transparent;display:flex;justify-content:space-between;">
+                        <strong style="font-size:13px;"
+                                t-if="product.is_product_variant" t-field="product.default_code"/>
+                        <strong t-else="" t-field="product.default_code"/>
+                        <span style="font-size:9px;"
+                              t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+
+                    <div style="font-size:12px;line-height:95%;background-color:transparent;padding:3px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/>
+                        <span t-else="" t-field="product.name"/>
+                    </div>
+
+                    <div style="padding:2px 0 0 0;">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0;line-height:0;"
+                                 t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div style="font-size:8px;height:1.3em;background-color:transparent;text-align:center;">
+                                <span t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+
                 </div>
-                <div class="o_label_name text-nowrap"
-                     style="font-size:12px;line-height:95%;background-color:transparent;padding:3px 0;">
-                    <span t-if="product.is_product_variant" t-field="product.display_name"/>
-                    <span t-else="" t-field="product.name"/>
-                </div>
-                <div class="o_label_small_barcode" style="padding:2px 0 0 0;">
-                    <t t-if="barcode">
-                        <div t-out="barcode" style="padding:0"
-                             t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                        <div class="o_label_name"
-                             style="font-size:9px;height:1.3em;background-color:transparent;">
-                            <span class="text-center" t-out="barcode"/>
-                        </div>
-                    </t>
-                </div>
-                <div class="o_label_clear"/>
             </div>
         </div>
     </template>
 
 
-    <!-- ─── DYMO 24x54mm – NUR ARTIKEL-BARCODE (schmal) ─────── -->
+    <!-- ─── LAYOUT: 24x54mm NUR ARTIKEL-BARCODE ─────────────── -->
     <template id="report_simple_label_dymo_artikel_barcode">
         <t t-set="barcode_size"  t-value="'width:48mm;height:14mm'"/>
-        <t t-set="table_style"   t-value="'width:53mm;height:23mm;padding:0;font-family:Open Sans;'"/>
-        <t t-set="padding_page"  t-value="'padding:1mm'"/>
+        <t t-set="table_style"   t-value="'width:53mm;height:23mm;padding:0;font-family:Open Sans;box-sizing:border-box;overflow:hidden;'"/>
+        <t t-set="padding_page"  t-value="'padding:1mm;'"/>
 
-        <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
-            <div class="o_label_full" t-att-style="table_style">
-                <div class="o_label_name text-nowrap"
-                     style="font-size:10px;line-height:100%;background-color:transparent;padding:1px 0;">
-                    <span t-if="product.is_product_variant" t-field="product.display_name"/>
-                    <span t-else="" t-field="product.name"/>
+        <div style="page-break-after:always;">
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+
+                    <div style="font-size:10px;line-height:100%;background-color:transparent;padding:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/>
+                        <span t-else="" t-field="product.name"/>
+                    </div>
+
+                    <div style="padding:1px 0;">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0;line-height:0;"
+                                 t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div style="font-size:8px;height:1.2em;background-color:transparent;text-align:center;">
+                                <span t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+
                 </div>
-                <div class="o_label_small_barcode" style="padding:1px 0;">
-                    <t t-if="barcode">
-                        <div t-out="barcode" style="padding:0"
-                             t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                        <div class="o_label_name"
-                             style="font-size:8px;height:1.2em;background-color:transparent;">
-                            <span class="text-center" t-out="barcode"/>
-                        </div>
-                    </t>
-                </div>
-                <div class="o_label_clear"/>
             </div>
         </div>
     </template>
 
 
-    <!-- ─── DYMO 54x70mm – MIT PREIS (klein) ─────────────────── -->
+    <!-- ─── LAYOUT: 54x70mm MIT PREIS (klein) ────────────────── -->
     <template id="report_simple_label_dymo_price_small">
         <t t-set="barcode_size"  t-value="'width:63mm;height:10mm'"/>
-        <t t-set="table_style"   t-value="'width:69mm;height:53mm;padding:0;font-family:Open Sans;'"/>
-        <t t-set="padding_page"  t-value="'padding:2mm 3mm'"/>
+        <t t-set="table_style"   t-value="'width:69mm;height:53mm;padding:0;font-family:Open Sans;box-sizing:border-box;overflow:hidden;'"/>
+        <t t-set="padding_page"  t-value="'padding:2mm 3mm;'"/>
 
-        <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
-            <div class="o_label_full" t-att-style="table_style">
-                <div class="text-start o_label_name"
-                     style="font-size:10px;line-height:100%;background-color:transparent;padding-top:2px;">
-                    <strong style="font-size:14px;line-height:100%;background-color:transparent;"
-                            t-if="product.is_product_variant" t-field="product.default_code"/>
-                    <strong t-else="" t-field="product.default_code"/>
-                    <span class="float-end" style="font-size:9px;"
-                          t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+        <div style="page-break-after:always;">
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+
+                    <div style="font-size:10px;line-height:100%;background-color:transparent;padding-top:2px;display:flex;justify-content:space-between;">
+                        <strong style="font-size:14px;"
+                                t-if="product.is_product_variant" t-field="product.default_code"/>
+                        <strong t-else="" t-field="product.default_code"/>
+                        <span style="font-size:9px;"
+                              t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+
+                    <div style="font-size:13px;line-height:90%;background-color:transparent;padding:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/>
+                        <span t-else="" t-field="product.name"/>
+                    </div>
+
+                    <div style="width:100%;line-height:100%;padding:3px 0;display:flex;justify-content:space-between;align-items:baseline;">
+                        <span>
+                            <strong style="font-size:14px;font-weight:bold;"
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id)"
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size:8px;"> zzgl 19% MwSt</span>
+                        </span>
+                        <span style="text-align:right;">
+                            <strong style="font-size:9px;"
+                                    t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id) * 1.19"
+                                    t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
+                            <span style="font-size:8px;"> inkl 19% MwSt</span>
+                        </span>
+                    </div>
+
+                    <div style="padding:3px 0 0 0;">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0;line-height:0;"
+                                 t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div style="font-size:8px;height:1.3em;background-color:transparent;text-align:center;">
+                                <span t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+
                 </div>
-                <div class="o_label_name text-nowrap"
-                     style="font-size:13px;line-height:90%;background-color:transparent;padding:4px 0;">
-                    <span t-if="product.is_product_variant" t-field="product.display_name"/>
-                    <span t-else="" t-field="product.name"/>
-                </div>
-                <div class="align-bottom" style="width:100%;line-height:100%;padding:3px 0;">
-                    <span class="text-start netto">
-                        <strong class="text-nowrap o_label_price_small"
-                                style="font-size:15px!important;padding:2px 0;"
-                                t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id)"
-                                t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
-                        <span style="font-size:9px;">zzgl 19% MwSt</span>
-                    </span>
-                    <span class="float-end brutto">
-                        <strong class="o_label_price_small"
-                                style="font-size:9px!important;padding:2px 0 0 0;"
-                                t-out="pricelist._get_product_price(product, 1, currency=pricelist.currency_id or product.currency_id) * 1.19"
-                                t-options="{'widget': 'monetary', 'display_currency': pricelist.currency_id or product.currency_id, 'label_price': True}"/>
-                        <span style="font-size:9px;">inkl 19% MwSt</span>
-                    </span>
-                </div>
-                <div class="o_label_small_barcode" style="padding:3px 0 0 0;">
-                    <t t-if="barcode">
-                        <div t-out="barcode" style="padding:0"
-                             t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                        <div class="o_label_name"
-                             style="font-size:9px;height:1.3em;background-color:transparent;">
-                            <span class="text-center" t-out="barcode"/>
-                        </div>
-                    </t>
-                </div>
-                <div class="o_label_clear"/>
             </div>
         </div>
     </template>
 
 
-    <!-- ─── DYMO 54x70mm – OHNE PREIS (klein) ────────────────── -->
+    <!-- ─── LAYOUT: 54x70mm OHNE PREIS (klein) ───────────────── -->
     <template id="report_simple_label_dymo_small">
         <t t-set="barcode_size"  t-value="'width:63mm;height:14mm'"/>
-        <t t-set="table_style"   t-value="'width:69mm;height:53mm;padding:0;font-family:Open Sans;'"/>
-        <t t-set="padding_page"  t-value="'padding:2mm 3mm'"/>
+        <t t-set="table_style"   t-value="'width:69mm;height:53mm;padding:0;font-family:Open Sans;box-sizing:border-box;overflow:hidden;'"/>
+        <t t-set="padding_page"  t-value="'padding:2mm 3mm;'"/>
 
-        <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
-            <div class="o_label_full" t-att-style="table_style">
-                <div class="text-start o_label_name"
-                     style="font-size:10px;line-height:100%;background-color:transparent;padding-top:2px;">
-                    <strong style="font-size:14px;line-height:100%;background-color:transparent;"
-                            t-if="product.is_product_variant" t-field="product.default_code"/>
-                    <strong t-else="" t-field="product.default_code"/>
-                    <span class="float-end" style="font-size:9px;"
-                          t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+        <div style="page-break-after:always;">
+            <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+
+                    <div style="font-size:10px;line-height:100%;background-color:transparent;padding-top:2px;display:flex;justify-content:space-between;">
+                        <strong style="font-size:14px;"
+                                t-if="product.is_product_variant" t-field="product.default_code"/>
+                        <strong t-else="" t-field="product.default_code"/>
+                        <span style="font-size:9px;"
+                              t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+
+                    <div style="font-size:13px;line-height:90%;background-color:transparent;padding:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        <span t-if="product.is_product_variant" t-field="product.display_name"/>
+                        <span t-else="" t-field="product.name"/>
+                    </div>
+
+                    <div style="padding:4px 0 0 0;">
+                        <t t-if="barcode">
+                            <div t-out="barcode" style="padding:0;line-height:0;"
+                                 t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
+                            <div style="font-size:8px;height:1.3em;background-color:transparent;text-align:center;">
+                                <span t-out="barcode"/>
+                            </div>
+                        </t>
+                    </div>
+
                 </div>
-                <div class="o_label_name text-nowrap"
-                     style="font-size:13px;line-height:90%;background-color:transparent;padding:4px 0;">
-                    <span t-if="product.is_product_variant" t-field="product.display_name"/>
-                    <span t-else="" t-field="product.name"/>
-                </div>
-                <div class="o_label_small_barcode" style="padding:4px 0 0 0;">
-                    <t t-if="barcode">
-                        <div t-out="barcode" style="padding:0"
-                             t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                        <div class="o_label_name"
-                             style="font-size:9px;height:1.3em;background-color:transparent;">
-                            <span class="text-center" t-out="barcode"/>
-                        </div>
-                    </t>
-                </div>
-                <div class="o_label_clear"/>
             </div>
         </div>
     </template>
