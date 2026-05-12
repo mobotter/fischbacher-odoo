@@ -37,13 +37,13 @@
         <field name="dpi">96</field>
     </record>
 
-    <!-- 54 x 24 mm -->
-    <record id="paperformat_label_sheet_dymo_artikel_barcode" model="report.paperformat">
-        <field name="name">Dymo Label 54x24</field>
+    <!-- 54 x 25 mm -->
+    <record id="paperformat_label_sheet_dymo_small" model="report.paperformat">
+        <field name="name">Dymo Label 54x25</field>
         <field name="default" eval="False"/>
         <field name="format">custom</field>
         <field name="page_width">54</field>
-        <field name="page_height">24</field>
+        <field name="page_height">25</field>
         <field name="orientation">Landscape</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
