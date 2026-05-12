@@ -4,21 +4,24 @@
     <!-- ============================================================
          EINSTIEGSPUNKT-TEMPLATES
          web.html_container liefert den <main>-Tag den Odoo 19 benötigt.
+         @page CSS erzwingt Querformat + exakte Maße für wkhtmltopdf.
 
          Formate:
-           dymo_price           → 89x36mm
-           dymo_without_price   → 89x36mm
-           dymo_artikel_barcode → 24x54mm (schmal)
-           dymo_price_small     → 54x70mm
-           dymo_small           → 54x70mm
-
-         UTF-8 FIX: <meta charset="utf-8"/> in jedem html_container
-         damit wkhtmltopdf Sonderzeichen (Euro etc.) korrekt rendert.
+           dymo_price           → 89x36mm  (Landscape)
+           dymo_without_price   → 89x36mm  (Landscape)
+           dymo_artikel_barcode → 24x54mm  (Landscape)
+           dymo_price_small     → 54x70mm  (Landscape)
+           dymo_small           → 54x70mm  (Landscape)
     ============================================================ -->
 
     <template id="dymo_price">
         <t t-call="web.html_container">
             <meta charset="utf-8"/>
+            <!-- CSS @page erzwingt Querformat 89x36mm direkt in wkhtmltopdf -->
+            <style>
+                @page { size: 89mm 36mm landscape; margin: 0; }
+                body  { margin: 0; padding: 0; }
+            </style>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -39,6 +42,10 @@
     <template id="dymo_without_price">
         <t t-call="web.html_container">
             <meta charset="utf-8"/>
+            <style>
+                @page { size: 89mm 36mm landscape; margin: 0; }
+                body  { margin: 0; padding: 0; }
+            </style>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -58,6 +65,10 @@
     <template id="dymo_artikel_barcode">
         <t t-call="web.html_container">
             <meta charset="utf-8"/>
+            <style>
+                @page { size: 54mm 24mm landscape; margin: 0; }
+                body  { margin: 0; padding: 0; }
+            </style>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -77,6 +88,10 @@
     <template id="dymo_price_small">
         <t t-call="web.html_container">
             <meta charset="utf-8"/>
+            <style>
+                @page { size: 70mm 54mm landscape; margin: 0; }
+                body  { margin: 0; padding: 0; }
+            </style>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -97,6 +112,10 @@
     <template id="dymo_small">
         <t t-call="web.html_container">
             <meta charset="utf-8"/>
+            <style>
+                @page { size: 70mm 54mm landscape; margin: 0; }
+                body  { margin: 0; padding: 0; }
+            </style>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
