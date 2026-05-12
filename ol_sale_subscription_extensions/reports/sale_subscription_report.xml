@@ -71,7 +71,7 @@
                                         </t>
         
                                         <!-- HINWEIS: client_order_name existiert im Standard Odoo 19 nicht, nur client_order_ref. Prüfe ob du hier ein Custom-Field meinst! -->
-                                        <t t-if="hasattr(doc, 'client_order_name') and doc.client_order_name">
+                                        <t t-if="'client_order_name' in doc and doc.client_order_name">
                                             <tr>
                                                 <td style="font-size:13px">Ordered by: </td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.client_order_name"/></td>
@@ -79,7 +79,7 @@
                                         </t>
                                         
                                         <!-- HINWEIS: client_order_number existiert ebenfalls im Standard nicht. Ggf. durch client_order_ref ersetzen -->
-                                        <t t-if="hasattr(doc, 'client_order_number') and doc.client_order_number">
+                                        <t t-if="'client_order_number' in doc and doc.client_order_number">
                                             <tr>
                                                 <td style="font-size:13px">Your Order Number: </td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.client_order_number"/></td>
@@ -238,7 +238,7 @@
                         </table>
                         
                         <!-- FEHLERBEHEBUNG: Nutzung von hasattr um zu prüfen, ob sale_order_option_ids existiert -->
-                        <div t-if="not (hasattr(doc, 'sale_order_option_ids') and doc.sale_order_option_ids and doc.state in ['draft', 'sent'])" class="oe_structure" style="page-break-inside: avoid;"> </div>
+                        <div t-if="not ('sale_order_option_ids' in doc and doc.sale_order_option_ids and doc.state in ['draft', 'sent'])" class="oe_structure" style="page-break-inside: avoid;"> </div>
                         
                         <div t-else="" style="margin-top:4mm; font-size:11px; line-height:1.2; width:100%; page-break-inside: avoid;">
                             <t t-set="has_option_discount" t-value="any(option.discount != 0.0 for option in doc.sale_order_option_ids)"/>
