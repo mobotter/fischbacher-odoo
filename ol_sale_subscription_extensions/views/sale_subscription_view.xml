@@ -27,15 +27,18 @@
             <!-- C. Neuer Tab 'Quotation Lines' als ERSTEN Tab ins Notebook einfügen -->
             <xpath expr="//notebook/page[1]" position="before">
                 <page name="quotation_page" string="Quotation Lines">
-                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="tree,kanban" readonly="state == 'cancel' or locked">
-                        <tree editable="bottom" limit="200">
+                    <!-- mode="list,kanban" statt mode="tree,kanban" -->
+                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
+                        <!-- <list> statt <tree> -->
+                        <list editable="bottom" limit="200">
                             <control>
                                 <create name="add_product_control" string="Add a product"/>
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
                             
-                            <field name="sequence" widget="handle"/>
+                            <!-- Das fehlerhafte Feld vorerst auskommentiert, damit Odoo startet -->
+                            <!-- <field name="sequence" widget="handle"/> -->
                             <field name="display_type" column_invisible="True"/>
                             <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1"/> 
                             <field name="name"/>
@@ -45,7 +48,7 @@
                             <field name="discount"/>
                             <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"/>
                             <field name="price_subtotal" readonly="1"/>
-                        </tree>
+                        </list>
                     </field>
                     
                     <!-- Platz für Notizen/Bedingungen unterhalb der Tabelle -->
@@ -61,11 +64,13 @@
     </record>
 
     <!-- ============================================== -->
-    <!-- 2. ANPASSUNG DER LISTENANSICHT (TREE VIEW)     -->
+    <!-- 2. ANPASSUNG DER LISTENANSICHT (LIST VIEW)     -->
     <!-- ============================================== -->
-    <record id="sale_subscription_tree_view_inherit" model="ir.ui.view">
-        <field name="name">sale.subscription.tree.view.inherit</field>
+    <record id="sale_subscription_list_view_inherit" model="ir.ui.view">
+        <!-- Namensanpassung von tree zu list -->
+        <field name="name">sale.subscription.list.view.inherit</field>
         <field name="model">sale.order</field>
+        <!-- WICHTIG: Die Original-ID von Odoo bleibt sale_subscription.sale_subscription_view_tree -->
         <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
             <!-- Überschreibt das Badge in der Abo-Übersicht -->
@@ -106,9 +111,10 @@
     <!-- ============================================== -->
     
     <!-- A. Für die Quotations-Liste (Angebote) -->
-    <record id="sale_order_tree_view_inherit_accepted" model="ir.ui.view">
-        <field name="name">sale.order.tree.inherit.accepted</field>
+    <record id="sale_order_list_view_inherit_accepted" model="ir.ui.view">
+        <field name="name">sale.order.list.inherit.accepted</field>
         <field name="model">sale.order</field>
+        <!-- Original ref bleibt view_quotation_tree -->
         <field name="inherit_id" ref="sale.view_quotation_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="attributes">
@@ -118,9 +124,10 @@
     </record>
 
     <!-- B. Für die Sales-Order-Liste (Verkaufsaufträge) -->
-    <record id="sale_order_tree_view_inherit_accepted_orders" model="ir.ui.view">
-        <field name="name">sale.order.tree.inherit.accepted.orders</field>
+    <record id="sale_order_list_view_inherit_accepted_orders" model="ir.ui.view">
+        <field name="name">sale.order.list.inherit.accepted.orders</field>
         <field name="model">sale.order</field>
+        <!-- Original ref bleibt view_order_tree -->
         <field name="inherit_id" ref="sale.view_order_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="attributes">
