@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Allgemeine Produktliste (Sales, Purchase) -->
     <record id="product_template_tree_location" model="ir.ui.view">
         <field name="name">product.template.tree.location</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='uom_id']" position="after">
+                <field name="location_names" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inventory → Produkte -->
+    <record id="product_template_tree_location_stock" model="ir.ui.view">
+        <field name="name">product.template.tree.location.stock</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='uom_id']" position="after">
                 <field name="location_names" optional="show"/>
