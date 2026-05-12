@@ -1,13 +1,14 @@
-# -*- coding: utf-8 -*-
+# report/product_label_report.py
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from collections import defaultdict
-import markupsafe
 
 
-class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
-    _name = 'report.report_dymo_barcode.dymo_price'
-    _description = 'Product Label Report Dymo Price'
+class ReportProductTemplateLabelBase(models.AbstractModel):
+    """Gemeinsame Basisklasse für alle Dymo/ZPL Label-Reports."""
+    _name = 'report.report_dymo_barcode.base'  # Nicht in ir.actions.report registriert!
+    _description = 'Base Report for Dymo/ZPL Labels'
 
     def _prepare_common_data(self, docids, data, include_price=False):
         layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
@@ -66,15 +67,19 @@ class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
 
         return result
 
-    def _prepare_data(self, docids, data):
-        return self._prepare_common_data(docids, data, include_price=True)
+
+class ReportProductTemplateLabelDymoPrice(models.AbstractModel):
+    _name = 'report.report_dymo_barcode.dymo_price'
+    _inherit = 'report.report_dymo_barcode.base'  # ← ERBT jetzt _prepare_common_data
+    _description = 'Product Label Report Dymo Price'
 
     def _get_report_values(self, docids, data):
-        return self._prepare_data(docids, data)
+        return self._prepare_common_data(docids, data, include_price=True)
 
 
 class ReportProductTemplateLabelDymoWithOutPrice(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_without_price'
+    _inherit = 'report.report_dymo_barcode.base'
     _description = 'Product Label Report Dymo Without Price'
 
     def _get_report_values(self, docids, data):
@@ -83,6 +88,7 @@ class ReportProductTemplateLabelDymoWithOutPrice(models.AbstractModel):
 
 class ReportProductTemplateLabelDymoArtikelBarcode(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_artikel_barcode'
+    _inherit = 'report.report_dymo_barcode.base'
     _description = 'Product Label Report Dymo Artikel Barcode'
 
     def _get_report_values(self, docids, data):
@@ -91,23 +97,17 @@ class ReportProductTemplateLabelDymoArtikelBarcode(models.AbstractModel):
 
 class ReportProductTemplateLabelDymoPriceSmall(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_price_small'
-    _description = 'Product Label Report Dymo Price (Small)'
+    _inherit = 'report.report_dymo_barcode.base'
+    _description = 'Product Label Report Dymo Price Small'
 
     def _get_report_values(self, docids, data):
-        values = self._prepare_common_data(docids, data, include_price=True)
-        layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
-        if layout_wizard:
-            values['extra_html'] = ""  # ggf. individuell anpassen
-        return values
+        return self._prepare_common_data(docids, data, include_price=True)
 
 
 class ReportProductTemplateLabelDymoSmall(models.AbstractModel):
     _name = 'report.report_dymo_barcode.dymo_small'
-    _description = 'Product Label Report Dymo Small (No Price)'
+    _inherit = 'report.report_dymo_barcode.base'
+    _description = 'Product Label Report Dymo Small'
 
     def _get_report_values(self, docids, data):
-        values = self._prepare_common_data(docids, data, include_price=False)
-        layout_wizard = self.env['product.label.layout'].browse(data.get('layout_wizard'))
-        if layout_wizard:
-            values['extra_html'] = ""  # ggf. individuell anpassen
-        return values
+        return self._prepare_common_data(docids, data, include_price=False)
