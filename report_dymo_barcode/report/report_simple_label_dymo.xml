@@ -9,6 +9,7 @@
 
     <template id="dymo_price">
         <t t-call="web.html_container">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -28,6 +29,7 @@
 
     <template id="dymo_without_price">
         <t t-call="web.html_container">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -46,6 +48,7 @@
 
     <template id="dymo_artikel_barcode">
         <t t-call="web.html_container">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -64,6 +67,7 @@
 
     <template id="dymo_price_small">
         <t t-call="web.html_container">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
@@ -83,6 +87,7 @@
 
     <template id="dymo_small">
         <t t-call="web.html_container">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
             <t t-foreach="quantity.items()" t-as="product_barcode_info">
                 <t t-set="product" t-value="product_barcode_info[0]"/>
                 <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
