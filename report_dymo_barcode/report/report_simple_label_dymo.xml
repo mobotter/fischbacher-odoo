@@ -3,22 +3,23 @@
 
     <!-- ============================================================
          EINSTIEGSPUNKT-TEMPLATES
-         Diese IDs werden direkt von dymo_barcode_report.xml
-         über report_name="report_dymo_barcode.XXX" aufgerufen.
-         Sie delegieren an die eigentlichen Layout-Templates.
+         Werden von dymo_barcode_report.xml über report_name aufgerufen.
+         web.html_container liefert den <main>-Tag den Odoo 19 benötigt.
     ============================================================ -->
 
     <template id="dymo_price">
-        <t t-foreach="quantity.items()" t-as="product_barcode_info">
-            <t t-set="product" t-value="product_barcode_info[0]"/>
-            <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                <t t-set="barcode" t-value="barcode_qty[0]"/>
-                <t t-set="qty" t-value="barcode_qty[1]"/>
-                <t t-foreach="range(qty)" t-as="i">
-                    <t t-call="report_dymo_barcode.report_simple_label_dymo_price">
-                        <t t-set="product" t-value="product"/>
-                        <t t-set="barcode" t-value="barcode"/>
-                        <t t-set="pricelist" t-value="pricelist"/>
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                <t t-set="product" t-value="product_barcode_info[0]"/>
+                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                    <t t-set="barcode" t-value="barcode_qty[0]"/>
+                    <t t-set="qty" t-value="barcode_qty[1]"/>
+                    <t t-foreach="range(qty)" t-as="i">
+                        <t t-call="report_dymo_barcode.report_simple_label_dymo_price">
+                            <t t-set="product" t-value="product"/>
+                            <t t-set="barcode" t-value="barcode"/>
+                            <t t-set="pricelist" t-value="pricelist"/>
+                        </t>
                     </t>
                 </t>
             </t>
@@ -26,15 +27,17 @@
     </template>
 
     <template id="dymo_without_price">
-        <t t-foreach="quantity.items()" t-as="product_barcode_info">
-            <t t-set="product" t-value="product_barcode_info[0]"/>
-            <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                <t t-set="barcode" t-value="barcode_qty[0]"/>
-                <t t-set="qty" t-value="barcode_qty[1]"/>
-                <t t-foreach="range(qty)" t-as="i">
-                    <t t-call="report_dymo_barcode.report_simple_label_dymo_without_price">
-                        <t t-set="product" t-value="product"/>
-                        <t t-set="barcode" t-value="barcode"/>
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                <t t-set="product" t-value="product_barcode_info[0]"/>
+                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                    <t t-set="barcode" t-value="barcode_qty[0]"/>
+                    <t t-set="qty" t-value="barcode_qty[1]"/>
+                    <t t-foreach="range(qty)" t-as="i">
+                        <t t-call="report_dymo_barcode.report_simple_label_dymo_without_price">
+                            <t t-set="product" t-value="product"/>
+                            <t t-set="barcode" t-value="barcode"/>
+                        </t>
                     </t>
                 </t>
             </t>
@@ -42,15 +45,17 @@
     </template>
 
     <template id="dymo_artikel_barcode">
-        <t t-foreach="quantity.items()" t-as="product_barcode_info">
-            <t t-set="product" t-value="product_barcode_info[0]"/>
-            <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                <t t-set="barcode" t-value="barcode_qty[0]"/>
-                <t t-set="qty" t-value="barcode_qty[1]"/>
-                <t t-foreach="range(qty)" t-as="i">
-                    <t t-call="report_dymo_barcode.report_simple_label_dymo_artikel_barcode">
-                        <t t-set="product" t-value="product"/>
-                        <t t-set="barcode" t-value="barcode"/>
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                <t t-set="product" t-value="product_barcode_info[0]"/>
+                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                    <t t-set="barcode" t-value="barcode_qty[0]"/>
+                    <t t-set="qty" t-value="barcode_qty[1]"/>
+                    <t t-foreach="range(qty)" t-as="i">
+                        <t t-call="report_dymo_barcode.report_simple_label_dymo_artikel_barcode">
+                            <t t-set="product" t-value="product"/>
+                            <t t-set="barcode" t-value="barcode"/>
+                        </t>
                     </t>
                 </t>
             </t>
@@ -58,16 +63,18 @@
     </template>
 
     <template id="dymo_price_small">
-        <t t-foreach="quantity.items()" t-as="product_barcode_info">
-            <t t-set="product" t-value="product_barcode_info[0]"/>
-            <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                <t t-set="barcode" t-value="barcode_qty[0]"/>
-                <t t-set="qty" t-value="barcode_qty[1]"/>
-                <t t-foreach="range(qty)" t-as="i">
-                    <t t-call="report_dymo_barcode.report_simple_label_dymo_price_small">
-                        <t t-set="product" t-value="product"/>
-                        <t t-set="barcode" t-value="barcode"/>
-                        <t t-set="pricelist" t-value="pricelist"/>
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                <t t-set="product" t-value="product_barcode_info[0]"/>
+                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                    <t t-set="barcode" t-value="barcode_qty[0]"/>
+                    <t t-set="qty" t-value="barcode_qty[1]"/>
+                    <t t-foreach="range(qty)" t-as="i">
+                        <t t-call="report_dymo_barcode.report_simple_label_dymo_price_small">
+                            <t t-set="product" t-value="product"/>
+                            <t t-set="barcode" t-value="barcode"/>
+                            <t t-set="pricelist" t-value="pricelist"/>
+                        </t>
                     </t>
                 </t>
             </t>
@@ -75,15 +82,17 @@
     </template>
 
     <template id="dymo_small">
-        <t t-foreach="quantity.items()" t-as="product_barcode_info">
-            <t t-set="product" t-value="product_barcode_info[0]"/>
-            <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
-                <t t-set="barcode" t-value="barcode_qty[0]"/>
-                <t t-set="qty" t-value="barcode_qty[1]"/>
-                <t t-foreach="range(qty)" t-as="i">
-                    <t t-call="report_dymo_barcode.report_simple_label_dymo_small">
-                        <t t-set="product" t-value="product"/>
-                        <t t-set="barcode" t-value="barcode"/>
+        <t t-call="web.html_container">
+            <t t-foreach="quantity.items()" t-as="product_barcode_info">
+                <t t-set="product" t-value="product_barcode_info[0]"/>
+                <t t-foreach="product_barcode_info[1]" t-as="barcode_qty">
+                    <t t-set="barcode" t-value="barcode_qty[0]"/>
+                    <t t-set="qty" t-value="barcode_qty[1]"/>
+                    <t t-foreach="range(qty)" t-as="i">
+                        <t t-call="report_dymo_barcode.report_simple_label_dymo_small">
+                            <t t-set="product" t-value="product"/>
+                            <t t-set="barcode" t-value="barcode"/>
+                        </t>
                     </t>
                 </t>
             </t>
@@ -94,7 +103,7 @@
     <!-- ============================================================
          LAYOUT-TEMPLATES
          Die eigentlichen visuellen Designs.
-         Werden von den Einstiegspunkt-Templates per t-call aufgerufen.
+         Werden per t-call von den Einstiegspunkt-Templates aufgerufen.
     ============================================================ -->
 
     <!-- DYMO GROSS – MIT PREIS -->
@@ -105,7 +114,8 @@
 
         <div id="o_label_sheet" class="o_label_dymo" t-att-style="padding_page">
             <div class="o_label_full" t-att-style="table_style">
-                <div class="text-start o_label_name" style="font-size: 16px; line-height: 100%; background-color: transparent;">
+                <div class="text-start o_label_name"
+                     style="font-size: 16px; line-height: 100%; background-color: transparent;">
                     <strong style="font-size: 16px; line-height: 100%; background-color: transparent;"
                             t-if="product.is_product_variant" t-field="product.default_code"/>
                     <strong t-else="" t-field="product.default_code"/>
