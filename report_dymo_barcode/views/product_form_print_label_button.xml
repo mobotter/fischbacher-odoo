@@ -6,17 +6,14 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             
-            <!-- Wir zielen auf das Bild-Feld ab und platzieren den Button direkt davor -->
+            <!-- Button direkt vor dem Bild injizieren, ohne störendes <div> -->
             <xpath expr="//field[@name='image_1920']" position="before">
-                <!-- Ein div-Container, um den Button rechtsbündig über oder neben dem Bild auszurichten -->
-                <div class="d-inline-block float-end me-3 mb-2">
-                    <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
-                            type="action"
-                            string="Etiketten drucken"
-                            class="btn btn-primary"
-                            icon="fa-print"
-                            context="{'active_model': 'product.template', 'default_product_tmpl_ids': [id]}"/>
-                </div>
+                <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
+                        type="action"
+                        string="Etiketten drucken"
+                        class="btn btn-primary float-end me-4 mt-2"
+                        icon="fa-print"
+                        context="{'active_model': 'product.template', 'default_product_tmpl_ids': [id]}"/>
             </xpath>
             
         </field>
