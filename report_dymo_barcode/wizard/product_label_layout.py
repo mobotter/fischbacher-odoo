@@ -30,9 +30,13 @@ class ProductLabelLayout(models.TransientModel):
     )
 
     def _prepare_report_data(self):
+        # 1. SICHERHEITSPRÜFUNG HINZUFÜGEN
+        if self.print_format in ['sep_dymo', 'sep_zpl']:
+            raise UserError(_("Bitte wählen Sie ein konkretes Etikettenformat aus, keine Überschrift."))
+
         xml_id, data = super()._prepare_report_data()
         
-        # Optimierter Code mit Dictionary statt vielen IFs
+        # 2. IHR BESTEHENDES MAPPING
         report_mapping = {
             'dymo_price': 'report_dymo_barcode.report_product_template_label_dymo_price',
             'dymo_without_price': 'report_dymo_barcode.report_product_template_label_dymo_without_price',
