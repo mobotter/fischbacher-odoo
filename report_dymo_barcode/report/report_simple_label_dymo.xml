@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-        <template id="dymo_label_common_styles">
+    <template id="dymo_label_common_styles">
         <style>
+            /* 1. Zwingt das PDF-Papier auf 0 Rand */
             @page {
-                margin: 0mm;
+                margin: 0mm !important;
             }
 
+            /* 2. Entfernt jegliche Odoo-Standard-Abstände, die sonst unsichtbar Platz wegnehmen */
+            html, body, .article {
+                margin: 0 !important;
+                padding: 0 !important;
+                border: 0 !important;
+                background-color: transparent !important;
+            }
+
+            /* 3. WICHTIG: KEIN page-break-after verwenden! Das erzeugt oft die leere Seite. */
             .page {
                 margin: 0 !important;
                 padding: 0 !important;
-                page-break-after: always;
                 page-break-inside: avoid;
-                overflow: hidden; /* Verhindert leere Überlauf-Seiten */
-            }
-            
-            /* Die letzte Seite darf keinen Umbruch erzwingen */
-            .page:last-child {
-                page-break-after: auto;
+                overflow: hidden;
             }
 
             .dymo-label {
@@ -27,24 +31,22 @@
                 color: #000;
             }
 
-            /* Minimal kleiner als das Paperformat (89x36), um Rundungsfehler zu vermeiden */
+            /* 4. Maße noch etwas kleiner (88x35), um wkhtmltopdf-Rundungsfehler abzufangen */
             .dymo-89x36 {
-                width: 88.9mm;
-                height: 35.9mm;
-                padding: 1mm 1.5mm;
+                width: 88mm;
+                height: 35mm;
+                padding: 1mm 2mm;
             }
 
-            /* Minimal kleiner als 54x25 */
             .dymo-54x25 {
-                width: 53.9mm;
-                height: 24.9mm;
-                padding: 1mm 1.5mm;
+                width: 53mm;
+                height: 24mm;
+                padding: 1mm 2mm;
             }
 
-            /* Minimal kleiner als 54x24 */
             .dymo-54x24 {
-                width: 53.9mm;
-                height: 23.9mm;
+                width: 53mm;
+                height: 23mm;
                 padding: 1mm;
             }
 
