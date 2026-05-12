@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 
+
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
@@ -17,5 +18,10 @@ class ProductTemplate(models.Model):
                 ('quantity', '>', 0),
             ])
             locations = quants.mapped('location_id.complete_name')
-            quants = quants.sorted(key=lambda q: q.quantity, reverse=True)
-            tmpl.location_names = quants.location_id.complete_name if quants else '—'
+            seen = set()
+            unique = []
+            for loc in locations:
+                if loc not in seen:
+                    seen.add(loc)
+                    unique.append(loc)
+            tmpl.location_names = ', '.join(unique) if unique else '—'
