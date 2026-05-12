@@ -26,6 +26,7 @@
         # 'actions/product_label_layout.xml',             # AUSKOMMENTIERT: Action existiert bereits in views/product_label_wizard_action.xml
         'report/templates/zpl_small.xml',  
         'views/product_form_print_label_button.xml',
+        'views/product_label_layout_views.xml',
     ],
     'external_dependencies': {},
     'installable': True,
