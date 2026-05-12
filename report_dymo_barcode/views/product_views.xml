@@ -1,24 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    
-    <!-- Vorhandener Button für Produkt (product.template) -->
-    <record id="view_product_form_add_print_labels_button" model="ir.ui.view">
-        <field name="name">product.template.form.print.labels.button</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_only_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
-                        type="action"
-                        string="Etiketten drucken"
-                        class="btn btn-primary"
-                        icon="fa-print"
-                        context="{'active_model': 'product.template', 'default_product_tmpl_ids': [id]}"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- NEU: Button für Produktvarianten (product.product) -->
+    <!-- 1. Ansicht für Varianten (über das Menü "Produktvarianten") -->
     <record id="view_product_variant_form_add_print_labels_button" model="ir.ui.view">
         <field name="name">product.product.form.print.labels.button</field>
         <field name="model">product.product</field>
@@ -30,9 +10,27 @@
                         string="Etiketten drucken"
                         class="btn btn-primary"
                         icon="fa-print"
-                        context="{'active_model': 'product.product', 'default_product_tmpl_ids': [product_tmpl_id]}"/>
+                        context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
             </xpath>
         </field>
     </record>
 
-</odoo>
+    <!-- 2. Ansicht für Varianten (Popup/Easy-Edit, wenn man vom Hauptprodukt kommt) -->
+    <record id="view_product_variant_easy_edit_add_print_labels_button" model="ir.ui.view">
+        <field name="name">product.product.easy.edit.print.labels.button</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <!-- Die Easy Edit View hat keinen Header, wir fügen ihn VOR dem Sheet (Hauptbereich) ein -->
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
+                            type="action"
+                            string="Etiketten drucken"
+                            class="btn btn-primary"
+                            icon="fa-print"
+                            context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
