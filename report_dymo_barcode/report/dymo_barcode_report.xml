@@ -102,7 +102,10 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">report_dymo_barcode.dymo_artikel_barcode</field>
         <field name="report_file">report_dymo_barcode.dymo_artikel_barcode</field>
-        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo_artikel_barcode"/>
+        
+        <!-- GEÄNDERT: Verwendet jetzt das dymo_label_sheet_dymo Format (89x36) statt dymo_artikel_barcode -->
+        <field name="paperformat_id" ref="report_dymo_barcode.paperformat_label_sheet_dymo"/>
+        
         <field name="print_report_name">'Etikett_Barcode_%s' % ((object.display_name or object.name or 'Produkt').replace(' ', '_').replace('/', '_'))</field>
         <field name="binding_type">report</field>
     </record>
