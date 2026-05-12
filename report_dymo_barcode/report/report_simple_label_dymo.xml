@@ -191,7 +191,7 @@
             <div class="dymo-row" style="font-size:13px; line-height:100%;">
                 <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
                 <strong t-else="" t-field="product.default_code"/>
-                <span style="font-size:9px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                <span style="font-size:9px; text-align:right;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
             </div>
 
             <div class="dymo-nowrap" style="font-size:12px; line-height:95%; padding:2px 0;">
@@ -219,7 +219,7 @@
                     <div t-out="barcode"
                          class="dymo-barcode"
                          t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                    <div class="dymo-center" style="font-size:8px; height:1.3em;">
+                    <div style="font-size:11px; font-weight:bold; height:1.3em; text-align:left;">
                         <span t-out="barcode"/>
                     </div>
                 </t>
@@ -236,7 +236,7 @@
             <div class="dymo-row" style="font-size:13px; line-height:100%;">
                 <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
                 <strong t-else="" t-field="product.default_code"/>
-                <span style="font-size:9px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                <span style="font-size:9px; text-align:right;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
             </div>
 
             <div class="dymo-nowrap" style="font-size:12px; line-height:95%; padding:3px 0;">
@@ -249,7 +249,7 @@
                     <div t-out="barcode"
                          class="dymo-barcode"
                          t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                    <div class="dymo-center" style="font-size:8px; height:1.3em;">
+                    <div style="font-size:11px; font-weight:bold; height:1.3em; text-align:left;">
                         <span t-out="barcode"/>
                     </div>
                 </t>
