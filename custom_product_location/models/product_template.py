@@ -17,4 +17,5 @@ class ProductTemplate(models.Model):
                 ('quantity', '>', 0),
             ])
             locations = quants.mapped('location_id.complete_name')
-            tmpl.location_names = ', '.join(locations) if locations else '—'
+            quants = quants.sorted(key=lambda q: q.quantity, reverse=True)
+            tmpl.location_names = quants.location_id.complete_name if quants else '—'
