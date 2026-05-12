@@ -9,11 +9,7 @@
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="purchase_no"/>
                     <field name="client_order_number"/>
-                    <!-- In sale.order Form, z.B. nach client_order_number -->
-                    <field name="lease_agreement_no"
-                           string="Lease Agreement No."
-                           attrs="{'invisible': [('is_subscription', '=', False)]}"
-                           placeholder="z.B. LA-2026-0042"/>
+                    <field name="lease_agreement_no" invisible="not is_subscription"/>
                     <field name="client_order_name"/>
                 </xpath>
 
