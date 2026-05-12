@@ -98,7 +98,7 @@
     </template>
 
 
-    <!-- ENTRY-Templates (bleiben unverändert, inkl. meta charset) -->
+    <!-- ENTRY-Templates -->
     <template id="dymo_price">
         <t t-call="web.html_container">
             <t t-call="report_dymo_barcode.dymo_label_common_styles"/>
@@ -236,13 +236,14 @@
             </div>
 
             <div class="dymo-row" style="line-height:100%; padding:1px 0;">
-                <div class="pull-left">
+                <!-- NEU: style="white-space: nowrap;" hinzugefügt -->
+                <div class="pull-left" style="white-space: nowrap;">
                     <strong style="font-size:13px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
                     </strong>
                     <span style="font-size:8px;"> € zzgl. 19% MwSt.</span>
                 </div>
-                <div class="pull-right">
+                <div class="pull-right" style="white-space: nowrap;">
                     <strong style="font-size:9px;">
                         <t t-esc="('%.2f' % gross_price).replace('.', ',')"/>
                     </strong>
@@ -344,13 +345,14 @@
             </div>
 
             <div class="dymo-row" style="line-height:100%; padding:2px 0;">
-                <div class="pull-left">
+                <!-- NEU: style="white-space: nowrap;" hinzugefügt -->
+                <div class="pull-left" style="white-space: nowrap;">
                     <strong style="font-size:10px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
                     </strong>
                     <span style="font-size:7px;"> € zzgl. 19%</span>
                 </div>
-                <div class="pull-right">
+                <div class="pull-right" style="white-space: nowrap;">
                     <strong style="font-size:8px;">
                         <t t-esc="('%.2f' % gross_price).replace('.', ',')"/>
                     </strong>
