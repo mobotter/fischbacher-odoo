@@ -9,8 +9,7 @@
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="purchase_no"/>
                     <field name="client_order_number"/>
-                    <!-- Bei Subscription ODER plan_id sichtbar -->
-                    <field name="lease_agreement_no" invisible="not is_subscription and not plan_id"/>
+                    <field name="lease_agreement_no"/>
                     <field name="client_order_name"/>
                 </xpath>
 
