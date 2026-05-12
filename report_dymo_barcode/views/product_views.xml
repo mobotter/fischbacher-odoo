@@ -1,15 +1,15 @@
-    <!-- ODOO 19: Haupt-Varianten-Ansicht (Menü: Produkte > Varianten) -->
+    <!-- Button für Produktvarianten (product.product) -->
     <record id="view_product_variant_form_add_print_labels_button" model="ir.ui.view">
         <field name="name">product.product.form.print.labels.button.19</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <!-- Odoo 19 hat oft einen <header> in der Normal Form View -->
-            <xpath expr="//header" position="inside">
+            <!-- 1. Versuch: Falls Odoo 19 das image_1920 anzeigt (wie beim Template) -->
+            <xpath expr="//field[@name='image_1920']" position="before">
                 <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
                         type="action"
                         string="Etiketten drucken"
-                        class="btn btn-primary"
+                        class="btn btn-primary float-end me-4 mt-2"
                         icon="fa-print"
                         invisible="not id"
                         context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
@@ -17,23 +17,20 @@
         </field>
     </record>
 
-    <!-- ODOO 19: Varianten-Popup (Klick auf Variante aus dem Produkt-Template) -->
-    <record id="view_product_variant_easy_edit_add_print_labels_button" model="ir.ui.view">
-        <field name="name">product.product.easy.edit.print.labels.button.19</field>
+    <!-- Zweiter Fallback für Varianten-Formulare ohne sichtbares image_1920 -->
+    <record id="view_product_variant_form_add_print_labels_header_button" model="ir.ui.view">
+        <field name="name">product.product.form.print.labels.header.button</field>
         <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <!-- In der Easy Edit View gibt es standardmäßig keinen Header, daher injizieren wir ihn vor dem sheet ODER setzen den Button oben ins Sheet -->
-            <xpath expr="//sheet" position="before">
-                <header>
-                    <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
-                            type="action"
-                            string="Etiketten drucken"
-                            class="btn btn-primary"
-                            icon="fa-print"
-                            invisible="not id"
-                            context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
-                </header>
+            <xpath expr="//header" position="inside">
+                <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
+                        type="action"
+                        string="Etiketten drucken"
+                        class="btn btn-secondary"
+                        icon="fa-print"
+                        invisible="not id"
+                        context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
             </xpath>
         </field>
     </record>
