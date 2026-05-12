@@ -10,6 +10,7 @@ class SaleOrder(models.Model):
 
     # Temporäres Kompatibilitätsfeld für alte Views / Studio-Reste
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent")
+    lease_agreement_no = fields.Char(string="Lease Agreement No.")
 
     hide_total = fields.Boolean(string="Hide Total Amount")
     client_order_name = fields.Text(string="Ordered by")
@@ -75,6 +76,7 @@ class SaleOrder(models.Model):
         vals.update({
             'rental_billing_period_start': billing_start,
             'rental_billing_period_end': billing_end,
+            'lease_agreement_no': self.lease_agreement_no,
         })
         return vals
 
