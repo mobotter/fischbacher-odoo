@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="dymo_label_common_styles">
+        <template id="dymo_label_common_styles">
         <style>
             @page {
                 margin: 0mm;
@@ -10,6 +10,14 @@
             .page {
                 margin: 0 !important;
                 padding: 0 !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                overflow: hidden; /* Verhindert leere Überlauf-Seiten */
+            }
+            
+            /* Die letzte Seite darf keinen Umbruch erzwingen */
+            .page:last-child {
+                page-break-after: auto;
             }
 
             .dymo-label {
@@ -19,21 +27,24 @@
                 color: #000;
             }
 
+            /* Minimal kleiner als das Paperformat (89x36), um Rundungsfehler zu vermeiden */
             .dymo-89x36 {
-                width: 89mm;
-                height: 36mm;
-                padding: 1mm 2mm;
+                width: 88.9mm;
+                height: 35.9mm;
+                padding: 1mm 1.5mm;
             }
 
+            /* Minimal kleiner als 54x25 */
             .dymo-54x25 {
-                width: 54mm;
-                height: 25mm;
-                padding: 1mm 2mm;
+                width: 53.9mm;
+                height: 24.9mm;
+                padding: 1mm 1.5mm;
             }
 
+            /* Minimal kleiner als 54x24 */
             .dymo-54x24 {
-                width: 54mm;
-                height: 24mm;
+                width: 53.9mm;
+                height: 23.9mm;
                 padding: 1mm;
             }
 
