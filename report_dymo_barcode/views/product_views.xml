@@ -1,27 +1,29 @@
-    <!-- 1. Ansicht für Varianten (über das Menü "Produktvarianten") -->
+    <!-- ODOO 19: Haupt-Varianten-Ansicht (Menü: Produkte > Varianten) -->
     <record id="view_product_variant_form_add_print_labels_button" model="ir.ui.view">
-        <field name="name">product.product.form.print.labels.button</field>
+        <field name="name">product.product.form.print.labels.button.19</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
+            <!-- Odoo 19 hat oft einen <header> in der Normal Form View -->
             <xpath expr="//header" position="inside">
                 <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
                         type="action"
                         string="Etiketten drucken"
                         class="btn btn-primary"
                         icon="fa-print"
+                        invisible="not id"
                         context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
             </xpath>
         </field>
     </record>
 
-    <!-- 2. Ansicht für Varianten (Popup/Easy-Edit, wenn man vom Hauptprodukt kommt) -->
+    <!-- ODOO 19: Varianten-Popup (Klick auf Variante aus dem Produkt-Template) -->
     <record id="view_product_variant_easy_edit_add_print_labels_button" model="ir.ui.view">
-        <field name="name">product.product.easy.edit.print.labels.button</field>
+        <field name="name">product.product.easy.edit.print.labels.button.19</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
         <field name="arch" type="xml">
-            <!-- Die Easy Edit View hat keinen Header, wir fügen ihn VOR dem Sheet (Hauptbereich) ein -->
+            <!-- In der Easy Edit View gibt es standardmäßig keinen Header, daher injizieren wir ihn vor dem sheet ODER setzen den Button oben ins Sheet -->
             <xpath expr="//sheet" position="before">
                 <header>
                     <button name="%(report_dymo_barcode.action_open_product_label_layout_wizard)d"
@@ -29,6 +31,7 @@
                             string="Etiketten drucken"
                             class="btn btn-primary"
                             icon="fa-print"
+                            invisible="not id"
                             context="{'active_model': 'product.product', 'default_product_variant_ids': [id]}"/>
                 </header>
             </xpath>
