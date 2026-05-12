@@ -220,9 +220,9 @@
         <t t-set="gross_price" t-value="net_price * 1.19"/>
 
         <div class="dymo-label dymo-89x36">
-            <div class="dymo-row" style="font-size:13px; line-height:100%;">
-                <div class="pull-left">
-                    <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+            <div class="dymo-row" style="line-height:100%;">
+                <div class="pull-left" style="font-size:16px;">
+                    <strong t-if="product.is_product_variant" t-field="product.default_code"/>
                     <strong t-else="" t-field="product.default_code"/>
                 </div>
                 <div class="pull-right">
@@ -236,7 +236,6 @@
             </div>
 
             <div class="dymo-row" style="line-height:100%; padding:1px 0;">
-                <!-- NEU: style="white-space: nowrap;" hinzugefügt -->
                 <div class="pull-left" style="white-space: nowrap;">
                     <strong style="font-size:13px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
@@ -269,9 +268,9 @@
     <template id="report_simple_label_dymo_without_price">
         <t t-set="barcode_size" t-value="'width:78mm;height:12mm'"/>
         <div class="dymo-label dymo-89x36">
-            <div class="dymo-row" style="font-size:13px; line-height:100%;">
-                <div class="pull-left">
-                    <strong style="font-size:13px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+            <div class="dymo-row" style="line-height:100%;">
+                <div class="pull-left" style="font-size:16px;">
+                    <strong t-if="product.is_product_variant" t-field="product.default_code"/>
                     <strong t-else="" t-field="product.default_code"/>
                 </div>
                 <div class="pull-right">
@@ -329,9 +328,9 @@
         <t t-set="gross_price" t-value="net_price * 1.19"/>
 
         <div class="dymo-label dymo-54x25">
-            <div class="dymo-row" style="font-size:8px; line-height:100%; padding-top:1px;">
-                <div class="pull-left">
-                    <strong style="font-size:10px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+            <div class="dymo-row" style="line-height:100%; padding-top:1px;">
+                <div class="pull-left" style="font-size:12px;">
+                    <strong t-if="product.is_product_variant" t-field="product.default_code"/>
                     <strong t-else="" t-field="product.default_code"/>
                 </div>
                 <div class="pull-right">
@@ -345,7 +344,6 @@
             </div>
 
             <div class="dymo-row" style="line-height:100%; padding:2px 0;">
-                <!-- NEU: style="white-space: nowrap;" hinzugefügt -->
                 <div class="pull-left" style="white-space: nowrap;">
                     <strong style="font-size:10px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
@@ -378,9 +376,9 @@
     <template id="report_simple_label_dymo_small">
         <t t-set="barcode_size" t-value="'width:45mm;height:8mm'"/>
         <div class="dymo-label dymo-54x25">
-            <div class="dymo-row" style="font-size:8px; line-height:100%; padding-top:1px;">
-                <div class="pull-left">
-                    <strong style="font-size:10px;" t-if="product.is_product_variant" t-field="product.default_code"/>
+            <div class="dymo-row" style="line-height:100%; padding-top:1px;">
+                <div class="pull-left" style="font-size:12px;">
+                    <strong t-if="product.is_product_variant" t-field="product.default_code"/>
                     <strong t-else="" t-field="product.default_code"/>
                 </div>
                 <div class="pull-right">
