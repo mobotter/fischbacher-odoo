@@ -204,13 +204,13 @@
                     <strong style="font-size:13px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
                     </strong>
-                    <span style="font-size:8px;"> <i class="fa fa-eur" role="img" aria-label="Euro"></i> zzgl. 19% MwSt.</span>
+                    <span style="font-size:8px;"> € zzgl. 19% MwSt.</span>
                 </span>
                 <span style="text-align:right;">
                     <strong style="font-size:9px;">
                         <t t-esc="('%.2f' % gross_price).replace('.', ',')"/>
                     </strong>
-                    <span style="font-size:8px;"> <i class="fa fa-eur" role="img" aria-label="Euro"></i> inkl. 19% MwSt.</span>
+                    <span style="font-size:8px;"> € inkl. 19% MwSt.</span>
                 </span>
             </div>
 
@@ -304,13 +304,13 @@
                     <strong style="font-size:10px;">
                         <t t-esc="('%.2f' % net_price).replace('.', ',')"/>
                     </strong>
-                    <span style="font-size:7px;"> <i class="fa fa-eur" role="img" aria-label="Euro"></i> zzgl. 19%</span>
+                    <span style="font-size:7px;"> € zzgl. 19%</span>
                 </span>
                 <span style="text-align:right;">
                     <strong style="font-size:8px;">
                         <t t-esc="('%.2f' % gross_price).replace('.', ',')"/>
                     </strong>
-                    <span style="font-size:7px;"> <i class="fa fa-eur" role="img" aria-label="Euro"></i> inkl.</span>
+                    <span style="font-size:7px;"> € inkl.</span>
                 </span>
             </div>
 
