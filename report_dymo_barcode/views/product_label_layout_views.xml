@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_label_layout_form_inherit_dymo" model="ir.ui.view">
+        <field name="name">product.label.layout.form.inherit.dymo</field>
+        <field name="model">product.label.layout</field>
+        <!-- Wir erben vom Standard-Wizard aus dem Produkt-Modul -->
+        <field name="inherit_id" ref="product.product_label_layout_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Feld 'print_format' suchen und die Optionen anpassen -->
+            <xpath expr="//field[@name='print_format']" position="attributes">
+                <attribute name="options">{'horizontal': false}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
