@@ -297,25 +297,43 @@
     </template>
 
 
-    <!-- BODY: 54x24 ARTIKEL-BARCODE -->
+        <!-- BODY: 89x36 ARTIKEL-BARCODE (Neu formatiert) -->
     <template id="report_simple_label_dymo_artikel_barcode">
-        <t t-set="barcode_size" t-value="'width:48mm;height:14mm'"/>
-        <div class="dymo-label dymo-54x24">
-            <div class="dymo-title" style="font-size:10px; line-height:110%; padding:1px 0;">
+        <!-- Größerer Barcode für das 89x36 Format -->
+        <t t-set="barcode_size" t-value="'width:78mm;height:12mm'"/>
+        
+        <!-- Anpassung an das dymo-89x36 Format -->
+        <div class="dymo-label dymo-89x36">
+            
+            <!-- Artikelnummer (links) & Datum (rechts) -->
+            <div class="dymo-row" style="line-height:100%;">
+                <div class="pull-left" style="font-size:16px;">
+                    <strong t-if="product.is_product_variant" t-field="product.default_code"/>
+                    <strong t-else="" t-field="product.default_code"/>
+                </div>
+                <div class="pull-right">
+                    <span style="font-size:9px;" t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                </div>
+            </div>
+
+            <!-- Produkttitel (max. 3 Zeilen) -->
+            <div class="dymo-title" style="font-size:12px; line-height:110%; padding:3px 0;">
                 <span t-if="product.is_product_variant" t-field="product.display_name"/>
                 <span t-else="" t-field="product.name"/>
             </div>
 
-            <div style="padding:1px 0;">
+            <!-- Barcode & Text linksbündig -->
+            <div style="padding-top:2px;">
                 <t t-if="barcode">
                     <div t-out="barcode"
                          class="dymo-barcode"
                          t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'auto', 'img_style': barcode_size}"/>
-                    <div class="dymo-center" style="font-size:8px; height:1.2em;">
+                    <div style="font-size:11px; font-weight:bold; height:1.3em; text-align:left;">
                         <span t-out="barcode"/>
                     </div>
                 </t>
             </div>
+            
         </div>
     </template>
 
