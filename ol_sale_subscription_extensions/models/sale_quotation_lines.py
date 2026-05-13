@@ -59,6 +59,39 @@ class SaleQuotationLine(models.Model):
         ondelete='restrict'
     )
 
+    service_tracking = fields.Selection(
+        related='product_template_id.service_tracking',
+        string="Service Tracking",
+        depends=['product_template_id'],
+        store=False,
+        readonly=True,
+    )
+    service_policy = fields.Selection(
+        related='product_template_id.service_policy',
+        string="Invoicing Policy",
+        depends=['product_template_id'],
+        store=False,
+        readonly=True,
+    )
+    
+    project_id = fields.Many2one(
+        related='product_template_id.project_id',
+        comodel_name='project.project',
+        string="Project",
+        depends=['product_template_id'],
+        store=False,
+        readonly=True,
+    )
+    
+    project_template_id = fields.Many2one(
+        related='product_template_id.project_template_id',
+        comodel_name='project.project',
+        string="Project Template",
+        depends=['product_template_id'],
+        store=False,
+        readonly=True,
+    )
+
     price_unit = fields.Float(string="Unit Price", digits="Product Price", default=0.0)
     tax_id = fields.Many2many('account.tax', compute='_compute_tax_id', store=True, string='Taxes')
     company_id = fields.Many2one(related='order_id.company_id', store=True, readonly=True)
