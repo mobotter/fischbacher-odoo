@@ -12,6 +12,7 @@
             placeholder="Eine Beschreibung eingeben"
             rows="1"
             t-att-value="props.record.data.name or ''"
-            t-on-input="onDescriptionInput"/>
+            t-on-input="onDescriptionInput"
+        />
     </div>
 </t>
