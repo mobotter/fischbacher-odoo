@@ -23,7 +23,6 @@ class SaleQuotationLine(models.Model):
         ondelete='restrict'
     )
 
-    # Neu: kompatibel zum Sales-Produktwidget
     product_template_id = fields.Many2one(
         'product.template',
         string="Product Template",
@@ -33,11 +32,18 @@ class SaleQuotationLine(models.Model):
         readonly=True,
     )
 
-    # Neu: wird vom Sales-/Konfigurator-Flow erwartet
     is_configurable_product = fields.Boolean(
         string="Is the product configurable?",
         related='product_template_id.has_configurable_attributes',
         depends=['product_template_id'],
+        store=False,
+        readonly=True,
+    )
+
+    product_type = fields.Selection(
+        related='product_id.type',
+        string="Product Type",
+        depends=['product_id'],
         store=False,
         readonly=True,
     )
