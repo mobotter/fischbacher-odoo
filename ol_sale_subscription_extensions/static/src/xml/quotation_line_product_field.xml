@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="ol_sale_subscription_extensions.QuotationLineProductField">
-        <!-- Standard Many2One Rendering -->
-        <t t-call="web.Many2OneField"/>
-        
-        <!-- Burger-Icon für Beschreibung, falls du das willst -->
-        <t t-if="!props.record.data.display_type">
+        <div class="d-flex align-items-center gap-1 w-100">
+            <div class="flex-grow-1 min-w-0">
+                <t t-call="web.Many2OneField"/>
+            </div>
+
             <button
-                class="btn btn-sm btn-link px-1 py-0 ms-1"
+                t-if="hasDescriptionButton"
+                type="button"
+                class="btn btn-link p-0 lh-1 flex-shrink-0"
                 title="Produktbeschreibung bearbeiten"
-                t-on-click.stop="() => this.props.record.update({ name: props.record.data.name })">
+                t-on-click="onClickDescription">
                 <i class="fa fa-bars"/>
             </button>
-        </t>
+        </div>
     </t>
 </templates>
