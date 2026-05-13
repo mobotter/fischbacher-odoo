@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ol_sale_subscription_extensions.QuotationLineDescriptionField" owl="1">
+        <div class="o_quotation_line_description_field">
+            <textarea
+                t-if="!props.readonly"
+                class="o_input d-print-none border-0 fst-italic mt-1"
+                rows="2"
+                placeholder="Eine Beschreibung eingeben"
+                t-on-input="onInput"
+                t-att-value="value"
+                style="width: 100%; resize: vertical;"
+            />
+            <div t-else="" class="fst-italic text-muted mt-1" t-esc="value"/>
+        </div>
+    </t>
+</templates>
