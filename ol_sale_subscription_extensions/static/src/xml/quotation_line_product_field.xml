@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-
-    <t t-name="ol_sale_subscription_extensions.QuotationLineProductField"
-       t-inherit="sale.SaleOrderLineProductField"
-       t-inherit-mode="extension"
-       owl="1">
-
-        <xpath expr="//Many2One" position="after">
+    <t t-name="ol_sale_subscription_extensions.QuotationLineProductField">
+        <!-- Standard Many2One Rendering -->
+        <t t-call="web.Many2OneField"/>
+        
+        <!-- Burger-Icon für Beschreibung, falls du das willst -->
+        <t t-if="!props.record.data.display_type">
             <button
-                class="btn fa fa-bars text-start o_external_button px-1"
-                type="button"
-                id="labelVisibilityButtonId"
-                data-tooltip="Auf Enter klicken oder Enter drücken, um eine Beschreibung hinzuzufügen"
-                title="">
+                class="btn btn-sm btn-link px-1 py-0 ms-1"
+                title="Produktbeschreibung bearbeiten"
+                t-on-click.stop="() => this.props.record.update({ name: props.record.data.name })">
+                <i class="fa fa-bars"/>
             </button>
-        </xpath>
-
+        </t>
     </t>
-
 </templates>
