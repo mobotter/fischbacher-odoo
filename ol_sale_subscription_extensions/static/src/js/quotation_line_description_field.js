@@ -1,28 +1,51 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
+import { Component, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
+import { Many2OneField } from "@web/views/fields/many2one/many2one_field";
 
-export class QuotationLineDescriptionField extends Component {
-    static template = "ol_sale_subscription_extensions.QuotationLineDescriptionField";
+export class QuotationLineProductField extends Component {
+    static template = "ol_sale_subscription_extensions.QuotationLineProductField";
+    static components = { Many2OneField };
     static props = {
         ...standardFieldProps,
     };
-    static supportedTypes = ["text", "char"];
+    static supportedTypes = ["many2one"];
 
-    get value() {
-        return this.props.record.data[this.props.name] || "";
+    setup() {
+        this.state = useState({
+            showDescription: false,
+        });
     }
 
-    onInput(ev) {
+    get description() {
+        return this.props.record.data.name || "";
+    }
+
+    get isSectionOrNote() {
+        return !!this.props.record.data.display_type;
+    }
+
+    toggleDescription() {
+        this.state.showDescription = !this.state.showDescription;
+    }
+
+    onDescriptionInput(ev) {
         this.props.record.update({
-            [this.props.name]: ev.target.value,
+            name: ev.target.value,
         });
+    }
+
+    get many2OneProps() {
+        return {
+            ...this.props,
+            canOpen: true,
+        };
     }
 }
 
-registry.category("fields").add("quotation_line_description", {
-    component: QuotationLineDescriptionField,
-    supportedTypes: ["text", "char"],
+registry.category("fields").add("quotation_line_product", {
+    component: QuotationLineProductField,
+    supportedTypes: ["many2one"],
 });
