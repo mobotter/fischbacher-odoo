@@ -37,7 +37,6 @@
             <!-- C. Neuer Tab 'Quotation Lines' als ERSTEN Tab ins Notebook einfügen -->
             <xpath expr="//notebook/page[1]" position="before">
                 <page name="quotation_page" string="Quotation Lines">
-                    <!-- mode="list,kanban" statt mode="tree,kanban" -->
                     <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
                         <list editable="bottom" limit="200">
                             <control>
@@ -45,12 +44,12 @@
                                 <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
-                    
+                
                             <field name="display_type" column_invisible="True"/>
                             <field name="sequence" column_invisible="True"/>
-                    
+                
                             <field name="product_id" required="not display_type" options="{'no_open': True}" force_save="1"/>
-                            <field name="name" column_invisible="True"/>
+                            <field name="name" widget="quotation_line_description" optional="hide"/>
                             <field name="product_uom_qty"/>
                             <field name="product_uom"/>
                             <field name="price_unit"/>
@@ -59,11 +58,9 @@
                             <field name="price_subtotal" readonly="1"/>
                         </list>
                     </field>
-                    
-                    <!-- Platz für Notizen/Bedingungen unterhalb der Tabelle -->
+                
                     <group name="note_group" col="6" class="mt-2 mt-md-0">
                         <group colspan="4" class="order-1 order-lg-0" col="6">
-                            <!-- Das Feld 'note' existiert im Hauptformular sale.order standardmäßig -->
                             <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
                         </group>
                     </group>
