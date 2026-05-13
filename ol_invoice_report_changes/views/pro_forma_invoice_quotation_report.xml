@@ -104,12 +104,6 @@
                                             <td style="font-size:13px; padding-left:3px;"><t t-esc="doc.name"/></td>
                                         </tr>
                                     </t>
-                                    <t t-if="doc.lease_agreement_no">
-                                        <tr>
-                                            <td style="font-size:13px;">Lease Agreement No.:</td>
-                                            <td style="font-size:13px; padding-left:3px;"><t t-esc="doc.lease_agreement_no"/></td>
-                                        </tr>
-                                    </t>
                                     <t t-if="doc.date_order">
                                         <tr>
                                             <td style="font-size:13px;">Order Date:</td>
