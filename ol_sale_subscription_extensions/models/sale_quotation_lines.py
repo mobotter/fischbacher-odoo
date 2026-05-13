@@ -76,6 +76,12 @@ class SaleQuotationLine(models.Model):
         readonly=True,
     )
 
+    translated_product_name = fields.Text(
+        string="Translated Product Name",
+        compute='_compute_translated_product_name',
+        readonly=True,
+    )
+
     price_unit = fields.Float(string="Unit Price", digits="Product Price", default=0.0)
     tax_id = fields.Many2many('account.tax', compute='_compute_tax_id', store=True, string='Taxes')
     company_id = fields.Many2one(related='order_id.company_id', store=True, readonly=True)
@@ -90,6 +96,17 @@ class SaleQuotationLine(models.Model):
         for line in self:
             if not line.product_uom or (line.product_id and line.product_id.uom_id.id != line.product_uom.id):
                 line.product_uom = line.product_id.uom_id
+
+    @api.depends('product_id', 'order_id.partner_id')
+    def _compute_translated_product_name(self):
+        for line in self:
+            if not line.product_id:
+                line.translated_product_name = False
+                continue
+
+            lang = line.order_id.partner_id.lang or self.env.lang
+            product = line.product_id.with_context(lang=lang)
+            line.translated_product_name = product.display_name
 
     @api.depends('product_id')
     def _compute_name(self):
