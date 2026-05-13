@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="ol_sale_subscription_extensions.QuotationLineDescriptionField" owl="1">
-        <div class="o_quotation_line_description_field">
-            <textarea
-                t-if="!props.readonly"
-                class="o_input d-print-none border-0 fst-italic mt-1"
-                rows="2"
-                placeholder="Eine Beschreibung eingeben"
-                t-on-input="onInput"
-                t-att-value="value"
-                style="width: 100%; resize: vertical;"
-            />
-            <div t-else="" class="fst-italic text-muted mt-1" t-esc="value"/>
-        </div>
+    <t t-name="ol_sale_subscription_extensions.QuotationLineProductField" owl="1">
+        <t t-if="isSectionOrNote">
+            <span t-esc="props.record.data[props.name] and props.record.data[props.name][1] or ''"/>
+        </t>
+        <t t-else="">
+            <div class="o_field_product_label_section_and_note_cell" style="min-width: 260px;">
+                <div class="d-flex align-items-center gap-1">
+                    <div class="w-100">
+                        <Many2OneField t-props="many2OneProps"/>
+                    </div>
+
+                    <button
+                        class="btn fa fa-bars text-start o_external_button px-1"
+                        type="button"
+                        t-on-click="toggleDescription"
+                        title="Beschreibung ein-/ausblenden"
+                    />
+                </div>
+
+                <t t-if="state.showDescription">
+                    <textarea
+                        class="o_input d-print-none border-0 fst-italic mt-1"
+                        rows="2"
+                        placeholder="Eine Beschreibung eingeben"
+                        t-on-input="onDescriptionInput"
+                        t-att-value="description"
+                        style="width: 100%; resize: vertical;"
+                    />
+                </t>
+            </div>
+        </t>
     </t>
 </templates>
