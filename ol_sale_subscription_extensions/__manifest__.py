@@ -14,8 +14,8 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'ol_sale_subscription_extensions/static/src/js/quotation_line_description_field.js',
-            'ol_sale_subscription_extensions/static/src/xml/quotation_line_description_field.xml',
+            'ol_sale_subscription_extensions/static/src/js/quotation_line_product_field.js',
+            'ol_sale_subscription_extensions/static/src/xml/quotation_line_product_field.xml',
         ],
     },
     "data": [
