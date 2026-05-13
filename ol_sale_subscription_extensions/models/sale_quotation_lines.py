@@ -66,24 +66,6 @@ class SaleQuotationLine(models.Model):
         store=False,
         readonly=True,
     )
-    
-    project_id = fields.Many2one(
-        related='product_template_id.project_id',
-        comodel_name='project.project',
-        string="Project",
-        depends=['product_template_id'],
-        store=False,
-        readonly=True,
-    )
-    
-    project_template_id = fields.Many2one(
-        related='product_template_id.project_template_id',
-        comodel_name='project.project',
-        string="Project Template",
-        depends=['product_template_id'],
-        store=False,
-        readonly=True,
-    )
 
     price_unit = fields.Float(string="Unit Price", digits="Product Price", default=0.0)
     tax_id = fields.Many2many('account.tax', compute='_compute_tax_id', store=True, string='Taxes')
