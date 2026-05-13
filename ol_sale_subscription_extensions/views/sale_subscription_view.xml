@@ -45,21 +45,22 @@
                                 <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
                             </control>
                     
-                            <field name="display_type" column_invisible="True"/>
+                            <field name="display_type" force_save="1" column_invisible="True"/>
                             <field name="sequence" widget="handle"/>
                     
                             <field name="product_id"
-                                   widget="quotation_line_product"
                                    required="not display_type"
                                    options="{'no_open': True}"
                                    force_save="1"/>
-                            <field name="name" widget="section_and_note_text" optional="hide"/>
-                            <field name="product_uom_qty"/>
-                            <field name="product_uom"/>
-                            <field name="price_unit"/>
-                            <field name="discount"/>
-                            <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"/>
-                            <field name="price_subtotal" readonly="1"/>
+                    
+                            <field name="name" widget="section_and_note_text"/>
+                    
+                            <field name="product_uom_qty" column_invisible="display_type"/>
+                            <field name="product_uom" column_invisible="display_type"/>
+                            <field name="price_unit" column_invisible="display_type"/>
+                            <field name="discount" column_invisible="display_type"/>
+                            <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" column_invisible="display_type"/>
+                            <field name="price_subtotal" readonly="1" column_invisible="display_type"/>
                         </list>
                     </field>
                 
