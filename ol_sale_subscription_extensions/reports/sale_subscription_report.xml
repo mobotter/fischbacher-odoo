@@ -85,6 +85,13 @@
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.client_order_number"/></td>
                                             </tr>
                                         </t>
+
+                                        <t t-if="'lease_agreement_no' in doc and doc.lease_agreement_no">
+                                            <tr>
+                                                <td style="font-size:13px">Lease Agreement No.: </td>
+                                                <td style="font-size:13px;padding-left:3px;"><span t-field="doc.lease_agreement_no"/></td>
+                                            </tr>
+                                        </t>
                                         
                                         <t t-if="doc.carrier_id">
                                             <tr>
