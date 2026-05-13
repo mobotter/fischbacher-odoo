@@ -177,10 +177,10 @@
 
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
                                 <t t-if="is_sub">
-                                    <t t-out="doc.env._('Rental Order Confirmation')"/>
+                                    Rental Order Confirmation
                                 </t>
                                 <t t-else="">
-                                    <t t-out="doc.env._('Order Confirmation')"/>
+                                    Order Confirmation
                                 </t>
                             </h2>
 
