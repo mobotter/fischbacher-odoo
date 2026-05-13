@@ -6,11 +6,10 @@ from odoo.exceptions import (
     ValidationError,
 )
 
+
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    # Status erweitern - ondelete auf 'set null' gesetzt
-    # Durch ('sale',) wird 'accepted' genau vor 'sale' in der Statusbar einsortiert
     state = fields.Selection(
         selection_add=[
             ('accepted', "Order Accepted by Client"),
@@ -18,25 +17,58 @@ class SaleOrder(models.Model):
         ],
         ondelete={'accepted': 'set null'}
     )
-    
-    # Abo-Status erweitern - ondelete auf 'set null' gesetzt
+
     subscription_state = fields.Selection(
         selection_add=[('accepted', 'Accepted')],
         ondelete={'accepted': 'set null'}
     )
-    
+
     quotation_line_ids = fields.One2many(
         'sale.quotation.line',
         'order_id',
         string='Quotation Lines'
     )
 
+    quotation_template_id = fields.Many2one(
+        'sale.order.template',
+        string='Quotation Lines Template',
+        help='Template used to fill the Quotation Lines tab.',
+    )
+
+    @api.onchange('quotation_template_id')
+    def _onchange_quotation_template_id(self):
+        for order in self:
+            if not order.quotation_template_id:
+                continue
+
+            new_lines = []
+            for line in order.quotation_template_id.sale_order_template_line_ids.sorted(lambda l: l.sequence):
+                vals = {
+                    'sequence': line.sequence,
+                    'display_type': line.display_type,
+                    'name': line.name,
+                }
+
+                if not line.display_type:
+                    vals.update({
+                        'product_id': line.product_id.id,
+                        'product_uom_qty': line.product_uom_qty,
+                        'product_uom': line.product_uom_id.id,
+                        'price_unit': line.price_unit,
+                        'discount': line.discount,
+                        'tax_id': [(6, 0, line.tax_id.ids)],
+                    })
+
+                new_lines.append((0, 0, vals))
+
+            order.quotation_line_ids = [(5, 0, 0)] + new_lines
+
     def action_accept_by_client(self):
         for order in self:
             order.state = 'accepted'
             if order.is_subscription:
                 order.subscription_state = 'accepted'
-    
+
     def action_reset_to_quotation(self):
         for record in self:
             record.state = 'draft'
@@ -48,7 +80,7 @@ class SaleOrder(models.Model):
         if invalid_orders:
             return _("Some orders are not in a state requiring confirmation.")
         return False
-    
+
     def action_confirm(self):
         accepted_orders = self.filtered(lambda o: o.state == 'accepted')
         if accepted_orders:
