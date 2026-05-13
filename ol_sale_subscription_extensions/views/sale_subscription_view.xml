@@ -23,7 +23,17 @@
             <xpath expr="//sheet" position="inside">
                 <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != 'accepted'"/>
             </xpath>
-
+            
+            <!-- Bestehendes Odoo-Feld umbenennen -->
+            <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+                <attribute name="string">Order Template</attribute>
+            </xpath>
+            
+            <!-- Neues Dropdown direkt danach -->
+            <xpath expr="//field[@name='sale_order_template_id']" position="after">
+                <field name="quotation_template_id" string="Quotation Lines Template"/>
+            </xpath>
+            
             <!-- C. Neuer Tab 'Quotation Lines' als ERSTEN Tab ins Notebook einfügen -->
             <xpath expr="//notebook/page[1]" position="before">
                 <page name="quotation_page" string="Quotation Lines">
