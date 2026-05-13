@@ -115,8 +115,7 @@ class SaleQuotationLine(models.Model):
                 if not line.name:
                     line.name = False
                 continue
-            desc = html2plaintext(line.product_id.description or '').strip()
-            line.name = desc
+            line.name = line.product_id.description or ""
 
     @api.onchange('product_id', 'product_uom', 'product_uom_qty', 'order_id.pricelist_id')
     def _onchange_product_pricing(self):
