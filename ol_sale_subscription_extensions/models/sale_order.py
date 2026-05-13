@@ -44,11 +44,16 @@ class SaleOrder(models.Model):
                 record.subscription_state = '1_draft'
 
     def _confirmation_error_message(self):
-        """ Return whether order can be confirmed or not if not then return error message. """
-        error = super()._confirmation_error_message()
-        if error and self.state == 'accepted' and "state requiring confirmation" in str(error):
-            return False
-        return error
+        invalid_orders = self.filtered(lambda o: o.state not in ('draft', 'sent', 'accepted'))
+        if invalid_orders:
+            return _("Some orders are not in a state requiring confirmation.")
+        return False
+    
+    def action_confirm(self):
+        accepted_orders = self.filtered(lambda o: o.state == 'accepted')
+        if accepted_orders:
+            accepted_orders.write({'state': 'sent'})
+        return super().action_confirm()
 
     @api.constrains('plan_id', 'state', 'order_line')
     def _constraint_subscription_plan(self):
