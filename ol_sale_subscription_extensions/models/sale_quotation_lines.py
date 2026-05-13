@@ -67,6 +67,15 @@ class SaleQuotationLine(models.Model):
         readonly=True,
     )
 
+    product_template_attribute_value_ids = fields.Many2many(
+        'product.template.attribute.value',
+        string="Product Template Attribute Values",
+        related='product_id.product_template_attribute_value_ids',
+        depends=['product_id'],
+        store=False,
+        readonly=True,
+    )
+
     price_unit = fields.Float(string="Unit Price", digits="Product Price", default=0.0)
     tax_id = fields.Many2many('account.tax', compute='_compute_tax_id', store=True, string='Taxes')
     company_id = fields.Many2one(related='order_id.company_id', store=True, readonly=True)
