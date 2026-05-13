@@ -40,7 +40,7 @@ class SaleOrder(models.Model):
         for order in self:
             if not order.quotation_template_id:
                 continue
-
+    
             new_lines = []
             for line in order.quotation_template_id.sale_order_template_line_ids.sorted(lambda l: l.sequence):
                 vals = {
@@ -48,7 +48,7 @@ class SaleOrder(models.Model):
                     'display_type': line.display_type,
                     'name': line.name,
                 }
-
+    
                 if not line.display_type:
                     vals.update({
                         'product_id': line.product_id.id,
@@ -58,9 +58,9 @@ class SaleOrder(models.Model):
                         'discount': line.discount,
                         'tax_id': [(6, 0, line.tax_id.ids)],
                     })
-
+    
                 new_lines.append((0, 0, vals))
-
+    
             order.quotation_line_ids = [(5, 0, 0)] + new_lines
 
     def action_accept_by_client(self):
