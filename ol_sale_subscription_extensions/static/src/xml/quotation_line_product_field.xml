@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ol_sale_subscription_extensions.QuotationLineProductField"
+       t-inherit="sale.SaleOrderLineProductField"
+       t-inherit-mode="extension"
+       owl="1">
+
+        <xpath expr="//Many2One" position="after">
+            <button
+                class="btn fa fa-bars text-start o_external_button px-1"
+                type="button"
+                id="labelVisibilityButtonId"
+                data-tooltip="Auf Enter klicken oder Enter drücken, um eine Beschreibung hinzuzufügen"
+                title="">
+            </button>
+        </xpath>
+
+    </t>
+
+</templates>
