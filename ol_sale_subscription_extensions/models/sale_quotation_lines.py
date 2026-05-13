@@ -22,6 +22,26 @@ class SaleQuotationLine(models.Model):
         domain="[('sale_ok', '=', True)]",
         ondelete='restrict'
     )
+
+    # Neu: kompatibel zum Sales-Produktwidget
+    product_template_id = fields.Many2one(
+        'product.template',
+        string="Product Template",
+        related='product_id.product_tmpl_id',
+        depends=['product_id'],
+        store=False,
+        readonly=True,
+    )
+
+    # Neu: wird vom Sales-/Konfigurator-Flow erwartet
+    is_configurable_product = fields.Boolean(
+        string="Is the product configurable?",
+        related='product_template_id.has_configurable_attributes',
+        depends=['product_template_id'],
+        store=False,
+        readonly=True,
+    )
+
     product_uom_qty = fields.Float(string="Quantity", default=1.0)
     product_uom = fields.Many2one(
         'uom.uom',
