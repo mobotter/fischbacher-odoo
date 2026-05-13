@@ -12,6 +12,12 @@
         "sale_subscription", 
         "mail"
     ],
+    'assets': {
+        'web.assets_backend': [
+            'ol_sale_subscription_extensions/static/src/js/quotation_line_description_field.js',
+            'ol_sale_subscription_extensions/static/src/xml/quotation_line_description_field.xml',
+        ],
+    },
     "data": [
         "security/ir.model.access.csv",
         "reports/report_action.xml",
