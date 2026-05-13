@@ -5,26 +5,45 @@ from dateutil.relativedelta import relativedelta
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    purchase_no = fields.Char(string="Purchase")
-    order_number = fields.Char(string="Order Number")
+    purchase_no = fields.Char(
+        string="Purchase",
+        help="Internal purchase reference or purchase order number.",
+    )
+    order_number = fields.Char(
+        string="Order Number",
+        help="Internal order number for this sales order.",
+    )
 
     # Temporäres Kompatibilitätsfeld für alte Views / Studio-Reste
     is_rent = fields.Boolean(string="Rent", compute="_compute_is_rent")
-    lease_agreement_no = fields.Char(string="Lease Agreement No.")
+    lease_agreement_no = fields.Char(
+        string="Lease Agreement No.",
+        copy=False,
+        help="Enter the lease agreement number from DSP3 for this rental order.",
+    )
 
     hide_total = fields.Boolean(string="Hide Total Amount")
-    client_order_name = fields.Text(string="Ordered by")
-    client_order_number = fields.Char(string="Your Order Number")
+    
+    client_order_name = fields.Text(
+        string="Ordered by",
+        help="Name of the person or department who placed this order.",
+    )
+    client_order_number = fields.Char(
+        string="Your Order Number",
+        help="The customer's internal order or reference number for this order.",
+    )
 
     billing_period_start = fields.Date(
         string="Billing Period Start",
         compute="_compute_billing_period",
         store=True,
+        help="Start date of the current billing period, calculated from the next invoice date.",
     )
     billing_period_end = fields.Date(
         string="Billing Period End",
         compute="_compute_billing_period",
         store=True,
+        help="End date of the current billing period, calculated from the next invoice date.",
     )
 
     @api.depends('plan_id', 'is_subscription')
