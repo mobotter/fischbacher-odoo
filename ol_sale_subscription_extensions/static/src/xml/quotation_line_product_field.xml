@@ -1,19 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
-    <t t-name="ol_sale_subscription_extensions.QuotationLineProductField">
-        <div class="d-flex align-items-center gap-1 w-100">
-            <div class="flex-grow-1 min-w-0">
+<t t-name="ol_sale_subscription_extensions.QuotationLineProductField">
+    <div class="o_field_product_label_section_and_note_cell">
+        <div class="d-flex align-items-center gap-1">
+            <div class="o_many2one w-100">
                 <t t-call="web.Many2OneField"/>
             </div>
-
-            <button
-                t-if="hasDescriptionButton"
-                type="button"
-                class="btn btn-link p-0 lh-1 flex-shrink-0"
-                title="Produktbeschreibung bearbeiten"
-                t-on-click="onClickDescription">
-                <i class="fa fa-bars"/>
-            </button>
         </div>
-    </t>
-</templates>
+
+        <textarea
+            t-if="!props.record.data.display_type"
+            class="o_input d-print-none border-0 fst-italic"
+            placeholder="Eine Beschreibung eingeben"
+            rows="1"
+            t-att-value="props.record.data.name or ''"
+            t-on-input="onDescriptionInput"/>
+    </div>
+</t>
