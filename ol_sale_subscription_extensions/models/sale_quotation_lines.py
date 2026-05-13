@@ -66,13 +66,6 @@ class SaleQuotationLine(models.Model):
         store=False,
         readonly=True,
     )
-    service_policy = fields.Selection(
-        related='product_template_id.service_policy',
-        string="Invoicing Policy",
-        depends=['product_template_id'],
-        store=False,
-        readonly=True,
-    )
     
     project_id = fields.Many2one(
         related='product_template_id.project_id',
