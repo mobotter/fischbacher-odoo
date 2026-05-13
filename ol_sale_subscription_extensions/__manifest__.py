@@ -7,7 +7,7 @@
     "license": "LGPL-3",
     "depends": [
         "base",
-        "sale_management",  # Geändert von 'sale' für sichereren Subscription-Support
+        "sale_management",
         "stock",
         "sale_subscription", 
         "mail"
@@ -18,9 +18,10 @@
         "reports/sale_subscription_report.xml",
         "data/mail_template_data.xml",
         "views/sale_subscription_view.xml"
+        'views/sale_order_template_view.xml',
     ],
     "installable": True,
-    "application": False,  # Custom Extensions sollten keine eigene 'App' im Dashboard sein
+    "application": False,
     "auto_install": False,
     "sequence": -1,
 }
