@@ -30,7 +30,7 @@
                                     padding: 0 !important;
                                     white-space: pre-wrap;
                                 }
-                                .page .head-bottom th {
+                                .page .head-bottom th, div.head-bottom {
                                     border-bottom: 1px solid #ccc !important;
                                 }
                                 .page .line-bottom td,
