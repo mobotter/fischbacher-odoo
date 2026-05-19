@@ -9,7 +9,7 @@
         <field name="print_report_name">(object.state in ('draft', 'sent','sale') and 'RentalQuote - %s' % (object.name)) or 'Order - %s' % (object.name)</field>
         <!-- <field name="print_report_name">'RentalQuote - %s' % (object.name)</field> -->
         <field name="report_name">ol_sale_subscription_extensions.sale_subscription_report_new</field>
-        <field name="report_file">ol_sale_subscription_extensions.ale_subscription_report_new</field>
+        <field name="report_file">ol_sale_subscription_extensions.sale_subscription_report_new</field>
         <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
     </record>
     <!-- Jc work -->
