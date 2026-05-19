@@ -65,42 +65,36 @@
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.partner_id.id"/></td>
                                             </tr>
                                         </t>
-
                                         <t t-if="doc.client_order_name">
                                             <tr>
                                                 <td style="font-size:13px;">Ordered By:</td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.client_order_name"/></td>
                                             </tr>
                                         </t>
-
                                         <t t-if="doc.client_order_number">
                                             <tr>
                                                 <td style="font-size:13px;">Your Order Number:</td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.client_order_number"/></td>
                                             </tr>
                                         </t>
-
                                         <t t-if="doc.lease_agreement_no">
                                             <tr>
                                                 <td style="font-size:13px;">Lease Agreement No.:</td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.lease_agreement_no"/></td>
                                             </tr>
                                         </t>
-
                                         <t t-if="doc.carrier_id">
                                             <tr>
                                                 <td style="font-size:13px;">Shipping Method:</td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.carrier_id.name"/></td>
                                             </tr>
                                         </t>
-
                                         <t t-if="doc.incoterm">
                                             <tr>
                                                 <td style="font-size:13px;">Delivery Terms:</td>
                                                 <td style="font-size:13px;padding-left:3px;"><span t-field="doc.incoterm.name"/></td>
                                             </tr>
                                         </t>
-
                                         <t t-if="doc.user_id.name">
                                             <tr>
                                                 <td style="font-size:13px;">Salesperson:</td>
@@ -136,7 +130,9 @@
                             Rental Quote
                         </h2>
 
-                        <t t-set="display_discount" t-value="any(l.discount > 0 for l in doc.quotation_line_ids)"/>
+                        <!-- Fallback: quotation_line_ids wenn befüllt, sonst order_line -->
+                        <t t-set="lines" t-value="doc.quotation_line_ids if doc.quotation_line_ids else doc.order_line"/>
+                        <t t-set="display_discount" t-value="any(l.discount > 0 for l in lines)"/>
 
                         <table style="width:100%; border-collapse:collapse; font-size:12px;">
                             <thead>
@@ -161,13 +157,11 @@
                             </thead>
                             <tbody>
                                 <t t-set="pos" t-value="0"/>
-                                <t t-foreach="doc.quotation_line_ids" t-as="line">
+                                <t t-foreach="lines" t-as="line">
                                     <tr style="border-bottom:1px solid #e0e0e0;">
                                         <t t-if="not line.display_type">
                                             <t t-set="pos" t-value="pos + 1"/>
-                                            <td style="font-size:14px;">
-                                                <t t-out="pos"/>
-                                            </td>
+                                            <td style="font-size:14px;"><t t-out="pos"/></td>
                                             <td style="white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
                                                 <span t-field="line.product_id.display_name"/><br/>
                                                 <span t-field="line.product_id.description"/>
