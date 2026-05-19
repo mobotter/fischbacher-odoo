@@ -84,7 +84,7 @@
                                                 <tr>
                                                     <td style="font-size:13px;">Order Date:</td>
                                                     <td style="font-size:13px;padding-left:3px;">
-                                                        <t t-esc="doc.date_order" t-options="'widget': 'date', 'format': 'dd.MM.yyyy'"/>
+                                                        <t t-esc="doc.date_order" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                                     </td>
                                                 </tr>
                                             </t>
