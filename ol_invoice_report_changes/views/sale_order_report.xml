@@ -223,8 +223,8 @@
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
-                                                        <t t-if="line.product_uom">
-                                                            <t t-esc="line.product_uom.name"/>
+                                                        <t t-if="line.product_uom_id">
+                                                            <t t-esc="line.product_uom_id.name"/>
                                                         </t>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
