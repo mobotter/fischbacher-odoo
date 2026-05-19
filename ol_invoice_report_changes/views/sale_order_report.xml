@@ -48,7 +48,6 @@
                                 }
                             </style>
 
-                            <!-- Nur normaler Verkauf: immer order_line, kein Rental-Check -->
                             <t t-set="display_discount" t-value="any(l.discount for l in doc.order_line if not l.display_type)"/>
                             <t t-set="report_sections" t-value="doc._get_report_sections_for_pdf()"/>
 
@@ -85,7 +84,7 @@
                                                 <tr>
                                                     <td style="font-size:13px;">Order Date:</td>
                                                     <td style="font-size:13px;padding-left:3px;">
-                                                        <t t-esc="doc.date_order" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                        <t t-esc="doc.date_order" t-options="'widget': 'date', 'format': 'dd.MM.yyyy'"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -93,7 +92,7 @@
                                                 <tr>
                                                     <td style="font-size:13px;">Validity Date:</td>
                                                     <td style="font-size:13px;padding-left:3px;">
-                                                        <t t-esc="doc.validity_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                        <t t-esc="doc.validity_date" t-options="'widget': 'date', 'format': 'dd.MM.yyyy'"/>
                                                     </td>
                                                 </tr>
                                             </t>
@@ -164,7 +163,6 @@
                                 </tr>
                             </table>
 
-                            <!-- Titel: kein Rental hier, State entscheidet -->
                             <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
                                 <t t-if="doc.state in ('draft', 'sent')">Quotation</t>
                                 <t t-else="">Order Confirmation</t>
@@ -214,8 +212,14 @@
                                                 <tr t-att-class="'line-bottom optional-row' if section['is_optional'] else 'line-bottom'">
                                                     <td style="font-size:14px;"><t t-esc="pos"/></td>
                                                     <td>
-                                                        <pre style="border:none; background-color:#FFF; margin:0; padding:7px 0;"
-                                                             t-out="line.name if line.name else (line.product_id.display_name if line.product_id else '')"/>
+                                                        <div style="padding:7px 0; font-size:14px;">
+                                                            <t t-if="line.product_id">
+                                                                <span t-if="line.product_id.default_code">[<t t-esc="line.product_id.default_code"/>] </span><span t-field="line.product_id.display_name"/>
+                                                            </t>
+                                                            <t t-if="line.name">
+                                                                <div style="white-space:pre-wrap; margin-top:2px; color:#444;"><t t-esc="line.name"/></div>
+                                                            </t>
+                                                        </div>
                                                     </td>
                                                     <td style="text-align:right;font-size:14px;">
                                                         <t t-esc="'{:.2f}'.format(line.product_uom_qty)"/>
