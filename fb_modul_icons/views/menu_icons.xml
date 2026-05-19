@@ -8,6 +8,7 @@
         -->
         <record id="rental_menu_icon" model="ir.ui.menu">
             <field name="id" ref="rental.rental_menu_root"/>
+            <field name="name">Mietpark</field>
             <field name="web_icon">fb_modul_icons,static/description/mietpark.png</field>
         </record>
 
@@ -16,6 +17,7 @@
         -->
         <record id="subscription_menu_icon" model="ir.ui.menu">
             <field name="id" ref="sale_subscription.sale_subscription_menu_root"/>
+            <field name="name">GEDA-Vermietung</field>
             <field name="web_icon">fb_modul_icons,static/description/abonnements.png</field>
         </record>
 
