@@ -5,8 +5,8 @@
             <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
                 <main>
                     <div class="page">
-
-                        <table style="width:100%; border-collapse:collapse; border:none; margin-top:10mm;">
+                        <style>table, tr, td, th { border: 0 !important; }</style>
+                        <table style="width:100%; border-collapse:collapse; border:none!important; margin-top:10mm;">
                             <tr style="border:none;">
                                 <td style="border:none; width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
                                     <div style="margin-top:5mm;">
