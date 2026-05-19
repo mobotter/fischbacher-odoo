@@ -50,7 +50,7 @@
                             <tr style="border:none;">
                                 <td style="border:none; width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
                                     <div style="margin-top:5mm;">
-                                        <div style="font-size:10.5px; margin-bottom:4px; border-bottom:1px solid #ccc;">
+                                        <div style="font-size:10.5px; margin-bottom:4px;" class="head-bottom">
                                             <span t-field="doc.company_id.name"/> |
                                             <span t-field="doc.company_id.street"/> |
                                             <span t-field="doc.company_id.zip"/>
