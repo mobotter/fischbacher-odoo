@@ -1,0 +1,88 @@
+/* ═══════════════════════════════════════════════════
+   FB Backend Theme – Fischbacher Baumaschinen
+   Farbpalette aus Firmen-Wallpaper extrahiert:
+     Dunkelblau (dunkel):  #021F44
+     Dunkelblau (navbar):  #022A52
+     Mittelblau:           #053765
+     Blau:                 #0A5B94
+     Hellblau (akzent):    #0366B2
+     Hauptton:             #004080
+   ═══════════════════════════════════════════════════ */
+
+/* ── App-Dashboard Hintergrund ── */
+.o_home_menu {
+    background-image: url('/fb_modul_icons/static/description/fischbacher-odoo-dashboard-bg.jpg') !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* App-Kachel Icons: leicht transparenter dunkler Hintergrund */
+.o_home_menu .o_app {
+    color: #ffffff !important;
+}
+.o_home_menu .o_app .o_app_name {
+    color: #ffffff !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ── Obere Navigationsleiste ── */
+.o_main_navbar {
+    background-color: #022A52 !important;
+    border-bottom: 1px solid #004080 !important;
+}
+
+/* Navbar Links, Icons, Text */
+.o_main_navbar .o_menu_brand,
+.o_main_navbar > ul > li > a,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .o_menu_sections > li > a {
+    color: #cce4ff !important;
+}
+.o_main_navbar > ul > li > a:hover,
+.o_main_navbar .o_menu_sections > li > a:hover {
+    color: #ffffff !important;
+    background-color: #004080 !important;
+}
+
+/* Navbar Dropdown */
+.o_main_navbar .dropdown-menu {
+    background-color: #022A52 !important;
+    border: 1px solid #004080 !important;
+}
+.o_main_navbar .dropdown-menu .dropdown-item {
+    color: #cce4ff !important;
+}
+.o_main_navbar .dropdown-menu .dropdown-item:hover {
+    background-color: #004080 !important;
+    color: #ffffff !important;
+}
+
+/* ── Sekundäre Navigationsleiste (Submenü) ── */
+.o_menu_sections {
+    background-color: #053765 !important;
+}
+.o_menu_sections > li > a {
+    color: #cce4ff !important;
+}
+.o_menu_sections > li > a:hover,
+.o_menu_sections > li.active > a {
+    background-color: #004080 !important;
+    color: #ffffff !important;
+}
+
+/* ── Akzentfarbe für Buttons und Links ── */
+.btn-primary {
+    background-color: #0366B2 !important;
+    border-color: #004080 !important;
+}
+.btn-primary:hover {
+    background-color: #004080 !important;
+    border-color: #022A52 !important;
+}
+
+/* ── Sidebar / Linkes Menü ── */
+.o_action_manager .o_list_view .o_cp_searchview,
+.o_control_panel {
+    background-color: #f4f7fb !important;
+}
