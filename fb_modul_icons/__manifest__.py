@@ -14,6 +14,11 @@
         'sale_renting',       # Vermietung
         'sale_subscription',  # Abonnements
     ],
+    'assets': {
+        'web.assets_backend': [
+            'fb_modul_icons/static/src/css/backend_theme.css',
+        ],
+    },
     'data': [
         'views/menu_icons.xml',
     ],
