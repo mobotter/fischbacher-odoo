@@ -130,8 +130,11 @@
                             Rental Quote
                         </h2>
 
-                        <!-- Fallback: quotation_line_ids wenn befüllt, sonst order_line -->
-                        <t t-set="lines" t-value="doc.quotation_line_ids if doc.quotation_line_ids else doc.order_line"/>
+                        <!-- use_quotation_lines steuert welches Modell aktiv ist:
+                             True  -> sale.quotation.line (product_uom ohne _id)
+                             False -> sale.order.line     (product_uom_id) -->
+                        <t t-set="use_quotation_lines" t-value="bool(doc.quotation_line_ids)"/>
+                        <t t-set="lines" t-value="doc.quotation_line_ids if use_quotation_lines else doc.order_line"/>
                         <t t-set="display_discount" t-value="any(l.discount > 0 for l in lines)"/>
 
                         <table style="width:100%; border-collapse:collapse; font-size:12px;">
@@ -168,10 +171,14 @@
                                             </td>
                                             <td style="text-align:right;font-size:14px;">
                                                 <span t-field="line.product_uom_qty"/>
-                                                <!-- Nachher — funktioniert für sale.quotation.line UND sale.order.line: -->
-                                                <t t-out="line.product_uom.name if hasattr(line, 'product_uom') and line.product_uom
-                                                          else (line.product_uom_id.name if hasattr(line, 'product_uom_id') and line.product_uom_id
-                                                          else '')" />
+                                                <!-- sale.quotation.line -> product_uom (ohne _id) -->
+                                                <!-- sale.order.line    -> product_uom_id (mit _id) -->
+                                                <t t-if="use_quotation_lines">
+                                                    <span t-field="line.product_uom.name"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-field="line.product_uom_id.name"/>
+                                                </t>
                                             </td>
                                             <td style="text-align:right;font-size:14px;">
                                                 <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
