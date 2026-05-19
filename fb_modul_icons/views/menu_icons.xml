@@ -1,81 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <data noupdate="0">
 
-        <!-- 1. Einkauf → sequence 10 -->
-        <record id="purchase_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="purchase.menu_purchase_root"/>
+        <!-- 1. Einkauf → sequence 1 -->
+        <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+            <field name="sequence">1</field>
+        </record>
+
+        <!-- 2. Lager → sequence 5 -->
+        <record id="stock.menu_stock_root" model="ir.ui.menu">
+            <field name="sequence">5</field>
+        </record>
+
+        <!-- 3. Verkauf → sequence 10 -->
+        <record id="sale.sale_menu_root" model="ir.ui.menu">
             <field name="sequence">10</field>
         </record>
 
-        <!-- 2. Lager → sequence 20 -->
-        <record id="stock_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="stock.menu_stock_root"/>
-            <field name="sequence">20</field>
+        <!-- 4. Kassensystem → sequence 15 -->
+        <record id="point_of_sale.menu_point_root" model="ir.ui.menu">
+            <field name="sequence">15</field>
         </record>
 
-        <!-- 3. Verkauf → sequence 30 -->
-        <record id="sale_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="sale.sale_menu_root"/>
+        <!-- 5. Mietpark → sequence 20 + Icon + Name -->
+        <record id="sale_renting.rental_menu_root" model="ir.ui.menu">
+            <field name="sequence">20</field>
+            <field name="name">Mietpark</field>
+            <field name="web_icon">fb_modul_icons,static/description/rental.png</field>
+        </record>
+
+        <!-- 6. Geda-Vermietung → sequence 25 + Icon + Name -->
+        <record id="sale_subscription.menu_sale_subscription_root" model="ir.ui.menu">
+            <field name="sequence">25</field>
+            <field name="name">Geda-Vermietung</field>
+            <field name="web_icon">fb_modul_icons,static/description/abonnements.png</field>
+        </record>
+
+        <!-- 7. Kontakte → sequence 30 -->
+        <record id="contacts.menu_contacts" model="ir.ui.menu">
             <field name="sequence">30</field>
         </record>
 
-        <!-- 4. Kassensystem → sequence 40 -->
-        <record id="pos_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="point_of_sale.menu_point_root"/>
+        <!-- 8. Reparaturen → sequence 35 -->
+        <record id="repair.menu_repair_order" model="ir.ui.menu">
+            <field name="sequence">35</field>
+        </record>
+
+        <!-- 9. Fertigung → sequence 40 -->
+        <record id="mrp.menu_mrp_root" model="ir.ui.menu">
             <field name="sequence">40</field>
         </record>
 
-        <!-- 5. Mietpark (sale_renting) → sequence 50 -->
-        <record id="rental_menu_icon" model="ir.ui.menu">
-            <field name="id" ref="sale_renting.rental_menu_root"/>
-            <field name="name">Mietpark</field>
-            <field name="web_icon">fb_modul_icons,static/description/rental.png</field>
+        <!-- 10. Buchhaltung → sequence 45 -->
+        <record id="accountant.menu_accounting" model="ir.ui.menu">
+            <field name="sequence">45</field>
+        </record>
+
+        <!-- 11. Kalender → sequence 50 -->
+        <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
             <field name="sequence">50</field>
         </record>
 
-        <!-- 6. Geda-Vermietung (sale_subscription) → sequence 60 -->
-        <record id="subscription_menu_icon" model="ir.ui.menu">
-            <field name="id" ref="sale_subscription.menu_sale_subscription_root"/>
-            <field name="name">Geda-Vermietung</field>
-            <field name="web_icon">fb_modul_icons,static/description/abonnements.png</field>
-            <field name="sequence">60</field>
-        </record>
-
-        <!-- 7. Kontakte → sequence 70 -->
-        <record id="contacts_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="contacts.menu_contacts"/>
-            <field name="sequence">70</field>
-        </record>
-
-        <!-- 8. Reparaturen → sequence 80 -->
-        <record id="repair_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="repair.menu_repair_order"/>
-            <field name="sequence">80</field>
-        </record>
-
-        <!-- 9. Fertigung → sequence 90 -->
-        <record id="mrp_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="mrp.menu_mrp_root"/>
-            <field name="sequence">90</field>
-        </record>
-
-        <!-- 10. Buchhaltung → sequence 100 -->
-        <record id="accounting_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="accountant.menu_accounting"/>
-            <field name="sequence">100</field>
-        </record>
-
-        <!-- 11. Kalender → sequence 110 -->
-        <record id="calendar_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="calendar.mail_menu_calendar"/>
-            <field name="sequence">110</field>
-        </record>
-
-        <!-- 12. CRM → sequence 120 -->
-        <record id="crm_menu_seq" model="ir.ui.menu">
-            <field name="id" ref="crm.crm_menu_root"/>
-            <field name="sequence">120</field>
+        <!-- 12. CRM → sequence 55 -->
+        <record id="crm.crm_menu_root" model="ir.ui.menu">
+            <field name="sequence">55</field>
         </record>
 
     </data>
