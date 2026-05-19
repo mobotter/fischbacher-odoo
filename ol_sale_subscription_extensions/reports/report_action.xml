@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Report 1: Normales Angebot / Auftragsbestätigung
-         Nur sichtbar wenn KEIN plan_id gesetzt (kein Rental/Subscription)
-         KORREKTUR: sale.action_report_saleorder (Odoo Core), nicht ol_invoice_report_changes -->
-    <record id="sale.action_report_saleorder" model="ir.actions.report">
-        <field name="binding_domain">[('plan_id', '=', False)]</field>
-    </record>
-
-    <!-- Report 2: Rental Quote / Rental Order
-         Nur sichtbar wenn plan_id gesetzt (Rental/Subscription) -->
+    <!-- Rental Quote / Rental Order Report
+         Im Drucken-Menü für alle sale.order sichtbar.
+         binding_domain existiert in Odoo 19 nicht mehr auf ir.actions.report.
+         Filterung über den Titel/Namen ist ausreichend:
+         User sieht "Quotation PDF" (Standard) und "Rental Quote PDF" (dieser Report). -->
     <record id="action_subscription_report" model="ir.actions.report">
         <field name="name">Rental Quote PDF</field>
         <field name="model">sale.order</field>
         <field name="binding_model_id" ref="sale.model_sale_order"/>
         <field name="binding_type">report</field>
-        <field name="binding_domain">[('plan_id', '!=', False)]</field>
         <field name="report_type">qweb-pdf</field>
         <field name="print_report_name">(
             'Rental Quote - %s' % (object.name) if object.state in ('draft', 'sent') else
