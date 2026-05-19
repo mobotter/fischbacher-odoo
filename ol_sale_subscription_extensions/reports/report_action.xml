@@ -2,8 +2,9 @@
 <odoo>
 
     <!-- Report 1: Normales Angebot / Auftragsbestätigung
-         Nur sichtbar wenn KEIN plan_id gesetzt (kein Rental/Subscription) -->
-    <record id="ol_invoice_report_changes.action_report_saleorder" model="ir.actions.report">
+         Nur sichtbar wenn KEIN plan_id gesetzt (kein Rental/Subscription)
+         KORREKTUR: sale.action_report_saleorder (Odoo Core), nicht ol_invoice_report_changes -->
+    <record id="sale.action_report_saleorder" model="ir.actions.report">
         <field name="binding_domain">[('plan_id', '=', False)]</field>
     </record>
 
