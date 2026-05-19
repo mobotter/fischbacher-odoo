@@ -10,6 +10,7 @@
             <field name="id" ref="sale_renting.rental_menu_root"/>
             <field name="name">Mietpark</field>
             <field name="web_icon">fb_modul_icons,static/description/mietpark.png</field>
+            <field name="sequence">10</field>
         </record>
 
         <!--
@@ -19,6 +20,7 @@
             <field name="id" ref="sale_subscription.sale_subscription_menu_root"/>
             <field name="name">GEDA-Vermietung</field>
             <field name="web_icon">fb_modul_icons,static/description/abonnements.png</field>
+            <field name="sequence">20</field>
         </record>
 
         <!--
@@ -26,6 +28,7 @@
             <record id="NAME_menu_icon" model="ir.ui.menu">
                 <field name="id" ref="MODUL.MENU_ID"/>
                 <field name="web_icon">fb_modul_icons,static/description/icon_NAME.png</field>
+        <field name="sequence">10</field>
             </record>
         -->
     </data>
