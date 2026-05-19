@@ -6,9 +6,9 @@
                 <main>
                     <div class="page">
 
-                        <table style="border:0;width:100%; border-collapse:collapse; margin-top:10mm;">
-                            <tr>
-                                <td style="border:0;width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
+                        <table style="border:none !important;border-spacing:0;outline:none;border:0;width:100%; border-collapse:collapse; margin-top:10mm;">
+                            <tr style="border:none !important;">
+                                <td style="border:none !important;outline:none;border:0;width:50%;vertical-align:top;height:45mm;max-height:45mm;overflow:hidden;font-size:13px;">
                                     <div style="margin-top:5mm;">
                                         <div style="font-size:10.5px; margin-bottom:4px;">
                                             <span t-field="doc.company_id.name"/> |
@@ -29,94 +29,94 @@
                                     </div>
                                 </td>
 
-                                <td style="border:0;width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
-                                    <table style="border:0;width:100%; border-collapse:collapse;">
+                                <td style="border:none !important;outline:none;border:0;width:45%;vertical-align:top;padding-left:15mm;line-height:1.5;">
+                                    <table style="border:none !important;border-spacing:0;outline:none;border:0;width:100%; border-collapse:collapse;">
                                         <t t-if="doc.name">
-                                            <tr>
-                                                <td style="border:0;width:55%;font-size:13px;">Order Number:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.name"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;width:55%;font-size:13px;">Order Number:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.date_order">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Order Date:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;">
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Order Date:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;">
                                                     <span t-field="doc.date_order" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                                 </td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.validity_date">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Validity Date:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;">
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Validity Date:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;">
                                                     <span t-field="doc.validity_date" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
                                                 </td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.partner_id.ref">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Client Number:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.partner_id.ref"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Client Number:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.partner_id.ref"/></td>
                                             </tr>
                                         </t>
                                         <t t-else="">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Client Number:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.partner_id.id"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Client Number:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.partner_id.id"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.client_order_name">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Ordered By:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.client_order_name"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Ordered By:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.client_order_name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.client_order_number">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Your Order Number:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.client_order_number"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Your Order Number:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.client_order_number"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.lease_agreement_no">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Lease Agreement No.:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.lease_agreement_no"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Lease Agreement No.:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.lease_agreement_no"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.carrier_id">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Shipping Method:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.carrier_id.name"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Shipping Method:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.carrier_id.name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.incoterm">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Delivery Terms:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.incoterm.name"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Delivery Terms:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.incoterm.name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.user_id.name">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Salesperson:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.user_id.name"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Salesperson:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.user_id.name"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.user_id.phone">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Phone:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.user_id.phone"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Phone:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.user_id.phone"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.user_id.login">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;">Email:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;"><span t-field="doc.user_id.login"/></td>
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;">Email:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;"><span t-field="doc.user_id.login"/></td>
                                             </tr>
                                         </t>
                                         <t t-if="doc.client_order_ref">
-                                            <tr>
-                                                <td style="border:0;font-size:13px;vertical-align:top;">Project:</td>
-                                                <td style="border:0;font-size:13px;padding-left:3px;white-space:normal;word-wrap:break-word;word-break:break-word;vertical-align:top;">
+                                            <tr style="border:none !important;">
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;vertical-align:top;">Project:</td>
+                                                <td style="border:none !important;outline:none;border:0;font-size:13px;padding-left:3px;white-space:normal;word-wrap:break-word;word-break:break-word;vertical-align:top;">
                                                     <span t-field="doc.client_order_ref"/>
                                                 </td>
                                             </tr>
@@ -134,9 +134,9 @@
 
                         <t t-set="display_discount" t-value="any(l.discount > 0 for l in doc.quotation_line_ids)"/>
 
-                        <table style="border:0;width:100%; border-collapse:collapse; font-size:12px;">
+                        <table style="border:none !important;border-spacing:0;outline:none;border:0;width:100%; border-collapse:collapse; font-size:12px;">
                             <thead>
-                                <tr>
+                                <tr style="border:none !important;">
                                     <th colspan="3" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
                                         <t t-if="doc.plan_id">
                                             Rental price / <span t-field="doc.plan_id.name"/>
@@ -146,37 +146,37 @@
                                         Order Number: <span t-field="doc.name"/>
                                     </th>
                                 </tr>
-                                <tr style="border-bottom:1px solid #ccc;margin-bottom:2px;">
-                                    <th style="border:0;width:5%; text-align:left;font-size:14px;">Pos.</th>
-                                    <th style="border:0;width:45%; text-align:left;font-size:14px;">Description</th>
-                                    <th style="border:0;width:15%; text-align:right;font-size:14px;">Quantity</th>
-                                    <th style="border:0;width:12%; text-align:right;font-size:14px;">Unit Price</th>
-                                    <th style="border:0;width:10%; text-align:right;font-size:14px;" t-if="display_discount">Disc.%</th>
-                                    <th style="border:0;width:13%; text-align:right;font-size:14px;">Amount</th>
+                                <tr style="border:none !important;outline:none;border-bottom:1px solid #ccc;margin-bottom:2px;">
+                                    <th style="border:none !important;outline:none;border:0;width:5%; text-align:left;font-size:14px;">Pos.</th>
+                                    <th style="border:none !important;outline:none;border:0;width:45%; text-align:left;font-size:14px;">Description</th>
+                                    <th style="border:none !important;outline:none;border:0;width:15%; text-align:right;font-size:14px;">Quantity</th>
+                                    <th style="border:none !important;outline:none;border:0;width:12%; text-align:right;font-size:14px;">Unit Price</th>
+                                    <th style="border:none !important;outline:none;border:0;width:10%; text-align:right;font-size:14px;" t-if="display_discount">Disc.%</th>
+                                    <th style="border:none !important;outline:none;border:0;width:13%; text-align:right;font-size:14px;">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-set="pos" t-value="0"/>
                                 <t t-foreach="doc.quotation_line_ids" t-as="line">
-                                    <tr>
+                                    <tr style="border:none !important;">
                                         <t t-if="not line.display_type">
                                             <t t-set="pos" t-value="pos + 1"/>
-                                            <td style="border:0;font-size:14px;"><t t-out="pos"/></td>
-                                            <td style="border:0;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                            <td style="border:none !important;outline:none;border:0;font-size:14px;"><t t-out="pos"/></td>
+                                            <td style="border:none !important;outline:none;border:0;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
                                                 <span t-field="line.product_id.display_name"/><br/>
                                                 <span t-field="line.product_id.description"/>
                                             </td>
-                                            <td style="border:0;text-align:right;font-size:14px;">
+                                            <td style="border:none !important;outline:none;border:0;text-align:right;font-size:14px;">
                                                 <span t-field="line.product_uom_qty"/>
                                                 <span t-field="line.product_uom.name"/>
                                             </td>
-                                            <td style="border:0;text-align:right;font-size:14px;">
+                                            <td style="border:none !important;outline:none;border:0;text-align:right;font-size:14px;">
                                                 <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                             </td>
                                             <td t-if="display_discount" style="text-align:right;font-size:14px;">
                                                 <span t-field="line.discount"/>%
                                             </td>
-                                            <td style="border:0;text-align:right;font-size:14px;">
+                                            <td style="border:none !important;outline:none;border:0;text-align:right;font-size:14px;">
                                                 <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                             </td>
                                         </t>
@@ -195,9 +195,9 @@
                             </tbody>
                         </table>
 
-                        <table style="border:0;margin-top:4mm;font-size:12px;line-height:1.2;width:100%;page-break-inside:avoid;">
-                            <tr>
-                                <td style="border:0;width:60%;vertical-align:top;">
+                        <table style="border:none !important;border-spacing:0;outline:none;border:0;margin-top:4mm;font-size:12px;line-height:1.2;width:100%;page-break-inside:avoid;">
+                            <tr style="border:none !important;">
+                                <td style="border:none !important;outline:none;border:0;width:60%;vertical-align:top;">
                                     <div style="white-space:normal;font-size:12px;word-wrap:break-word;word-break:break-word;max-width:100%;">
                                         <div>Ex works, conditions as described above, subject to prior sale, plus statutory VAT.</div>
                                         <div>Agreements exist that may result in subsequent reductions of the final price.</div>
