@@ -2,7 +2,7 @@
 <odoo>
     <template id="sale_subscription_report_new">
         <t t-foreach="docs" t-as="doc">
-            <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
+            <t t-call="ol_invoice_report_changes.external_layout_for_invoice" style="border: 2px solid #f00;">
                 <main>
                     <div class="page">
                         <style>
