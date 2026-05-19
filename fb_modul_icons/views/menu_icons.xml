@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--
+            App-Icon für "Vermietung" (rental) überschreiben.
+            Menü-ID ermitteln: Entwicklermodus → Einstellungen →
+            Technisch → Menüeinträge → "Vermietung" suchen.
+        -->
+        <record id="rental_menu_icon" model="ir.ui.menu">
+            <field name="id" ref="rental.rental_menu_root"/>
+            <field name="web_icon">fb_modul_icons,static/description/icon_rental.png</field>
+        </record>
+
+        <!--
+            App-Icon für "Abonnements" (sale_subscription) überschreiben.
+        -->
+        <record id="subscription_menu_icon" model="ir.ui.menu">
+            <field name="id" ref="sale_subscription.sale_subscription_menu_root"/>
+            <field name="web_icon">fb_modul_icons,static/description/icon_subscription.png</field>
+        </record>
+
+        <!--
+            Weitere Module hier nach demselben Schema ergänzen:
+            <record id="NAME_menu_icon" model="ir.ui.menu">
+                <field name="id" ref="MODUL.MENU_ID"/>
+                <field name="web_icon">fb_modul_icons,static/description/icon_NAME.png</field>
+            </record>
+        -->
+    </data>
+</odoo>
