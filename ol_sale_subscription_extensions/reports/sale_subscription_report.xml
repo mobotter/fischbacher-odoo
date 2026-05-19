@@ -66,7 +66,6 @@
                                             </tr>
                                         </t>
 
-                                        <!-- client_order_name: custom field, only rendered if it exists and has a value -->
                                         <t t-if="doc.client_order_name">
                                             <tr>
                                                 <td style="font-size:13px;">Ordered By:</td>
@@ -74,7 +73,6 @@
                                             </tr>
                                         </t>
 
-                                        <!-- client_order_number: custom field, only rendered if it exists and has a value -->
                                         <t t-if="doc.client_order_number">
                                             <tr>
                                                 <td style="font-size:13px;">Your Order Number:</td>
@@ -208,20 +206,14 @@
                                 <td style="width:60%;vertical-align:top;">
                                     <t t-if="doc.is_subscription">
                                         <div style="white-space:normal;font-size:12px;word-wrap:break-word;word-break:break-word;max-width:100%;">
-                                            <div>
-                                                Ex works, conditions as described above, subject to prior sale, plus statutory VAT.
-                                            </div>
-                                            <div>
-                                                Agreements exist that may result in subsequent reductions of the final price.
-                                            </div>
+                                            <div>Ex works, conditions as described above, subject to prior sale, plus statutory VAT.</div>
+                                            <div>Agreements exist that may result in subsequent reductions of the final price.</div>
                                         </div>
                                         <br/>
                                     </t>
                                     <div style="font-size:12px;">
                                         Payment Terms:
-                                        <div>
-                                            <span t-field="doc.payment_term_id.name"/>
-                                        </div>
+                                        <div><span t-field="doc.payment_term_id.name"/></div>
                                     </div>
                                     <div style="font-size:12px;">
                                         <t t-if="doc.note">
@@ -232,53 +224,7 @@
                             </tr>
                         </table>
 
-                        <t t-if="doc.sale_order_option_ids and doc.state in ['draft', 'sent']">
-                            <div style="margin-top:4mm;font-size:11px;line-height:1.2;width:100%;page-break-inside:avoid;">
-                                <t t-set="has_option_discount" t-value="any(option.discount != 0.0 for option in doc.sale_order_option_ids)"/>
-                                <h4 style="font-size:16px;">Optional Products</h4>
-                                <table name="table_optional_products" style="width:100%;border-collapse:collapse;font-size:14px;padding:10px;">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="3" style="text-align:right;font-size:12px;font-weight:600;">
-                                                Order Number: <span t-field="doc.name"/>
-                                            </th>
-                                        </tr>
-                                        <tr style="border-bottom:1px solid #ccc;">
-                                            <th name="th_option_name" style="width:75%;text-align:left;font-size:14px;">Description</th>
-                                            <th t-if="has_option_discount" name="th_option_discount">Disc.%</th>
-                                            <th name="th_option_price_unit" style="width:25%;text-align:right;font-size:14px;">Unit Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr t-foreach="doc.sale_order_option_ids" t-as="option" style="border-bottom:1px solid #e0e0e0;">
-                                            <td name="td_option_name" style="white-space:normal;word-wrap:break-word;word-break:break-word;max-width:20px;padding:7px;">
-                                                <span t-field="option.name"/>
-                                            </td>
-                                            <td t-if="has_option_discount" name="td_option_discount" style="text-align:right;">
-                                                <strong t-if="option.discount != 0.0" class="text-info">
-                                                    <t t-out="((option.discount % 1) and '%s' or '%d') % option.discount">-</t>%
-                                                </strong>
-                                            </td>
-                                            <td name="td_option_price_unit" style="text-align:right;">
-                                                <strong>
-                                                    <div t-field="option.price_unit"
-                                                         t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
-                                                         t-att-style="option.discount and 'text-decoration: line-through' or None"
-                                                         t-att-class="option.discount and 'text-danger' or None"/>
-                                                    <div t-if="option.discount">
-                                                        <t t-out="((1 - option.discount / 100.0) * option.price_unit)"
-                                                           t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"> </t>
-                                                    </div>
-                                                </strong>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </t>
-                        <t t-else="">
-                            <div class="oe_structure" style="page-break-inside:avoid;"> </div>
-                        </t>
+                        <div class="oe_structure" style="page-break-inside:avoid;"> </div>
 
                     </div>
                 </main>
