@@ -7,7 +7,7 @@
             Technisch → Menüeinträge → "Vermietung" suchen.
         -->
         <record id="rental_menu_icon" model="ir.ui.menu">
-            <field name="id" ref="rental.rental_menu_root"/>
+            <field name="id" ref="sale_renting.rental_menu_root"/>
             <field name="name">Mietpark</field>
             <field name="web_icon">fb_modul_icons,static/description/mietpark.png</field>
         </record>
