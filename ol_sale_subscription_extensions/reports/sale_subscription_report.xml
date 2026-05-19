@@ -126,22 +126,27 @@
                             </tr>
                         </table>
 
+                        <!-- Titel -->
                         <h2 style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">
-                            Rental Quote
+                            <t t-if="doc.is_subscription or doc.plan_id">
+                                <t t-if="doc.state in ('draft', 'sent')">Rental Quote</t>
+                                <t t-else="">Rental Order</t>
+                            </t>
+                            <t t-else="">
+                                <t t-if="doc.state in ('draft', 'sent')">Quotation</t>
+                                <t t-else="">Order Confirmation</t>
+                            </t>
                         </h2>
 
-                        <!-- use_quotation_lines steuert welches Modell aktiv ist:
-                             True  -> sale.quotation.line (product_uom ohne _id)
-                             False -> sale.order.line     (product_uom_id) -->
-                        <t t-set="use_quotation_lines" t-value="bool(doc.quotation_line_ids)"/>
-                        <t t-set="lines" t-value="doc.quotation_line_ids if use_quotation_lines else doc.order_line"/>
-                        <t t-set="display_discount" t-value="any(l.discount > 0 for l in lines)"/>
+                        <!-- Zeilen: Rental -> quotation_line_ids (sale.quotation.line)
+                                     Normal -> order_line (sale.order.line) -->
+                        <t t-set="display_discount" t-value="any(l.discount > 0 for l in (doc.quotation_line_ids if (doc.is_subscription or doc.plan_id) else doc.order_line))"/>
 
                         <table style="width:100%; border-collapse:collapse; font-size:12px;">
                             <thead>
                                 <tr>
                                     <th colspan="3" style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
-                                        <t t-if="doc.plan_id">
+                                        <t t-if="(doc.is_subscription or doc.plan_id) and doc.plan_id">
                                             Rental price / <span t-field="doc.plan_id.name"/>
                                         </t>
                                     </th>
@@ -158,57 +163,97 @@
                                     <th style="width:13%; text-align:right;font-size:14px;">Amount</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <t t-set="pos" t-value="0"/>
-                                <t t-foreach="lines" t-as="line">
-                                    <tr style="border-bottom:1px solid #e0e0e0;">
-                                        <t t-if="not line.display_type">
-                                            <t t-set="pos" t-value="pos + 1"/>
-                                            <td style="font-size:14px;"><t t-out="pos"/></td>
-                                            <td style="white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                <span t-field="line.product_id.display_name"/><br/>
-                                                <span t-field="line.product_id.description"/>
-                                            </td>
-                                            <td style="text-align:right;font-size:14px;">
-                                                <span t-field="line.product_uom_qty"/>
-                                                <!-- sale.quotation.line -> product_uom (ohne _id) -->
-                                                <!-- sale.order.line    -> product_uom_id (mit _id) -->
-                                                <t t-if="use_quotation_lines">
+
+                            <!-- RENTAL: quotation_line_ids -> sale.quotation.line (product_uom ohne _id) -->
+                            <t t-if="doc.is_subscription or doc.plan_id">
+                                <tbody>
+                                    <t t-set="pos" t-value="0"/>
+                                    <t t-foreach="doc.quotation_line_ids" t-as="line">
+                                        <tr style="border-bottom:1px solid #e0e0e0;">
+                                            <t t-if="not line.display_type">
+                                                <t t-set="pos" t-value="pos + 1"/>
+                                                <td style="font-size:14px;"><t t-out="pos"/></td>
+                                                <td style="white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                                    <span t-field="line.product_id.display_name"/><br/>
+                                                    <span t-field="line.product_id.description"/>
+                                                </td>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.product_uom_qty"/>
                                                     <span t-field="line.product_uom.name"/>
-                                                </t>
-                                                <t t-else="">
+                                                </td>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </td>
+                                                <td t-if="display_discount" style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.discount"/>%
+                                                </td>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </td>
+                                            </t>
+                                            <t t-elif="line.display_type == 'line_section'">
+                                                <td colspan="99" style="background-color:#D3D3D3;font-weight:bold;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                                    <span t-field="line.name"/>
+                                                </td>
+                                            </t>
+                                            <t t-elif="line.display_type == 'line_note'">
+                                                <td colspan="99" style="font-style:italic;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                                    <span t-field="line.name"/>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </t>
+
+                            <!-- NORMAL: order_line -> sale.order.line (product_uom_id mit _id) -->
+                            <t t-else="">
+                                <tbody>
+                                    <t t-set="pos" t-value="0"/>
+                                    <t t-foreach="doc.order_line" t-as="line">
+                                        <tr style="border-bottom:1px solid #e0e0e0;">
+                                            <t t-if="not line.display_type">
+                                                <t t-set="pos" t-value="pos + 1"/>
+                                                <td style="font-size:14px;"><t t-out="pos"/></td>
+                                                <td style="white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                                    <span t-field="line.product_id.display_name"/><br/>
+                                                    <span t-field="line.product_id.description"/>
+                                                </td>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.product_uom_qty"/>
                                                     <span t-field="line.product_uom_id.name"/>
-                                                </t>
-                                            </td>
-                                            <td style="text-align:right;font-size:14px;">
-                                                <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                            </td>
-                                            <td t-if="display_discount" style="text-align:right;font-size:14px;">
-                                                <span t-field="line.discount"/>%
-                                            </td>
-                                            <td style="text-align:right;font-size:14px;">
-                                                <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                            </td>
-                                        </t>
-                                        <t t-elif="line.display_type == 'line_section'">
-                                            <td name="td_section_line" colspan="99" style="background-color:#D3D3D3;font-weight:bold;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                <span t-field="line.name"/>
-                                            </td>
-                                        </t>
-                                        <t t-elif="line.display_type == 'line_note'">
-                                            <td name="td_note_line" colspan="99" style="font-style:italic;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
-                                                <span t-field="line.name"/>
-                                            </td>
-                                        </t>
-                                    </tr>
-                                </t>
-                            </tbody>
+                                                </td>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </td>
+                                                <td t-if="display_discount" style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.discount"/>%
+                                                </td>
+                                                <td style="text-align:right;font-size:14px;">
+                                                    <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </td>
+                                            </t>
+                                            <t t-elif="line.display_type == 'line_section'">
+                                                <td colspan="99" style="background-color:#D3D3D3;font-weight:bold;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                                    <span t-field="line.name"/>
+                                                </td>
+                                            </t>
+                                            <t t-elif="line.display_type == 'line_note'">
+                                                <td colspan="99" style="font-style:italic;white-space:normal;font-size:14px;word-wrap:break-word;word-break:break-word;max-width:20px;padding-top:7px;padding-bottom:7px;">
+                                                    <span t-field="line.name"/>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </t>
+
                         </table>
 
                         <table style="margin-top:4mm;font-size:12px;line-height:1.2;width:100%;page-break-inside:avoid;">
                             <tr>
                                 <td style="width:60%;vertical-align:top;">
-                                    <t t-if="doc.is_subscription">
+                                    <t t-if="doc.is_subscription or doc.plan_id">
                                         <div style="white-space:normal;font-size:12px;word-wrap:break-word;word-break:break-word;max-width:100%;">
                                             <div>Ex works, conditions as described above, subject to prior sale, plus statutory VAT.</div>
                                             <div>Agreements exist that may result in subsequent reductions of the final price.</div>
