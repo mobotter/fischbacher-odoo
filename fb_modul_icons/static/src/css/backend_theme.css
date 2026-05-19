@@ -9,7 +9,7 @@
      Hauptton:             #004080
    ═══════════════════════════════════════════════════ */
 
-/* ── App-Dashboard Hintergrund ── */
+/* ── App-Dashboard Hintergrund ── 
 .o_home_menu {
     background-image: url('/fb_modul_icons/static/description/fischbacher-odoo-dashboard-bg.jpg') !important;
     background-size: cover !important;
@@ -17,7 +17,7 @@
     background-repeat: no-repeat !important;
 }
 
-/* App-Kachel Icons: leicht transparenter dunkler Hintergrund */
+/* App-Kachel Icons: leicht transparenter dunkler Hintergrund 
 .o_home_menu .o_app {
     color: #ffffff !important;
 }
@@ -26,13 +26,13 @@
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
 }
 
-/* ── Obere Navigationsleiste ── */
+/* ── Obere Navigationsleiste ── 
 .o_main_navbar {
     background-color: #022A52 !important;
     border-bottom: 1px solid #004080 !important;
 }
 
-/* Navbar Links, Icons, Text */
+/* Navbar Links, Icons, Text 
 .o_main_navbar .o_menu_brand,
 .o_main_navbar > ul > li > a,
 .o_main_navbar .o_nav_entry,
@@ -45,7 +45,7 @@
     background-color: #004080 !important;
 }
 
-/* Navbar Dropdown */
+/* Navbar Dropdown 
 .o_main_navbar .dropdown-menu {
     background-color: #022A52 !important;
     border: 1px solid #004080 !important;
@@ -58,7 +58,7 @@
     color: #ffffff !important;
 }
 
-/* ── Sekundäre Navigationsleiste (Submenü) ── */
+/* ── Sekundäre Navigationsleiste (Submenü) ── 
 .o_menu_sections {
     background-color: #053765 !important;
 }
@@ -71,7 +71,7 @@
     color: #ffffff !important;
 }
 
-/* ── Akzentfarbe für Buttons und Links ── */
+/* ── Akzentfarbe für Buttons und Links ── 
 .btn-primary {
     background-color: #0366B2 !important;
     border-color: #004080 !important;
@@ -81,8 +81,9 @@
     border-color: #022A52 !important;
 }
 
-/* ── Sidebar / Linkes Menü ── */
+/* ── Sidebar / Linkes Menü ── 
 .o_action_manager .o_list_view .o_cp_searchview,
 .o_control_panel {
     background-color: #f4f7fb !important;
 }
+*/
