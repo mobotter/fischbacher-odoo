@@ -11,7 +11,7 @@
     'assets': {
         'point_of_sale._assets_pos': [
             'pos_customization/static/src/js/pos.js',
-            'pos_customization/static/src/js/double_print.js',   # NEU
+            'pos_customization/static/src/js/double_print.js',
             'pos_customization/static/src/xml/pos_button.xml',
             'pos_customization/static/src/xml/product_card.xml',
             'pos_customization/static/src/css/pos_custom.css',
