@@ -15,7 +15,9 @@
     'data': [
         'security/ir.model.access.csv',
         'data/mk_preistabelle_data.xml',
+        'data/mk_rabattstaffel_data.xml',
         'views/mk_preistabelle_views.xml',
+        'views/mk_rabattstaffel_views.xml',
         'views/sale_order_mietkalkulation_views.xml',
     ],
     'assets': {
