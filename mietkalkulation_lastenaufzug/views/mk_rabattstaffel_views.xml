@@ -16,12 +16,32 @@
         <field name="name">mk.rabattstaffel.form</field>
         <field name="model">mk.rabattstaffel</field>
         <field name="arch" type="xml">
-            <form string="Rabattstaffel">
+            <form string="Rabattstaffeln Konfiguration">
                 <sheet>
-                    <group>
-                        <field name="monate_ab"/>
-                        <field name="rabatt_prozent"/>
-                        <field name="active"/>
+                    <group string="Globale Parameter">
+                        <field name="id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mk_konfiguration_view_form" model="ir.ui.view">
+        <field name="name">mk.konfiguration.form</field>
+        <field name="model">mk.konfiguration</field>
+        <field name="arch" type="xml">
+            <form string="Rabattstaffeln Konfiguration">
+                <sheet>
+                    <group string="Globale Parameter">
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="basis_hoehe_grundgeraet"/>
+                            <field name="schrittweite_mehrhoehe"/>
+                            <field name="maschinenbruch_prozent"/>
+                        </group>
                     </group>
                 </sheet>
             </form>
@@ -30,8 +50,10 @@
 
     <record id="mk_rabattstaffel_action" model="ir.actions.act_window">
         <field name="name">Rabattstaffeln</field>
-        <field name="res_model">mk.rabattstaffel</field>
+        <field name="res_model">mk.konfiguration</field>
         <field name="view_mode">list,form</field>
+        <field name="view_id" ref="mk_konfiguration_view_form"/>
+        <field name="context">{'form_view_ref': 'mietkalkulation_lastenaufzug.mk_konfiguration_view_form'}</field>
     </record>
 
     <menuitem id="mk_menu_rabattstaffel"
