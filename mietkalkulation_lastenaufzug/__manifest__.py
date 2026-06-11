@@ -11,10 +11,7 @@
     'author': 'Moritz Kern',
     'website': 'https://fischbacher.odoo.com',
     'category': 'Sales/Subscriptions',
-    'depends': [
-        'sale_subscription',
-        'sale',
-    ],
+    'depends': ['sale_subscription'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_mietkalkulation_views.xml',
