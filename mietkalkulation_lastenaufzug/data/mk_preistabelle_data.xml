@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="mk_preis_200" model="mk.preistabelle">
+        <field name="sequence">10</field>
+        <field name="traglast">200</field>
+        <field name="grundpreis">640.0</field>
+        <field name="mehrpreis_hoehe">13.0</field>
+        <field name="mehrpreis_station">38.0</field>
+        <field name="mehrpreis_buehne_145">0.0</field>
+        <field name="mehrpreis_buehne_165">0.0</field>
+        <field name="mehrpreis_person">390.0</field>
+        <field name="std_je_5m">1.0</field>
+    </record>
+
+    <record id="mk_preis_300" model="mk.preistabelle">
+        <field name="sequence">20</field>
+        <field name="traglast">300</field>
+        <field name="grundpreis">680.0</field>
+        <field name="mehrpreis_hoehe">14.0</field>
+        <field name="mehrpreis_station">38.0</field>
+        <field name="mehrpreis_buehne_145">0.0</field>
+        <field name="mehrpreis_buehne_165">0.0</field>
+        <field name="mehrpreis_person">370.0</field>
+        <field name="std_je_5m">1.5</field>
+    </record>
+
+    <record id="mk_preis_500" model="mk.preistabelle">
+        <field name="sequence">30</field>
+        <field name="traglast">500</field>
+        <field name="grundpreis">750.0</field>
+        <field name="mehrpreis_hoehe">18.0</field>
+        <field name="mehrpreis_station">55.0</field>
+        <field name="mehrpreis_buehne_145">0.0</field>
+        <field name="mehrpreis_buehne_165">0.0</field>
+        <field name="mehrpreis_person">370.0</field>
+        <field name="std_je_5m">1.8</field>
+    </record>
+
+    <record id="mk_preis_1000" model="mk.preistabelle">
+        <field name="sequence">40</field>
+        <field name="traglast">1000</field>
+        <field name="grundpreis">1040.0</field>
+        <field name="mehrpreis_hoehe">28.0</field>
+        <field name="mehrpreis_station">55.0</field>
+        <field name="mehrpreis_buehne_145">60.0</field>
+        <field name="mehrpreis_buehne_165">80.0</field>
+        <field name="mehrpreis_person">450.0</field>
+        <field name="std_je_5m">2.0</field>
+    </record>
+
+    <record id="mk_preis_1500" model="mk.preistabelle">
+        <field name="sequence">50</field>
+        <field name="traglast">1500</field>
+        <field name="grundpreis">1190.0</field>
+        <field name="mehrpreis_hoehe">31.0</field>
+        <field name="mehrpreis_station">55.0</field>
+        <field name="mehrpreis_buehne_145">60.0</field>
+        <field name="mehrpreis_buehne_165">80.0</field>
+        <field name="mehrpreis_person">460.0</field>
+        <field name="std_je_5m">2.5</field>
+    </record>
+
+    <record id="mk_preis_2000" model="mk.preistabelle">
+        <field name="sequence">60</field>
+        <field name="traglast">2000</field>
+        <field name="grundpreis">1240.0</field>
+        <field name="mehrpreis_hoehe">31.0</field>
+        <field name="mehrpreis_station">55.0</field>
+        <field name="mehrpreis_buehne_145">60.0</field>
+        <field name="mehrpreis_buehne_165">80.0</field>
+        <field name="mehrpreis_person">460.0</field>
+        <field name="std_je_5m">2.5</field>
+    </record>
+
+</odoo>
