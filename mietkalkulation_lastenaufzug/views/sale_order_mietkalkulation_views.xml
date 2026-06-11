@@ -44,6 +44,7 @@
                                        help="4% Maschinenbruchversicherung auf Preis nach Rabatt"/>
                                 <field name="mk_gesamt_4wochen"            widget="monetary" readonly="1"
                                        string="✅ Gesamt pro 4 Wochen (€)"/>
+                                <field name="mk_gesamt_mietdauer"          widget="monetary" readonly="1"/>
                             </group>
                         </group>
 
