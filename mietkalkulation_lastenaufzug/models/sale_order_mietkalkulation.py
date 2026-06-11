@@ -69,6 +69,13 @@ class SaleOrder(models.Model):
         string='Faktor Gebäude',
         default=1.25,
     )
+    mk_preistabelle_ids = fields.Many2many(
+        comodel_name='mk.preistabelle',
+        string='Mietpreistabelle',
+        relation='sale_order_mk_preistabelle_rel',
+        column1='order_id',
+        column2='preistabelle_id',
+    )
 
     # ── Berechnungsfelder (compute + store) ────────────────────────────────────
     mk_grundpreis = fields.Float(
@@ -182,36 +189,19 @@ class SaleOrder(models.Model):
         store=True,
     )
 
-    # ── Preistabellen (Preisliste 01/2023) ─────────────────────────────────────
-    _MK_GRUNDPREIS = {
-        '200': 640.0, '300': 680.0, '500': 750.0,
-        '1000': 1040.0, '1500': 1190.0, '2000': 1240.0,
-    }
-    _MK_MEHRPREIS_HOEHE = {
-        '200': 13.0, '300': 14.0, '500': 18.0,
-        '1000': 28.0, '1500': 31.0, '2000': 31.0,
-    }
-    _MK_MEHRPREIS_STATION = {
-        '200': 38.0, '300': 38.0, '500': 55.0,
-        '1000': 55.0, '1500': 55.0, '2000': 55.0,
-    }
-    _MK_MEHRPREIS_BUEHNE = {
-        'keine': 0.0, '145x325': 60.0, '165x435': 80.0,
-    }
-    _MK_MEHRPREIS_PERSON = {
-        '200': 390.0, '300': 370.0, '500': 370.0,
-        '1000': 450.0, '1500': 460.0, '2000': 460.0,
-    }
-    _MK_STD_JE_5M = {
-        '200': 1.0, '300': 1.5, '500': 1.8,
-        '1000': 2.0, '1500': 2.5, '2000': 2.5,
-    }
-    # Rabattstaffeln: (ab Monate, Prozentsatz)
+    # ── Rabattstaffeln ────────────────────────────────────────────────────────
     _MK_RABATT = [
         (12, 0.20), (6, 0.15), (4, 0.12),
         (3, 0.10), (2, 0.05), (0, 0.0),
     ]
     _MK_LKW_STUNDENSATZ = 140.0
+
+    def _get_preiszeile(self, traglast):
+        """Liest Preiszeile aus mk.preistabelle für die gegebene Traglast."""
+        return self.env['mk.preistabelle'].search(
+            [('traglast', '=', traglast), ('active', '=', True)],
+            limit=1,
+        )
 
     @api.depends(
         'mk_traglast', 'mk_aufbauhoehe', 'mk_buehnengroesse',
@@ -223,9 +213,10 @@ class SaleOrder(models.Model):
     def _compute_mk(self):
         for rec in self:
             tl = rec.mk_traglast or '500'
+            p = rec._get_preiszeile(tl)
 
-            # Grundpreis
-            grundpreis = self._MK_GRUNDPREIS.get(tl, 0.0)
+            # Grundpreis aus DB (Fallback 0)
+            grundpreis = p.grundpreis if p else 0.0
             rec.mk_grundpreis = grundpreis
 
             # Mehrhöhe
@@ -233,19 +224,25 @@ class SaleOrder(models.Model):
                 (rec.mk_aufbauhoehe - 15.0) / 1.5
             ))
             rec.mk_extra_hoehenabschnitte = extra_abschn
-            meh = extra_abschn * self._MK_MEHRPREIS_HOEHE.get(tl, 0.0)
+            meh = extra_abschn * (p.mehrpreis_hoehe if p else 0.0)
             rec.mk_mehrpreis_hoehe = meh
 
             # Stationen
-            mes = rec.mk_extra_stationen * self._MK_MEHRPREIS_STATION.get(tl, 0.0)
+            mes = rec.mk_extra_stationen * (p.mehrpreis_station if p else 0.0)
             rec.mk_mehrpreis_stationen = mes
 
-            # Buehne
-            meb = self._MK_MEHRPREIS_BUEHNE.get(rec.mk_buehnengroesse or 'keine', 0.0)
+            # Bühne
+            buehne = rec.mk_buehnengroesse or 'keine'
+            if buehne == '145x325':
+                meb = p.mehrpreis_buehne_145 if p else 0.0
+            elif buehne == '165x435':
+                meb = p.mehrpreis_buehne_165 if p else 0.0
+            else:
+                meb = 0.0
             rec.mk_mehrpreis_buehne = meb
 
             # Person
-            mep = self._MK_MEHRPREIS_PERSON.get(tl, 0.0) if rec.mk_personenbefoerderung else 0.0
+            mep = (p.mehrpreis_person if p else 0.0) if rec.mk_personenbefoerderung else 0.0
             rec.mk_mehrpreis_person = mep
 
             # Zwischensumme
@@ -272,7 +269,7 @@ class SaleOrder(models.Model):
             rec.mk_gesamt_mietdauer = (pnr + mb) * (rec.mk_mietdauer_wochen / 4.0)
 
             # Montage
-            std_je_5m = self._MK_STD_JE_5M.get(tl, 1.8)
+            std_je_5m = p.std_je_5m if p else 1.8
             st_aufbau = (rec.mk_aufbauhoehe / 5.0) * std_je_5m
             rec.mk_stunden_aufbau = st_aufbau
 
@@ -295,3 +292,10 @@ class SaleOrder(models.Model):
             rec.mk_transportkosten_lkw = transport
             rec.mk_montage_gesamt_geruest = mon_g + transport
             rec.mk_montage_gesamt_gebaeude = mon_geb + transport
+
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        if 'mk_preistabelle_ids' in fields_list:
+            alle = self.env['mk.preistabelle'].search([('active', '=', True)])
+            res['mk_preistabelle_ids'] = [fields.Command.set(alle.ids)]
+        return res
