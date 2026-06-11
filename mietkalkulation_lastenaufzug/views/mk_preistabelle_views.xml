@@ -54,7 +54,7 @@
                             <field name="mehrpreis_station" widget="monetary"/>
                         </group>
                     </group>
-                    <group string="Bühnen- und Personenzuschläge">
+                    <group string="B├╝hnen- und Personenzuschl├Ąge">
                         <group>
                             <field name="mehrpreis_buehne_145" widget="monetary"/>
                             <field name="mehrpreis_buehne_165" widget="monetary"/>
@@ -79,15 +79,11 @@
     </record>
 
     <menuitem
-        id="mk_menu_config_root"
-        name="Konfiguration"
-        parent="sale_subscription.menu_sale_subscription_root"
-        sequence="84"/>
 
     <menuitem
         id="mk_menu_preistabelle"
         name="Mietpreistabelle"
-        parent="mk_menu_config_root"
+        parent="sale_subscription.menu_sale_subscription_config"
         action="mk_preistabelle_action"
         sequence="10"/>
 
