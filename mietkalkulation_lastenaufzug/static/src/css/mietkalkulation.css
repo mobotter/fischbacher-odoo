@@ -33,3 +33,11 @@
     font-weight: 700;
     color: #017e84;
 }
+/* Alle input/select/.o_input im Mietkalkulation-Tab */
+.page[name="mietkalkulation"] .o_field_widget input,
+.page[name="mietkalkulation"] .o_field_widget select,
+.page[name="mietkalkulation"] .o_field_widget .o_input {
+    border: 1.5px solid #adb5bd;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
