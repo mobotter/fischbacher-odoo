@@ -36,7 +36,7 @@
 
     <menuitem id="mk_menu_rabattstaffel"
         name="Rabattstaffeln"
-        parent="mk_menu_config_root"
+        parent="sale_subscription.menu_sale_subscription_config"
         action="mk_rabattstaffel_action"
         sequence="20"/>
 </odoo>
