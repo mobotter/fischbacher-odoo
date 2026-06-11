@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit sale.order form (Subscription) -->
+    <record id="sale_order_mietkalkulation_tab" model="ir.ui.view">
+        <field name="name">sale.order.mietkalkulation.tab</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Tab einfügen nach dem letzten vorhandenen Tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Mietkalkulation" name="mietkalkulation">
+                    <group string="📋 Eingaben">
+                        <group>
+                            <field name="mk_traglast"/>
+                            <field name="mk_aufbauhoehe"/>
+                            <field name="mk_buehnengrösse"/>
+                            <field name="mk_personenbefoerderung"/>
+                            <field name="mk_extra_stationen"/>
+                        </group>
+                        <group>
+                            <field name="mk_mietdauer_wochen"/>
+                            <field name="mk_transport_stunden"/>
+                        </group>
+                    </group>
+
+                    <separator string="📊 Berechnung Mietpreis"/>
+                    <group>
+                        <group string="Preiskomponenten">
+                            <field name="mk_grundpreis" widget="monetary"/>
+                            <field name="mk_extra_hoehenabschnitte"/>
+                            <field name="mk_mehrpreis_hoehe" widget="monetary"/>
+                            <field name="mk_mehrpreis_stationen" widget="monetary"/>
+                            <field name="mk_mehrpreis_buehne" widget="monetary"/>
+                            <field name="mk_mehrpreis_person" widget="monetary"/>
+                            <field name="mk_zwischensumme" widget="monetary"
+                                   class="o_field_highlight"/>
+                        </group>
+                        <group string="Rabatt &amp; Endpreis">
+                            <field name="mk_rabatt_prozent" string="Rabatt % (nach Mietdauer)"
+                                   widget="percentage"/>
+                            <field name="mk_preis_nach_rabatt" widget="monetary"/>
+                            <field name="mk_preis_verlaengerungswoche" widget="monetary"/>
+                            <field name="mk_maschinenbruch" widget="monetary"
+                                   help="4% Maschinenbruchversicherung auf Preis nach Rabatt"/>
+                            <field name="mk_gesamt_4wochen" widget="monetary"
+                                   class="o_field_highlight"
+                                   string="✅ Gesamt pro 4 Wochen (€)"/>
+                        </group>
+                    </group>
+
+                    <separator string="🔧 Montage &amp; Transport"/>
+                    <group>
+                        <group string="Montage-Einstellwerte">
+                            <field name="mk_monteur_stundensatz" widget="monetary"/>
+                            <field name="mk_helfer_stundensatz" widget="monetary"/>
+                            <field name="mk_std_je_station"/>
+                            <field name="mk_faktor_gerüst"/>
+                            <field name="mk_faktor_gebäude"/>
+                        </group>
+                        <group string="Berechnete Stunden">
+                            <field name="mk_stunden_aufbau"/>
+                            <field name="mk_stunden_stationen"/>
+                            <field name="mk_gesamtstunden"/>
+                            <field name="mk_team_kosten_stunde" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Montagekosten ohne Transport">
+                            <field name="mk_montage_gerüst" widget="monetary"/>
+                            <field name="mk_montage_gebäude" widget="monetary"/>
+                        </group>
+                        <group string="Kosten inkl. Transport (LKW)">
+                            <field name="mk_transportkosten_lkw" widget="monetary"/>
+                            <field name="mk_montage_gesamt_gerüst" widget="monetary"
+                                   class="o_field_highlight"/>
+                            <field name="mk_montage_gesamt_gebäude" widget="monetary"
+                                   class="o_field_highlight"/>
+                        </group>
+                    </group>
+
+                    <separator string="ℹ️ Hinweise"/>
+                    <div class="alert alert-info" role="alert">
+                        <ul>
+                            <li>Grundpreis gilt bis 15 m Aufbauhöhe (1 Haltestelle EG + OG inkl.)</li>
+                            <li>Jede weitere 1,5 m Höhe wird mit dem jeweiligen Mehrpreis berechnet.</li>
+                            <li>4 % Maschinenbruchversicherung wird auf den Preis nach Rabatt aufgeschlagen.</li>
+                            <li>Rabattstaffeln: ab 2 Mt. 5 % | ab 3 Mt. 10 % | ab 4 Mt. 12 % | ab 6 Mt. 15 % | ab 12 Mt. 20 %</li>
+                            <li>Preisliste: 01/2023</li>
+                        </ul>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
