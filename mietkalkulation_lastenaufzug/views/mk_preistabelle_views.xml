@@ -54,7 +54,7 @@
                             <field name="mehrpreis_station" widget="monetary"/>
                         </group>
                     </group>
-                    <group string="B├╝hnen- und Personenzuschl├Ąge">
+                    <group string="Bühnen- und Personenzuschläge">
                         <group>
                             <field name="mehrpreis_buehne_145" widget="monetary"/>
                             <field name="mehrpreis_buehne_165" widget="monetary"/>
