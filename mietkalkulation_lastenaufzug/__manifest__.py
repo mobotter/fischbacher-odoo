@@ -16,6 +16,11 @@
         'security/ir.model.access.csv',
         'views/sale_order_mietkalkulation_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'mietkalkulation_lastenaufzug/static/src/css/mietkalkulation.css',
+        ],
+    },
     'installable': True,
     'auto_install': False,
     'application': False,
