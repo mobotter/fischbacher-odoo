@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ── Tree-View ─────────────────────────────────────────────────────── -->
     <record id="mk_preistabelle_view_tree" model="ir.ui.view">
         <field name="name">mk.preistabelle.tree</field>
         <field name="model">mk.preistabelle</field>
@@ -9,12 +8,12 @@
             <list string="Mietpreisliste" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="traglast"/>
-                <field name="grundpreis"         widget="monetary"/>
-                <field name="mehrpreis_hoehe"     widget="monetary"/>
-                <field name="mehrpreis_station"   widget="monetary"/>
+                <field name="grundpreis" widget="monetary"/>
+                <field name="mehrpreis_hoehe" widget="monetary"/>
+                <field name="mehrpreis_station" widget="monetary"/>
                 <field name="mehrpreis_buehne_145" widget="monetary"/>
                 <field name="mehrpreis_buehne_165" widget="monetary"/>
-                <field name="mehrpreis_person"    widget="monetary"/>
+                <field name="mehrpreis_person" widget="monetary"/>
                 <field name="std_je_5m"/>
                 <field name="active" optional="show"/>
             </list>
@@ -37,7 +36,6 @@
         </field>
     </record>
 
-    <!-- ── Form-View ─────────────────────────────────────────────────────── -->
     <record id="mk_preistabelle_view_form" model="ir.ui.view">
         <field name="name">mk.preistabelle.form</field>
         <field name="model">mk.preistabelle</field>
@@ -51,12 +49,12 @@
                             <field name="active"/>
                         </group>
                         <group string="Mietpreise (pro 4 Wochen)">
-                            <field name="grundpreis"          widget="monetary"/>
-                            <field name="mehrpreis_hoehe"     widget="monetary"/>
-                            <field name="mehrpreis_station"   widget="monetary"/>
+                            <field name="grundpreis" widget="monetary"/>
+                            <field name="mehrpreis_hoehe" widget="monetary"/>
+                            <field name="mehrpreis_station" widget="monetary"/>
                         </group>
                     </group>
-                    <group string="Bühnen- und Personenzuschläge">
+                    <group string="B├╝hnen- und Personenzuschl├Ąge">
                         <group>
                             <field name="mehrpreis_buehne_145" widget="monetary"/>
                             <field name="mehrpreis_buehne_165" widget="monetary"/>
@@ -70,24 +68,27 @@
         </field>
     </record>
 
-    <!-- ── Window Action ─────────────────────────────────────────────────── -->
     <record id="mk_preistabelle_action" model="ir.actions.act_window">
         <field name="name">Mietpreistabelle</field>
         <field name="res_model">mk.preistabelle</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Noch keine Preise hinterlegt.
-            </p>
+            <p class="o_view_nocontent_smiling_face">Noch keine Preise hinterlegt.</p>
             <p>Legen Sie hier die Mietpreise je Traglastklasse an.</p>
         </field>
     </record>
-    <!-- ── Menüpunkt unter Abonnements ───────────────────────────────────── -->
+
+    <menuitem
+        id="mk_menu_config_root"
+        name="Konfiguration"
+        parent="sale_subscription.menu_sale_subscription_root"
+        sequence="84"/>
+
     <menuitem
         id="mk_menu_preistabelle"
         name="Mietpreistabelle"
-        parent="sale_subscription.menu_sale_subscription_root"
+        parent="mk_menu_config_root"
         action="mk_preistabelle_action"
-        sequence="85"/>
+        sequence="10"/>
 
 </odoo>
