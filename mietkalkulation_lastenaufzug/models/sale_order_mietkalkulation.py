@@ -189,11 +189,6 @@ class SaleOrder(models.Model):
         store=True,
     )
 
-    # ── Rabattstaffeln ────────────────────────────────────────────────────────
-    _MK_RABATT = [
-        (12, 0.20), (6, 0.15), (4, 0.12),
-        (3, 0.10), (2, 0.05), (0, 0.0),
-    ]
     _MK_LKW_STUNDENSATZ = 140.0
 
     def _get_preiszeile(self, traglast):
@@ -202,6 +197,14 @@ class SaleOrder(models.Model):
             [('traglast', '=', traglast), ('active', '=', True)],
             limit=1,
         )
+
+
+    def _get_rabattsatz(self, monate):
+        staffeln = self.env['mk.rabattstaffel'].search([('active', '=', True)], order='monate_ab desc')
+        for staffel in staffeln:
+            if monate >= staffel.monate_ab:
+                return (staffel.rabatt_prozent or 0.0) / 100.0
+        return 0.0
 
     @api.depends(
         'mk_traglast', 'mk_aufbauhoehe', 'mk_buehnengroesse',
@@ -251,11 +254,7 @@ class SaleOrder(models.Model):
 
             # Rabatt
             monate = rec.mk_mietdauer_wochen / 4.0
-            rabatt = 0.0
-            for grenze, satz in self._MK_RABATT:
-                if monate >= grenze:
-                    rabatt = satz
-                    break
+            rabatt = rec._get_rabattsatz(monate)
             rec.mk_rabatt_prozent = rabatt * 100.0
 
             pnr = zs * (1.0 - rabatt)
