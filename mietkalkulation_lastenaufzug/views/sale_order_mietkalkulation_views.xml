@@ -26,22 +26,22 @@
                     <separator string="📊 Berechnung Mietpreis"/>
                     <group>
                         <group string="Preiskomponenten">
-                            <field name="mk_grundpreis"          widget="monetary" class="mk_calc" readonly="1"/>
-                            <field name="mk_extra_hoehenabschnitte"                class="mk_calc" readonly="1"/>
-                            <field name="mk_mehrpreis_hoehe"     widget="monetary" class="mk_calc" readonly="1"/>
-                            <field name="mk_mehrpreis_stationen" widget="monetary" class="mk_calc" readonly="1"/>
-                            <field name="mk_mehrpreis_buehne"    widget="monetary" class="mk_calc" readonly="1"/>
-                            <field name="mk_mehrpreis_person"    widget="monetary" class="mk_calc" readonly="1"/>
-                            <field name="mk_zwischensumme"       widget="monetary" class="mk_subtotal" readonly="1"/>
+                            <field name="mk_grundpreis"          widget="monetary" readonly="1"/>
+                            <field name="mk_extra_hoehenabschnitte"                readonly="1"/>
+                            <field name="mk_mehrpreis_hoehe"     widget="monetary" readonly="1"/>
+                            <field name="mk_mehrpreis_stationen" widget="monetary" readonly="1"/>
+                            <field name="mk_mehrpreis_buehne"    widget="monetary" readonly="1"/>
+                            <field name="mk_mehrpreis_person"    widget="monetary" readonly="1"/>
+                            <field name="mk_zwischensumme"       widget="monetary" readonly="1"/>
                         </group>
                         <group string="Rabatt &amp; Endpreis">
-                            <field name="mk_rabatt_prozent"            class="mk_calc"    readonly="1"
+                            <field name="mk_rabatt_prozent"            readonly="1"
                                    string="Rabatt % (nach Mietdauer)"/>
-                            <field name="mk_preis_nach_rabatt"         widget="monetary"  class="mk_calc"   readonly="1"/>
-                            <field name="mk_preis_verlaengerungswoche" widget="monetary"  class="mk_calc"   readonly="1"/>
-                            <field name="mk_maschinenbruch"            widget="monetary"  class="mk_calc"   readonly="1"
+                            <field name="mk_preis_nach_rabatt"         widget="monetary" readonly="1"/>
+                            <field name="mk_preis_verlaengerungswoche" widget="monetary" readonly="1"/>
+                            <field name="mk_maschinenbruch"            widget="monetary" readonly="1"
                                    help="4% Maschinenbruchversicherung auf Preis nach Rabatt"/>
-                            <field name="mk_gesamt_4wochen"            widget="monetary"  class="mk_result" readonly="1"
+                            <field name="mk_gesamt_4wochen"            widget="monetary" readonly="1"
                                    string="✅ Gesamt pro 4 Wochen (€)"/>
                         </group>
                     </group>
@@ -56,25 +56,25 @@
                             <field name="mk_faktor_gebaeude"/>
                         </group>
                         <group string="Berechnete Stunden">
-                            <field name="mk_stunden_aufbau"     class="mk_calc"    readonly="1"/>
-                            <field name="mk_stunden_stationen"  class="mk_calc"    readonly="1"/>
-                            <field name="mk_gesamtstunden"      class="mk_subtotal" readonly="1"/>
-                            <field name="mk_team_kosten_stunde" widget="monetary"  class="mk_calc" readonly="1"/>
+                            <field name="mk_stunden_aufbau"     readonly="1"/>
+                            <field name="mk_stunden_stationen"  readonly="1"/>
+                            <field name="mk_gesamtstunden"      readonly="1"/>
+                            <field name="mk_team_kosten_stunde" widget="monetary" readonly="1"/>
                         </group>
                     </group>
                     <group>
                         <group string="Montagekosten ohne Transport">
-                            <field name="mk_montage_geruest"  widget="monetary" class="mk_calc"   readonly="1"/>
-                            <field name="mk_montage_gebaeude" widget="monetary" class="mk_calc"   readonly="1"/>
+                            <field name="mk_montage_geruest"  widget="monetary" readonly="1"/>
+                            <field name="mk_montage_gebaeude" widget="monetary" readonly="1"/>
                         </group>
                         <group string="Kosten inkl. Transport (LKW)">
-                            <field name="mk_transportkosten_lkw"     widget="monetary" class="mk_calc"   readonly="1"/>
-                            <field name="mk_montage_gesamt_geruest"  widget="monetary" class="mk_result" readonly="1"/>
-                            <field name="mk_montage_gesamt_gebaeude" widget="monetary" class="mk_result" readonly="1"/>
+                            <field name="mk_transportkosten_lkw"     widget="monetary" readonly="1"/>
+                            <field name="mk_montage_gesamt_geruest"  widget="monetary" readonly="1"/>
+                            <field name="mk_montage_gesamt_gebaeude" widget="monetary" readonly="1"/>
                         </group>
                     </group>
 
-                    <!-- ── PREISTABELLE (Referenz) ────────────────────────── -->
+                    <!-- ── PREISTABELLE ───────────────────────────────────── -->
                     <separator string="📋 Mietpreisliste Lastenaufzüge / Transportbühnen (pro 4 Wochen)"/>
                     <div class="mk_preistabelle">
                         <table class="mk_price_table">
@@ -92,57 +92,33 @@
                             <tbody>
                                 <tr>
                                     <td>Grundgerät inkl. Zubehör (bis 15 m / 1 HS)</td>
-                                    <td>€ 640,00</td>
-                                    <td>€ 680,00</td>
-                                    <td>€ 750,00</td>
-                                    <td>€ 1.040,00</td>
-                                    <td>€ 1.190,00</td>
-                                    <td>€ 1.240,00</td>
+                                    <td>€ 640,00</td><td>€ 680,00</td><td>€ 750,00</td>
+                                    <td>€ 1.040,00</td><td>€ 1.190,00</td><td>€ 1.240,00</td>
                                 </tr>
                                 <tr>
                                     <td>Mehrpreis je zusätzliche 1,5 m Höhe</td>
-                                    <td>€ 13,00</td>
-                                    <td>€ 14,00</td>
-                                    <td>€ 18,00</td>
-                                    <td>€ 28,00</td>
-                                    <td>€ 31,00</td>
-                                    <td>€ 31,00</td>
+                                    <td>€ 13,00</td><td>€ 14,00</td><td>€ 18,00</td>
+                                    <td>€ 28,00</td><td>€ 31,00</td><td>€ 31,00</td>
                                 </tr>
                                 <tr>
                                     <td>Mehrpreis je zusätzl. Be-/Entladestelle (EG+1.OG inkl.)</td>
-                                    <td>€ 38,00</td>
-                                    <td>€ 38,00</td>
-                                    <td>€ 55,00</td>
-                                    <td>€ 55,00</td>
-                                    <td>€ 55,00</td>
-                                    <td>€ 55,00</td>
+                                    <td>€ 38,00</td><td>€ 38,00</td><td>€ 55,00</td>
+                                    <td>€ 55,00</td><td>€ 55,00</td><td>€ 55,00</td>
                                 </tr>
                                 <tr>
                                     <td>Lastbühne 1,45 × 3,25 m – Mehrpreis</td>
-                                    <td>–</td>
-                                    <td>–</td>
-                                    <td>–</td>
-                                    <td>€ 60,00</td>
-                                    <td>€ 60,00</td>
-                                    <td>€ 60,00</td>
+                                    <td>–</td><td>–</td><td>–</td>
+                                    <td>€ 60,00</td><td>€ 60,00</td><td>€ 60,00</td>
                                 </tr>
                                 <tr>
                                     <td>Lastbühne 1,65 × 4,35 m – Mehrpreis</td>
-                                    <td>–</td>
-                                    <td>–</td>
-                                    <td>–</td>
-                                    <td>€ 80,00</td>
-                                    <td>€ 80,00</td>
-                                    <td>€ 80,00</td>
+                                    <td>–</td><td>–</td><td>–</td>
+                                    <td>€ 80,00</td><td>€ 80,00</td><td>€ 80,00</td>
                                 </tr>
                                 <tr>
                                     <td>Personenbeförderung – Mehrpreis</td>
-                                    <td>–</td>
-                                    <td>€ 390,00</td>
-                                    <td>€ 370,00</td>
-                                    <td>€ 450,00</td>
-                                    <td>€ 460,00</td>
-                                    <td>€ 460,00</td>
+                                    <td>–</td><td>€ 390,00</td><td>€ 370,00</td>
+                                    <td>€ 450,00</td><td>€ 460,00</td><td>€ 460,00</td>
                                 </tr>
                             </tbody>
                         </table>
