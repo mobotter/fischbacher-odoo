@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_mk_preistabelle_user,mk.preistabelle user,mietkalkulation_lastenaufzug.model_mk_preistabelle,base.group_user,1,0,0,0
 access_mk_preistabelle_manager,mk.preistabelle manager,mietkalkulation_lastenaufzug.model_mk_preistabelle,sales_team.group_sale_manager,1,1,1,1
+access_mk_rabattstaffel_user,mk.rabattstaffel user,mietkalkulation_lastenaufzug.model_mk_rabattstaffel,base.group_user,1,0,0,0
+access_mk_rabattstaffel_manager,mk.rabattstaffel manager,mietkalkulation_lastenaufzug.model_mk_rabattstaffel,sales_team.group_sale_manager,1,1,1,1
