@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Mietkalkulation Lastenaufzüge / Transportbühnen',
-    'version': '19.0.1.12.1',
+    'version': '19.0.1.13.1',
     'summary': 'Mietkalkulation (pro 4 Wochen) Tab in Abonnement-Aufträgen',
     'description': '''
         Fügt einen "Mietkalkulation"-Tab zum Abonnement-Formular (sale.order) hinzu.
