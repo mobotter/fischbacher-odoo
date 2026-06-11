@@ -199,6 +199,7 @@ class SaleOrder(models.Model):
         )
 
 
+
     def _get_rabattsatz(self, monate):
         staffeln = self.env['mk.rabattstaffel'].search([('active', '=', True)], order='monate_ab desc')
         for staffel in staffeln:
@@ -222,9 +223,13 @@ class SaleOrder(models.Model):
             grundpreis = p.grundpreis if p else 0.0
             rec.mk_grundpreis = grundpreis
 
+            icp = self.env['ir.config_parameter'].sudo()
+            basis_hoehe = float(icp.get_param('mietkalkulation_lastenaufzug.basis_hoehe_grundgeraet', 15.0) or 15.0)
+            schrittweite = float(icp.get_param('mietkalkulation_lastenaufzug.schrittweite_mehrhoehe', 1.5) or 1.5)
+
             # Mehrhöhe
             extra_abschn = max(0, math.ceil(
-                (rec.mk_aufbauhoehe - 15.0) / 1.5
+                (rec.mk_aufbauhoehe - basis_hoehe) / schrittweite
             ))
             rec.mk_extra_hoehenabschnitte = extra_abschn
             meh = extra_abschn * (p.mehrpreis_hoehe if p else 0.0)
@@ -262,7 +267,9 @@ class SaleOrder(models.Model):
             rec.mk_preis_verlaengerungswoche = pnr / 4.0
 
             # Maschinenbruch
-            mb = pnr * 0.04
+            maschinenbruch_prozent = float(icp.get_param('mietkalkulation_lastenaufzug.maschinenbruch_prozent', 4.0) or 4.0)
+            maschinenbruch_satz = maschinenbruch_prozent / 100.0
+            mb = pnr * maschinenbruch_satz
             rec.mk_maschinenbruch = mb
             rec.mk_gesamt_4wochen = pnr + mb
             rec.mk_gesamt_mietdauer = (pnr + mb) * (rec.mk_mietdauer_wochen / 4.0)
