@@ -3,3 +3,5 @@ access_mk_preistabelle_user,mk.preistabelle user,mietkalkulation_lastenaufzug.mo
 access_mk_preistabelle_manager,mk.preistabelle manager,mietkalkulation_lastenaufzug.model_mk_preistabelle,sales_team.group_sale_manager,1,1,1,1
 access_mk_rabattstaffel_user,mk.rabattstaffel user,mietkalkulation_lastenaufzug.model_mk_rabattstaffel,base.group_user,1,0,0,0
 access_mk_rabattstaffel_manager,mk.rabattstaffel manager,mietkalkulation_lastenaufzug.model_mk_rabattstaffel,sales_team.group_sale_manager,1,1,1,1
+access_mk_konfiguration_user,mk.konfiguration user,mietkalkulation_lastenaufzug.model_mk_konfiguration,base.group_user,1,0,0,0
+access_mk_konfiguration_manager,mk.konfiguration manager,mietkalkulation_lastenaufzug.model_mk_konfiguration,sales_team.group_sale_manager,1,1,1,1
