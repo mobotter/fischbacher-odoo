@@ -130,6 +130,11 @@ class SaleOrder(models.Model):
         string='Gesamt pro 4 Wochen (€)',
         compute='_compute_mk',
         store=True,
+    mk_gesamt_mietdauer = fields.Float(
+        string='Gesamtpreis für komplette Mietdauer (€)',
+        compute='_compute_mk',
+        store=True,
+    )
     )
     mk_stunden_aufbau = fields.Float(
         string='Montagestunden Aufbauhöhe',
@@ -264,6 +269,7 @@ class SaleOrder(models.Model):
             mb = pnr * 0.04
             rec.mk_maschinenbruch = mb
             rec.mk_gesamt_4wochen = pnr + mb
+            rec.mk_gesamt_mietdauer = (pnr + mb) * (rec.mk_mietdauer_wochen / 4.0)
 
             # Montage
             std_je_5m = self._MK_STD_JE_5M.get(tl, 1.8)
