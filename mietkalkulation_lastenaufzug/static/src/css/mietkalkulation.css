@@ -15,7 +15,6 @@
 .mk_tab_wrapper .o_field_widget select:not([disabled]) {
     border: 1.5px solid #adb5bd !important;
     border-radius: 5px !important;
-    background-color: #ffffff !important;
     color: #212529 !important;
     padding: 3px 8px !important;
     transition: border-color 0.15s ease;
