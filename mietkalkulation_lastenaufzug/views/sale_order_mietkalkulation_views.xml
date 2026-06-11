@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Inherit sale.order form (Subscription) -->
     <record id="sale_order_mietkalkulation_tab" model="ir.ui.view">
         <field name="name">sale.order.mietkalkulation.tab</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view"/>
         <field name="arch" type="xml">
-
-            <!-- Tab einfügen nach dem letzten vorhandenen Tab -->
             <xpath expr="//notebook" position="inside">
                 <page string="Mietkalkulation" name="mietkalkulation">
+
+                    <!-- ── EINGABEN (editierbar, normales Aussehen) ───────── -->
                     <group string="📋 Eingaben">
                         <group>
                             <field name="mk_traglast"/>
@@ -26,70 +25,82 @@
 
                     <separator string="📊 Berechnung Mietpreis"/>
                     <group>
+                        <!-- Preiskomponenten: berechnete Einzelwerte (mk_calc) -->
                         <group string="Preiskomponenten">
-                            <field name="mk_grundpreis" widget="monetary"/>
-                            <field name="mk_extra_hoehenabschnitte"/>
-                            <field name="mk_mehrpreis_hoehe" widget="monetary"/>
-                            <field name="mk_mehrpreis_stationen" widget="monetary"/>
-                            <field name="mk_mehrpreis_buehne" widget="monetary"/>
-                            <field name="mk_mehrpreis_person" widget="monetary"/>
-                            <field name="mk_zwischensumme" widget="monetary"
-                                   class="o_field_highlight"/>
+                            <field name="mk_grundpreis"          widget="monetary" class="mk_calc" readonly="1"/>
+                            <field name="mk_extra_hoehenabschnitte"                class="mk_calc" readonly="1"/>
+                            <field name="mk_mehrpreis_hoehe"     widget="monetary" class="mk_calc" readonly="1"/>
+                            <field name="mk_mehrpreis_stationen" widget="monetary" class="mk_calc" readonly="1"/>
+                            <field name="mk_mehrpreis_buehne"    widget="monetary" class="mk_calc" readonly="1"/>
+                            <field name="mk_mehrpreis_person"    widget="monetary" class="mk_calc" readonly="1"/>
+                            <!-- Zwischensumme: Zwischenergebnis (mk_subtotal) -->
+                            <field name="mk_zwischensumme"       widget="monetary" class="mk_subtotal" readonly="1"/>
                         </group>
+
+                        <!-- Rabatt & Endpreis -->
                         <group string="Rabatt &amp; Endpreis">
-                            <field name="mk_rabatt_prozent" string="Rabatt % (nach Mietdauer)"
-                                   widget="percentage"/>
-                            <field name="mk_preis_nach_rabatt" widget="monetary"/>
-                            <field name="mk_preis_verlaengerungswoche" widget="monetary"/>
-                            <field name="mk_maschinenbruch" widget="monetary"
+                            <field name="mk_rabatt_prozent"             class="mk_calc"     readonly="1"
+                                   string="Rabatt % (nach Mietdauer)"/>
+                            <field name="mk_preis_nach_rabatt"          widget="monetary"
+                                                                         class="mk_calc"     readonly="1"/>
+                            <field name="mk_preis_verlaengerungswoche"  widget="monetary"
+                                                                         class="mk_calc"     readonly="1"/>
+                            <field name="mk_maschinenbruch"             widget="monetary"
+                                                                         class="mk_calc"     readonly="1"
                                    help="4% Maschinenbruchversicherung auf Preis nach Rabatt"/>
-                            <field name="mk_gesamt_4wochen" widget="monetary"
-                                   class="o_field_highlight"
+                            <!-- Hauptergebnis (mk_result) -->
+                            <field name="mk_gesamt_4wochen"             widget="monetary"
+                                                                         class="mk_result"   readonly="1"
                                    string="✅ Gesamt pro 4 Wochen (€)"/>
                         </group>
                     </group>
 
                     <separator string="🔧 Montage &amp; Transport"/>
                     <group>
+                        <!-- Einstellwerte: editierbar, normales Aussehen -->
                         <group string="Montage-Einstellwerte">
                             <field name="mk_monteur_stundensatz" widget="monetary"/>
-                            <field name="mk_helfer_stundensatz" widget="monetary"/>
+                            <field name="mk_helfer_stundensatz"  widget="monetary"/>
                             <field name="mk_std_je_station"/>
                             <field name="mk_faktor_geruest"/>
                             <field name="mk_faktor_gebaeude"/>
                         </group>
+
+                        <!-- Berechnete Stunden (mk_calc) -->
                         <group string="Berechnete Stunden">
-                            <field name="mk_stunden_aufbau"/>
-                            <field name="mk_stunden_stationen"/>
-                            <field name="mk_gesamtstunden"/>
-                            <field name="mk_team_kosten_stunde" widget="monetary"/>
+                            <field name="mk_stunden_aufbau"      class="mk_calc" readonly="1"/>
+                            <field name="mk_stunden_stationen"   class="mk_calc" readonly="1"/>
+                            <field name="mk_gesamtstunden"       class="mk_subtotal" readonly="1"/>
+                            <field name="mk_team_kosten_stunde"  widget="monetary" class="mk_calc" readonly="1"/>
                         </group>
                     </group>
 
                     <group>
+                        <!-- Montagekosten (mk_calc) -->
                         <group string="Montagekosten ohne Transport">
-                            <field name="mk_montage_geruest" widget="monetary"/>
-                            <field name="mk_montage_gebaeude" widget="monetary"/>
+                            <field name="mk_montage_geruest"  widget="monetary" class="mk_calc" readonly="1"/>
+                            <field name="mk_montage_gebaeude" widget="monetary" class="mk_calc" readonly="1"/>
                         </group>
+
+                        <!-- Gesamtkosten inkl. LKW (mk_result) -->
                         <group string="Kosten inkl. Transport (LKW)">
-                            <field name="mk_transportkosten_lkw" widget="monetary"/>
-                            <field name="mk_montage_gesamt_geruest" widget="monetary"
-                                   class="o_field_highlight"/>
-                            <field name="mk_montage_gesamt_gebaeude" widget="monetary"
-                                   class="o_field_highlight"/>
+                            <field name="mk_transportkosten_lkw"       widget="monetary" class="mk_calc"   readonly="1"/>
+                            <field name="mk_montage_gesamt_geruest"    widget="monetary" class="mk_result" readonly="1"/>
+                            <field name="mk_montage_gesamt_gebaeude"   widget="monetary" class="mk_result" readonly="1"/>
                         </group>
                     </group>
 
                     <separator string="ℹ️ Hinweise"/>
                     <div class="alert alert-info" role="alert">
                         <ul>
-                            <li>Grundpreis gilt bis 15 m Aufbauhöhe (1 Haltestelle EG + OG inkl.)</li>
+                            <li>Grundpreis gilt bis 15 m Aufbauhöhe (EG + 1. OG inkl.)</li>
                             <li>Jede weitere 1,5 m Höhe wird mit dem jeweiligen Mehrpreis berechnet.</li>
                             <li>4 % Maschinenbruchversicherung wird auf den Preis nach Rabatt aufgeschlagen.</li>
                             <li>Rabattstaffeln: ab 2 Mt. 5 % | ab 3 Mt. 10 % | ab 4 Mt. 12 % | ab 6 Mt. 15 % | ab 12 Mt. 20 %</li>
                             <li>Preisliste: 01/2023</li>
                         </ul>
                     </div>
+
                 </page>
             </xpath>
         </field>
