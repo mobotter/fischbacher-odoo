@@ -79,13 +79,19 @@
                         <!-- ── PREISTABELLE (aus mk.preistabelle) ────────── -->
                         <separator string="📋 Mietpreisliste Lastenaufzüge / Transportbühnen (pro 4 Wochen)"/>
                         <field name="mk_preistabelle_ids"
-                               widget="many2many"
-                               domain="[('active','=',True)]"
-                               readonly="0"
-                               string=""
+                               readonly="1"
                                nolabel="1"
                                mode="list"
-                               context="{'list_view_ref': 'mietkalkulation_lastenaufzug.mk_preistabelle_view_tree'}">
+                               context="{'tree_view_ref': 'mietkalkulation_lastenaufzug.mk_preistabelle_view_tree_readonly'}">
+                            <list create="0" edit="0" delete="0">
+                                <field name="traglast"/>
+                                <field name="grundpreis" widget="monetary"/>
+                                <field name="mehrpreis_hoehe" widget="monetary"/>
+                                <field name="mehrpreis_station" widget="monetary"/>
+                                <field name="mehrpreis_buehne_145" widget="monetary"/>
+                                <field name="mehrpreis_buehne_165" widget="monetary"/>
+                                <field name="mehrpreis_person" widget="monetary"/>
+                            </list>
                         </field>
                         <div class="mk_preistabelle_hinweis">
                             <em>Hinweis: 4% Maschinenbruchversicherung wird auf den berechneten Mietpreis (pro 4 Wochen) aufgeschlagen. – Preisliste 01/2023</em>
