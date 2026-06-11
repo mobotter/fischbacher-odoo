@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mk_rabatt_12" model="mk.rabattstaffel">
+        <field name="monate_ab">12</field>
+        <field name="rabatt_prozent">20</field>
+    </record>
+    <record id="mk_rabatt_6" model="mk.rabattstaffel">
+        <field name="monate_ab">6</field>
+        <field name="rabatt_prozent">15</field>
+    </record>
+    <record id="mk_rabatt_4" model="mk.rabattstaffel">
+        <field name="monate_ab">4</field>
+        <field name="rabatt_prozent">12</field>
+    </record>
+    <record id="mk_rabatt_3" model="mk.rabattstaffel">
+        <field name="monate_ab">3</field>
+        <field name="rabatt_prozent">10</field>
+    </record>
+    <record id="mk_rabatt_2" model="mk.rabattstaffel">
+        <field name="monate_ab">2</field>
+        <field name="rabatt_prozent">5</field>
+    </record>
+    <record id="mk_rabatt_0" model="mk.rabattstaffel">
+        <field name="monate_ab">0</field>
+        <field name="rabatt_prozent">0</field>
+    </record>
+</odoo>
