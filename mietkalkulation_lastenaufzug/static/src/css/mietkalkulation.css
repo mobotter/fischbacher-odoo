@@ -1,6 +1,31 @@
 /* ── Mietkalkulation: Eingabe vs. Berechnet ─────────────────────────────── */
 
-/* Berechnete Felder: leicht grauer Hintergrund, dezente Schrift */
+/* Eingabefelder: sichtbarer Border */
+.page[name="mietkalkulation"] .o_field_widget input,
+.page[name="mietkalkulation"] .o_field_widget select,
+.page[name="mietkalkulation"] .o_field_widget .o_input {
+    border: 1.5px solid #adb5bd !important;
+    border-radius: 5px !important;
+    background-color: #ffffff !important;
+    padding: 3px 8px !important;
+    transition: border-color 0.15s ease;
+}
+.page[name="mietkalkulation"] .o_field_widget input:focus,
+.page[name="mietkalkulation"] .o_field_widget .o_input:focus {
+    border-color: #017e84 !important;
+    box-shadow: 0 0 0 3px rgba(1, 126, 132, 0.15) !important;
+    outline: none !important;
+}
+.page[name="mietkalkulation"] .o_field_boolean {
+    border: 1.5px solid #adb5bd;
+    border-radius: 5px;
+    padding: 2px 8px;
+    background-color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ── Berechnete Felder (mk_calc) ────────────────────────────────────────── */
 .page[name="mietkalkulation"] .mk_calc .o_field_widget {
     background-color: #f0f1f3;
     border-radius: 4px;
@@ -9,7 +34,7 @@
     font-style: italic;
 }
 
-/* Zwischenergebnisse: blau-grau, halbfett */
+/* ── Zwischenergebnisse (mk_subtotal) ───────────────────────────────────── */
 .page[name="mietkalkulation"] .mk_subtotal .o_field_widget {
     background-color: #e8edf2;
     border-radius: 4px;
@@ -18,7 +43,7 @@
     color: #375a7f;
 }
 
-/* Hauptergebnisse: Odoo-Teal, fett, etwas größer */
+/* ── Hauptergebnisse (mk_result) ────────────────────────────────────────── */
 .page[name="mietkalkulation"] .mk_result .o_field_widget {
     background-color: #d6eee9;
     border-radius: 4px;
@@ -27,17 +52,72 @@
     color: #017e84;
     font-size: 1.05em;
 }
-
-/* Label neben Hauptergebnis ebenfalls hervorheben */
 .page[name="mietkalkulation"] .mk_result > .o_wrap_label label {
     font-weight: 700;
     color: #017e84;
 }
-/* Alle input/select/.o_input im Mietkalkulation-Tab */
-.page[name="mietkalkulation"] .o_field_widget input,
-.page[name="mietkalkulation"] .o_field_widget select,
-.page[name="mietkalkulation"] .o_field_widget .o_input {
-    border: 1.5px solid #adb5bd;
-    border-radius: 5px;
-    background-color: #ffffff;
+
+/* ── Preistabelle ───────────────────────────────────────────────────────── */
+.mk_preistabelle {
+    margin: 12px 0 16px 0;
+    overflow-x: auto;
+}
+
+.mk_price_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88em;
+    background: #fff;
+    border: 1px solid #c8d0d8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.mk_price_table thead tr {
+    background-color: #1f4e79;
+    color: #ffffff;
+}
+
+.mk_price_table thead th {
+    padding: 8px 12px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #17406a;
+    white-space: nowrap;
+}
+
+.mk_price_table thead th:first-child {
+    text-align: left;
+    min-width: 260px;
+}
+
+.mk_price_table tbody tr {
+    background-color: #dce6f1;
+}
+
+.mk_price_table tbody tr:nth-child(odd) {
+    background-color: #c5d5e8;
+}
+
+.mk_price_table tbody tr:hover {
+    background-color: #b8cfe0;
+}
+
+.mk_price_table tbody td {
+    padding: 7px 12px;
+    border: 1px solid #b0bec5;
+    text-align: center;
+    color: #1a1a2e;
+}
+
+.mk_price_table tbody td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: #1f4e79;
+}
+
+.mk_preistabelle_hinweis {
+    margin-top: 8px;
+    font-size: 0.82em;
+    color: #555;
 }
