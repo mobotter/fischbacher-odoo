@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mk_konfiguration_standard" model="mk.konfiguration">
+        <field name="name">Standard</field>
+        <field name="basis_hoehe_grundgeraet">15.0</field>
+        <field name="schrittweite_mehrhoehe">1.5</field>
+        <field name="maschinenbruch_prozent">4.0</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
