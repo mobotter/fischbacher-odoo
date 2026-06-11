@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class MkRabattstaffel(models.Model):
@@ -30,3 +30,18 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='mietkalkulation_lastenaufzug.maschinenbruch_prozent',
         default=4.0,
     )
+    mk_rabattstaffel_ids = fields.Many2many(
+        'mk.rabattstaffel',
+        string='Rabattstaffeln',
+        compute='_compute_mk_rabattstaffel_ids',
+        inverse='_inverse_mk_rabattstaffel_ids',
+    )
+
+    @api.depends_context('uid')
+    def _compute_mk_rabattstaffel_ids(self):
+        staffeln = self.env['mk.rabattstaffel'].search([], order='monate_ab desc')
+        for rec in self:
+            rec.mk_rabattstaffel_ids = staffeln
+
+    def _inverse_mk_rabattstaffel_ids(self):
+        return True
