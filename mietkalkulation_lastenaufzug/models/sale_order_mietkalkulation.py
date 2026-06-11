@@ -21,7 +21,7 @@ class SaleOrderMietkalkulation(models.Model):
         help='Gesamte Aufbauhöhe des Lastenaufzugs in Metern'
     )
 
-    mk_buehnengrösse = fields.Selection([
+    mk_buehnengroesse = fields.Selection([
         ('keine', 'Keine'),
         ('145x325', 'Lastbühne 1,45 × 3,25 m'),
         ('165x435', 'Lastbühne 1,65 × 4,35 m'),
@@ -56,10 +56,10 @@ class SaleOrderMietkalkulation(models.Model):
     mk_std_je_station = fields.Float(
         string='Stunden je Be-/Entladestelle (Team)', default=1.0
     )
-    mk_faktor_gerüst = fields.Float(
+    mk_faktor_geruest = fields.Float(
         string='Faktor Gerüst', default=1.0
     )
-    mk_faktor_gebäude = fields.Float(
+    mk_faktor_gebaeude = fields.Float(
         string='Faktor Gebäude', default=1.25
     )
 
@@ -130,11 +130,11 @@ class SaleOrderMietkalkulation(models.Model):
         string='Team-Kosten pro Stunde (€)',
         compute='_compute_mietkalkulation', store=True
     )
-    mk_montage_gerüst = fields.Float(
+    mk_montage_geruest = fields.Float(
         string='Montagekosten an Gerüst (€)',
         compute='_compute_mietkalkulation', store=True
     )
-    mk_montage_gebäude = fields.Float(
+    mk_montage_gebaeude = fields.Float(
         string='Montagekosten an Gebäude (€)',
         compute='_compute_mietkalkulation', store=True
     )
@@ -142,11 +142,11 @@ class SaleOrderMietkalkulation(models.Model):
         string='Transportkosten LKW ohne Aufbau (€)',
         compute='_compute_mietkalkulation', store=True
     )
-    mk_montage_gesamt_gerüst = fields.Float(
+    mk_montage_gesamt_geruest = fields.Float(
         string='Montage inkl. LKW an Gerüst (€)',
         compute='_compute_mietkalkulation', store=True
     )
-    mk_montage_gesamt_gebäude = fields.Float(
+    mk_montage_gesamt_gebaeude = fields.Float(
         string='Montage inkl. LKW an Gebäude (€)',
         compute='_compute_mietkalkulation', store=True
     )
@@ -185,11 +185,11 @@ class SaleOrderMietkalkulation(models.Model):
     _LKW_STUNDENSATZ = 140.0
 
     @api.depends(
-        'mk_traglast', 'mk_aufbauhoehe', 'mk_buehnengrösse',
+        'mk_traglast', 'mk_aufbauhoehe', 'mk_buehnengroesse',
         'mk_personenbefoerderung', 'mk_extra_stationen',
         'mk_mietdauer_wochen', 'mk_transport_stunden',
         'mk_monteur_stundensatz', 'mk_helfer_stundensatz',
-        'mk_std_je_station', 'mk_faktor_gerüst', 'mk_faktor_gebäude',
+        'mk_std_je_station', 'mk_faktor_geruest', 'mk_faktor_gebaeude',
     )
     def _compute_mietkalkulation(self):
         for rec in self:
@@ -212,7 +212,7 @@ class SaleOrderMietkalkulation(models.Model):
             rec.mk_mehrpreis_stationen = mehrpreis_st
 
             # ── Bühne ─────────────────────────────────────────────────────
-            mehrpreis_b = self._MEHRPREIS_BUEHNE.get(rec.mk_buehnengrösse or 'keine', 0.0)
+            mehrpreis_b = self._MEHRPREIS_BUEHNE.get(rec.mk_buehnengroesse or 'keine', 0.0)
             rec.mk_mehrpreis_buehne = mehrpreis_b
 
             # ── Personenbeförderung ───────────────────────────────────────
@@ -260,14 +260,14 @@ class SaleOrderMietkalkulation(models.Model):
             team_kosten_h = rec.mk_monteur_stundensatz + rec.mk_helfer_stundensatz
             rec.mk_team_kosten_stunde = team_kosten_h
 
-            montage_gerüst = gesamtstunden * team_kosten_h * rec.mk_faktor_gerüst
-            montage_gebäude = gesamtstunden * team_kosten_h * rec.mk_faktor_gebäude
-            rec.mk_montage_gerüst = montage_gerüst
-            rec.mk_montage_gebäude = montage_gebäude
+            montage_geruest = gesamtstunden * team_kosten_h * rec.mk_faktor_geruest
+            montage_gebaeude = gesamtstunden * team_kosten_h * rec.mk_faktor_gebaeude
+            rec.mk_montage_geruest = montage_geruest
+            rec.mk_montage_gebaeude = montage_gebaeude
 
             # ── Transport ─────────────────────────────────────────────────
             transport_kosten = rec.mk_transport_stunden * self._LKW_STUNDENSATZ
             rec.mk_transportkosten_lkw = transport_kosten
 
-            rec.mk_montage_gesamt_gerüst = montage_gerüst + transport_kosten
-            rec.mk_montage_gesamt_gebäude = montage_gebäude + transport_kosten
+            rec.mk_montage_gesamt_geruest = montage_geruest + transport_kosten
+            rec.mk_montage_gesamt_gebaeude = montage_gebaeude + transport_kosten
