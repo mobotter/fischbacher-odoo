@@ -79,8 +79,6 @@
     </record>
 
     <menuitem
-
-    <menuitem
         id="mk_menu_preistabelle"
         name="Mietpreistabelle"
         parent="sale_subscription.menu_sale_subscription_config"
