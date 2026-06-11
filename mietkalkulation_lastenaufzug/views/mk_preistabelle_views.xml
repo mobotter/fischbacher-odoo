@@ -21,6 +21,22 @@
         </field>
     </record>
 
+    <record id="mk_preistabelle_view_tree_readonly" model="ir.ui.view">
+        <field name="name">mk.preistabelle.tree.readonly</field>
+        <field name="model">mk.preistabelle</field>
+        <field name="arch" type="xml">
+            <list string="Mietpreisliste" create="0" edit="0" delete="0">
+                <field name="traglast"/>
+                <field name="grundpreis" widget="monetary"/>
+                <field name="mehrpreis_hoehe" widget="monetary"/>
+                <field name="mehrpreis_station" widget="monetary"/>
+                <field name="mehrpreis_buehne_145" widget="monetary"/>
+                <field name="mehrpreis_buehne_165" widget="monetary"/>
+                <field name="mehrpreis_person" widget="monetary"/>
+            </list>
+        </field>
+    </record>
+
     <!-- ── Form-View ─────────────────────────────────────────────────────── -->
     <record id="mk_preistabelle_view_form" model="ir.ui.view">
         <field name="name">mk.preistabelle.form</field>
@@ -66,19 +82,12 @@
             <p>Legen Sie hier die Mietpreise je Traglastklasse an.</p>
         </field>
     </record>
-
-    <!-- ── Menüpunkt unter Abonnements → Konfiguration ───────────────────── -->
-    <menuitem
-        id="mk_menu_config_root"
-        name="Konfiguration"
-        parent="sale_subscription.menu_sale_subscription_root"
-        sequence="99"/>
-
+    <!-- ── Menüpunkt unter Abonnements ───────────────────────────────────── -->
     <menuitem
         id="mk_menu_preistabelle"
         name="Mietpreistabelle"
-        parent="mk_menu_config_root"
+        parent="sale_subscription.menu_sale_subscription_root"
         action="mk_preistabelle_action"
-        sequence="10"/>
+        sequence="85"/>
 
 </odoo>
