@@ -130,11 +130,11 @@ class SaleOrder(models.Model):
         string='Gesamt pro 4 Wochen (€)',
         compute='_compute_mk',
         store=True,
+    )
     mk_gesamt_mietdauer = fields.Float(
         string='Gesamtpreis für komplette Mietdauer (€)',
         compute='_compute_mk',
         store=True,
-    )
     )
     mk_stunden_aufbau = fields.Float(
         string='Montagestunden Aufbauhöhe',
