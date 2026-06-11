@@ -12,22 +12,6 @@
         </field>
     </record>
 
-    <record id="mk_rabattstaffel_view_form" model="ir.ui.view">
-        <field name="name">mk.rabattstaffel.form</field>
-        <field name="model">mk.rabattstaffel</field>
-        <field name="arch" type="xml">
-            <form string="Rabattstaffel">
-                <sheet>
-                    <group>
-                        <field name="monate_ab"/>
-                        <field name="rabatt_prozent"/>
-                        <field name="active"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
     <record id="mk_res_config_settings_view_form" model="ir.ui.view">
         <field name="name">res.config.settings.view.form.inherit.mietkalkulation</field>
         <field name="model">res.config.settings</field>
@@ -46,21 +30,33 @@
                             <field name="mk_maschinenbruch_prozent"/>
                         </setting>
                     </block>
+                    <block title="Rabattstaffeln">
+                        <setting string="Rabattstaffeln nach Mietdauer">
+                            <field name="mk_rabattstaffel_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="monate_ab"/>
+                                    <field name="rabatt_prozent"/>
+                                    <field name="active" optional="show"/>
+                                </list>
+                            </field>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>
     </record>
 
-    <record id="mk_rabattstaffel_action" model="ir.actions.act_window">
+    <record id="mk_rabattstaffel_action_settings" model="ir.actions.act_window">
         <field name="name">Rabattstaffeln</field>
-        <field name="res_model">mk.rabattstaffel</field>
-        <field name="view_mode">list,form</field>
-        <field name="view_id" ref="mk_rabattstaffel_view_tree"/>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'mietkalkulation_lastenaufzug'}</field>
     </record>
 
     <menuitem id="mk_menu_rabattstaffel"
         name="Rabattstaffeln"
         parent="sale_subscription.menu_sale_subscription_config"
-        action="mk_rabattstaffel_action"
+        action="mk_rabattstaffel_action_settings"
         sequence="20"/>
 </odoo>
