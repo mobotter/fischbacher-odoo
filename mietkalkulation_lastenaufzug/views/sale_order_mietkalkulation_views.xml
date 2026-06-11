@@ -14,7 +14,7 @@
                         <group>
                             <field name="mk_traglast"/>
                             <field name="mk_aufbauhoehe"/>
-                            <field name="mk_buehnengrösse"/>
+                            <field name="mk_buehnengroesse"/>
                             <field name="mk_personenbefoerderung"/>
                             <field name="mk_extra_stationen"/>
                         </group>
@@ -55,8 +55,8 @@
                             <field name="mk_monteur_stundensatz" widget="monetary"/>
                             <field name="mk_helfer_stundensatz" widget="monetary"/>
                             <field name="mk_std_je_station"/>
-                            <field name="mk_faktor_gerüst"/>
-                            <field name="mk_faktor_gebäude"/>
+                            <field name="mk_faktor_geruest"/>
+                            <field name="mk_faktor_gebaeude"/>
                         </group>
                         <group string="Berechnete Stunden">
                             <field name="mk_stunden_aufbau"/>
@@ -68,14 +68,14 @@
 
                     <group>
                         <group string="Montagekosten ohne Transport">
-                            <field name="mk_montage_gerüst" widget="monetary"/>
-                            <field name="mk_montage_gebäude" widget="monetary"/>
+                            <field name="mk_montage_geruest" widget="monetary"/>
+                            <field name="mk_montage_gebaeude" widget="monetary"/>
                         </group>
                         <group string="Kosten inkl. Transport (LKW)">
                             <field name="mk_transportkosten_lkw" widget="monetary"/>
-                            <field name="mk_montage_gesamt_gerüst" widget="monetary"
+                            <field name="mk_montage_gesamt_geruest" widget="monetary"
                                    class="o_field_highlight"/>
-                            <field name="mk_montage_gesamt_gebäude" widget="monetary"
+                            <field name="mk_montage_gesamt_gebaeude" widget="monetary"
                                    class="o_field_highlight"/>
                         </group>
                     </group>
