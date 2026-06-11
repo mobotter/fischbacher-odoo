@@ -2,7 +2,9 @@
    Mietkalkulation v10
    Wrapper: .mk_tab_wrapper
    ══════════════════════════════════════════════════════════════════════════ */
-
+.mk_monteur_stundensatz .d-flex, .mk_helfer_stundensatz_0 .d-flex {
+    justify-content: space-between;
+}
 /* ── Grid-Spaltenbreite ─────────────────────────────────────────────────── */
 .o_form_view .o_inner_group {
     grid-template-columns: fit-content(300px) minmax(0, 1fr);
