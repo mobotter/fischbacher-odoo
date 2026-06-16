@@ -4,6 +4,7 @@ import { Component, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
 import { Many2OneField } from "@web/views/fields/many2one/many2one_field";
+import { useDebounced } from "@web/core/utils/timing";
 
 export class QuotationLineProductField extends Component {
     static template = "ol_sale_subscription_extensions.QuotationLineProductField";
@@ -17,6 +18,9 @@ export class QuotationLineProductField extends Component {
         this.state = useState({
             showDescription: false,
         });
+        this.debouncedUpdate = useDebounced((value) => {
+            this.props.record.update({ name: value });
+        }, 300);
     }
 
     get description() {
@@ -32,9 +36,7 @@ export class QuotationLineProductField extends Component {
     }
 
     onDescriptionInput(ev) {
-        this.props.record.update({
-            name: ev.target.value,
-        });
+        this.debouncedUpdate(ev.target.value);
     }
 
     get many2OneProps() {
