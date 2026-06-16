@@ -350,30 +350,24 @@
                                         </td>
 
                                         <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; max-width:20px; padding-top:7px; padding-bottom:7px;">
-                                            <t t-if="line.product_id">
-                                                <span t-esc="line.product_id.display_name"/>
-                                            </t>
-                                            <t t-else="">
-                                                <span t-esc="line.name"/>
-                                            </t>
-                                        
-                                            <t t-if="line.product_id and line.product_id.description_sale">
-                                                <div style="white-space:pre-wrap; margin-top:2px; color:#444; font-size:13px;">
-                                                    <t t-esc="line.product_id.with_context(lang='de_DE').description_sale"/>
-                                                </div>
-                                            </t>
-                                        
-                                            <t t-if="line.product_id and line.name">
-                                                <t t-set="name_lines" t-value="line.name.split('\n')"/>
-                                                <t t-set="desc_lines" t-value="name_lines[1:] if len(name_lines) &gt; 1 else []"/>
-                                                <t t-set="last_line" t-value="desc_lines[-1].strip() if desc_lines else ''"/>
-                                                <t t-set="desc_lines" t-value="desc_lines[:-1] if last_line and 'Woche' in last_line else desc_lines"/>
-                                                <t t-if="desc_lines">
-                                                    <div style="white-space:pre-wrap; margin-top:2px; color:#444; font-size:13px;">
-                                                        <t t-esc="'\n'.join(desc_lines)"/>
+                                            <div style="display:block; margin:0; padding:0;">
+                                                <t t-if="line.product_id">
+                                                    <div style="margin:0; padding:0;">
+                                                        <span t-esc="line.product_id.display_name"/>
                                                     </div>
                                                 </t>
-                                            </t>
+                                                <t t-else="">
+                                                    <div style="margin:0; padding:0;">
+                                                        <span t-esc="line.name"/>
+                                                    </div>
+                                                </t>
+                                        
+                                                <t t-if="line.product_id and line.product_id.description_sale">
+                                                    <div style="margin:2px 0 0 0; padding:0; color:#444; font-size:13px; white-space:pre-wrap;">
+                                                        <t t-esc="line.product_id.with_context(lang='de_DE').description_sale"/>
+                                                    </div>
+                                                </t>
+                                            </div>
                                         </td>
 
                                         <td style="text-align:right; font-size:14px;">
