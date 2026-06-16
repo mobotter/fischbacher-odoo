@@ -355,8 +355,8 @@
                                             </span>
                                         
                                             <t t-if="desc_lines">
-                                                <span style="display:block; margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.25;">
-                                                    <t t-esc="' '.join(desc_lines)"/>
+                                                <span style="display:block; margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.25; white-space:pre-line;">
+                                                    <t t-esc="'\n'.join(desc_lines)"/>
                                                 </span>
                                             </t>
                                         </td>
