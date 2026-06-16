@@ -9,10 +9,7 @@ class ProductProduct(models.Model):
     def _compute_display_name(self):
         for product in self:
             name = product.name or ''
-            if product.default_code:
-                product.display_name = f"{product.default_code} - {name}"
-            else:
-                product.display_name = name
+            product.display_name = f"{product.default_code} - {name}" if product.default_code else name
 
     @api.model
     def _name_search(self, name='', args=None, operator='ilike', limit=100, name_get_uid=None):
