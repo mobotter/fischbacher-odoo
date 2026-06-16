@@ -349,16 +349,16 @@
                                             <t t-set="last_line" t-value="desc_lines[-1] if desc_lines else ''"/>
                                             <t t-set="desc_lines"
                                                t-value="desc_lines[:-1] if last_line and ('Woche' in last_line or 'Monat' in last_line or ('von' in last_line and 'bis' in last_line)) else desc_lines"/>
-                                            <t t-set="desc_text" t-value="'\n'.join([l for l in desc_lines if l and l.strip()]).strip()"/>
+                                            <t t-set="desc_text" t-value="'\n'.join([l.strip() for l in desc_lines if l.strip()]).strip()"/>
                                         
-                                            <span style="display:block; margin:0; padding:0; text-align:left;">
+                                            <div style="display:block; margin:0; padding:0; text-align:left; line-height:1.1;">
                                                 <t t-esc="first_line"/>
-                                            </span>
+                                            </div>
                                         
                                             <t t-if="desc_text">
-                                                <span style="display:block; margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.25; white-space:pre-line;">
+                                                <div style="display:block; margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.1; white-space:pre-line;">
                                                     <t t-esc="desc_text"/>
-                                                </span>
+                                                </div>
                                             </t>
                                         </td>
 
