@@ -57,13 +57,11 @@
                         }
                     </style>
 
-                    <!-- Rechnung -> Sale Order robust über invoice lines ableiten -->
                     <t t-set="sale_order" t-value="doc.env['sale.order']"/>
                     <t t-if="doc.invoice_origin">
                         <t t-set="sale_order" t-value="doc.env['sale.order'].search([('name', '=', doc.invoice_origin)], limit=1)"/>
                     </t>
 
-                    <!-- Miet-Erkennung nur über bestehende Felder -->
                     <t t-set="is_rental_invoice"
                        t-value="bool(sale_order and (
                            ('is_subscription' in sale_order._fields and sale_order.is_subscription) or
@@ -71,10 +69,7 @@
                            ('has_plan' in sale_order._fields and sale_order.has_plan)
                        ))"/>
 
-                    <!-- Adresspartner -->
                     <t t-set="invoice_partner" t-value="doc.partner_id if doc.partner_id else False"/>
-
-                    <!-- Zeilenquelle -->
                     <t t-set="lines_to_report" t-value="doc.invoice_line_ids"/>
 
                     <table style="width:100%; border-collapse:collapse; margin-top:10mm;">
@@ -116,7 +111,7 @@
                                             <td style="font-size:13px; padding-left:3px;"><t t-esc="doc.name"/></td>
                                         </tr>
                                     </t>
-                                    
+
                                     <t t-if="doc.lease_agreement_no">
                                         <tr>
                                             <td style="font-size:13px;">Lease Agreement No.:</td>
@@ -200,7 +195,7 @@
                                             <td style="font-size:13px; padding-left:3px;"><t t-esc="sale_order.client_order_number"/></td>
                                         </tr>
                                     </t>
-                                    
+
                                     <t t-if="sale_order and sale_order.carrier_id">
                                         <tr>
                                             <td style="font-size:13px;">Shipping Method:</td>
@@ -256,7 +251,6 @@
                         </tr>
                     </table>
 
-                    <!-- Titel -->
                     <h2 t-if="doc.move_type == 'out_invoice' and doc.state == 'posted' and is_rental_invoice"
                         style="color:#1f6fd2; font-weight:500; margin:10mm 0 2mm 0;">Rental Invoice</h2>
                     <h2 t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft' and is_rental_invoice"
@@ -278,14 +272,13 @@
                     <h2 t-elif="doc.move_type == 'in_invoice'"
                         style="color:#1f6fd2; font-weight:500; margin:10mm 0 5mm 0;">Vendor Bill</h2>
 
-                    <!-- Rental-Zusatzinfos unter dem Titel -->
                     <t t-if="is_rental_invoice and sale_order">
                         <div style="font-size:12px; margin-bottom:2px;">
                             <t t-if="'plan_id' in sale_order._fields and sale_order.plan_id">
                                 Rental price / <t t-esc="sale_order.plan_id.name"/>
                             </t>
                         </div>
-                    
+
                         <div style="font-size:12px; margin-bottom:5mm;"
                              t-if="doc.rental_billing_period_start and doc.rental_billing_period_end">
                             Billing period from
@@ -350,24 +343,21 @@
                                         </td>
 
                                         <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
-                                            <div style="margin:0; padding:0; white-space:normal; line-height:1.25;">
-                                                <t t-if="line.product_id">
-                                                    <div style="margin:0; padding:0;">
-                                                        <t t-if="line.product_id.default_code">
-                                                            <span t-esc="'[' + line.product_id.default_code + '] '"/>
-                                                        </t>
-                                                        <span t-esc="line.product_id.name"/>
-                                                    </div>
-                                                </t>
-                                                <t t-else="">
-                                                    <div style="margin:0; padding:0;">
-                                                        <span t-esc="line.name"/>
-                                                    </div>
-                                                </t>
-                                        
-                                                <t t-if="line.product_id and line.product_id.description_sale">
+                                            <t t-set="name_lines" t-value="line.name.split('\n') if line.name else []"/>
+                                            <t t-set="first_line" t-value="name_lines[0].strip() if name_lines else ''"/>
+                                            <t t-set="desc_lines" t-value="name_lines[1:] if len(name_lines) &gt; 1 else []"/>
+                                            <t t-set="last_line" t-value="desc_lines[-1].strip() if desc_lines else ''"/>
+                                            <t t-set="desc_lines"
+                                               t-value="desc_lines[:-1] if last_line and ('Woche' in last_line or 'Monat' in last_line or ('von' in last_line and 'bis' in last_line)) else desc_lines"/>
+
+                                            <div style="margin:0; padding:0; line-height:1.25;">
+                                                <div style="margin:0; padding:0;">
+                                                    <t t-esc="first_line"/>
+                                                </div>
+
+                                                <t t-if="desc_lines">
                                                     <div style="margin:2px 0 0 0; padding:0; color:#444; font-size:13px; line-height:1.25; white-space:pre-wrap;">
-                                                        <t t-esc="line.product_id.with_context(lang='de_DE').description_sale"/>
+                                                        <t t-esc="'\n'.join([l.strip() for l in desc_lines if l.strip()])"/>
                                                     </div>
                                                 </t>
                                             </div>
