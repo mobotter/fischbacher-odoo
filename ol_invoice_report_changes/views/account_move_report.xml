@@ -342,22 +342,22 @@
                                             <t t-esc="pos"/>
                                         </td>
 
-                                        <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
-                                            <t t-set="name_lines" t-value="line.name.split('\n') if line.name else []"/>
-                                            <t t-set="first_line" t-value="name_lines[0].strip() if name_lines else ''"/>
-                                            <t t-set="desc_lines" t-value="name_lines[1:] if len(name_lines) &gt; 1 else []"/>
-                                            <t t-set="last_line" t-value="desc_lines[-1].strip() if desc_lines else ''"/>
+                                        <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px; text-align:left; vertical-align:top;">
+                                            <t t-set="raw_lines" t-value="[l.strip() for l in (line.name or '').split('\n') if l.strip()]"/>
+                                            <t t-set="first_line" t-value="raw_lines[0] if raw_lines else ''"/>
+                                            <t t-set="desc_lines" t-value="raw_lines[1:] if len(raw_lines) &gt; 1 else []"/>
+                                            <t t-set="last_line" t-value="desc_lines[-1] if desc_lines else ''"/>
                                             <t t-set="desc_lines"
                                                t-value="desc_lines[:-1] if last_line and ('Woche' in last_line or 'Monat' in last_line or ('von' in last_line and 'bis' in last_line)) else desc_lines"/>
-
-                                            <div style="margin:0; padding:0; line-height:1.25;">
-                                                <div style="margin:0; padding:0;">
+                                        
+                                            <div style="margin:0; padding:0; text-align:left; line-height:1.25;">
+                                                <div style="margin:0; padding:0; text-align:left;">
                                                     <t t-esc="first_line"/>
                                                 </div>
-
+                                        
                                                 <t t-if="desc_lines">
-                                                    <div style="margin:2px 0 0 0; padding:0; color:#444; font-size:13px; line-height:1.25; white-space:pre-wrap;">
-                                                        <t t-esc="'\n'.join([l.strip() for l in desc_lines if l.strip()])"/>
+                                                    <div style="margin:0; padding:0; color:#444; font-size:13px; line-height:1.25; white-space:pre-wrap; text-align:left;">
+                                                        <t t-esc="'\n'.join(desc_lines)"/>
                                                     </div>
                                                 </t>
                                             </div>
