@@ -1,9 +1,60 @@
 {
     "name": "Sale Subscription Fischbacher Extension",
-    "version": "19.0.1.1.0",
-    "summary": "A custom module for Fischbacher customization",
+    "version": "19.0.1.2.0",
+    "summary": "Fischbacher-spezifische Erweiterungen für das Abonnement-Modul: Rechnungsvorlagen, Berichte, UI-Anpassungen und Ausblenden des Mietdatums in Rechnungszeilen.",
+    "description": """
+Sale Subscription Fischbacher Extension
+========================================
+
+Dieses Modul enthält alle kundenspezifischen Anpassungen von Fischbacher
+für das Odoo-Abonnement- und Mietgeschäft.
+
+Funktionen
+----------
+
+**Rechnungsdarstellung**
+- Blendet den automatisch generierten Abrechnungszeitraum (z. B. „4 Woche(n)
+  08.06.2026 bis 05.07.2026") unter jeder Rechnungszeile aus.
+  Technisch: Override des QWeb-Templates ``account.report_invoice_document``
+  – die Felder ``deferred_start_date`` / ``deferred_end_date`` bleiben in
+  der Datenbank erhalten, werden jedoch nicht mehr auf der gedruckten
+  Rechnung angezeigt.
+
+**Abonnement-Berichte**
+- Eigene Berichtsvorlage für Abonnement-Aufträge (sale_subscription_report.xml).
+- Angepasste Berichtsaktionen (report_action.xml).
+
+**Auftragsvorlagen**
+- Erweiterung der Verkaufsauftragsvorlagen um Fischbacher-spezifische Felder
+  (sale_order_template_view.xml).
+
+**Abonnement-Ansichten**
+- Angepasste Formular- und Listenansichten für Abonnements
+  (sale_subscription_view.xml).
+
+**Frontend-Komponente**
+- Benutzerdefiniertes Widget ``quotation_line_product_field`` für die
+  Produktauswahl in Angebotspositionen (JS + QWeb-Template).
+
+**E-Mail-Vorlagen**
+- Vordefinierte Mail-Templates für Abonnement-bezogene Kommunikation
+  (mail_template_data.xml).
+
+Technische Details
+------------------
+- Kompatibel mit: Odoo 19.0 Enterprise
+- Abhängigkeiten: base, sale_management, stock, sale_subscription, mail
+- Lizenz: LGPL-3
+- Kein Datenverlust: Alle Datenbankfelder bleiben unverändert erhalten;
+  Änderungen betreffen ausschließlich die Darstellungsebene (Views/Templates).
+
+Entwickler
+----------
+Johi Chawla & Moritz Kern
+    """,
     "author": "Johi Chawla & Moritz Kern",
-    "category": "Sales",
+    "website": "https://www.fischbacher.de",
+    "category": "Sales/Subscriptions",
     "license": "LGPL-3",
     "depends": [
         "base",
@@ -25,6 +76,7 @@
         "data/mail_template_data.xml",
         "views/sale_subscription_view.xml",
         'views/sale_order_template_view.xml',
+        "views/account_invoice_report_override.xml",
     ],
     "installable": True,
     "application": False,
