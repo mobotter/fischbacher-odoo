@@ -1,16 +1,17 @@
 {
     'name': 'Sale Partner Ref Display',
     'version': '19.0.1.0.0',
-    'summary': 'Zeigt ref - name im Kunden-Dropdown und default_code - name in Auftragspositionen',
+    'summary': 'Zeigt ref - name bei Kunden und default_code - name bei Produkten in Sales/Subs',
     'description': """
         Erweitert das partner_id-Feld im Verkaufsauftrag (sale.order), so
         dass der Anzeigename als "ref - name" erscheint.
         Falls keine ref vorhanden ist, wird "id - name" verwendet.
 
-        Erweitert außerdem die Produktauswahl in Auftragspositionen:
+        Erweitert außerdem die Produktauswahl in Sales und Subscriptions:
         - Anzeige als "default_code - name"
         - Suche nach default_code und name
-        - Ausblenden von "Neu" und "Neu erstellen und bearbeiten"
+        - Blockiert Quick Create aus der Produktsuche
+        - Passt die Bezeichnung in Verkaufszeilen an
     """,
     'author': 'Moritz Kern',
     'category': 'Sales',
