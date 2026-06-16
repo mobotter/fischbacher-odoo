@@ -349,42 +349,17 @@
                                             <t t-set="last_line" t-value="desc_lines[-1] if desc_lines else ''"/>
                                             <t t-set="desc_lines"
                                                t-value="desc_lines[:-1] if last_line and ('Woche' in last_line or 'Monat' in last_line or ('von' in last_line and 'bis' in last_line)) else desc_lines"/>
-                                            <t t-set="desc_text" t-value="'\n'.join([l.strip() for l in desc_lines if l.strip()]).strip()"/>
-
-                                            <div style="display:block; margin:0; padding:0; text-align:left; line-height:1.1;">
+                                        
+                                            <div style="margin:0; padding:0; text-align:left; line-height:1.1;">
                                                 <t t-esc="first_line"/>
                                             </div>
-
-                                            <div style="font-size:10px; color:#c62828; white-space:pre-line; margin:2px 0 0 0; padding:0;">
-                                                line.name = <t t-esc="repr(line.name)"/>
-                                            </div>
-                                            <div style="font-size:10px; color:#1565c0; white-space:pre-line; margin:0; padding:0;">
-                                                raw_lines = <t t-esc="repr(raw_lines)"/>
-                                            </div>
-                                            <div style="font-size:10px; color:#6a1b9a; white-space:pre-line; margin:0; padding:0;">
-                                                first_line = <t t-esc="repr(first_line)"/>
-                                            </div>
-                                            <div style="font-size:10px; color:#ef6c00; white-space:pre-line; margin:0; padding:0;">
-                                                desc_lines = <t t-esc="repr(desc_lines)"/>
-                                            </div>
-                                            <div style="font-size:10px; color:#2e7d32; white-space:pre-line; margin:0; padding:0;">
-                                                desc_text = <t t-esc="repr(desc_text)"/>
-                                            </div>
-
-                                            <div style="font-size:10px; color:#ad1457; margin:0; padding:0;">
-                                                [END NAME]
-                                            </div>
-
-                                            <t t-if="desc_text">
-                                                <div style="font-size:10px; color:#00838f; margin:0; padding:0;">
-                                                    [START DESC]
-                                                </div>
-                                                <div style="display:block; margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.1; white-space:pre-line;">
-                                                    <t t-esc="desc_text"/>
+                                        
+                                            <t t-foreach="desc_lines" t-as="dl">
+                                                <div style="margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.1;">
+                                                    <t t-esc="dl"/>
                                                 </div>
                                             </t>
                                         </td>
-
                                         <td style="text-align:right; font-size:14px;">
                                             <t t-esc="'{:.2f}'.format(line.quantity)"/>
                                             <t t-if="line.product_uom_id">
