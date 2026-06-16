@@ -117,7 +117,7 @@ class SaleQuotationLine(models.Model):
                 continue
             line.name = line.product_id.description or ""
 
-    @api.onchange('product_id', 'product_uom', 'product_uom_qty', 'order_id.pricelist_id')
+    @api.onchange('product_id', 'product_uom', 'product_uom_qty', 'order_id')
     def _onchange_product_pricing(self):
         discount_enabled = self.env['product.pricelist.item']._is_discount_feature_enabled()
 
