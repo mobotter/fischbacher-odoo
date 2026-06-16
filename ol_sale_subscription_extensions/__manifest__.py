@@ -1,6 +1,6 @@
 {
     "name": "Sale Subscription Fischbacher Extension",
-    "version": "19.0.1.3.0",
+    "version": "19.0.1.4.0",
     "summary": "Fischbacher-spezifische Erweiterungen für das Abonnement-Modul: Rechnungsvorlagen, Berichte, UI-Anpassungen und Ausblenden des Mietdatums in Rechnungszeilen.",
     "description": """
 Sale Subscription Fischbacher Extension
@@ -15,10 +15,12 @@ Funktionen
 **Rechnungsdarstellung**
 - Blendet den automatisch generierten Abrechnungszeitraum (z. B. „4 Woche(n)
   08.06.2026 bis 05.07.2026") unter jeder Rechnungszeile aus.
-  Technisch: Override des QWeb-Templates ``account.report_invoice_document``
-  – die Felder ``deferred_start_date`` / ``deferred_end_date`` bleiben in
-  der Datenbank erhalten, werden jedoch nicht mehr auf der gedruckten
-  Rechnung angezeigt.
+  Technisch: Override von _prepare_invoice_line auf sale.order.line.
+  Odoo hängt den Zeitraum per \\n an den Produktnamen an (Zeile ~432 in
+  enterprise/sale_subscription/models/sale_order_line.py).
+  Dieser Teil wird vor dem Speichern in account.move.line entfernt.
+  Die Felder deferred_start_date / deferred_end_date bleiben in der
+  Datenbank erhalten.
 
 **Abonnement-Berichte**
 - Eigene Berichtsvorlage für Abonnement-Aufträge (sale_subscription_report.xml).
@@ -35,6 +37,8 @@ Funktionen
 **Frontend-Komponente**
 - Benutzerdefiniertes Widget ``quotation_line_product_field`` für die
   Produktauswahl in Angebotspositionen (JS + QWeb-Template).
+- Fix: Debounce auf record.update() verhindert Dropdown-Race-Condition
+  (TypeError: Cannot read properties of undefined (reading 'dataset')).
 
 **E-Mail-Vorlagen**
 - Vordefinierte Mail-Templates für Abonnement-bezogene Kommunikation
@@ -65,7 +69,7 @@ Johi Chawla & Moritz Kern
     ],
     'assets': {
         'web.assets_backend': [
-            'ol_sale_subscription_extensions/static/src/js/quotation_line_product_field.js',
+            'ol_sale_subscription_extensions/static/src/js/quotation_line_description_field.js',
             'ol_sale_subscription_extensions/static/src/xml/quotation_line_product_field.xml',
         ],
     },
