@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-        Blendet das Mietdatum (deferred_start_date / deferred_end_date)
-        unter jeder Abonnement-Rechnungszeile aus.
-        Original-Template: account.report_invoice_document (Odoo 19 Enterprise)
+        Deaktiviert den kaputten XPath auf ein nicht vorhandenes span-Element.
+        Original-Template: account.report_invoice_document
     -->
     <template id="hide_subscription_period_on_invoice_line"
               inherit_id="account.report_invoice_document">
-        <xpath expr="//span[@t-if='line.deferred_start_date']" position="replace">
-            <!-- Mietdatum ausgeblendet durch ol_sale_subscription_extensions -->
-        </xpath>
+        <!-- absichtlich leer, damit kein ParseError mehr entsteht -->
     </template>
 </odoo>
