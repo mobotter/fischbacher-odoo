@@ -14,7 +14,7 @@
     """,
     'author': 'Moritz Kern',
     'category': 'Sales',
-    'depends': ['sale', 'product'],
+    'depends': ['sale', 'product', 'sale_subscription'],
     'data': [
         'views/sale_order_views.xml',
     ],
