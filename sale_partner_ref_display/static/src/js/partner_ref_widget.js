@@ -1,20 +1,20 @@
 /** @odoo-module **/
 
 import { patch } from "@web/core/utils/patch";
-import { Many2OneField } from "@web/views/fields/many2one/many2one_field";
+import { Many2OneField, many2OneField } from "@web/views/fields/many2one/many2one_field";
 
 /**
- * Patcht das Many2One-Widget für:
- * 1. partner_id im sale.order / subscriptions → show_ref_prefix im Kontext
- * 2. Produktfelder → Quick Create / Create & Edit deaktivieren
+ * 1) Partner: Kontext show_ref_prefix für sale.order setzen
+ * 2) Produkte: Quick Create / Create & Edit im Dropdown deaktivieren
  */
+
+// Instanz-Patch für Kontext am Partnerfeld
 patch(Many2OneField.prototype, {
     setup() {
         super.setup(...arguments);
 
         const { record, name } = this.props;
 
-        // Partner-Dropdown: ref - name
         if (
             name === "partner_id" &&
             record &&
@@ -28,24 +28,40 @@ patch(Many2OneField.prototype, {
                 });
             }
         }
+    },
+});
 
-        // Produkt-Dropdown in Sales / Subscriptions:
-        // Quick Create und Create/Edit clientseitig unterdrücken
-        if (
-            (name === "product_id" || name === "product_template_id") &&
-            record &&
-            record.resModel === "sale.order"
-        ) {
-            this.props.canQuickCreate = false;
-            this.props.canCreateEdit = false;
+// Definition-Patch für Many2One-Props
+patch(many2OneField, {
+    extractProps({ attrs, context, decorations, options, string }, dynamicInfo) {
+        const res = super.extractProps({ attrs, context, decorations, options, string }, dynamicInfo);
 
-            const originalGetContext = this.getContext?.bind(this);
-            if (originalGetContext) {
-                this.getContext = () => ({
-                    ...originalGetContext(),
-                    forbid_quick_create_product: true,
-                });
-            }
+        const fieldContext = context || {};
+        const fieldOptions = options || {};
+
+        const forbidQuickCreate =
+            fieldContext.forbid_quick_create_product ||
+            fieldOptions.no_quick_create ||
+            fieldOptions.no_create ||
+            false;
+
+        const forbidCreateEdit =
+            fieldContext.forbid_quick_create_product ||
+            fieldOptions.no_create_edit ||
+            fieldOptions.no_create ||
+            false;
+
+        const isProductField =
+            res.resModel === "product.product" || res.resModel === "product.template";
+
+        if (isProductField && forbidQuickCreate) {
+            res.canQuickCreate = false;
         }
+
+        if (isProductField && forbidCreateEdit) {
+            res.canCreateEdit = false;
+        }
+
+        return res;
     },
 });
