@@ -1,15 +1,15 @@
 {
     "name": "Sale Subscription Fischbacher Extension",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "summary": "A custom module for Fischbacher customization",
-    "author": "Johi Chawla",
+    "author": "Johi Chawla & Moritz Kern",
     "category": "Sales",
     "license": "LGPL-3",
     "depends": [
         "base",
         "sale_management",
         "stock",
-        "sale_subscription", 
+        "sale_subscription",
         "mail"
     ],
     'assets': {
