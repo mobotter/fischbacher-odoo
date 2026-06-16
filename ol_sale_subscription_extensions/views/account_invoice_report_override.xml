@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--
-        Deaktiviert den kaputten XPath auf ein nicht vorhandenes span-Element.
-        Original-Template: account.report_invoice_document
-    -->
     <template id="hide_subscription_period_on_invoice_line"
               inherit_id="account.report_invoice_document">
-        <!-- absichtlich leer, damit kein ParseError mehr entsteht -->
     </template>
 </odoo>
