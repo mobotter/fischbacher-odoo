@@ -20,4 +20,6 @@ class ProductProduct(models.Model):
 
     @api.model
     def name_create(self, name):
-        raise UserError(_("Das Anlegen neuer Produkte aus der Produktsuche ist nicht erlaubt."))
+        if self.env.context.get('forbid_quick_create_product'):
+            raise UserError(_("Das Anlegen neuer Produkte aus dieser Produktsuche ist nicht erlaubt."))
+        return super().name_create(name)
