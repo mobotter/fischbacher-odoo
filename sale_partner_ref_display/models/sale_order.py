@@ -1,21 +1,14 @@
-from odoo import api, models
+from odoo import models
 
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+class SaleOrderLine(models.Model):
+    _inherit = "sale.order.line"
 
-    @api.model
-    def fields_get(self, allfields=None, attributes=None):
-        """
-        Ergänzt den Kontext für das partner_id-Feld,
-        damit name_get() den ref-Prefix verwendet.
-        """
-        result = super().fields_get(allfields=allfields, attributes=attributes)
-        if 'partner_id' in result:
-            ctx = result['partner_id'].get('context', {})
-            if isinstance(ctx, str):
-                # Kontext ist manchmal ein String in älteren Definitionen
-                ctx = {}
-            ctx['show_ref_prefix'] = True
-            result['partner_id']['context'] = ctx
-        return result
+    def _compute_product_id_change(self):
+        super()._compute_product_id_change()
+        for line in self:
+            if line.product_id:
+                product = line.product_id
+                code = product.default_code or ''
+                name = product.name or ''
+                line.name = f"{code} - {name}" if code else name
