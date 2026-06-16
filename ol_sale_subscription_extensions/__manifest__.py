@@ -1,6 +1,6 @@
 {
     "name": "Sale Subscription Fischbacher Extension",
-    "version": "19.0.1.4.0",
+    "version": "19.0.1.5.0",
     "summary": "Fischbacher-spezifische Erweiterungen für das Abonnement-Modul: Rechnungsvorlagen, Berichte, UI-Anpassungen und Ausblenden des Mietdatums in Rechnungszeilen.",
     "description": """
 Sale Subscription Fischbacher Extension
