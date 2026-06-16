@@ -343,7 +343,7 @@
                                         </td>
 
                                         <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding:7px 0; text-align:left; vertical-align:top;">
-                                            <t t-set="raw_lines" t-value="[l.strip() for l in (line.name or '').split('\n') if l.strip()]"/>
+                                            <t t-set="raw_lines" t-value="[l.strip() for l in (line.name or '').splitlines() if l.strip()]"/>
                                             <t t-set="first_line" t-value="raw_lines[0] if raw_lines else ''"/>
                                             <t t-set="desc_lines" t-value="raw_lines[1:] if len(raw_lines) &gt; 1 else []"/>
                                             <t t-set="last_line" t-value="desc_lines[-1] if desc_lines else ''"/>
