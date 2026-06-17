@@ -46,7 +46,7 @@ Kompatibilität: Odoo 19.0 Enterprise
         "data/mail_template_data.xml",
         "views/sale_subscription_view.xml",
         "views/sale_order_template_view.xml",
-        "views/sale_subscription_plan_view.xml",
+        "views/sale_recurring_plan_view.xml",
     ],
     "installable": True,
     "application": False,
