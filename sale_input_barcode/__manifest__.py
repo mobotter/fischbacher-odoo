@@ -1,7 +1,7 @@
 {
     'name': 'Sale Input Barcode',
-    'version': '19.0.1.0.0',
-    'summary': 'Add sale order lines by scanning product barcodes in sales orders',
+    'version': '19.0.2.0.0',
+    'summary': 'Add sale order lines by barcode scan directly from the sale order form',
     'category': 'Sales/Sales',
     'author': 'Moritz Kern',
     'license': 'AGPL-3',
@@ -11,12 +11,6 @@
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'sale_input_barcode/static/src/js/sale_barcode_button.js',
-            'sale_input_barcode/static/src/xml/sale_barcode_button.xml',
-        ],
-    },
     'installable': True,
     'application': False,
 }
