@@ -1,8 +1,8 @@
 from odoo import fields, models
 
 
-class SaleRecurringPlan(models.Model):
-    _inherit = 'sale.recurring.plan'
+class SaleSubscriptionPlan(models.Model):
+    _inherit = 'sale.subscription.plan'
 
     billing_timing = fields.Selection(
         selection=[
