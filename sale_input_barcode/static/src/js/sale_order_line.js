@@ -1,28 +1,33 @@
 /** @odoo-module **/
 
-import { patch } from "@web/core/utils/patch";
-import { Many2XAutocomplete } from "@web/views/fields/relational_utils";
+console.log("[sale_input_barcode] auto-next loaded");
 
-console.log("[sale_input_barcode] many2x auto-next loaded");
-
-const ADD_PRODUCT_SELECTOR = '.o_sale_input_barcode_order_line .o_field_x2many_list_row_add a[role="button"]';
-const PRODUCT_INPUT_SELECTOR = 'td[name="product_template_id"] input.o-autocomplete--input';
+const ADD_PRODUCT_SELECTOR =
+    '.o_sale_input_barcode_order_line .o_field_x2many_list_row_add a[role="button"]';
+const PRODUCT_INPUT_SELECTOR =
+    'td[name="product_template_id"] input.o-autocomplete--input';
 
 function getAddProductLink() {
     const links = Array.from(document.querySelectorAll(ADD_PRODUCT_SELECTOR));
-    return links.find((el) => {
-        const text = (el.textContent || "").trim();
-        return text === "Produkt hinzufügen" || text === "Add a product";
-    }) || null;
+    return (
+        links.find((el) => {
+            const text = (el.textContent || "").trim();
+            return text === "Produkt hinzufügen" || text === "Add a product";
+        }) || null
+    );
 }
 
-function focusNewestProductInput(retries = 10) {
+function getNewestProductInput() {
     const inputs = document.querySelectorAll(PRODUCT_INPUT_SELECTOR);
-    if (inputs.length) {
-        const input = inputs[inputs.length - 1];
-        console.log("[sale_input_barcode] focus next input", input);
+    return inputs.length ? inputs[inputs.length - 1] : null;
+}
+
+function focusNewestProductInput(retries = 12) {
+    const input = getNewestProductInput();
+    if (input) {
+        console.log("[sale_input_barcode] focusing next product input");
+        input.value = "";
         input.focus();
-        input.click();
         return;
     }
     if (retries > 0) {
@@ -36,28 +41,52 @@ function addNextProductLine() {
         console.log("[sale_input_barcode] add link not found");
         return;
     }
-    console.log("[sale_input_barcode] clicking add product");
+    console.log("[sale_input_barcode] clicking add product link");
     addLink.click();
-    window.setTimeout(() => focusNewestProductInput(), 250);
+    window.setTimeout(() => focusNewestProductInput(), 450);
 }
 
-patch(Many2XAutocomplete.prototype, {
-    onSelect(option, params = {}) {
-        console.log("[sale_input_barcode] onSelect fired", option, params);
-
-        const result = super.onSelect(...arguments);
-
-        const input = this.el?.closest("td")?.querySelector("input.o-autocomplete--input");
-        const inProductCell = !!this.el?.closest('td[name="product_template_id"]');
-
-        console.log("[sale_input_barcode] in product cell =", inProductCell);
-
-        if (inProductCell && option) {
-            window.setTimeout(() => {
-                addNextProductLine();
-            }, 300);
+document.addEventListener(
+    "keydown",
+    (ev) => {
+        const target = ev.target;
+        if (!(target instanceof HTMLInputElement)) {
+            return;
+        }
+        if (!target.matches(PRODUCT_INPUT_SELECTOR)) {
+            return;
+        }
+        if (ev.key !== "Enter") {
+            return;
         }
 
-        return result;
+        const expanded = target.getAttribute("aria-expanded");
+        const value = (target.value || "").trim();
+
+        console.log(
+            "[sale_input_barcode] Enter on product input",
+            "value=", value,
+            "expanded=", expanded
+        );
+
+        if (!value || expanded === "true") {
+            return;
+        }
+
+        window.setTimeout(() => {
+            const currentValue = (target.value || "").trim();
+            const currentExpanded = target.getAttribute("aria-expanded");
+
+            console.log(
+                "[sale_input_barcode] post-enter check",
+                "value=", currentValue,
+                "expanded=", currentExpanded
+            );
+
+            if (currentValue && currentExpanded !== "true") {
+                addNextProductLine();
+            }
+        }, 300);
     },
-});
+    true
+);
