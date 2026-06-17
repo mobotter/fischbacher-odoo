@@ -1,12 +1,11 @@
 {
     'name': 'Sale Input Barcode',
-    'version': '19.0.2.0.0',
-    'summary': 'Add sale order lines by barcode scan directly from the sale order form',
+    'version': '19.0.3.0.0',
+    'summary': 'Create a new sale order line for each barcode scan',
     'category': 'Sales/Sales',
-    'author': 'Moritz Kern',
     'license': 'AGPL-3',
-    'author': 'OpenAI',
-    'depends': ['sale_management', 'product', 'web'],
+    'author': 'Moritz Kern',
+    'depends': ['sale_management', 'product'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
