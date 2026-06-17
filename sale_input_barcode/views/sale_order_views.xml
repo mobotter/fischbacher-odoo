@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_order_form_sale_input_barcode_19" model="ir.ui.view">
-        <field name="name">sale.order.form.sale.input.barcode.19</field>
+    <record id="view_order_form_sale_input_barcode" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.input.barcode</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="action_open_barcode_scanner_dialog"
-                        string="Scan Product"
-                        type="object"
-                        class="btn-secondary o_sale_barcode_trigger"
-                        icon="fa-barcode"
-                        invisible="state not in ('draft', 'sent')"/>
-            </xpath>
-            <xpath expr="//sheet//group" position="inside">
-                <field name="barcode_input" invisible="1"/>
+            <xpath expr="//sheet//group[1]" position="inside">
+                <field name="barcode_scan"
+                       placeholder="Barcode scannen und mit Enter abschließen"
+                       invisible="state not in ('draft', 'sent')"/>
             </xpath>
         </field>
     </record>
