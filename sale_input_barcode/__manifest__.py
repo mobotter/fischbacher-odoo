@@ -1,5 +1,5 @@
 {
-    'name': 'Sale Input Barcode 19',
+    'name': 'Sale Input Barcode',
     'version': '19.0.1.0.0',
     'summary': 'Add sale order lines by scanning product barcodes in sales orders',
     'category': 'Sales/Sales',
@@ -13,8 +13,8 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'sale_input_barcode_19/static/src/js/sale_barcode_button.js',
-            'sale_input_barcode_19/static/src/xml/sale_barcode_button.xml',
+            'sale_input_barcode/static/src/js/sale_barcode_button.js',
+            'sale_input_barcode/static/src/xml/sale_barcode_button.xml',
         ],
     },
     'installable': True,
