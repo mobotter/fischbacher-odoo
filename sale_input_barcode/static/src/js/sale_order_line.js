@@ -7,8 +7,6 @@ const PRODUCT_INPUT_SELECTOR =
 
 let ignoreEnterUntil = 0;
 let autoSelecting = false;
-let processingScan = false;
-let scanQueue = [];
 
 function getAddProductLink() {
     const links = Array.from(document.querySelectorAll(ADD_PRODUCT_SELECTOR));
@@ -25,39 +23,13 @@ function getNewestProductInput() {
     return inputs.length ? inputs[inputs.length - 1] : null;
 }
 
-function dispatchEnter(input) {
-    input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
-}
-
-function writeValueToInput(input, value) {
-    input.focus();
-    input.value = value;
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-}
-
-function processNextScan() {
-    if (processingScan || !scanQueue.length) {
-        return;
-    }
-
-    const input = getNewestProductInput();
+function temporarilyLockInput(input, delay = 900) {
     if (!input) {
-        window.setTimeout(processNextScan, 150);
         return;
     }
-
-    const code = scanQueue.shift();
-    processingScan = true;
-    ignoreEnterUntil = Date.now() + 700;
-    writeValueToInput(input, code);
-    window.setTimeout(() => dispatchEnter(input), 80);
-}
-
-function releaseProcessingAndContinue(delay = 250) {
+    input.readOnly = true;
     window.setTimeout(() => {
-        processingScan = false;
-        processNextScan();
+        input.readOnly = false;
     }, delay);
 }
 
@@ -66,21 +38,18 @@ function focusNewestProductInput(retries = 12) {
     if (input) {
         input.value = "";
         input.focus();
-        ignoreEnterUntil = Date.now() + 700;
-        releaseProcessingAndContinue(250);
+        ignoreEnterUntil = Date.now() + 1200;
+        temporarilyLockInput(input, 900);
         return;
     }
     if (retries > 0) {
         window.setTimeout(() => focusNewestProductInput(retries - 1), 150);
-    } else {
-        releaseProcessingAndContinue(250);
     }
 }
 
 function addNextProductLine() {
     const addLink = getAddProductLink();
     if (!addLink) {
-        releaseProcessingAndContinue(250);
         return;
     }
     addLink.click();
@@ -118,8 +87,6 @@ function tryAutoSelect(input, retries = 12) {
 
             if (currentValue && currentExpanded !== "true") {
                 addNextProductLine();
-            } else {
-                releaseProcessingAndContinue(250);
             }
         }, 350);
         return;
@@ -127,8 +94,6 @@ function tryAutoSelect(input, retries = 12) {
 
     if (retries > 0) {
         window.setTimeout(() => tryAutoSelect(input, retries - 1), 120);
-    } else {
-        releaseProcessingAndContinue(250);
     }
 }
 
@@ -146,43 +111,33 @@ document.addEventListener(
             return;
         }
 
-        const value = (target.value || "").trim();
-        if (!value) {
-            return;
-        }
-
         if (Date.now() < ignoreEnterUntil) {
             ev.preventDefault();
             ev.stopPropagation();
             return;
         }
 
-        if (!processingScan) {
-            processingScan = true;
+        const value = (target.value || "").trim();
 
-            window.setTimeout(() => {
-                const currentValue = (target.value || "").trim();
-                const currentExpanded = target.getAttribute("aria-expanded");
-
-                if (!currentValue) {
-                    releaseProcessingAndContinue(250);
-                    return;
-                }
-
-                if (currentExpanded === "true") {
-                    tryAutoSelect(target);
-                    return;
-                }
-
-                addNextProductLine();
-            }, 250);
+        if (!value) {
             return;
         }
 
-        ev.preventDefault();
-        ev.stopPropagation();
-        scanQueue.push(value);
-        target.value = "";
+        window.setTimeout(() => {
+            const currentValue = (target.value || "").trim();
+            const currentExpanded = target.getAttribute("aria-expanded");
+
+            if (!currentValue) {
+                return;
+            }
+
+            if (currentExpanded === "true") {
+                tryAutoSelect(target);
+                return;
+            }
+
+            addNextProductLine();
+        }, 250);
     },
     true
 );
