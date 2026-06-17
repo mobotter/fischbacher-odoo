@@ -2,13 +2,15 @@
 
 Odoo 19 module for Odoo.sh.
 
-## Behavior
-- Adds a barcode area above sale order lines.
-- Scan a product barcode into the field.
-- Click "Scan übernehmen" or press Enter in the field depending on form behavior.
-- Each processed barcode creates a new sale order line with quantity 1.
-- The scan field is cleared after processing.
+## Goal
+When a product is selected in the sale order line product many2one field, automatically add the next line and focus the next product input.
+
+## Intended behavior
+- Scan barcode into the product field or type/select a product.
+- As soon as Odoo accepts the product selection, a new line is added.
+- The next product input gets focus automatically.
 
 ## Notes
-- This version avoids backend JS assets for Odoo.sh stability.
-- For fully automatic scan processing without clicking, a small frontend extension is still needed.
+- This version patches the backend many2one widget.
+- It is specific to the sale order line product cell UI.
+- Test in staging before production.
