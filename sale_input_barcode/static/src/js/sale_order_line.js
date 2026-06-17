@@ -23,23 +23,12 @@ function getNewestProductInput() {
     return inputs.length ? inputs[inputs.length - 1] : null;
 }
 
-function temporarilyLockInput(input, delay = 900) {
-    if (!input) {
-        return;
-    }
-    input.readOnly = true;
-    window.setTimeout(() => {
-        input.readOnly = false;
-    }, delay);
-}
-
 function focusNewestProductInput(retries = 12) {
     const input = getNewestProductInput();
     if (input) {
         input.value = "";
         input.focus();
         ignoreEnterUntil = Date.now() + 1200;
-        temporarilyLockInput(input, 900);
         return;
     }
     if (retries > 0) {
