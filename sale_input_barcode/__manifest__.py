@@ -12,7 +12,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'sale_input_barcode/static/src/js/sale_order_line_autoselect.js',
+            'sale_input_barcode/static/src/js/sale_order_line_autonext.js',
         ],
     },
     'installable': True,
