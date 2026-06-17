@@ -7,10 +7,7 @@ const PRODUCT_CELL_SELECTOR = 'td[name="product_template_id"]';
 const PRODUCT_INPUT_SELECTOR = 'td[name="product_template_id"] input.o-autocomplete--input';
 const ADD_PRODUCT_SELECTOR = '.o_sale_input_barcode_order_line .o_field_x2many_list_row_add a[role="button"]';
 const CONFIG_CONFIRM_SELECTOR = 'button[name="sale_product_configurator_confirm_button"]';
-const COOLDOWN_MS = 1100;
 let processing = false;
-let lastProcessedValue = '';
-let lastProcessedAt = 0;
 
 function getRoot() {
     return document.querySelector(ROOT_SELECTOR);
@@ -35,7 +32,7 @@ function getNewestProductInput() {
     return inputs.length ? inputs[inputs.length - 1] : null;
 }
 
-function focusNewestProductInput(retries = 10) {
+function focusNewestProductInput(retries = 8) {
     const tryFocus = () => {
         const input = getNewestProductInput();
         if (input) {
@@ -45,12 +42,12 @@ function focusNewestProductInput(retries = 10) {
             return;
         }
         if (retries > 0) {
-            window.setTimeout(() => focusNewestProductInput(retries - 1), 150);
+            window.setTimeout(() => focusNewestProductInput(retries - 1), 120);
         } else {
             processing = false;
         }
     };
-    window.setTimeout(tryFocus, 450);
+    window.setTimeout(tryFocus, 120);
 }
 
 function addNextProductLine() {
@@ -65,48 +62,19 @@ function addNextProductLine() {
     focusNewestProductInput();
 }
 
-function looksLikeResolvedProduct(value) {
-    if (!value) return false;
-    const v = String(value).trim();
-    if (!v) return false;
-    if (/^MIET\d+/i.test(v)) return false;
-    if (v.length < 12) return false;
-    return /\s-\s/.test(v) || /[A-Za-zÄÖÜäöüß]{3,}/.test(v);
-}
-
-function shouldIgnore(value) {
-    const now = Date.now();
-    if (processing) return true;
-    if (now - lastProcessedAt < COOLDOWN_MS) return true;
-    if (value && value === lastProcessedValue) return true;
-    return false;
-}
-
-function handleAfterProductAccepted(target) {
+function handleAfterProductAccepted() {
     window.setTimeout(() => {
-        const current = (target.value || '').trim();
-        const expanded = target.getAttribute('aria-expanded');
-        if (expanded === 'true') {
-            processing = false;
-            return;
-        }
-        if (!looksLikeResolvedProduct(current)) {
-            processing = false;
-            return;
-        }
-        lastProcessedValue = current;
-        lastProcessedAt = Date.now();
         const confirmBtn = document.querySelector(CONFIG_CONFIRM_SELECTOR);
         if (confirmBtn && confirmBtn.offsetParent !== null) {
             console.log('[sale_input_barcode] product configurator confirm found, clicking');
             confirmBtn.click();
             window.setTimeout(() => {
                 addNextProductLine();
-            }, 650);
+            }, 500);
             return;
         }
         addNextProductLine();
-    }, 220);
+    }, 240);
 }
 
 document.addEventListener('keydown', (ev) => {
@@ -115,7 +83,7 @@ document.addEventListener('keydown', (ev) => {
     if (ev.key !== 'Enter') return;
     const root = getRoot();
     if (!root || !target.closest(PRODUCT_CELL_SELECTOR)) return;
-    if (shouldIgnore(target.value || '')) return;
+    if (processing) return;
     processing = true;
     console.log('[sale_input_barcode] Enter on product input', {
         value: target.value,
@@ -134,6 +102,6 @@ document.addEventListener('keydown', (ev) => {
             processing = false;
             return;
         }
-        handleAfterProductAccepted(target);
-    }, 180);
+        handleAfterProductAccepted();
+    }, 140);
 }, true);
