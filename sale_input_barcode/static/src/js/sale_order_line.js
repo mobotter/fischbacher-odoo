@@ -56,20 +56,6 @@ function getActiveOption(input) {
     return document.querySelector(".ui-menu-item-wrapper.ui-state-active, .dropdown-item.active, [role='option'][aria-selected='true']");
 }
 
-function waitUntilSelectionCommitted(input, retries = 15) {
-    const currentValue = (input.value || "").trim();
-    const currentExpanded = input.getAttribute("aria-expanded");
-
-    if (currentValue && currentExpanded !== "true") {
-        addNextProductLine();
-        return;
-    }
-
-    if (retries > 0) {
-        window.setTimeout(() => waitUntilSelectionCommitted(input, retries - 1), 120);
-    }
-}
-
 function tryAutoSelect(input, retries = 15) {
     if (!input || autoSelecting) {
         return;
@@ -89,12 +75,16 @@ function tryAutoSelect(input, retries = 15) {
 
     if (expanded === "true" && isRealOption) {
         autoSelecting = true;
+
+        if (typeof option.dispatchEvent === "function") {
+            option.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+        }
         option.click();
 
         window.setTimeout(() => {
             autoSelecting = false;
-            waitUntilSelectionCommitted(input);
-        }, 120);
+            addNextProductLine();
+        }, 500);
 
         return;
     }
