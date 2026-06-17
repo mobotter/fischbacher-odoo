@@ -7,6 +7,8 @@ const ADD_PRODUCT_SELECTOR =
 const PRODUCT_INPUT_SELECTOR =
     'td[name="product_template_id"] input.o-autocomplete--input';
 
+let ignoreEnterUntil = 0;
+
 function getAddProductLink() {
     const links = Array.from(document.querySelectorAll(ADD_PRODUCT_SELECTOR));
     return (
@@ -28,6 +30,7 @@ function focusNewestProductInput(retries = 12) {
         console.log("[sale_input_barcode] focusing next product input");
         input.value = "";
         input.focus();
+        ignoreEnterUntil = Date.now() + 700;
         return;
     }
     if (retries > 0) {
@@ -57,6 +60,13 @@ document.addEventListener(
             return;
         }
         if (ev.key !== "Enter") {
+            return;
+        }
+
+        if (Date.now() < ignoreEnterUntil) {
+            console.log("[sale_input_barcode] ignored trailing enter");
+            ev.preventDefault();
+            ev.stopPropagation();
             return;
         }
 
