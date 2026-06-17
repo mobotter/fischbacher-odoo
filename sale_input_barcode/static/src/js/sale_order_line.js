@@ -7,6 +7,7 @@ const PRODUCT_INPUT_SELECTOR =
 
 let ignoreEnterUntil = 0;
 let autoSelecting = false;
+let processingScan = false;
 
 function getAddProductLink() {
     const links = Array.from(document.querySelectorAll(ADD_PRODUCT_SELECTOR));
@@ -23,22 +24,32 @@ function getNewestProductInput() {
     return inputs.length ? inputs[inputs.length - 1] : null;
 }
 
+function releaseProcessingLater(delay = 250) {
+    window.setTimeout(() => {
+        processingScan = false;
+    }, delay);
+}
+
 function focusNewestProductInput(retries = 12) {
     const input = getNewestProductInput();
     if (input) {
         input.value = "";
         input.focus();
         ignoreEnterUntil = Date.now() + 700;
+        releaseProcessingLater(250);
         return;
     }
     if (retries > 0) {
         window.setTimeout(() => focusNewestProductInput(retries - 1), 150);
+    } else {
+        releaseProcessingLater(250);
     }
 }
 
 function addNextProductLine() {
     const addLink = getAddProductLink();
     if (!addLink) {
+        releaseProcessingLater(250);
         return;
     }
     addLink.click();
@@ -76,6 +87,8 @@ function tryAutoSelect(input, retries = 12) {
 
             if (currentValue && currentExpanded !== "true") {
                 addNextProductLine();
+            } else {
+                releaseProcessingLater(250);
             }
         }, 350);
         return;
@@ -83,6 +96,8 @@ function tryAutoSelect(input, retries = 12) {
 
     if (retries > 0) {
         window.setTimeout(() => tryAutoSelect(input, retries - 1), 120);
+    } else {
+        releaseProcessingLater(250);
     }
 }
 
@@ -106,17 +121,26 @@ document.addEventListener(
             return;
         }
 
+        if (processingScan) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            return;
+        }
+
         const value = (target.value || "").trim();
 
         if (!value) {
             return;
         }
 
+        processingScan = true;
+
         window.setTimeout(() => {
             const currentValue = (target.value || "").trim();
             const currentExpanded = target.getAttribute("aria-expanded");
 
             if (!currentValue) {
+                releaseProcessingLater(250);
                 return;
             }
 
