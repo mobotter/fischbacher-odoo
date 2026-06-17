@@ -3,13 +3,12 @@
 Odoo 19 module for Odoo.sh.
 
 ## Behavior
-- Adds a field `Barcode Scan` to the sales order form.
-- Scan a barcode into the field and end with `Enter`.
-- The module finds the product by exact barcode.
-- Each scan creates a **new** sale order line with quantity 1.
-- The field is cleared after processing.
+- Adds a barcode area above sale order lines.
+- Scan a product barcode into the field.
+- Click "Scan übernehmen" or press Enter in the field depending on form behavior.
+- Each processed barcode creates a new sale order line with quantity 1.
+- The scan field is cleared after processing.
 
 ## Notes
-- No scan button is required.
-- Scanner should work in keyboard mode and append `Enter`.
-- Test in a staging branch before production.
+- This version avoids backend JS assets for Odoo.sh stability.
+- For fully automatic scan processing without clicking, a small frontend extension is still needed.
