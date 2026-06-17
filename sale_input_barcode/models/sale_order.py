@@ -12,7 +12,7 @@ class SaleOrder(models.Model):
             lines_to_remove = self.env['sale.order.line']
 
             for line in order.order_line.filtered(lambda l: not l.display_type and l.product_id):
-                key = (line.product_id.id, line.product_uom.id)
+                key = line.product_id.id
                 if key not in grouped:
                     grouped[key] = line
                     continue
