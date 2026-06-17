@@ -28,7 +28,7 @@ function focusNewestProductInput(retries = 12) {
     if (input) {
         input.value = "";
         input.focus();
-        ignoreEnterUntil = Date.now() + 900;
+        ignoreEnterUntil = Date.now() + 1000;
         return;
     }
     if (retries > 0) {
@@ -56,7 +56,7 @@ function getActiveOption(input) {
     return document.querySelector(".ui-menu-item-wrapper.ui-state-active, .dropdown-item.active, [role='option'][aria-selected='true']");
 }
 
-function tryAutoSelect(input, retries = 12) {
+function tryAutoSelect(input, retries = 15) {
     if (!input || autoSelecting) {
         return;
     }
@@ -79,14 +79,8 @@ function tryAutoSelect(input, retries = 12) {
 
         window.setTimeout(() => {
             autoSelecting = false;
-
-            const currentValue = (input.value || "").trim();
-            const currentExpanded = input.getAttribute("aria-expanded");
-
-            if (currentValue && currentExpanded !== "true") {
-                addNextProductLine();
-            }
-        }, 350);
+            addNextProductLine();
+        }, 400);
         return;
     }
 
@@ -116,18 +110,12 @@ document.addEventListener(
         }
 
         const value = (target.value || "").trim();
-
         if (!value) {
             return;
         }
 
         window.setTimeout(() => {
-            const currentValue = (target.value || "").trim();
             const currentExpanded = target.getAttribute("aria-expanded");
-
-            if (!currentValue) {
-                return;
-            }
 
             if (currentExpanded === "true") {
                 tryAutoSelect(target);
@@ -135,7 +123,7 @@ document.addEventListener(
             }
 
             addNextProductLine();
-        }, 250);
+        }, 220);
     },
     true
 );
