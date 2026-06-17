@@ -28,7 +28,7 @@ function focusNewestProductInput(retries = 12) {
     if (input) {
         input.value = "";
         input.focus();
-        ignoreEnterUntil = Date.now() + 1200;
+        ignoreEnterUntil = Date.now() + 900;
         return;
     }
     if (retries > 0) {
@@ -56,7 +56,7 @@ function getActiveOption(input) {
     return document.querySelector(".ui-menu-item-wrapper.ui-state-active, .dropdown-item.active, [role='option'][aria-selected='true']");
 }
 
-function tryAutoSelect(input, retries = 15) {
+function tryAutoSelect(input, retries = 12) {
     if (!input || autoSelecting) {
         return;
     }
@@ -75,22 +75,23 @@ function tryAutoSelect(input, retries = 15) {
 
     if (expanded === "true" && isRealOption) {
         autoSelecting = true;
-
-        if (typeof option.dispatchEvent === "function") {
-            option.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-        }
         option.click();
 
         window.setTimeout(() => {
             autoSelecting = false;
-            addNextProductLine();
-        }, 650);
 
+            const currentValue = (input.value || "").trim();
+            const currentExpanded = input.getAttribute("aria-expanded");
+
+            if (currentValue && currentExpanded !== "true") {
+                addNextProductLine();
+            }
+        }, 350);
         return;
     }
 
     if (retries > 0) {
-        window.setTimeout(() => tryAutoSelect(input, retries - 1), 150);
+        window.setTimeout(() => tryAutoSelect(input, retries - 1), 120);
     }
 }
 
