@@ -6,6 +6,17 @@ from odoo import api, fields, models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    @api.onchange('plan_id')
+    def _onchange_plan_id_set_start_and_next_invoice_date(self):
+        for order in self:
+            if not order.is_subscription or not order.plan_id:
+                continue
+
+            if not order.start_date:
+                order.start_date = fields.Date.context_today(order)
+
+            order._apply_subscription_billing_timing(force=True)
+
     def _get_initial_next_invoice_date_from_plan(self):
         self.ensure_one()
         if not self.is_subscription or not self.plan_id or not self.start_date:
