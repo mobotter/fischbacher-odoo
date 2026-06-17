@@ -84,7 +84,7 @@ function tryAutoSelect(input, retries = 15) {
         window.setTimeout(() => {
             autoSelecting = false;
             addNextProductLine();
-        }, 500);
+        }, 650);
 
         return;
     }
