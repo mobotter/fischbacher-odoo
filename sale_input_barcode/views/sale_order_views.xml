@@ -5,14 +5,8 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='order_line']" position="before">
-                <group string="Barcode Scan" invisible="state not in ('draft', 'sent')">
-                    <field name="barcode_scan" placeholder="Barcode scannen"/>
-                    <button name="action_process_barcode_scan"
-                            type="object"
-                            string="Scan übernehmen"
-                            class="btn-primary"/>
-                </group>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="class">o_sale_input_barcode_order_line</attribute>
             </xpath>
         </field>
     </record>
