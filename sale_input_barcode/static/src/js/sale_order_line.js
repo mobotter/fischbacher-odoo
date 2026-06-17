@@ -28,7 +28,7 @@ function focusNewestProductInput(retries = 12) {
     if (input) {
         input.value = "";
         input.focus();
-        ignoreEnterUntil = Date.now() + 900;
+        ignoreEnterUntil = Date.now() + 650;
         return;
     }
     if (retries > 0) {
