@@ -1,7 +1,7 @@
 {
     'name': 'Sale Input Barcode',
-    'version': '19.0.4.0.0',
-    'summary': 'Automatically create a new sale order line after product selection or barcode scan',
+    'version': '19.0.5.0.0',
+    'summary': 'Auto-create the next sale order line after product selection in sales order lines',
     'category': 'Sales/Sales',
     'license': 'AGPL-3',
     'author': 'Moritz Kern',
@@ -12,7 +12,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'sale_input_barcode/static/src/js/sale_order_line_autonext.js',
+            'sale_input_barcode/static/src/js/sale_order_line_autoselect.js',
         ],
     },
     'installable': True,
