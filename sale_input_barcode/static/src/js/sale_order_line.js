@@ -8,6 +8,7 @@ const PRODUCT_INPUT_SELECTOR =
     'td[name="product_template_id"] input.o-autocomplete--input';
 
 let ignoreEnterUntil = 0;
+let autoSelecting = false;
 
 function getAddProductLink() {
     const links = Array.from(document.querySelectorAll(ADD_PRODUCT_SELECTOR));
@@ -49,6 +50,60 @@ function addNextProductLine() {
     window.setTimeout(() => focusNewestProductInput(), 450);
 }
 
+function getActiveOption(input) {
+    const activeId = input.getAttribute("aria-activedescendant");
+    if (activeId) {
+        const el = document.getElementById(activeId);
+        if (el) {
+            return el;
+        }
+    }
+    return document.querySelector(".ui-menu-item-wrapper.ui-state-active, .dropdown-item.active, [role='option'][aria-selected='true']");
+}
+
+function tryAutoSelect(input, retries = 12) {
+    if (!input || autoSelecting) {
+        return;
+    }
+
+    const expanded = input.getAttribute("aria-expanded");
+    const option = getActiveOption(input);
+
+    console.log(
+        "[sale_input_barcode] tryAutoSelect",
+        "expanded=", expanded,
+        "option=", option?.textContent?.trim()
+    );
+
+    if (expanded === "true" && option) {
+        autoSelecting = true;
+        console.log("[sale_input_barcode] auto-selecting first result");
+        option.click();
+
+        window.setTimeout(() => {
+            autoSelecting = false;
+
+            const currentValue = (input.value || "").trim();
+            const currentExpanded = input.getAttribute("aria-expanded");
+
+            console.log(
+                "[sale_input_barcode] post-select check",
+                "value=", currentValue,
+                "expanded=", currentExpanded
+            );
+
+            if (currentValue && currentExpanded !== "true") {
+                addNextProductLine();
+            }
+        }, 350);
+        return;
+    }
+
+    if (retries > 0) {
+        window.setTimeout(() => tryAutoSelect(input, retries - 1), 120);
+    }
+}
+
 document.addEventListener(
     "keydown",
     (ev) => {
@@ -70,8 +125,8 @@ document.addEventListener(
             return;
         }
 
-        const expanded = target.getAttribute("aria-expanded");
         const value = (target.value || "").trim();
+        const expanded = target.getAttribute("aria-expanded");
 
         console.log(
             "[sale_input_barcode] Enter on product input",
@@ -79,7 +134,7 @@ document.addEventListener(
             "expanded=", expanded
         );
 
-        if (!value || expanded === "true") {
+        if (!value) {
             return;
         }
 
@@ -93,10 +148,17 @@ document.addEventListener(
                 "expanded=", currentExpanded
             );
 
-            if (currentValue && currentExpanded !== "true") {
-                addNextProductLine();
+            if (!currentValue) {
+                return;
             }
-        }, 300);
+
+            if (currentExpanded === "true") {
+                tryAutoSelect(target);
+                return;
+            }
+
+            addNextProductLine();
+        }, 250);
     },
     true
 );
