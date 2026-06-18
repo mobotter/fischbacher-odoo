@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="product_brand_user" model="res.groups">
+        <field name="name">Product Brand User</field>
+        <field name="category_id" ref="base.module_category_applications_sale"/>
+    </record>
+    
+    <record id="product_website_attribute_user" model="res.groups">
+        <field name="name">Website Attribute User</field>
+        <field name="category_id" ref="base.module_category_applications_sale"/>
+    </record>
+    
+    <record id="product_website_attribute_value_user" model="res.groups">
+        <field name="name">Website Attribute Value User</field>
+        <field name="category_id" ref="base.module_category_applications_sale"/>
+    </record>
+    
+    <record id="product_website_attribute_product_user" model="res.groups">
+        <field name="name">Website Attribute Product User</field>
+        <field name="category_id" ref="base.module_category_applications_sale"/>
+    </record>
+</odoo>
