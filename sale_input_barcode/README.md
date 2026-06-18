@@ -1,4 +1,71 @@
+# Sale Input Barcode
 
+## Übersicht
+
+Dieses Modul erweitert den Odoo Verkaufsauftrag (sale.order) um eine **automatische Produkt-Eingabe via Barcode**. Nach der Produktauswahl wird **sofort eine neue Verkaufszeile** angelegt, damit der nächste Produkt-Barcode direkt eingegeben werden kann.
+
+Ideal für **schnelle Masseneingaben** von Produkten im Verkaufsauftrag, besonders geeignet für:
+
+- Barcode-Scanner im Verkauf
+- Schnelle Bestell-Eingabe ohne manuelles "Produkt hinzufügen" klicken
+- Wareneingang mit schnellen Produkt-Scans
+
+## Technische Details
+
+| Feld | Wert |
+|---|---|
+| Technischer Name | `sale_input_barcode` |
+| Name | `Sale Input Barcode` |
+| Version | `19.0.5.0.0` |
+| Author | `Moritz Kern` |
+| Kategorie | `Sales/Sales` |
+| Lizenz | `AGPL-3` |
+| Abhängigkeiten | `sale_management`, `product`, `web` |
+| Application | `False` |
+| Installable | `True` |
+
+## Funktionsumfang
+
+### Automatische neue Verkaufszeile nach Produktauswahl
+
+**Was:** Nach der Auswahl eines Produkt in der Verkaufszeile wird **automatisch eine neue Zeile** angelegt.
+
+**Wie:**
+- JavaScript-Event Listener auf `keydown` für `Enter`-Taste
+- Detectet Produkt-Input im Feld `product_template_id`
+- Bei `Enter`:
+  - Klickt automatisch auf "Produkt hinzufügen" (`Add a product`)
+  - Fokussiert das **neueste** Produkt-Input-Feld
+  - Clear den Inputwert für nächsten Barcode
+
+**Workflow:**
+1. Produkt-Barcode im Input eingeben (oder auswählen)
+2. `Enter` drücken
+3. Produkt wird ausgewählt
+4. **Automatisch neue Zeile** angelegt
+5. Input-Feld der neuen Zeile ist fokussiert und clear
+6. Nächster Barcode kann eingegeben werden
+
+### Duplicate Barcode Lines Merge
+
+**Was:** Bei duplizierten Produkten in Verkaufszeilen wird die Menge automatisch zusammengefasst.
+
+**Wie:**
+- `SaleOrder._merge_duplicate_barcode_lines()`
+- Grouped nach `product_id.id`
+-第一位 Zeile bleibt, weitere werden entfernt
+- Menge wird addiert: `grouped[key].product_uom_qty += line.product_uom_qty`
+- Duplicate Lines werden `unlink()`
+
+**Trigger:**
+- Beim Erstellen: `@api.model_create_multi create()`
+- Beim Schreiben: `write()`
+
+**Beispiel:**
+Zeile 1: Produkt A, Menge 2
+Zeile 2: Produkt A, Menge 3
+→ Nach Merge:
+Zeile 1: Produkt A, Menge 5
 ## Enthaltene Assets
 
 ### `web.assets_backend`
