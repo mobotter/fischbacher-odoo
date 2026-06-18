@@ -22,8 +22,8 @@
                             <td class="shipping_address">
                                 <span class="fw-bold">Shipping Address:</span>
                                 <t t-if="delivery_partner">
-
-                                    <div t-field="doc.delivery_address" t-options="{'widget': 'text'}" />
+                                    <!-- KORRIGIERT: doc.delivery_address -> delivery_partner mit replace -->
+                                    <div t-esc="delivery_partner.replace('\n', '&lt;br/&gt;')" />
                                 </t>
                                 <t t-else="">
                                     <address t-esc="o.partner_shipping_id"
