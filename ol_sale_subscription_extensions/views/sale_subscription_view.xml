@@ -29,9 +29,16 @@
                 <attribute name="string">Order Template</attribute>
             </xpath>
             
-            <!-- Neues Dropdown direkt danach -->
+            <!-- Neues Dropdown direkt davor -->
             <xpath expr="//field[@name='sale_order_template_id']" position="before">
                 <field name="quotation_template_id" string="Quotation Lines Template"/>
+            </xpath>
+
+            <!-- Nächstes Rechnungsdatum + berechnete Billing-Period anzeigen -->
+            <xpath expr="//field[@name='sale_order_template_id']" position="after">
+                <field name="next_invoice_date"/>
+                <field name="billing_period_start" readonly="1"/>
+                <field name="billing_period_end" readonly="1"/>
             </xpath>
             
             <!-- C. Neuer Tab 'Quotation Lines' als ERSTEN Tab ins Notebook einfügen -->
