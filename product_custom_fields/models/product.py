@@ -28,33 +28,28 @@ class ProductCustom(models.Model):
     uvv_date = fields.Date("UVV Date")
     brake_inspection_date = fields.Date("Brake Inspection Date")    
 
-    #Removed task id 52133 JC
-    # label_stock_location = fields.Char("Stock-Label Location")
-
-
     @api.depends("seller_ids", "seller_ids.product_code", "seller_ids.partner_id", "seller_ids.price")
     def _compute_supplier(self):
         for rec in self:
             if rec.seller_ids:
                 ms = rec.seller_ids[0]
-                rec.main_supplier_id = ms.partner_id.id  # Many2one erwartet eine ID
-                rec.main_supplier_product_number = ms.product_code  # Das ist das Char-Feld!
+                rec.main_supplier_id = ms.partner_id.id
+                rec.main_supplier_product_number = ms.product_code
             else:
                 rec.main_supplier_id = False
                 rec.main_supplier_product_number = False
 
-
-    @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
         args = list(args or [])        
         if name:            
             args += ['|', '|','|','|', ('name', operator, name), ('default_code', operator, name), ('description_sale', operator, name), ('search_term', operator, name), ('short_term', operator, name)]
-        return super().name_search(name,args,operator,limit)
+        return super().name_search(name, args, operator, limit)
 
 
 class ProductBrand(models.Model):
     _name = "product.brand"
     _description = "Model to allow a Product Brand"
+    _rec_name = "name"
     
     name = fields.Char("Name")
     image = fields.Image("Image")
@@ -71,7 +66,7 @@ class ProductImage(models.Model):
 class ProductWebsiteAttribute(models.Model):
     _name = "product.website.attribute"
     _description = "Model to allow non Variant Creating Attributes"
-
+    _rec_name = "name"
 
     name = fields.Char("Name")
     external_id = fields.Integer("External ID")
@@ -83,6 +78,7 @@ class ProductWebsiteAttribute(models.Model):
 class ProductWebsiteAttributeValue(models.Model):
     _name = "product.website.attribute.value"
     _description = "Model to allow non Variant Creating Attributes Values"
+    _rec_name = "name"
 
     name = fields.Char("Name")
     external_id = fields.Integer("External ID")
@@ -95,4 +91,4 @@ class ProductWebsiteAttributeProduct(models.Model):
 
     product_id = fields.Many2one("product.product","Product")
     attribute_id = fields.Many2one("product.website.attribute","Attribute")
-    value_ids = fields.Many2many("product.website.attribute.value","Values")
+    value_ids = fields.Many2many("product.website.attribute.value", "product_website_attribute_value_product", "attribute_value_id", "product_id", "Values")
