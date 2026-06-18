@@ -8,16 +8,20 @@ patch(PaymentScreen.prototype, {
         // Originale Validierung ausführen
         await super.validateOrder(...arguments);
 
-        // Zweiten Druckbefehl nach kurzem Delay auslösen
-        // (Delay nötig, damit der erste Druck abgeschlossen ist)
+        // Direkter doppelter Druck ohne Delay
         if (this.env.printer) {
-            setTimeout(async () => {
-                try {
-                    await this.env.printer.printReceipt();
-                } catch (e) {
-                    console.warn("[double_print] Zweiter Druck fehlgeschlagen:", e);
-                }
-            }, 2000);
+            try {
+                // Erstes BON
+                await this.env.printer.printReceipt();
+
+                // Minimaler Delay nur für Printer-Puffer
+                // await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Zweites BON direkt danach (ohne Delay)
+                await this.env.printer.printReceipt();
+            } catch (e) {
+                console.warn("[double_print] Druck fehlgeschlagen:", e);
+            }
         }
     },
 });
