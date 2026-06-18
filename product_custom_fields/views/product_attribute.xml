@@ -22,6 +22,7 @@
             </form>
         </field>
     </record>
+    
     <record id="product_website_attribute_view_tree" model="ir.ui.view">
         <field name="name">product.website.attribute.view.tree</field>
         <field name="model">product.website.attribute</field>
@@ -36,7 +37,7 @@
         </field>
     </record>
 
-    <record id="product_website_attribute_view_tree" model="ir.ui.view">
+    <record id="product_website_attribute_value_view_tree" model="ir.ui.view">
         <field name="name">product.website.attribute.value.view.tree</field>
         <field name="model">product.website.attribute.value</field>
         <field name="arch" type="xml">
