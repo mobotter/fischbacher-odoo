@@ -63,7 +63,7 @@ class SaleOrder(models.Model):
             and self.plan_id.billing_timing
         ):
             return self.plan_id.billing_timing
-        return 'advance'
+        return 'arrears'
 
     def _calculate_billing_period_dates(self):
         self.ensure_one()
@@ -82,7 +82,7 @@ class SaleOrder(models.Model):
 
         return (billing_start, billing_end)
 
-    @api.depends('next_invoice_date', 'plan_id', 'plan_id.billing_timing')
+    @api.depends('next_invoice_date', 'plan_id')
     def _compute_billing_period(self):
         for order in self:
             billing_start, billing_end = order._calculate_billing_period_dates()
