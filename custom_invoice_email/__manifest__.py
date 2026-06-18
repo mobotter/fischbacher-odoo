@@ -4,7 +4,15 @@
     'author': 'Aneeq Akhtar | Odolution',
     'website': 'https://odolution.com',
     'license': 'LGPL-3',
+    'category': 'Contacts',
     'summary': 'Adds invoice and advertising email management to partners.',
+    'description': """
+This module extends partners with:
+- invoice email handling
+- advertising email handling
+- blacklist synchronization
+- partner email update server action
+""",
     'depends': [
         'base',
         'mail',
@@ -14,7 +22,7 @@
         'views/res_partner_view.xml',
     ],
     'installable': True,
-    'application': True,
+    'application': False,
     'auto_install': False,
     'sequence': 1,
 }
