@@ -2,25 +2,89 @@
 
 ## Übersicht
 
-Zeigt die Kundenreferenz (`partner.ref`) direkt in den Verkaufsbeleg-Ansichten von Odoo an.
+Zeigt ref - name bei Kunden und default_code - name bei Produkten in Sales/Subs
+
+Das Modul erweitert primär den Verkaufsauftrag (sale.order) und die Produktauswahl in Sales und Subscriptions um eine kontextgesteuerte Anzeige von Referenzen.
 
 ## Funktionsumfang
 
-- Erweitert die Standard-Sale-Order-Ansichten um die Anzeige der Kundenreferenz.
-- Das Feld `partner_id.ref` wird im Tree- und/oder Kanban-View des Verkaufsbelegs sichtbar.
-- Damit ist die Referenz des Kunden direkt in der Bestell-Übersicht lesbar, ohne die Partner-Form öffnen zu müssen.
+### Kundenanzeige im Verkauf
 
-## Typischer Einsatz
+- Das Feld `partner_id` im Verkaufsauftrag zeigt den Kunden als "ref - name".
+- Falls keine `ref` vorhanden ist, wird "id - name" verwendet.
+- Die Suche nach Kunden unterstützt sowohl `ref` als auch `name`.
+- Bei rein numerischer Eingabe wird zusätzlich nach `id` gesucht.
+- Der Kontext-Flag `show_ref_prefix` steuert, ob diese Anzeige aktiviert ist.
 
-- Schnellere Zuordnung von Bestellungen zu Kundenreferenzen.
-- Übersichtlichere Listenansichten im Verkauf.
-- Vermeidung von Doppelarbeit beim manuellen Nachschauen der Kundenreferenz.
+### Produktanzeige in Sales und Subscriptions
+
+- Produkte werden in Sales und Subscriptions als "default_code - name" angezeigt.
+- Die Produktsuche unterstützt sowohl Suche nach `default_code` als auch nach `name`.
+- Quick Create aus der Produktsuche ist blockiert.
+- Die Bezeichnung in Verkaufszeilen (`sale.order.line.name`) wird automatisch angepasst.
 
 ## Technische Details
 
-- Technischer Name: `sale_partner_ref_display`
-- Erweitert wahrscheinlich: `sale.order` Model und/oder `sale.order.tree` View
-- Zeigt Feld: `partner_id.ref` (Kundenreferenz) in Sale Order Views
+| Feld | Wert |
+|---|---|
+| Technischer Name | `sale_partner_ref_display` |
+| Version | `19.0.1.0.0` |
+| Kategorie | `Sales` |
+| Author | `Moritz Kern` |
+| Lizenz | `LGPL-3` |
+| Abhängigkeiten | `sale, product, sale_subscription` |
+
+## Enthaltene Modelle
+
+### `res_partner`
+
+Erweitert `display_name` und `name_search` von `res.partner`.
+
+Funktionen:
+- Anzeige als "ref - name" (oder "id - name" wenn keine ref)
+- Suche nach ref und name im Kunden-Search
+- Unterstützung von Search nach ID bei rein numerischer Eingabe
+- Kontext-Flag `show_ref_prefix` steuert die Anzeige
+
+### `product_product`
+
+Erweitert `display_name` und `name_search` von `product.product`.
+
+Funktionen:
+- Anzeige als "default_code - name"
+- Suche nach default_code und name
+- Blockiert Quick Create aus der Produktsuche (`forbid_quick_create_product`)
+
+### `product_template`
+
+Erweitert `display_name` und `name_search` von `product.template`.
+
+Funktionen:
+- Anzeige als "default_code - name"
+- Suche nach default_code und name
+
+### `sale_order_line`
+
+Erweitert `sale.order.line`.
+
+Funktionen:
+- Passt die Bezeichnung in Verkaufszeilen an ("default_code - name")
+- Übernimmt `_compute_product_id_change` und setzt `name` neu
+
+## Enthaltene Views
+
+### views/sale_order_views.xml
+
+Das Modul definiert folgende Views:
+
+- `view_order_form_partner_ref`: Sale Order Form - Partner mit `show_ref_prefix`
+- `view_order_form_product_display`: Sale Order Form - Produkt mit `forbid_quick_create`
+- `view_subscription_form_partner_ref`: Subscription Form - Partner mit `show_ref_prefix`
+- `view_subscription_form_product_display`: Subscription Form - Produkt mit `forbid_quick_create`
+
+## JavaScript
+
+- `static/src/js/partner_ref_widget.js`: Wird im Backend-Asset `web.assets_backend` eingebunden.
 
 ## Installation
 
@@ -30,4 +94,6 @@ Zeigt die Kundenreferenz (`partner.ref`) direkt in den Verkaufsbeleg-Ansichten v
 
 ## Hinweise
 
-Die konkrete Erweiterung erfolgt typischerweise über ein related field auf `partner_id.ref` in `sale.order` und eine Anpassung der Tree/Kanban-View. Bei Änderungen im Sale-Modul sollten View-IDs und Referenzen geprüft werden.
+- Die Anzeige von "ref - name" bei Kunden ist kontextgesteuert und wird durch `show_ref_prefix=True` aktiviert.
+- Quick Create von Produkten aus der Suche ist in Sales und Subscriptions deaktiviert.
+- Die Produktbezeichnung in Verkaufszeilen wird automatisch auf "default_code - name" gesetzt.
