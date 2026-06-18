@@ -1,16 +1,14 @@
-
 {
     'name': 'partner_history',
-    'version': '1.0',
+    'version': '19.0.1.0.0',
     'author': 'Michael Otto',
     'license': 'LGPL-3',
-    'depends': ['base','sale'],
+    'depends': ['base', 'sale'],
     'data': [
         'views/res_partner.xml',
         'security/ir.model.access.csv',
     ],
-    "external_dependencies": {"python": [], "bin": []},
-    #"uninstall_hook": "uninstall_hook",
-    #'pre_init_hook': 'pre_init_hook',
-    #'post_init_hook': 'post_init_hook',
+    'external_dependencies': {"python": [], "bin": []},
+    'installable': True,
+    'auto_install': False,
 }
