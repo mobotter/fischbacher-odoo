@@ -65,6 +65,37 @@ class SaleOrder(models.Model):
             return self.plan_id.billing_timing
         return 'arrears'
 
+    def _recompute_next_invoice_date_from_start_date(self):
+        for order in self:
+            if not order.plan_id:
+                continue
+
+            start_date = False
+            if 'start_date' in order._fields and order.start_date:
+                start_date = order.start_date
+            elif order.date_order:
+                start_date = fields.Date.to_date(order.date_order)
+
+            if not start_date:
+                continue
+
+            billing_timing = order._get_billing_timing()
+
+            if billing_timing == 'arrears':
+                order.next_invoice_date = start_date + relativedelta(days=28)
+            else:
+                order.next_invoice_date = start_date
+
+    @api.onchange('start_date', 'plan_id')
+    def _onchange_start_date_or_plan_id_recompute_next_invoice_date(self):
+        self._recompute_next_invoice_date_from_start_date()
+
+    def write(self, vals):
+        res = super().write(vals)
+        if 'start_date' in vals or 'plan_id' in vals:
+            self._recompute_next_invoice_date_from_start_date()
+        return res
+
     def _calculate_billing_period_dates(self):
         self.ensure_one()
 
