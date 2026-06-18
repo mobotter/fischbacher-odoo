@@ -3,7 +3,8 @@
 {
     'name': 'Adds Custom Fields to Products',
     'author': 'Odolution',
-    'depends': ['sale','website_sale'],
+    'version': '19.0.1.0.0',
+    'depends': ['sale', 'website_sale'],
     'data': [
         'views/product_form.xml',
         'views/product_search.xml',
@@ -15,4 +16,6 @@
     'external_dependencies': {
     },
     'license': 'LGPL-3',
+    'installable': True,
+    'auto_install': False,
 }
