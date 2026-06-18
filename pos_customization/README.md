@@ -6,7 +6,7 @@ Dieses Modul erweitert den Odoo Point of Sale (POS) um projektspezifische Funkti
 
 - **Kasse öffnen**: Button zum Öffnen des Geldkastens (Cash Drawer)
 - **Artikelnummer anzeigen**: Internal Reference (`default_code`) ganz oben auf jeder Produktkarte
-- **Doppelter Rechnungsdruck**: Automatische zweite Druckausgabe nach Rechnungserstellung
+- **Doppelter BON-Druck**: Sofortiger 2x Druck der Rechnung ohne Delay
 
 ## Technische Details
 
@@ -47,30 +47,37 @@ Dieses Modul erweitert den Odoo Point of Sale (POS) um projektspezifische Funkti
 **Wie:**
 - Patcht `ProductCard` Template (OWL XML)
 - XPath vor `//div[hasclass('product-img')]`
-- Split mit `t-if="props.product.default_code"`
+- `t-if="props.product.default_code"` bedingt Anzeige
 - Klasse: `w-100 px-2 py-1 text-muted fw-bold bg-light`
-- Style: `font-size: 0.85em; text-align: center; border-bottom: 1px solid #dee2e6; border-top-left-radius: 5px; border-top-right-radius: 5px;`
+- Style: `font-size: 0.85em; text-align: center; border-bottom: 1px solid #dee2e6; border-top-radius: 5px;`
 
 **UI:**
-- Kopfzeile auf jeder Karte
+- Kopfzeile auf jeder Karte (ganz oben)
 - Grau-heller Hintergrund (`bg-light`)
 - Dunkler Text (`text-muted`)
 - Fett (`fw-bold`)
 - Zentriert
-- Mit oberer Border
+- Mit unterer Border
 
-### 3. Double Receipt Print
+### 3. Doppelter BON-Druck
 
-**Was:** Nach erfolgreichem Rechnungsdruck wird automatisch nach 2 Sekunden ein zweiter Druck ausgelöst.
+**Was:** Nach erfolgreichem Rechnungsdruck wird **sofort** ein zweites BON gedruckt (ohne Delay).
 
 **Wie:**
 - Patcht `PaymentScreen.prototype.validateOrder()`
 - Nach `await super.validateOrder()`
-- `setTimeout` mit 2000ms Delay
-- `await this.env.printer.printReceipt()`
+- **Zwei sequentielle Druckbefehle:**
+  ```javascript
+  await this.env.printer.printReceipt();  // Erstes BON
+  await this.env.printer.printReceipt();  // Zweites BON
+  ```
 - Console-Warn bei Fehler
 
-**Warum Delay:** Damit der erste Druck abgeschlossen ist bevor der zweite startet.
+**Warum ohne Delay:**
+- Moderne Printer können sequential queueing selbst
+- Kein unnötiges Warten für User
+- Sofortiger 2x BON-Druck
+- Keine Race Conditions
 
 ### 4. Produktkarte flexible Höhe
 
@@ -129,7 +136,7 @@ POS-Assets (point_of_sale._assets_pos):
 
 2. **`static/src/js/double_print.js`**
    - Patcht `PaymentScreen.prototype.validateOrder()`
-   - Zweiter Druck nach 2 Sekunden Delay
+   - **Sofortiger 2x BON-Druck ohne Delay**
 
 3. **`static/src/xml/pos_button.xml`**
    - Template `pos_customization.ControlButtons`
@@ -139,7 +146,7 @@ POS-Assets (point_of_sale._assets_pos):
 4. **`static/src/xml/product_card.xml`**
    - Template `pos_customization.ProductCard`
    - Inherit `point_of_sale.ProductCard` (extension mode)
-   - `default_code` Kopfzeile vor Produktbild
+   - `default_code` Kopfzeile vor Produktbild (TASK ID: 51581)
 
 5. **`static/src/css/pos_custom.css`**
    - Flexible Produktkarten-Höhe
@@ -174,10 +181,10 @@ POS-Assets (point_of_sale._assets_pos):
 **Patched:** `PaymentScreen.prototype` from `@point_of_sale/app/screens/payment_screen/payment_screen`
 
 **Method:**
-- `validateOrder(isForceValidate)`: Override mit zweiter Druck
+- `validateOrder(isForceValidate)`: Override mit doppeltem Druck
   - `await super.validateOrder(...arguments)`
-  - `setTimeout` mit 2000ms
-  - `await this.env.printer.printReceipt()`
+  - `await this.env.printer.printReceipt()` (erstes BON)
+  - `await this.env.printer.printReceipt()` (zweites BON direkt danach)
   - Console.warn bei Fehler
 
 ## Templates
@@ -201,7 +208,7 @@ POS-Assets (point_of_sale._assets_pos):
 **XPath:** `//div[hasclass('product-img')]` position="before"
 
 **Div:**
-- `t-if="props.product.default_code"`
+- `t-if="props.product.default_code"` (bedingt)
 - Klasse: `w-100 px-2 py-1 text-muted fw-bold bg-light`
 - Style: `font-size: 0.85em; text-align: center; border-bottom: 1px solid #dee2e6; border-top-left-radius: 5px; border-top-right-radius: 5px;`
 - Content: `<t t-esc="props.product.default_code"/>`
@@ -236,7 +243,7 @@ POS-Assets (point_of_sale._assets_pos):
 ## Hinweise
 
 - **Hardware Proxy erforderlich:** Cash Drawer funktioniert nur wenn Hardware Proxy konfiguriert ist
-- **Double Print Delay:** 2 Sekunden Delay damit erster Druck abgeschlossen ist
+- **Doppelter BON sofort:** 2x Druck ohne unnötigen Delay, Printer queueing sequential
 - **Artikelnummer oben:** Nur angezeigt wenn `default_code` vorhanden (`t-if`)
 - **Flexible Höhe:** Produktkarten wachsen mit langen Namen nach unten
 - **Limit Default:** List Views zeigen bis zu 200 Records ohne manuelle Limitierung
@@ -249,6 +256,6 @@ POS-Assets (point_of_sale._assets_pos):
 - **Console.warn:** "Hardware Proxy ist in der aktuellen POS-Sitzung nicht konfiguriert oder aktiv."
 - **Console.error:** "Error while opening cash drawer: [error]"
 
-### Double Print
+### Doppelter BON-Druck
 
-- **Console.warn:** "[double_print] Zweiter Druck fehlgeschlagen: [error]"
+- **Console.warn:** "[double_print] Druck fehlgeschlagen: [error]"
