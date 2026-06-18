@@ -11,7 +11,6 @@
         'views/product_attribute.xml',
         'views/category.xml',
         'views/menu.xml',
-        "security/groups.xml",
         "security/ir.model.access.csv",
     ],
     'external_dependencies': {
