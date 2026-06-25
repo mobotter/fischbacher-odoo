@@ -347,8 +347,8 @@
                                             <t t-set="first_line" t-value="raw_lines[0] if raw_lines else ''"/>
                                             <t t-set="desc_lines" t-value="raw_lines[1:] if len(raw_lines) &gt; 1 else []"/>
                                             <t t-set="last_line" t-value="desc_lines[-1] if desc_lines else ''"/>
-                                            <t t-set="desc_lines"
-                                               t-value="desc_lines[:-1] if last_line and ('Woche' in last_line or 'Monat' in last_line or ('von' in last_line and 'bis' in last_line)) else desc_lines"/>
+                                            <t t-set="desc_lines" t-value="desc_lines[1:] if desc_lines and desc_lines[0].startswith('[') else desc_lines"/>
+                                                <t t-set="desc_lines" t-value="desc_lines[:-1] if desc_lines and desc_lines[-1:] and ('Woche' in desc_lines[-1] or 'Monat' in desc_lines[-1] or ('von' in desc_lines[-1] and 'bis' in desc_lines[-1])) else desc_lines"/>
                                         
                                             <div style="margin:0; padding:0; text-align:left; line-height:1.1;">
                                                 <t t-esc="first_line"/>
