@@ -3,7 +3,7 @@
 import { patch } from '@web/core/utils/patch';
 import { Dialog } from '@web/core/dialog/dialog';
 import { rpc } from '@web/core/network/rpc';
-import { onMounted, onWillUnmount } from '@odoo/owl';
+import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 
 function layoutKey(props) {
     return props?.title || props?.bodyId || props?.className || 'default_dialog';
@@ -14,7 +14,9 @@ patch(Dialog.prototype, {
         super.setup(...arguments);
         this._drag = null;
         this._resize = null;
+        this._handleObserver = null;
         onMounted(() => this._initDialog());
+        onRendered(() => this._ensureResizeHandle());
         onWillUnmount(() => this._cleanup());
     },
 
@@ -35,20 +37,45 @@ patch(Dialog.prototype, {
         this.dialogEl = root?.querySelector('.modal-dialog');
         this.contentEl = this.dialogEl?.querySelector('.modal-content') || root?.querySelector('.modal-content');
         if (!this.dialogEl || !this.contentEl) return;
-    
+
         this.dialogEl.classList.add('odoo-dialog-draggable-resizable');
         this.dialogEl.style.position = 'relative';
         this.dialogEl.style.margin = '0';
         this.dialogEl.style.maxWidth = 'none';
         this.dialogEl.style.overflow = 'visible';
         this.contentEl.style.overflow = 'visible';
-    
+
+        const key = layoutKey(this.props);
+        const layout = await this._fetchLayout(key);
+        const v = layout && layout[key];
+        if (v) {
+            if (v.maximized) {
+                this._maximize();
+            } else {
+                if (v.width) this.dialogEl.style.width = `${v.width}px`;
+                if (v.height) this.dialogEl.style.height = `${v.height}px`;
+                if (v.left != null) this.dialogEl.style.left = `${v.left}px`;
+                if (v.top != null) this.dialogEl.style.top = `${v.top}px`;
+            }
+        }
+
+        this._ensureHeaderBindings();
+        this._ensureResizeHandle();
+
+        if (this._handleObserver) this._handleObserver.disconnect();
+        this._handleObserver = new MutationObserver(() => this._ensureResizeHandle());
+        this._handleObserver.observe(this.dialogEl, { childList: true });
+    },
+
+    _ensureHeaderBindings() {
         const header = this.el?.querySelector('.modal-header');
-        if (header) {
+        if (!header) return;
+
+        if (!this._onHeaderDown) {
             header.style.cursor = 'move';
             this._onHeaderDown = (ev) => this._startDrag(ev);
             header.addEventListener('pointerdown', this._onHeaderDown);
-    
+
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
@@ -62,18 +89,23 @@ patch(Dialog.prototype, {
             });
             header.appendChild(btn);
         }
-    
+    },
+
+    _ensureResizeHandle() {
+        if (!this.dialogEl) return;
+
+        const existing = this.dialogEl.querySelector('.odoo-dialog-resize-handle');
+        if (existing) {
+            this._resizeHandle = existing;
+            return;
+        }
+
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
         this.dialogEl.appendChild(this._resizeHandle);
-    
+
         this._onResizeDown = (ev) => this._startResize(ev);
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
-    
-        this._onMove = (ev) => this._move(ev);
-        this._onUp = () => this._stop();
-        document.addEventListener('pointermove', this._onMove);
-        document.addEventListener('pointerup', this._onUp);
     },
 
     _maximize() {
@@ -87,6 +119,7 @@ patch(Dialog.prototype, {
         const header = this.el?.querySelector('.modal-header');
         if (header && this._onHeaderDown) header.removeEventListener('pointerdown', this._onHeaderDown);
         if (this._resizeHandle && this._onResizeDown) this._resizeHandle.removeEventListener('pointerdown', this._onResizeDown);
+        if (this._handleObserver) this._handleObserver.disconnect();
         if (this._onMove) document.removeEventListener('pointermove', this._onMove);
         if (this._onUp) document.removeEventListener('pointerup', this._onUp);
     },
