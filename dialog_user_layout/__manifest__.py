@@ -1,6 +1,6 @@
 {
     'name': 'Odoo Dialog User Layout',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'category': 'Web',
     'author': 'Moritz Kern',
     'summary': 'Draggable and resizable dialogs with per-user saved position and size',
