@@ -25,3 +25,7 @@
     top: 8px;
     z-index: 10000;
 }
+.odoo-dialog-resize-handle {
+    touch-action: none;
+    pointer-events: auto;
+}
