@@ -31,38 +31,24 @@ patch(Dialog.prototype, {
     },
 
     async _initDialog() {
-        this.dialogEl = this.el?.querySelector('.modal-dialog') || this.el;
-        this.contentEl = this.el?.querySelector('.modal-content') || this.dialogEl;
+        const root = this.el;
+        this.dialogEl = root?.querySelector('.modal-dialog');
+        this.contentEl = this.dialogEl?.querySelector('.modal-content') || root?.querySelector('.modal-content');
         if (!this.dialogEl || !this.contentEl) return;
-
+    
         this.dialogEl.classList.add('odoo-dialog-draggable-resizable');
-        this.dialogEl.style.position = 'fixed';
+        this.dialogEl.style.position = 'relative';
         this.dialogEl.style.margin = '0';
         this.dialogEl.style.maxWidth = 'none';
         this.dialogEl.style.overflow = 'visible';
-        this.dialogEl.style.position = 'relative';
         this.contentEl.style.overflow = 'visible';
-
-        const key = layoutKey(this.props);
-        const layout = await this._fetchLayout(key);
-        const v = layout && layout[key];
-        if (v) {
-            if (v.maximized) {
-                this._maximize();
-            } else {
-                if (v.width) this.dialogEl.style.width = `${v.width}px`;
-                if (v.height) this.dialogEl.style.height = `${v.height}px`;
-                if (v.left != null) this.dialogEl.style.left = `${v.left}px`;
-                if (v.top != null) this.dialogEl.style.top = `${v.top}px`;
-            }
-        }
-
+    
         const header = this.el?.querySelector('.modal-header');
         if (header) {
             header.style.cursor = 'move';
             this._onHeaderDown = (ev) => this._startDrag(ev);
             header.addEventListener('pointerdown', this._onHeaderDown);
-
+    
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
@@ -70,19 +56,20 @@ patch(Dialog.prototype, {
             btn.title = 'Reset layout';
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
+                const key = layoutKey(this.props);
                 await this._resetLayout(key);
                 location.reload();
             });
             header.appendChild(btn);
         }
-
+    
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
         this.dialogEl.appendChild(this._resizeHandle);
-
+    
         this._onResizeDown = (ev) => this._startResize(ev);
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
-
+    
         this._onMove = (ev) => this._move(ev);
         this._onUp = () => this._stop();
         document.addEventListener('pointermove', this._onMove);
