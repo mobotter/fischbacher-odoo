@@ -5,9 +5,11 @@ import { Dialog } from '@web/core/dialog/dialog';
 import { useService } from '@web/core/utils/hooks';
 import { onMounted, onWillUnmount } from '@odoo/owl';
 
-function layoutKey(props) { return props?.title || props?.bodyId || props?.className || 'default_dialog'; }
+function layoutKey(props) {
+    return props?.title || props?.bodyId || props?.className || 'default_dialog';
+}
 
-patch(Dialog.prototype, 'odoo_dialog_user_layout_v2', {
+patch(Dialog.prototype, 'odoo_dialog_user_layout_v3', {
     setup() {
         this._super(...arguments);
         this.rpc = useService('rpc');
