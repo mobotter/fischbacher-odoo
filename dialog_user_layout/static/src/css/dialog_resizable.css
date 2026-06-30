@@ -1,7 +1,16 @@
 .odoo-dialog-resizable {
     position: relative !important;
-    overflow: visible !important;
+    margin: 0 !important;
     max-width: none !important;
+    overflow: visible !important;
+    z-index: 1055;
+}
+
+.odoo-dialog-resize-footer {
+    position: relative;
+    padding: 0 !important;
+    border-top: 0 !important;
+    min-height: 24px;
 }
 
 .odoo-dialog-resize-handle {
@@ -11,29 +20,15 @@
     width: 22px;
     height: 22px;
     cursor: nwse-resize;
-    z-index: 10000;
+    z-index: 100000;
     pointer-events: auto;
     touch-action: none;
-    background: linear-gradient(
-        135deg,
-        transparent 0 40%,
-        rgba(0,0,0,.18) 40% 50%,
-        transparent 50% 65%,
-        rgba(0,0,0,.18) 65% 75%,
-        transparent 75% 100%
-    );
+    background: linear-gradient(135deg, transparent 0 40%, rgba(0,0,0,.18) 40% 50%, transparent 50% 65%, rgba(0,0,0,.18) 65% 75%, transparent 75% 100%);
 }
 
-.modal-footer {
-    position: relative;
-}
 .odoo-dialog-reset-btn {
     position: absolute;
     right: 26px;
     top: 8px;
     z-index: 10001;
-}
-.odoo-dialog-resize-handle {
-    touch-action: none;
-    pointer-events: auto;
 }
