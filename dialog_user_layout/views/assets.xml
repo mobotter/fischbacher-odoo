@@ -1,0 +1,8 @@
+<odoo>
+    <template id="assets_backend" inherit_id="web.assets_backend" name="Odoo Dialog User Layout Assets">
+        <xpath expr="." position="inside">
+            <script type="module" src="/odoo_dialog_user_layout/static/src/js/dialog_resizable_draggable.js"/>
+            <link rel="stylesheet" href="/odoo_dialog_user_layout/static/src/css/dialog_resizable.css"/>
+        </xpath>
+    </template>
+</odoo>
