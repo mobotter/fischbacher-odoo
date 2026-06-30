@@ -11,8 +11,8 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'odoo_dialog_user_layout_v3/static/src/js/dialog_resizable_draggable.js',
-            'odoo_dialog_user_layout_v3/static/src/css/dialog_resizable.css',
+            'dialog_user_layout/static/src/js/dialog_resizable_draggable.js',
+            'dialog_user_layout/static/src/css/dialog_resizable.css',
         ],
     },
     'license': 'LGPL-3',
