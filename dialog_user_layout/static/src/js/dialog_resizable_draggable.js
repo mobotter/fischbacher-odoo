@@ -39,6 +39,8 @@ patch(Dialog.prototype, {
         this.dialogEl.style.position = 'fixed';
         this.dialogEl.style.margin = '0';
         this.dialogEl.style.maxWidth = 'none';
+        this.dialogEl.style.overflow = 'visible';
+        this.dialogEl.style.position = 'relative';
         this.contentEl.style.overflow = 'visible';
 
         const key = layoutKey(this.props);
