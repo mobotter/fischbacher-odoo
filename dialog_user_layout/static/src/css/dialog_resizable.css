@@ -1,13 +1,28 @@
-.odoo-dialog-resize-handle {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 18px;
-    height: 18px;
-    cursor: nwse-resize;
-    z-index: 5;
-    background: linear-gradient(135deg, transparent 0 40%, rgba(0,0,0,.18) 40% 50%, transparent 50% 65%, rgba(0,0,0,.18) 65% 75%, transparent 75% 100%);
+.odoo-dialog-draggable-resizable{
+    position:fixed !important;
+    margin:0 !important;
+    max-width:none !important;
+    transform:none !important;
+    overflow:visible !important;
+    z-index:1055
 }
-.modal-dialog {
-    max-width: none !important;
+.odoo-dialog-resize-handle{
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:22px;
+    height:22px;
+    cursor:nwse-resize;
+    z-index:9999;
+    background:linear-gradient(135deg, transparent 0 40%, rgba(0,0,0,.18) 40% 50%, transparent 50% 65%, rgba(0,0,0,.18) 65% 75%, transparent 75% 100%);
+    pointer-events:auto
+}
+.odoo-dialog-reset-btn{
+    position:absolute;
+    right:26px;
+    top:8px;
+    z-index:10000
+}
+.modal-dialog{
+    max-width:none !important
 }
