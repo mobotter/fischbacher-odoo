@@ -5,19 +5,27 @@
     transform: none !important;
     overflow: visible !important;
     z-index: 1055;
+    position: relative !important;
 }
 
 .odoo-dialog-resize-handle {
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     cursor: nwse-resize;
     z-index: 10000;
     pointer-events: auto;
     touch-action: none;
-    background: linear-gradient(135deg, transparent 0 40%, rgba(0,0,0,.18) 40% 50%, transparent 50% 65%, rgba(0,0,0,.18) 65% 75%, transparent 75% 100%);
+    background: linear-gradient(
+        135deg,
+        transparent 0 40%,
+        rgba(0,0,0,.18) 40% 50%,
+        transparent 50% 65%,
+        rgba(0,0,0,.18) 65% 75%,
+        transparent 75% 100%
+    );
 }
 .odoo-dialog-reset-btn {
     position: absolute;
