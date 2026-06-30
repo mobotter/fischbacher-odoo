@@ -9,7 +9,7 @@ function layoutKey(props) {
     return props?.title || props?.bodyId || props?.className || 'default_dialog';
 }
 
-patch(Dialog.prototype, 'odoo_dialog_user_layout_v4', {
+patch(Dialog.prototype, {
     setup() {
         this._super(...arguments);
         this.rpc = useService('rpc');
