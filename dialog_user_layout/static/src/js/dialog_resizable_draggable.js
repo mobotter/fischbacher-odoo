@@ -2,7 +2,7 @@
 
 import { patch } from '@web/core/utils/patch';
 import { Dialog } from '@web/core/dialog/dialog';
-import { useService } from '@web/core/utils/hooks';
+import { rpc } from '@web/core/network/rpc';
 import { onMounted, onWillUnmount } from '@odoo/owl';
 
 function layoutKey(props) {
@@ -12,11 +12,22 @@ function layoutKey(props) {
 patch(Dialog.prototype, {
     setup() {
         super.setup(...arguments);
-        this.rpc = useService('rpc');
         this._drag = null;
         this._resize = null;
         onMounted(() => this._initDialog());
         onWillUnmount(() => this._cleanup());
+    },
+
+    async _fetchLayout(key) {
+        return await rpc('/odoo_dialog_user_layout/get', { key });
+    },
+
+    async _saveLayout(key, values) {
+        return await rpc('/odoo_dialog_user_layout/set', { key, values });
+    },
+
+    async _resetLayout(key) {
+        return await rpc('/odoo_dialog_user_layout/reset', { key });
     },
 
     async _initDialog() {
@@ -31,7 +42,7 @@ patch(Dialog.prototype, {
         this.contentEl.style.overflow = 'visible';
 
         const key = layoutKey(this.props);
-        const layout = await this.rpc('/odoo_dialog_user_layout/get', { key });
+        const layout = await this._fetchLayout(key);
         const v = layout && layout[key];
         if (v) {
             if (v.maximized) {
@@ -57,7 +68,7 @@ patch(Dialog.prototype, {
             btn.title = 'Reset layout';
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                await this.rpc('/odoo_dialog_user_layout/reset', { key });
+                await this._resetLayout(key);
                 location.reload();
             });
             header.appendChild(btn);
@@ -120,15 +131,12 @@ patch(Dialog.prototype, {
         if (this.dialogEl && (this._drag || this._resize)) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
-            await this.rpc('/odoo_dialog_user_layout/set', {
-                key,
-                values: {
-                    left: Math.round(r.left),
-                    top: Math.round(r.top),
-                    width: Math.round(r.width),
-                    height: Math.round(r.height),
-                    maximized: false,
-                },
+            await this._saveLayout(key, {
+                left: Math.round(r.left),
+                top: Math.round(r.top),
+                width: Math.round(r.width),
+                height: Math.round(r.height),
+                maximized: false,
             });
         }
         this._drag = null;
