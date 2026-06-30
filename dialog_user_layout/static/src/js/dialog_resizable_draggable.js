@@ -110,10 +110,11 @@ patch(Dialog.prototype, {
     },
 
     _startResize(ev) {
-        const r = this.dialogEl.getBoundingClientRect();
-        this._resize = { x: ev.clientX, y: ev.clientY, width: r.width, height: r.height };
         ev.preventDefault();
         ev.stopPropagation();
+        ev.stopImmediatePropagation?.();
+        const r = this.dialogEl.getBoundingClientRect();
+        this._resize = { x: ev.clientX, y: ev.clientY, width: r.width, height: r.height };
     },
 
     _move(ev) {
