@@ -91,25 +91,31 @@ patch(Dialog.prototype, {
     },
 
     _ensureResizeHandle() {
+        console.log('ensure handle', this.dialogEl);
         if (!this.dialogEl) return;
-
+    
         let footer = this.dialogEl.querySelector('.modal-footer');
         if (!footer) {
             footer = document.createElement('div');
             footer.className = 'modal-footer odoo-dialog-resize-footer';
             this.dialogEl.appendChild(footer);
         }
-
-        if (footer.querySelector('.odoo-dialog-resize-handle')) {
+    
+        const existing = footer.querySelector('.odoo-dialog-resize-handle');
+        if (existing) {
+            this._resizeHandle = existing;
             return;
         }
-
+    
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
+        this._resizeHandle.style.background = 'red';
         footer.appendChild(this._resizeHandle);
-
+    
         this._onResizeDown = (ev) => this._startResize(ev);
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
+    
+        console.log('handle added', this._resizeHandle);
     },
 
     _maximize() {
