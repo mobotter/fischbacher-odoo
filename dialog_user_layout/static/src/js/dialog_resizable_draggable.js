@@ -11,7 +11,7 @@ function layoutKey(props) {
 
 patch(Dialog.prototype, {
     setup() {
-        this._super(...arguments);
+        super.setup(...arguments);
         this.rpc = useService('rpc');
         this._drag = null;
         this._resize = null;
