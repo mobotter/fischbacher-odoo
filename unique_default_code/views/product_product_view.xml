@@ -1,0 +1,12 @@
+<odoo>
+    <record id="product_product_form_inherit_default_code_editable" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.default.code.editable</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
