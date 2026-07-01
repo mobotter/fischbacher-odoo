@@ -132,15 +132,14 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _startDrag(ev) {
-        const r = this.dialogEl.getBoundingClientRect();
-        const left = parseFloat(this.dialogEl.style.left || r.left) || r.left;
-        const top = parseFloat(this.dialogEl.style.top || r.top) || r.top;
-        this._drag = { pointerId: ev.pointerId, offsetX: ev.clientX - left, offsetY: ev.clientY - top, target: ev.currentTarget };
+        const rect = this.dialogEl.getBoundingClientRect();
+        this._drag = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, startLeft: rect.left, startTop: rect.top, target: ev.currentTarget };
         this._resize = null;
-        this.dialogEl.style.left = `${left}px`;
-        this.dialogEl.style.top = `${top}px`;
+        this.dialogEl.style.left = `${rect.left}px`;
+        this.dialogEl.style.top = `${rect.top}px`;
         this.dialogEl.style.transform = 'none';
         ev.preventDefault();
+        ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
@@ -167,8 +166,10 @@ patch(SelectCreateDialog.prototype, {
 
     _move(ev) {
         if (this._drag) {
-            this.dialogEl.style.left = `${Math.max(0, ev.clientX - this._drag.offsetX)}px`;
-            this.dialogEl.style.top = `${Math.max(0, ev.clientY - this._drag.offsetY)}px`;
+            const left = ev.clientX - this._drag.startX + this._drag.startLeft;
+            const top = ev.clientY - this._drag.startY + this._drag.startTop;
+            this.dialogEl.style.left = `${Math.round(left)}px`;
+            this.dialogEl.style.top = `${Math.round(top)}px`;
             ev.preventDefault();
             return;
         }
