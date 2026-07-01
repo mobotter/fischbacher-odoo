@@ -5,11 +5,12 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='access_rights']" position="inside">
-                <group name="dialog_layouts_group" string="Dialog Layouts">
-                    <button type="object"
-                            name="onResetDialogLayouts"
-                            class="btn btn-secondary"
-                            string="Reset Dialog Layouts"/>
+                <group name="dialog_layouts_group">
+                    <field name="id" invisible="1"/>
+                    <button type="button"
+                            class="btn btn-secondary o_dialog_layout_reset_btn"
+                            string="Reset Dialog Layouts"
+                            t-on-click="onResetDialogLayouts"/>
                 </group>
             </xpath>
         </field>
