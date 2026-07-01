@@ -200,7 +200,7 @@ patch(SelectCreateDialog.prototype, {
         if (this._onCancel) document.removeEventListener('pointercancel', this._onCancel);
     },
 
-    __startDrag(ev) {
+    _startDrag(ev) {
     if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
 
     const rect = this.dialogEl.getBoundingClientRect();
