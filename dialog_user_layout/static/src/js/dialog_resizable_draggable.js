@@ -264,26 +264,26 @@ patch(SelectCreateDialog.prototype, {
         document.addEventListener('pointercancel', this._onCancel, { once: true });
     },
 
-    _move(ev) {
-        if (!this.dialogEl) return;
-    
-        if (this._drag) {
-            if (!this._drag.ready) return;
-    
-            const x = ev.clientX - this._drag.offsetX;
-            const y = ev.clientY - this._drag.offsetY;
-    
-            console.log('move', {
-                clientX: ev.clientX,
-                clientY: ev.clientY,
-                x,
-                y,
-            });
-    
-            this.dialogEl.style.left = `${Math.max(0, x)}px`;
-            this.dialogEl.style.top = `${Math.max(0, y)}px`;
-        }
-    }
+        _move(ev) {
+            if (!this.dialogEl) return;
+        
+            if (this._drag) {
+                if (!this._drag.ready) return;
+        
+                const x = ev.clientX - this._drag.offsetX;
+                const y = ev.clientY - this._drag.offsetY;
+        
+                console.log('move', {
+                    clientX: ev.clientX,
+                    clientY: ev.clientY,
+                    x,
+                    y,
+                });
+        
+                this.dialogEl.style.left = `${Math.max(0, x)}px`;
+                this.dialogEl.style.top = `${Math.max(0, y)}px`;
+            }
+        },
 
     async _stop(ev) {
         const active = this._drag || this._resize;
