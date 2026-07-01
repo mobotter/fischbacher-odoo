@@ -1,7 +1,8 @@
-from odoo import fields, models
-
+from odoo import models
 
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
-    dialog_layouts_json = fields.Json(string='Dialog Layouts', default=dict)
+    def onResetDialogLayouts(self):
+        self.env['ir.config_parameter'].sudo().set_param('dialog_user_layout.reset_trigger', '1')
+        return True
