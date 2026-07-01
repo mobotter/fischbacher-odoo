@@ -2,9 +2,9 @@
 
 import { patch } from '@web/core/utils/patch';
 import { rpc } from '@web/core/network/rpc';
+import { FormController } from '@web/views/form/form_controller';
 import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 import { SelectCreateDialog } from '@web/views/view_dialogs/select_create_dialog';
-import { FormController } from '@web/views/form/form_controller';
 
 function layoutKey(props) {
     return props?.title || props?.bodyId || props?.className || 'default_dialog';
@@ -83,17 +83,8 @@ patch(SelectCreateDialog.prototype, {
     async _initDialog() {
         if (!this._isMounted) return;
 
-        dbg('SelectCreateDialog', '_initDialog start', this.el);
-
         this.dialogEl = await this._waitForDialogRoot();
         this.contentEl = this.dialogEl;
-
-        dbg('SelectCreateDialog', '_initDialog found', {
-            dialogEl: !!this.dialogEl,
-            contentEl: !!this.contentEl,
-            dialogClass: this.dialogEl?.className,
-        });
-
         if (!this.dialogEl) return;
 
         this.dialogEl.classList.add('odoo-dialog-resizable');
@@ -228,17 +219,6 @@ patch(SelectCreateDialog.prototype, {
         };
         this._resize = null;
 
-        dbg('SelectCreateDialog', '_startDrag', {
-            clientX: ev.clientX,
-            clientY: ev.clientY,
-            frozenLeft: frozen.left,
-            frozenTop: frozen.top,
-            titleLeft: titleRect.left,
-            titleTop: titleRect.top,
-            offsetX: this._drag.offsetX,
-            offsetY: this._drag.offsetY,
-        });
-
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
@@ -266,13 +246,6 @@ patch(SelectCreateDialog.prototype, {
         };
         this._drag = null;
 
-        dbg('SelectCreateDialog', '_startResize', {
-            clientX: ev.clientX,
-            clientY: ev.clientY,
-            width: r.width,
-            height: r.height,
-        });
-
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
@@ -292,35 +265,23 @@ patch(SelectCreateDialog.prototype, {
 
         if (this._drag) {
             if (!this._drag.ready) return;
-
-            const style = window.getComputedStyle(this.dialogEl);
             const x = ev.clientX - this._drag.offsetX;
             const y = ev.clientY - this._drag.offsetY;
-
-            dbg('SelectCreateDialog', '_move drag', {
-                clientX: ev.clientX,
-                clientY: ev.clientY,
-                nextLeft: x,
-                nextTop: y,
-                styleLeft: style.left,
-                styleTop: style.top,
-                transform: style.transform,
-                hasCapture: this._drag.target?.hasPointerCapture?.(this._drag.pointerId),
-            });
-
             this.dialogEl.style.left = `${Math.max(0, x)}px`;
             this.dialogEl.style.top = `${Math.max(0, y)}px`;
+        }
+
+        if (this._resize) {
+            const x = ev.clientX - this._resize.pointerX;
+            const y = ev.clientY - this._resize.pointerY;
+            const w = Math.max(320, this._resize.width + x);
+            const h = Math.max(240, this._resize.height + y);
+            this.dialogEl.style.width = `${Math.min(w, window.innerWidth - 20)}px`;
+            this.dialogEl.style.height = `${Math.min(h, window.innerHeight - 20)}px`;
         }
     },
 
     async _stop(ev) {
-        dbg('SelectCreateDialog', '_stop', {
-            drag: !!this._drag,
-            resize: !!this._resize,
-            left: this.dialogEl?.style.left,
-            top: this.dialogEl?.style.top,
-        });
-
         const active = this._drag || this._resize;
         const target = active?.target;
         const pointerId = active?.pointerId;
@@ -337,10 +298,10 @@ patch(SelectCreateDialog.prototype, {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
             await this._saveLayout(key, {
-                left: Math.round(clamp(r.left, 0, window.innerWidth - 1)),
-                top: Math.round(clamp(r.top, 0, window.innerHeight - 1)),
-                width: Math.round(r.width),
-                height: Math.round(r.height),
+                left: Math.round(clamp(r.left, 0, Math.max(0, window.innerWidth - r.width))),
+                top: Math.round(clamp(r.top, 0, Math.max(0, window.innerHeight - r.height))),
+                width: Math.round(Math.min(r.width, window.innerWidth - 20)),
+                height: Math.round(Math.min(r.height, window.innerHeight - 20)),
                 maximized: false,
             });
         }
