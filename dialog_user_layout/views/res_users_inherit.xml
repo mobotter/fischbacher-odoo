@@ -1,5 +1,5 @@
 <odoo>
     <data noupdate="0">
-        <delete model="ir.ui.view" id="view_users_form_dialog_layout_reset"/>
+        <delete model="ir.ui.view" search="[('name', '=', 'res.users.form.dialog.layout.reset')]"/>
     </data>
 </odoo>
