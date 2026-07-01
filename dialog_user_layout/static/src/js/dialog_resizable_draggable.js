@@ -98,31 +98,38 @@ function makeDialogBehavior(options = {}) {
         },
 
         _ensureResizeHandle() {
-            if (!this.dialogEl) return;
-
-            let footer = this.dialogEl.querySelector('.modal-footer');
-            if (useFooterHandle && !footer) {
-                footer = document.createElement('div');
-                footer.className = 'modal-footer odoo-dialog-resize-footer';
-                this.dialogEl.appendChild(footer);
+            console.log('ensure handle fired', this.el);
+        
+            if (!this.el) return;
+        
+            const root = this.el.querySelector('.modal-content.o_select_create_dialog_content') || this.el.querySelector('.modal-content') || this.el;
+            if (!root) return;
+        
+            let host = root.querySelector('.modal-footer');
+            if (!host) {
+                host = document.createElement('div');
+                host.className = 'modal-footer odoo-dialog-resize-footer';
+                host.style.minHeight = '32px';
+                host.style.background = 'yellow';
+                root.appendChild(host);
             }
-
-            const host = useFooterHandle ? footer : this.dialogEl;
-            if (!host) return;
-
-            const existing = host.querySelector('.odoo-dialog-resize-handle');
-            if (existing) {
-                this._resizeHandle = existing;
-                return;
+        
+            let handle = host.querySelector('.odoo-dialog-resize-handle');
+            if (!handle) {
+                handle = document.createElement('div');
+                handle.className = 'odoo-dialog-resize-handle';
+                handle.style.background = 'red';
+                handle.style.width = '40px';
+                handle.style.height = '40px';
+                handle.textContent = '↘';
+                host.appendChild(handle);
             }
-
-            this._resizeHandle = document.createElement('div');
-            this._resizeHandle.className = 'odoo-dialog-resize-handle';
-            this._resizeHandle.style.background = 'red';
-            host.appendChild(this._resizeHandle);
-
+        
+            this._resizeHandle = handle;
             this._onResizeDown = (ev) => this._startResize(ev);
-            this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
+            handle.addEventListener('pointerdown', this._onResizeDown);
+        
+            console.log('handle in DOM', handle, host, root);
         },
 
         _maximize() {
