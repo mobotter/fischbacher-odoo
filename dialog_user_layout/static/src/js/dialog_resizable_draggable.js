@@ -188,14 +188,13 @@ patch(SelectCreateDialog.prototype, {
     
         const modalRect = this.dialogEl.getBoundingClientRect();
         const titleRect = ev.currentTarget.getBoundingClientRect();
+        const style = window.getComputedStyle(this.dialogEl);
     
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
-            modalLeft: modalRect.left,
-            modalTop: modalRect.top,
-            handleLeft: titleRect.left,
-            handleTop: titleRect.top,
+            left: modalRect.left,
+            top: modalRect.top,
             offsetX: ev.clientX - titleRect.left,
             offsetY: ev.clientY - titleRect.top,
             pointerId: ev.pointerId,
@@ -212,8 +211,11 @@ patch(SelectCreateDialog.prototype, {
             titleTop: titleRect.top,
             offsetX: this._drag.offsetX,
             offsetY: this._drag.offsetY,
-            deltaHandleModalX: titleRect.left - modalRect.left,
-            deltaHandleModalY: titleRect.top - modalRect.top,
+            styleLeft: style.left,
+            styleTop: style.top,
+            transform: style.transform,
+            pos: style.position,
+            hasCapture: ev.currentTarget.hasPointerCapture?.(ev.pointerId),
         });
     
         ev.preventDefault();
@@ -221,6 +223,7 @@ patch(SelectCreateDialog.prototype, {
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
+
 
     _startResize(ev) {
         ev.preventDefault();
@@ -263,6 +266,7 @@ patch(SelectCreateDialog.prototype, {
         if (!this.dialogEl) return;
     
         if (this._drag) {
+            const style = window.getComputedStyle(this.dialogEl);
             const x = ev.clientX - this._drag.offsetX;
             const y = ev.clientY - this._drag.offsetY;
     
@@ -271,17 +275,14 @@ patch(SelectCreateDialog.prototype, {
                 clientY: ev.clientY,
                 nextLeft: x,
                 nextTop: y,
+                styleLeft: style.left,
+                styleTop: style.top,
+                transform: style.transform,
+                hasCapture: this._drag.target?.hasPointerCapture?.(this._drag.pointerId),
             });
     
             this.dialogEl.style.left = `${Math.max(0, x)}px`;
             this.dialogEl.style.top = `${Math.max(0, y)}px`;
-        }
-    
-        if (this._resize) {
-            const w = Math.max(420, this._resize.width + (ev.clientX - this._resize.pointerX));
-            const h = Math.max(180, this._resize.height + (ev.clientY - this._resize.pointerY));
-            this.dialogEl.style.width = `${w}px`;
-            this.dialogEl.style.height = `${h}px`;
         }
     },
 
