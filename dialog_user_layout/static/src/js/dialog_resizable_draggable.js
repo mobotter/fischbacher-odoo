@@ -72,14 +72,17 @@ patch(SelectCreateDialog.prototype, {
         this.dialogEl = await this._waitForDialogRoot();
         this.contentEl = this.dialogEl;
         if (!this.dialogEl) return;
+    
         this.dialogEl.classList.add('odoo-dialog-resizable');
-        this.dialogEl.style.position = 'relative';
+        this.dialogEl.style.position = 'fixed';
         this.dialogEl.style.margin = '0';
         this.dialogEl.style.maxWidth = 'none';
         this.dialogEl.style.overflow = 'visible';
+    
         const key = layoutKey(this.props);
         const layout = await this._fetchLayout(key);
         const v = layout && layout[key];
+    
         if (v && !v.maximized) {
             const vpW = window.innerWidth;
             const vpH = window.innerHeight;
@@ -87,14 +90,18 @@ patch(SelectCreateDialog.prototype, {
             const height = v.height || 600;
             const maxW = Math.max(320, vpW - 20);
             const maxH = Math.max(240, vpH - 20);
+    
             this.dialogEl.style.width = `${Math.min(width, maxW)}px`;
             this.dialogEl.style.height = `${Math.min(height, maxH)}px`;
             this.dialogEl.style.left = `${clamp(v.left ?? 0, 0, Math.max(0, vpW - 50))}px`;
             this.dialogEl.style.top = `${clamp(v.top ?? 0, 0, Math.max(0, vpH - 50))}px`;
         }
+    
         if (v?.maximized) this._maximize();
+    
         this._ensureHeaderBindings();
         this._ensureResizeHandle();
+    
         if (this._handleObserver) this._handleObserver.disconnect();
         this._handleObserver = new MutationObserver(() => this._ensureResizeHandle());
         this._handleObserver.observe(this.dialogEl, { childList: true, subtree: false });
@@ -168,7 +175,15 @@ patch(SelectCreateDialog.prototype, {
     _startDrag(ev) {
         const rect = this.dialogEl.getBoundingClientRect();
         console.groupCollapsed('[odoo-dialog:dragstart]', { pointerId: ev.pointerId });
-        console.log('down', { clientX: ev.clientX, clientY: ev.clientY, rectLeft: rect.left, rectTop: rect.top, rectWidth: rect.width, rectHeight: rect.height });
+        console.log('down', {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            rectLeft: rect.left,
+            rectTop: rect.top,
+            rectWidth: rect.width,
+            rectHeight: rect.height,
+        });
+    
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
@@ -179,13 +194,15 @@ patch(SelectCreateDialog.prototype, {
             ready: false,
         };
         this._resize = null;
+    
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
+    
         requestAnimationFrame(() => {
-            console.log('drag ready');
             if (this._drag) this._drag.ready = true;
         });
+    
         this._bindMove();
         console.groupEnd();
     },
