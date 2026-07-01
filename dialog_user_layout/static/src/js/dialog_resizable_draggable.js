@@ -186,15 +186,18 @@ patch(SelectCreateDialog.prototype, {
     _startDrag(ev) {
         if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
     
-        const r = this.dialogEl.getBoundingClientRect();
+        const modalRect = this.dialogEl.getBoundingClientRect();
+        const titleRect = ev.currentTarget.getBoundingClientRect();
     
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
-            left: r.left,
-            top: r.top,
-            offsetX: ev.clientX - r.left,
-            offsetY: ev.clientY - r.top,
+            modalLeft: modalRect.left,
+            modalTop: modalRect.top,
+            handleLeft: titleRect.left,
+            handleTop: titleRect.top,
+            offsetX: ev.clientX - titleRect.left,
+            offsetY: ev.clientY - titleRect.top,
             pointerId: ev.pointerId,
             target: ev.currentTarget,
         };
@@ -203,10 +206,14 @@ patch(SelectCreateDialog.prototype, {
         dbg('SelectCreateDialog', '_startDrag', {
             clientX: ev.clientX,
             clientY: ev.clientY,
-            modalLeft: r.left,
-            modalTop: r.top,
+            modalLeft: modalRect.left,
+            modalTop: modalRect.top,
+            titleLeft: titleRect.left,
+            titleTop: titleRect.top,
             offsetX: this._drag.offsetX,
             offsetY: this._drag.offsetY,
+            deltaHandleModalX: titleRect.left - modalRect.left,
+            deltaHandleModalY: titleRect.top - modalRect.top,
         });
     
         ev.preventDefault();
