@@ -30,6 +30,7 @@ patch(SelectCreateDialog.prototype, {
         this._handleObserver = null;
         this._onMove = null;
         this._onUp = null;
+        this._onCancel = null;
         this._onHeaderDown = null;
         this._onResizeDown = null;
         this._resizeHandle = null;
@@ -179,6 +180,7 @@ patch(SelectCreateDialog.prototype, {
         if (this._handleObserver) this._handleObserver.disconnect();
         if (this._onMove) document.removeEventListener('pointermove', this._onMove);
         if (this._onUp) document.removeEventListener('pointerup', this._onUp);
+        if (this._onCancel) document.removeEventListener('pointercancel', this._onCancel);
     },
 
     _startDrag(ev) {
@@ -194,6 +196,8 @@ patch(SelectCreateDialog.prototype, {
             top: r.top,
             offsetX: ev.clientX - tr.left,
             offsetY: ev.clientY - tr.top,
+            pointerId: ev.pointerId,
+            target: ev.currentTarget,
         };
         this._resize = null;
 
@@ -218,9 +222,26 @@ patch(SelectCreateDialog.prototype, {
         ev.preventDefault();
         ev.stopPropagation();
         ev.stopImmediatePropagation?.();
+
         const r = this.dialogEl.getBoundingClientRect();
-        this._resize = { x: ev.clientX, y: ev.clientY, width: r.width, height: r.height };
+        this._resize = {
+            pointerX: ev.clientX,
+            pointerY: ev.clientY,
+            width: r.width,
+            height: r.height,
+            pointerId: ev.pointerId,
+            target: ev.currentTarget,
+        };
         this._drag = null;
+
+        dbg('SelectCreateDialog', '_startResize', {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            width: r.width,
+            height: r.height,
+        });
+
+        ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
 
@@ -228,8 +249,10 @@ patch(SelectCreateDialog.prototype, {
         if (this._onMove) return;
         this._onMove = (e) => this._move(e);
         this._onUp = (e) => this._stop(e);
+        this._onCancel = (e) => this._stop(e);
         document.addEventListener('pointermove', this._onMove);
         document.addEventListener('pointerup', this._onUp, { once: true });
+        document.addEventListener('pointercancel', this._onCancel, { once: true });
     },
 
     _move(ev) {
@@ -238,8 +261,8 @@ patch(SelectCreateDialog.prototype, {
         if (this._drag) {
             const dx = ev.clientX - this._drag.pointerX;
             const dy = ev.clientY - this._drag.pointerY;
-            const x = this._drag.left + dx;
-            const y = this._drag.top + dy;
+            const x = clamp(this._drag.left + dx, 0, window.innerWidth - 50);
+            const y = clamp(this._drag.top + dy, 0, window.innerHeight - 50);
 
             dbg('SelectCreateDialog', '_move drag', {
                 clientX: ev.clientX,
@@ -250,13 +273,23 @@ patch(SelectCreateDialog.prototype, {
                 nextTop: y,
             });
 
-            this.dialogEl.style.left = `${Math.max(0, x)}px`;
-            this.dialogEl.style.top = `${Math.max(0, y)}px`;
+            this.dialogEl.style.left = `${x}px`;
+            this.dialogEl.style.top = `${y}px`;
         }
 
         if (this._resize) {
-            this.dialogEl.style.width = `${Math.max(420, this._resize.width + (ev.clientX - this._resize.x))}px`;
-            this.dialogEl.style.height = `${Math.max(180, this._resize.height + (ev.clientY - this._resize.y))}px`;
+            const w = Math.max(420, this._resize.width + (ev.clientX - this._resize.pointerX));
+            const h = Math.max(180, this._resize.height + (ev.clientY - this._resize.pointerY));
+
+            dbg('SelectCreateDialog', '_move resize', {
+                clientX: ev.clientX,
+                clientY: ev.clientY,
+                nextWidth: w,
+                nextHeight: h,
+            });
+
+            this.dialogEl.style.width = `${w}px`;
+            this.dialogEl.style.height = `${h}px`;
         }
     },
 
@@ -268,18 +301,24 @@ patch(SelectCreateDialog.prototype, {
             top: this.dialogEl?.style.top,
         });
 
-        if (this._drag && ev?.currentTarget?.releasePointerCapture) {
+        const active = this._drag || this._resize;
+        const target = active?.target;
+        const pointerId = active?.pointerId;
+
+        if (target && pointerId != null) {
             try {
-                ev.currentTarget.releasePointerCapture(ev.pointerId);
+                if (target.hasPointerCapture?.(pointerId)) {
+                    target.releasePointerCapture(pointerId);
+                }
             } catch (_) {}
         }
 
-        if (this.dialogEl && (this._drag || this._resize)) {
+        if (this.dialogEl && active) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
             await this._saveLayout(key, {
-                left: Math.round(Math.max(0, r.left)),
-                top: Math.round(Math.max(0, r.top)),
+                left: Math.round(clamp(r.left, 0, window.innerWidth - 1)),
+                top: Math.round(clamp(r.top, 0, window.innerHeight - 1)),
                 width: Math.round(r.width),
                 height: Math.round(r.height),
                 maximized: false,
@@ -288,9 +327,13 @@ patch(SelectCreateDialog.prototype, {
 
         this._drag = null;
         this._resize = null;
+
         if (this._onMove) document.removeEventListener('pointermove', this._onMove);
         if (this._onUp) document.removeEventListener('pointerup', this._onUp);
+        if (this._onCancel) document.removeEventListener('pointercancel', this._onCancel);
+
         this._onMove = null;
         this._onUp = null;
+        this._onCancel = null;
     },
 });
