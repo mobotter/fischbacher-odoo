@@ -133,21 +133,29 @@ patch(SelectCreateDialog.prototype, {
 
     _ensureResizeHandle() {
         if (!this.dialogEl) return;
+    
+        this.dialogEl.style.maxWidth = 'none';
+        this.dialogEl.style.width = this.dialogEl.style.width || '980px';
+        this.dialogEl.style.height = this.dialogEl.style.height || '600px';
+    
         let footer = this.dialogEl.querySelector('.modal-footer');
         if (!footer) {
             footer = document.createElement('div');
             footer.className = 'modal-footer odoo-dialog-resize-footer';
             this.dialogEl.appendChild(footer);
         }
+    
         const existing = footer.querySelector('.odoo-dialog-resize-handle');
         if (existing) {
             this._resizeHandle = existing;
             return;
         }
+    
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
         this._resizeHandle.textContent = '↘';
         footer.appendChild(this._resizeHandle);
+    
         this._onResizeDown = (ev) => this._startResize(ev);
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
     },
@@ -233,8 +241,10 @@ patch(SelectCreateDialog.prototype, {
             const dy = ev.clientY - this._resize.pointerY;
             const w = Math.max(320, this._resize.width + dx);
             const h = Math.max(240, this._resize.height + dy);
+        
             this.dialogEl.style.width = `${Math.min(w, window.innerWidth - 20)}px`;
             this.dialogEl.style.height = `${Math.min(h, window.innerHeight - 20)}px`;
+            this.dialogEl.style.maxWidth = 'none';
             ev.preventDefault();
         }
     },
