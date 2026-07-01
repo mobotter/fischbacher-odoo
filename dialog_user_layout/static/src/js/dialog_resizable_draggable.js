@@ -23,9 +23,7 @@ function clamp(n, min, max) {
 
 patch(SelectCreateDialog.prototype, {
     setup() {
-        if (typeof super.setup === 'function') {
-            super.setup(...arguments);
-        }
+        super.setup(...arguments);
 
         this._drag = null;
         this._resize = null;
@@ -115,12 +113,12 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _ensureHeaderBindings() {
-        const header = document.querySelector('.modal-header');
-        if (!header || this._onHeaderDown) return;
+        const title = document.querySelector('.modal-title');
+        if (!title || this._onHeaderDown) return;
 
-        header.style.cursor = 'move';
+        title.style.cursor = 'move';
         this._onHeaderDown = (ev) => this._startDrag(ev);
-        header.addEventListener('pointerdown', this._onHeaderDown);
+        title.addEventListener('pointerdown', this._onHeaderDown);
 
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -133,23 +131,21 @@ patch(SelectCreateDialog.prototype, {
             await this._resetLayout(key);
             location.reload();
         });
-        header.appendChild(btn);
+        const header = document.querySelector('.modal-header');
+        if (header) header.appendChild(btn);
     },
 
     _ensureResizeHandle() {
         if (!this.dialogEl) return;
 
-        let host = this.dialogEl;
         let footer = this.dialogEl.querySelector('.modal-footer');
-
         if (!footer) {
             footer = document.createElement('div');
             footer.className = 'modal-footer odoo-dialog-resize-footer';
             this.dialogEl.appendChild(footer);
         }
-        host = footer;
 
-        const existing = host.querySelector('.odoo-dialog-resize-handle');
+        const existing = footer.querySelector('.odoo-dialog-resize-handle');
         if (existing) {
             this._resizeHandle = existing;
             return;
@@ -158,7 +154,7 @@ patch(SelectCreateDialog.prototype, {
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
         this._resizeHandle.textContent = '↘';
-        host.appendChild(this._resizeHandle);
+        footer.appendChild(this._resizeHandle);
 
         this._onResizeDown = (ev) => this._startResize(ev);
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
@@ -172,8 +168,8 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _cleanup() {
-        const header = document.querySelector('.modal-header');
-        if (header && this._onHeaderDown) header.removeEventListener('pointerdown', this._onHeaderDown);
+        const title = document.querySelector('.modal-title');
+        if (title && this._onHeaderDown) title.removeEventListener('pointerdown', this._onHeaderDown);
         if (this._resizeHandle && this._onResizeDown) this._resizeHandle.removeEventListener('pointerdown', this._onResizeDown);
         if (this._handleObserver) this._handleObserver.disconnect();
         if (this._onMove) document.removeEventListener('pointermove', this._onMove);
