@@ -37,4 +37,8 @@
         max-width: none !important;
         width: fit-content;
     }
+    .modal-dialog {
+        max-width: none!important;
+        width: fit-content!important;
+    }
 }
