@@ -4,12 +4,16 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@string='Preferences']" position="inside">
-                <group string="Dialog Layouts">
-                    <button type="object"
-                            name="onResetDialogLayouts"
-                            class="btn btn-secondary"
-                            string="Reset Dialog Layouts"/>
+            <xpath expr="//field[@name='groups_id']/ancestor::group[1]" position="inside">
+                <group name="dialog_layouts_group">
+                    <label for="dialog_layouts_reset"/>
+                    <div>
+                        <button type="object"
+                                name="onResetDialogLayouts"
+                                class="btn btn-secondary"
+                                string="Reset Dialog Layouts"
+                                id="dialog_layouts_reset"/>
+                    </div>
                 </group>
             </xpath>
         </field>
