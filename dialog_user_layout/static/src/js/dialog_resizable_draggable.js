@@ -117,22 +117,27 @@ patch(SelectCreateDialog.prototype, {
         if (!title || this._onHeaderDown) return;
 
         title.style.cursor = 'move';
+        title.style.userSelect = 'none';
+        title.style.touchAction = 'none';
+
         this._onHeaderDown = (ev) => this._startDrag(ev);
         title.addEventListener('pointerdown', this._onHeaderDown);
 
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
-        btn.textContent = '↺';
-        btn.title = 'Reset layout';
-        btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const key = layoutKey(this.props);
-            await this._resetLayout(key);
-            location.reload();
-        });
         const header = document.querySelector('.modal-header');
-        if (header) header.appendChild(btn);
+        if (header && !header.querySelector('.odoo-dialog-reset-btn')) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
+            btn.textContent = '↺';
+            btn.title = 'Reset layout';
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const key = layoutKey(this.props);
+                await this._resetLayout(key);
+                location.reload();
+            });
+            header.appendChild(btn);
+        }
     },
 
     _ensureResizeHandle() {
@@ -178,10 +183,34 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
+
         const r = this.dialogEl.getBoundingClientRect();
-        this._drag = { x: ev.clientX, y: ev.clientY, left: r.left, top: r.top };
+        const tr = ev.currentTarget.getBoundingClientRect();
+
+        this._drag = {
+            pointerX: ev.clientX,
+            pointerY: ev.clientY,
+            left: r.left,
+            top: r.top,
+            offsetX: ev.clientX - tr.left,
+            offsetY: ev.clientY - tr.top,
+        };
         this._resize = null;
+
+        dbg('SelectCreateDialog', '_startDrag', {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            modalLeft: r.left,
+            modalTop: r.top,
+            titleLeft: tr.left,
+            titleTop: tr.top,
+            offsetX: this._drag.offsetX,
+            offsetY: this._drag.offsetY,
+        });
+
         ev.preventDefault();
+        ev.stopPropagation();
+        ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
 
@@ -198,7 +227,7 @@ patch(SelectCreateDialog.prototype, {
     _bindMove() {
         if (this._onMove) return;
         this._onMove = (e) => this._move(e);
-        this._onUp = () => this._stop();
+        this._onUp = (e) => this._stop(e);
         document.addEventListener('pointermove', this._onMove);
         document.addEventListener('pointerup', this._onUp, { once: true });
     },
@@ -207,8 +236,20 @@ patch(SelectCreateDialog.prototype, {
         if (!this.dialogEl) return;
 
         if (this._drag) {
-            const x = this._drag.left + (ev.clientX - this._drag.x);
-            const y = this._drag.top + (ev.clientY - this._drag.y);
+            const dx = ev.clientX - this._drag.pointerX;
+            const dy = ev.clientY - this._drag.pointerY;
+            const x = this._drag.left + dx;
+            const y = this._drag.top + dy;
+
+            dbg('SelectCreateDialog', '_move drag', {
+                clientX: ev.clientX,
+                clientY: ev.clientY,
+                dx,
+                dy,
+                nextLeft: x,
+                nextTop: y,
+            });
+
             this.dialogEl.style.left = `${Math.max(0, x)}px`;
             this.dialogEl.style.top = `${Math.max(0, y)}px`;
         }
@@ -219,7 +260,20 @@ patch(SelectCreateDialog.prototype, {
         }
     },
 
-    async _stop() {
+    async _stop(ev) {
+        dbg('SelectCreateDialog', '_stop', {
+            drag: !!this._drag,
+            resize: !!this._resize,
+            left: this.dialogEl?.style.left,
+            top: this.dialogEl?.style.top,
+        });
+
+        if (this._drag && ev?.currentTarget?.releasePointerCapture) {
+            try {
+                ev.currentTarget.releasePointerCapture(ev.pointerId);
+            } catch (_) {}
+        }
+
         if (this.dialogEl && (this._drag || this._resize)) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
