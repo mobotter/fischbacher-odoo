@@ -1,87 +1,200 @@
 /** @odoo-module **/
 
 import { patch } from '@web/core/utils/patch';
+import { Dialog } from '@web/core/dialog/dialog';
+import { rpc } from '@web/core/network/rpc';
+import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 import { SelectCreateDialog } from '@web/views/view_dialogs/select_create_dialog';
-import { onMounted, onRendered, onWillUnmount } from '@odoo/owl';
 
-patch(SelectCreateDialog.prototype, {
-    setup() {
-        super.setup(...arguments);
-        this._handleObserver = null;
-        this._resize = null;
-        onMounted(() => this._initResizeHandle());
-        onRendered(() => this._ensureResizeHandle());
-        onWillUnmount(() => this._cleanupResizeHandle());
-    },
+function layoutKey(props) {
+    return props?.title || props?.bodyId || props?.className || 'default_dialog';
+}
 
-    _initResizeHandle() {
-        this._dialogRoot = this.el?.querySelector('.modal-content') || this.el;
-        if (!this._dialogRoot) return;
+function makeDialogBehavior(options = {}) {
+    const {
+        targetSelector = '.modal-content',
+        useFooterHandle = false,
+    } = options;
 
-        this._dialogRoot.classList.add('odoo-dialog-resizable');
-        this._dialogRoot.style.position = 'relative';
-        this._dialogRoot.style.overflow = 'visible';
-        this._ensureResizeHandle();
+    return {
+        setup() {
+            super.setup(...arguments);
+            this._drag = null;
+            this._resize = null;
+            this._handleObserver = null;
+            onMounted(() => this._initDialog());
+            onRendered(() => this._ensureResizeHandle());
+            onWillUnmount(() => this._cleanup());
+        },
 
-        if (this._handleObserver) this._handleObserver.disconnect();
-        this._handleObserver = new MutationObserver(() => this._ensureResizeHandle());
-        this._handleObserver.observe(this._dialogRoot, { childList: true, subtree: true });
-    },
+        async _fetchLayout(key) {
+            return await rpc('/odoo_dialog_user_layout/get', { key });
+        },
 
-    _ensureResizeHandle() {
-        const root = this._dialogRoot;
-        if (!root) return;
+        async _saveLayout(key, values) {
+            return await rpc('/odoo_dialog_user_layout/set', { key, values });
+        },
 
-        const footer = root.querySelector('.modal-footer') || this._createFooter(root);
-        if (footer.querySelector('.odoo-dialog-resize-handle')) return;
+        async _resetLayout(key) {
+            return await rpc('/odoo_dialog_user_layout/reset', { key });
+        },
 
-        this._resizeHandle = document.createElement('div');
-        this._resizeHandle.className = 'odoo-dialog-resize-handle';
-        footer.appendChild(this._resizeHandle);
+        async _initDialog() {
+            const root = this.el;
+            this.dialogEl = root?.querySelector(targetSelector) || root?.querySelector('.modal-dialog') || root;
+            this.contentEl = this.dialogEl;
+            if (!this.dialogEl) return;
 
-        this._onResizeDown = (ev) => this._startResize(ev);
-        this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
-    },
+            this.dialogEl.classList.add('odoo-dialog-resizable');
+            this.dialogEl.style.position = 'relative';
+            this.dialogEl.style.margin = '0';
+            this.dialogEl.style.maxWidth = 'none';
+            this.dialogEl.style.overflow = 'visible';
 
-    _createFooter(root) {
-        const footer = document.createElement('div');
-        footer.className = 'modal-footer odoo-dialog-resize-footer';
-        root.appendChild(footer);
-        return footer;
-    },
+            const key = layoutKey(this.props);
+            const layout = await this._fetchLayout(key);
+            const v = layout && layout[key];
+            if (v) {
+                if (v.maximized) {
+                    this._maximize();
+                } else {
+                    if (v.width) this.dialogEl.style.width = `${v.width}px`;
+                    if (v.height) this.dialogEl.style.height = `${v.height}px`;
+                    if (v.left != null) this.dialogEl.style.left = `${v.left}px`;
+                    if (v.top != null) this.dialogEl.style.top = `${v.top}px`;
+                }
+            }
 
-    _startResize(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        ev.stopImmediatePropagation?.();
+            this._ensureHeaderBindings();
+            this._ensureResizeHandle();
 
-        const r = this._dialogRoot.getBoundingClientRect();
-        this._resize = { x: ev.clientX, y: ev.clientY, width: r.width, height: r.height };
+            if (this._handleObserver) this._handleObserver.disconnect();
+            this._handleObserver = new MutationObserver(() => this._ensureResizeHandle());
+            this._handleObserver.observe(this.dialogEl, { childList: true, subtree: false });
+        },
 
-        this._onMove = (e) => this._moveResize(e);
-        this._onUp = () => this._stopResize();
-        document.addEventListener('pointermove', this._onMove);
-        document.addEventListener('pointerup', this._onUp);
-    },
+        _ensureHeaderBindings() {
+            const header = this.el?.querySelector('.modal-header');
+            if (!header) return;
 
-    _moveResize(ev) {
-        if (!this._resize || !this._dialogRoot) return;
-        this._dialogRoot.style.width = `${Math.max(420, this._resize.width + (ev.clientX - this._resize.x))}px`;
-        this._dialogRoot.style.height = `${Math.max(180, this._resize.height + (ev.clientY - this._resize.y))}px`;
-    },
+            if (!this._onHeaderDown) {
+                header.style.cursor = 'move';
+                this._onHeaderDown = (ev) => this._startDrag(ev);
+                header.addEventListener('pointerdown', this._onHeaderDown);
 
-    _stopResize() {
-        this._resize = null;
-        if (this._onMove) document.removeEventListener('pointermove', this._onMove);
-        if (this._onUp) document.removeEventListener('pointerup', this._onUp);
-        this._onMove = null;
-        this._onUp = null;
-    },
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
+                btn.textContent = '↺';
+                btn.title = 'Reset layout';
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const key = layoutKey(this.props);
+                    await this._resetLayout(key);
+                    location.reload();
+                });
+                header.appendChild(btn);
+            }
+        },
 
-    _cleanupResizeHandle() {
-        if (this._handleObserver) this._handleObserver.disconnect();
-        if (this._resizeHandle && this._onResizeDown) this._resizeHandle.removeEventListener('pointerdown', this._onResizeDown);
-        if (this._onMove) document.removeEventListener('pointermove', this._onMove);
-        if (this._onUp) document.removeEventListener('pointerup', this._onUp);
-    },
-});
+        _ensureResizeHandle() {
+            if (!this.dialogEl) return;
+
+            let footer = this.dialogEl.querySelector('.modal-footer');
+            if (useFooterHandle && !footer) {
+                footer = document.createElement('div');
+                footer.className = 'modal-footer odoo-dialog-resize-footer';
+                this.dialogEl.appendChild(footer);
+            }
+
+            const host = useFooterHandle ? footer : this.dialogEl;
+            if (!host) return;
+
+            const existing = host.querySelector('.odoo-dialog-resize-handle');
+            if (existing) {
+                this._resizeHandle = existing;
+                return;
+            }
+
+            this._resizeHandle = document.createElement('div');
+            this._resizeHandle.className = 'odoo-dialog-resize-handle';
+            this._resizeHandle.style.background = 'red';
+            host.appendChild(this._resizeHandle);
+
+            this._onResizeDown = (ev) => this._startResize(ev);
+            this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
+        },
+
+        _maximize() {
+            this.dialogEl.style.left = '0px';
+            this.dialogEl.style.top = '0px';
+            this.dialogEl.style.width = '100vw';
+            this.dialogEl.style.height = '100vh';
+        },
+
+        _cleanup() {
+            const header = this.el?.querySelector('.modal-header');
+            if (header && this._onHeaderDown) header.removeEventListener('pointerdown', this._onHeaderDown);
+            if (this._resizeHandle && this._onResizeDown) this._resizeHandle.removeEventListener('pointerdown', this._onResizeDown);
+            if (this._handleObserver) this._handleObserver.disconnect();
+            if (this._onMove) document.removeEventListener('pointermove', this._onMove);
+            if (this._onUp) document.removeEventListener('pointerup', this._onUp);
+        },
+
+        _startDrag(ev) {
+            if (ev.target.closest('button,a,input,textarea,select')) return;
+            const r = this.dialogEl.getBoundingClientRect();
+            this._drag = { x: ev.clientX, y: ev.clientY, left: r.left, top: r.top };
+            ev.preventDefault();
+        },
+
+        _startResize(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            ev.stopImmediatePropagation?.();
+            const r = this.dialogEl.getBoundingClientRect();
+            this._resize = { x: ev.clientX, y: ev.clientY, width: r.width, height: r.height };
+            this._onMove = (e) => this._move(e);
+            this._onUp = () => this._stop();
+            document.addEventListener('pointermove', this._onMove);
+            document.addEventListener('pointerup', this._onUp);
+        },
+
+        _move(ev) {
+            if (this._drag) {
+                this.dialogEl.style.left = `${this._drag.left + (ev.clientX - this._drag.x)}px`;
+                this.dialogEl.style.top = `${this._drag.top + (ev.clientY - this._drag.y)}px`;
+            }
+            if (this._resize) {
+                this.dialogEl.style.width = `${Math.max(420, this._resize.width + (ev.clientX - this._resize.x))}px`;
+                this.dialogEl.style.height = `${Math.max(180, this._resize.height + (ev.clientY - this._resize.y))}px`;
+            }
+        },
+
+        async _stop() {
+            if (this.dialogEl && (this._drag || this._resize)) {
+                const r = this.dialogEl.getBoundingClientRect();
+                const key = layoutKey(this.props);
+                await this._saveLayout(key, {
+                    left: Math.round(r.left),
+                    top: Math.round(r.top),
+                    width: Math.round(r.width),
+                    height: Math.round(r.height),
+                    maximized: false,
+                });
+            }
+            this._drag = null;
+            this._resize = null;
+        },
+    };
+}
+
+patch(Dialog.prototype, makeDialogBehavior({
+    targetSelector: '.modal-content',
+    useFooterHandle: false,
+}));
+
+patch(SelectCreateDialog.prototype, makeDialogBehavior({
+    targetSelector: '.modal-content.o_select_create_dialog_content',
+    useFooterHandle: true,
+}));
