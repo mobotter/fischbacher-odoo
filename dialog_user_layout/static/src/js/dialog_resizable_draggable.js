@@ -2,7 +2,7 @@
 
 import { patch } from '@web/core/utils/patch';
 import { rpc } from '@web/core/network/rpc';
-import { onMounted, onWillUnmount, onRendered } from '@web/owl';
+import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 import { SelectCreateDialog } from '@web/views/view_dialogs/select_create_dialog';
 
 function layoutKey(props) {
