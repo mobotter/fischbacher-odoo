@@ -201,32 +201,37 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _startDrag(ev) {
-    if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
-
-    const rect = this.dialogEl.getBoundingClientRect();
-    const titleRect = ev.currentTarget.getBoundingClientRect();
-
-    this._drag = {
-        pointerX: ev.clientX,
-        pointerY: ev.clientY,
-        offsetX: ev.clientX - rect.left,
-        offsetY: ev.clientY - rect.top,
-        pointerId: ev.pointerId,
-        target: ev.currentTarget,
-        ready: false,
-    };
-    this._resize = null;
-
-    ev.preventDefault();
-    ev.stopPropagation();
-    ev.currentTarget.setPointerCapture?.(ev.pointerId);
-
-    requestAnimationFrame(() => {
-        if (this._drag) this._drag.ready = true;
-    });
-
-    this._bindMove();
-},
+        const rect = this.dialogEl.getBoundingClientRect();
+        console.log('dragstart', {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            rectLeft: rect.left,
+            rectTop: rect.top,
+            rectWidth: rect.width,
+            rectHeight: rect.height,
+        });
+    
+        this._drag = {
+            pointerX: ev.clientX,
+            pointerY: ev.clientY,
+            offsetX: ev.clientX - rect.left,
+            offsetY: ev.clientY - rect.top,
+            pointerId: ev.pointerId,
+            target: ev.currentTarget,
+            ready: false,
+        };
+    
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.currentTarget.setPointerCapture?.(ev.pointerId);
+    
+        requestAnimationFrame(() => {
+            console.log('drag ready');
+            if (this._drag) this._drag.ready = true;
+        });
+    
+        this._bindMove();
+    },
 
     _startResize(ev) {
         ev.preventDefault();
@@ -264,23 +269,21 @@ patch(SelectCreateDialog.prototype, {
     
         if (this._drag) {
             if (!this._drag.ready) return;
+    
             const x = ev.clientX - this._drag.offsetX;
             const y = ev.clientY - this._drag.offsetY;
+    
+            console.log('move', {
+                clientX: ev.clientX,
+                clientY: ev.clientY,
+                x,
+                y,
+            });
+    
             this.dialogEl.style.left = `${Math.max(0, x)}px`;
             this.dialogEl.style.top = `${Math.max(0, y)}px`;
         }
-    
-        if (this._resize) {
-            const dx = ev.clientX - this._resize.pointerX;
-            const dy = ev.clientY - this._resize.pointerY;
-    
-            const w = Math.max(320, this._resize.width + dx);
-            const h = Math.max(240, this._resize.height + dy);
-    
-            this.dialogEl.style.width = `${Math.min(w, window.innerWidth - 20)}px`;
-            this.dialogEl.style.height = `${Math.min(h, window.innerHeight - 20)}px`;
-        }
-    },
+    }
 
     async _stop(ev) {
         const active = this._drag || this._resize;
