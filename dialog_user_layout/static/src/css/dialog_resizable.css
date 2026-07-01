@@ -1,44 +1,37 @@
 .odoo-dialog-resizable {
-    position: relative !important;
-    margin: 0 !important;
     max-width: none !important;
     overflow: visible !important;
-    z-index: 1055;
+}
+
+.modal-content.odoo-dialog-resizable,
+.modal-dialog.odoo-dialog-resizable {
+    max-width: none !important;
+}
+
+.modal-header {
+    cursor: move;
 }
 
 .odoo-dialog-resize-footer {
-    position: relative;
-    padding: 0 !important;
-    min-height: 32px;
-    border-top: 0 !important;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    user-select: none;
 }
 
 .odoo-dialog-resize-handle {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 40px;
-    height: 40px;
-    cursor: nwse-resize;
-    z-index: 10000;
-    pointer-events: auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: se-resize;
     touch-action: none;
-    background: red !important;
-    display: block !important;
+    border-radius: 0.25rem;
+    background: rgba(0, 0, 0, 0.08);
 }
-.odoo-dialog-reset-btn {
-    position: absolute;
-    right: 26px;
-    top: 8px;
-    z-index: 10001;
-}
-@media (min-width: 576px) {
-    .modal-dialog.odoo-dialog-resizable {
-        max-width: none !important;
-        width: fit-content;
-    }
-    .modal-dialog {
-        max-width: none!important;
-        width: fit-content!important;
-    }
+
+.odoo-dialog-resize-handle:hover {
+    background: rgba(0, 0, 0, 0.14);
 }
