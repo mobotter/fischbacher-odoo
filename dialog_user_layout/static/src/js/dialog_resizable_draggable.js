@@ -101,21 +101,28 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _ensureHeaderBindings() {
-        const title = document.querySelector('.modal-title');
-        if (!title || this._onHeaderDown) return;
-        title.style.cursor = 'move';
-        title.style.userSelect = 'none';
-        title.style.touchAction = 'none';
-        this._onHeaderDown = (ev) => this._startDrag(ev);
-        title.addEventListener('pointerdown', this._onHeaderDown);
         const header = document.querySelector('.modal-header');
-        if (header && !header.querySelector('.odoo-dialog-reset-btn')) {
+        if (!header || this._onHeaderDown) return;
+        header.style.cursor = 'move';
+        header.style.userSelect = 'none';
+        header.style.touchAction = 'none';
+        this._onHeaderDown = (ev) => {
+            if (ev.target.closest('button, a, input, textarea, select, label')) return;
+            this._startDrag(ev);
+        };
+        header.addEventListener('pointerdown', this._onHeaderDown);
+        if (!header.querySelector('.odoo-dialog-reset-btn')) {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
             btn.textContent = '↺';
             btn.title = 'Reset layout';
-            btn.addEventListener('click', async (e) => { e.stopPropagation(); const key = layoutKey(this.props); await this._resetLayout(key); location.reload(); });
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const key = layoutKey(this.props);
+                await this._resetLayout(key);
+                location.reload();
+            });
             header.appendChild(btn);
         }
     },
@@ -123,9 +130,16 @@ patch(SelectCreateDialog.prototype, {
     _ensureResizeHandle() {
         if (!this.dialogEl) return;
         let footer = this.dialogEl.querySelector('.modal-footer');
-        if (!footer) { footer = document.createElement('div'); footer.className = 'modal-footer odoo-dialog-resize-footer'; this.dialogEl.appendChild(footer); }
+        if (!footer) {
+            footer = document.createElement('div');
+            footer.className = 'modal-footer odoo-dialog-resize-footer';
+            this.dialogEl.appendChild(footer);
+        }
         const existing = footer.querySelector('.odoo-dialog-resize-handle');
-        if (existing) { this._resizeHandle = existing; return; }
+        if (existing) {
+            this._resizeHandle = existing;
+            return;
+        }
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
         this._resizeHandle.textContent = '↘';
@@ -134,11 +148,16 @@ patch(SelectCreateDialog.prototype, {
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
     },
 
-    _maximize() { this.dialogEl.style.left = '0px'; this.dialogEl.style.top = '0px'; this.dialogEl.style.width = '100vw'; this.dialogEl.style.height = '100vh'; },
+    _maximize() {
+        this.dialogEl.style.left = '0px';
+        this.dialogEl.style.top = '0px';
+        this.dialogEl.style.width = '100vw';
+        this.dialogEl.style.height = '100vh';
+    },
 
     _cleanup() {
-        const title = document.querySelector('.modal-title');
-        if (title && this._onHeaderDown) title.removeEventListener('pointerdown', this._onHeaderDown);
+        const header = document.querySelector('.modal-header');
+        if (header && this._onHeaderDown) header.removeEventListener('pointerdown', this._onHeaderDown);
         if (this._resizeHandle && this._onResizeDown) this._resizeHandle.removeEventListener('pointerdown', this._onResizeDown);
         if (this._handleObserver) this._handleObserver.disconnect();
         if (this._onMove) document.removeEventListener('pointermove', this._onMove);
@@ -150,10 +169,23 @@ patch(SelectCreateDialog.prototype, {
         const rect = this.dialogEl.getBoundingClientRect();
         console.groupCollapsed('[odoo-dialog:dragstart]', { pointerId: ev.pointerId });
         console.log('down', { clientX: ev.clientX, clientY: ev.clientY, rectLeft: rect.left, rectTop: rect.top, rectWidth: rect.width, rectHeight: rect.height });
-        this._drag = { pointerX: ev.clientX, pointerY: ev.clientY, offsetX: ev.clientX - rect.left, offsetY: ev.clientY - rect.top, pointerId: ev.pointerId, target: ev.currentTarget, ready: false };
+        this._drag = {
+            pointerX: ev.clientX,
+            pointerY: ev.clientY,
+            offsetX: ev.clientX - rect.left,
+            offsetY: ev.clientY - rect.top,
+            pointerId: ev.pointerId,
+            target: ev.currentTarget,
+            ready: false,
+        };
         this._resize = null;
-        ev.preventDefault(); ev.stopPropagation(); ev.currentTarget.setPointerCapture?.(ev.pointerId);
-        requestAnimationFrame(() => { console.log('drag ready'); if (this._drag) this._drag.ready = true; });
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.currentTarget.setPointerCapture?.(ev.pointerId);
+        requestAnimationFrame(() => {
+            console.log('drag ready');
+            if (this._drag) this._drag.ready = true;
+        });
         this._bindMove();
         console.groupEnd();
     },
@@ -162,8 +194,17 @@ patch(SelectCreateDialog.prototype, {
         const r = this.dialogEl.getBoundingClientRect();
         console.groupCollapsed('[odoo-dialog:resizestart]', { pointerId: ev.pointerId });
         console.log('down', { clientX: ev.clientX, clientY: ev.clientY, rectWidth: r.width, rectHeight: r.height });
-        ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation?.();
-        this._resize = { pointerX: ev.clientX, pointerY: ev.clientY, width: r.width, height: r.height, pointerId: ev.pointerId, target: ev.currentTarget };
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.stopImmediatePropagation?.();
+        this._resize = {
+            pointerX: ev.clientX,
+            pointerY: ev.clientY,
+            width: r.width,
+            height: r.height,
+            pointerId: ev.pointerId,
+            target: ev.currentTarget,
+        };
         this._drag = null;
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
@@ -207,19 +248,31 @@ patch(SelectCreateDialog.prototype, {
         const target = active?.target;
         const pointerId = active?.pointerId;
         if (target && pointerId != null) {
-            try { if (target.hasPointerCapture?.(pointerId)) target.releasePointerCapture(pointerId); } catch (err) { console.warn('releasePointerCapture failed', err); }
+            try {
+                if (target.hasPointerCapture?.(pointerId)) target.releasePointerCapture(pointerId);
+            } catch (err) {
+                console.warn('releasePointerCapture failed', err);
+            }
         }
         if (this.dialogEl && active) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
-            await this._saveLayout(key, { left: Math.round(clamp(r.left, 0, Math.max(0, window.innerWidth - r.width))), top: Math.round(clamp(r.top, 0, Math.max(0, window.innerHeight - r.height))), width: Math.round(Math.min(r.width, window.innerWidth - 20)), height: Math.round(Math.min(r.height, window.innerHeight - 20)), maximized: false });
+            await this._saveLayout(key, {
+                left: Math.round(clamp(r.left, 0, Math.max(0, window.innerWidth - r.width))),
+                top: Math.round(clamp(r.top, 0, Math.max(0, window.innerHeight - r.height))),
+                width: Math.round(Math.min(r.width, window.innerWidth - 20)),
+                height: Math.round(Math.min(r.height, window.innerHeight - 20)),
+                maximized: false,
+            });
         }
         this._drag = null;
         this._resize = null;
         if (this._onMove) document.removeEventListener('pointermove', this._onMove);
         if (this._onUp) document.removeEventListener('pointerup', this._onUp);
         if (this._onCancel) document.removeEventListener('pointercancel', this._onCancel);
-        this._onMove = null; this._onUp = null; this._onCancel = null;
+        this._onMove = null;
+        this._onUp = null;
+        this._onCancel = null;
         console.groupEnd();
     },
 });
