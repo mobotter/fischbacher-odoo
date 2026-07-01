@@ -176,13 +176,10 @@ patch(SelectCreateDialog.prototype, {
     _prepareDragBase() {
         const rect = this.dialogEl.getBoundingClientRect();
         const style = this.dialogEl.style;
-        style.position = 'fixed';
-        style.left = `${Math.round(rect.left)}px`;
-        style.top = `${Math.round(rect.top)}px`;
-        style.transform = 'none';
+        style.position = 'relative';
         style.margin = '0';
         style.willChange = 'left, top';
-        return this.dialogEl.getBoundingClientRect();
+        return rect;
     },
 
     _cleanup() {
@@ -197,11 +194,10 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
-
+    
         const frozen = this._prepareDragBase();
         const titleRect = ev.currentTarget.getBoundingClientRect();
-        const style = window.getComputedStyle(this.dialogEl);
-
+    
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
@@ -214,7 +210,7 @@ patch(SelectCreateDialog.prototype, {
             ready: false,
         };
         this._resize = null;
-
+    
         dbg('SelectCreateDialog', '_startDrag', {
             clientX: ev.clientX,
             clientY: ev.clientY,
@@ -224,21 +220,16 @@ patch(SelectCreateDialog.prototype, {
             titleTop: titleRect.top,
             offsetX: this._drag.offsetX,
             offsetY: this._drag.offsetY,
-            styleLeft: style.left,
-            styleTop: style.top,
-            transform: style.transform,
-            pos: style.position,
-            hasCapture: ev.currentTarget.hasPointerCapture?.(ev.pointerId),
         });
-
+    
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
-
+    
         requestAnimationFrame(() => {
             if (this._drag) this._drag.ready = true;
         });
-
+    
         this._bindMove();
     },
 
