@@ -32,3 +32,9 @@
     top: 8px;
     z-index: 10001;
 }
+@media (min-width: 576px) {
+    .modal-dialog.odoo-dialog-resizable {
+        max-width: none !important;
+        width: fit-content;
+    }
+}
