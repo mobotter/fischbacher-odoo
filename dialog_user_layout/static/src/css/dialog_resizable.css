@@ -1,3 +1,4 @@
+
 .odoo-dialog-resizable {
     position: fixed;
     max-width: none !important;
@@ -46,4 +47,51 @@
 
 .odoo-dialog-resize-handle:hover {
     opacity: 1;
+}
+
+.odoo-dialog-resize-footer {
+    position: relative;
+    min-height: 30px;
+    padding: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(0,0,0,0.02));
+    border-top: 0;
+}
+
+.odoo-dialog-resize-handle {
+    position: absolute;
+    right: 8px;
+    bottom: 6px;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    color: var(--o-brand-primary, #875A7B);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: nwse-resize;
+    user-select: none;
+    touch-action: none;
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.8;
+    transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.odoo-dialog-resize-handle:hover {
+    opacity: 1;
+    transform: scale(1.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    background: #fff;
+}
+
+.odoo-dialog-resize-handle:active {
+    transform: scale(0.98);
+}
+
+.odoo-dialog-resize-handle::before {
+    content: '↘';
+    display: block;
+    transform: translateY(-1px);
 }
