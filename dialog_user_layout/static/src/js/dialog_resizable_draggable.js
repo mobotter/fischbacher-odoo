@@ -27,10 +27,24 @@ function makeDialogBehavior(options = {}) {
             this._drag = null;
             this._resize = null;
             this._handleObserver = null;
+            this._onMove = null;
+            this._onUp = null;
             dbg(name, 'setup', this.props);
             onMounted(() => this._initDialog());
             onRendered(() => this._ensureResizeHandle());
             onWillUnmount(() => this._cleanup());
+        },
+
+        async _waitForDialogRoot(retries = 20) {
+            for (let i = 0; i < retries; i++) {
+                const root = this.el;
+                const found = root?.querySelector(targetSelector) || root?.querySelector('.modal-dialog') || root;
+                if (found) {
+                    return found;
+                }
+                await new Promise((resolve) => requestAnimationFrame(resolve));
+            }
+            return null;
         },
 
         async _fetchLayout(key) {
@@ -51,14 +65,12 @@ function makeDialogBehavior(options = {}) {
         async _initDialog() {
             dbg(name, '_initDialog start', this.el);
 
-            const root = this.el;
-            this.dialogEl = root?.querySelector(targetSelector) || root?.querySelector('.modal-dialog') || root;
+            this.dialogEl = await this._waitForDialogRoot();
             this.contentEl = this.dialogEl;
             dbg(name, '_initDialog found', {
                 dialogEl: !!this.dialogEl,
                 contentEl: !!this.contentEl,
                 dialogClass: this.dialogEl?.className,
-                rootClass: root?.className,
                 targetSelector,
             });
 
