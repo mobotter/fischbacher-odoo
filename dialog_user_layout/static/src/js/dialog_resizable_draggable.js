@@ -4,6 +4,7 @@ import { patch } from '@web/core/utils/patch';
 import { rpc } from '@web/core/network/rpc';
 import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 import { SelectCreateDialog } from '@web/views/view_dialogs/select_create_dialog';
+import { FormController } from '@web/views/form/form_controller';
 
 function layoutKey(props) {
     return props?.title || props?.bodyId || props?.className || 'default_dialog';
@@ -20,6 +21,17 @@ function sleepFrame() {
 function clamp(n, min, max) {
     return Math.min(max, Math.max(min, n));
 }
+
+async function resetLayoutKey(key) {
+    await rpc('/odoo_dialog_user_layout/reset', { key });
+}
+
+patch(FormController.prototype, {
+    async onResetDialogLayouts() {
+        await resetLayoutKey('default_dialog');
+        location.reload();
+    },
+});
 
 patch(SelectCreateDialog.prototype, {
     setup() {
@@ -97,10 +109,15 @@ patch(SelectCreateDialog.prototype, {
         if (v && !v.maximized) {
             const vpW = window.innerWidth;
             const vpH = window.innerHeight;
-            if (v.width) this.dialogEl.style.width = `${v.width}px`;
-            if (v.height) this.dialogEl.style.height = `${v.height}px`;
-            if (v.left != null) this.dialogEl.style.left = `${clamp(v.left, 0, Math.max(0, vpW - 50))}px`;
-            if (v.top != null) this.dialogEl.style.top = `${clamp(v.top, 0, Math.max(0, vpH - 50))}px`;
+            const width = v.width || 980;
+            const height = v.height || 600;
+            const maxW = Math.max(320, vpW - 20);
+            const maxH = Math.max(240, vpH - 20);
+
+            this.dialogEl.style.width = `${Math.min(width, maxW)}px`;
+            this.dialogEl.style.height = `${Math.min(height, maxH)}px`;
+            this.dialogEl.style.left = `${clamp(v.left ?? 0, 0, Math.max(0, vpW - 50))}px`;
+            this.dialogEl.style.top = `${clamp(v.top ?? 0, 0, Math.max(0, vpH - 50))}px`;
         }
 
         if (v?.maximized) this._maximize();
@@ -194,10 +211,10 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
-    
+
         const frozen = this._prepareDragBase();
         const titleRect = ev.currentTarget.getBoundingClientRect();
-    
+
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
@@ -210,7 +227,7 @@ patch(SelectCreateDialog.prototype, {
             ready: false,
         };
         this._resize = null;
-    
+
         dbg('SelectCreateDialog', '_startDrag', {
             clientX: ev.clientX,
             clientY: ev.clientY,
@@ -221,15 +238,15 @@ patch(SelectCreateDialog.prototype, {
             offsetX: this._drag.offsetX,
             offsetY: this._drag.offsetY,
         });
-    
+
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
-    
+
         requestAnimationFrame(() => {
             if (this._drag) this._drag.ready = true;
         });
-    
+
         this._bindMove();
     },
 
