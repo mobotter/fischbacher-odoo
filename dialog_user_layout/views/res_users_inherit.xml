@@ -1,12 +1,15 @@
 <odoo>
-    <record id='view_users_form_dialog_layout' model='ir.ui.view'>
-        <field name='name'>res.users.form.dialog.layout</field>
-        <field name='model'>res.users</field>
-        <field name='inherit_id' ref='base.view_users_form'/>
-        <field name='arch' type='xml'>
-            <xpath expr='//sheet' position='inside'>
-                <group string='Dialog Layouts'>
-                    <field name='dialog_layouts_json' widget='json'/>
+    <record id="view_users_form_dialog_layout_reset" model="ir.ui.view">
+        <field name="name">res.users.form.dialog.layout.reset</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Preferences']" position="inside">
+                <group string="Dialog Layouts">
+                    <button type="object"
+                            name="onResetDialogLayouts"
+                            class="btn btn-secondary"
+                            string="Reset Dialog Layouts"/>
                 </group>
             </xpath>
         </field>
