@@ -232,7 +232,7 @@ patch(SelectCreateDialog.prototype, {
         ev.preventDefault();
         ev.stopPropagation();
         ev.stopImmediatePropagation?.();
-
+    
         const r = this.dialogEl.getBoundingClientRect();
         this._resize = {
             pointerX: ev.clientX,
@@ -243,10 +243,11 @@ patch(SelectCreateDialog.prototype, {
             target: ev.currentTarget,
         };
         this._drag = null;
-
+    
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
+
 
     _bindMove() {
         if (this._onMove) return;
@@ -270,14 +271,16 @@ patch(SelectCreateDialog.prototype, {
         }
     
         if (this._resize) {
-            const x = ev.clientX - this._resize.pointerX;
-            const y = ev.clientY - this._resize.pointerY;
-            const w = Math.max(320, this._resize.width + x);
-            const h = Math.max(240, this._resize.height + y);
+            const dx = ev.clientX - this._resize.pointerX;
+            const dy = ev.clientY - this._resize.pointerY;
+    
+            const w = Math.max(320, this._resize.width + dx);
+            const h = Math.max(240, this._resize.height + dy);
+    
             this.dialogEl.style.width = `${Math.min(w, window.innerWidth - 20)}px`;
             this.dialogEl.style.height = `${Math.min(h, window.innerHeight - 20)}px`;
         }
-},
+    },
 
     async _stop(ev) {
         const active = this._drag || this._resize;
