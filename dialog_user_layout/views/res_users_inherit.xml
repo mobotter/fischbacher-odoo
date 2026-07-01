@@ -1,5 +1,17 @@
 <odoo>
-    <data noupdate="0">
-        <delete model="ir.ui.view" search="[('name', '=', 'res.users.form.dialog.layout.reset')]"/>
+    <data>
+        <record id="view_users_form_dialog_layout_reset" model="ir.ui.view">
+            <field name="name">res.users.form.dialog.layout.reset</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_reset_dialog_layouts"
+                            type="object"
+                            string="Reset Dialog Layouts"
+                            class="btn btn-secondary"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
