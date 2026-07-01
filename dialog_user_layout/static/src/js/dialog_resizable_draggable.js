@@ -13,6 +13,10 @@ function clamp(n, min, max) {
     return Math.min(max, Math.max(min, n));
 }
 
+async function saveUserLayout(key, values) {
+    return await rpc('/odoo_dialog_user_layout/set', { key, values });
+}
+
 patch(SelectCreateDialog.prototype, {
     setup() {
         super.setup(...arguments);
@@ -42,7 +46,6 @@ patch(SelectCreateDialog.prototype, {
     },
 
     async _fetchLayout(key) { return await rpc('/odoo_dialog_user_layout/get', { key }); },
-    async _saveLayout(key, values) { return await rpc('/odoo_dialog_user_layout/set', { key, values }); },
 
     async _initDialog() {
         if (!this._isMounted) return;
@@ -130,6 +133,8 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         const r = this.dialogEl.getBoundingClientRect();
+        this.dialogEl.style.left = `${r.left}px`;
+        this.dialogEl.style.top = `${r.top}px`;
         this._drag = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, left: r.left, top: r.top, target: ev.currentTarget };
         this._resize = null;
         ev.preventDefault();
@@ -175,7 +180,7 @@ patch(SelectCreateDialog.prototype, {
         }
     },
 
-    async _stop() {
+    async _stop(ev) {
         const active = this._drag || this._resize;
         const target = active?.target;
         const pointerId = active?.pointerId;
@@ -185,7 +190,11 @@ patch(SelectCreateDialog.prototype, {
         if (this.dialogEl && active) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
-            await this._saveLayout(key, { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height), maximized: false });
+            await saveUserLayout(key, { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height), maximized: false });
+            this.dialogEl.style.left = `${Math.round(r.left)}px`;
+            this.dialogEl.style.top = `${Math.round(r.top)}px`;
+            this.dialogEl.style.width = `${Math.round(r.width)}px`;
+            this.dialogEl.style.height = `${Math.round(r.height)}px`;
         }
         this._drag = null;
         this._resize = null;
