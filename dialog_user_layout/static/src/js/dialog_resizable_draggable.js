@@ -211,6 +211,7 @@ patch(SelectCreateDialog.prototype, {
             offsetY: ev.clientY - titleRect.top,
             pointerId: ev.pointerId,
             target: ev.currentTarget,
+            ready: false,
         };
         this._resize = null;
 
@@ -233,6 +234,11 @@ patch(SelectCreateDialog.prototype, {
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
+
+        requestAnimationFrame(() => {
+            if (this._drag) this._drag.ready = true;
+        });
+
         this._bindMove();
     },
 
@@ -277,6 +283,8 @@ patch(SelectCreateDialog.prototype, {
         if (!this.dialogEl) return;
 
         if (this._drag) {
+            if (!this._drag.ready) return;
+
             const style = window.getComputedStyle(this.dialogEl);
             const x = ev.clientX - this._drag.offsetX;
             const y = ev.clientY - this._drag.offsetY;
