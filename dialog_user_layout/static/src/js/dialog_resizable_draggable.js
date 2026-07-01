@@ -185,33 +185,30 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
-
+    
         const r = this.dialogEl.getBoundingClientRect();
-        const tr = ev.currentTarget.getBoundingClientRect();
-
+    
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
             left: r.left,
             top: r.top,
-            offsetX: ev.clientX - tr.left,
-            offsetY: ev.clientY - tr.top,
+            offsetX: ev.clientX - r.left,
+            offsetY: ev.clientY - r.top,
             pointerId: ev.pointerId,
             target: ev.currentTarget,
         };
         this._resize = null;
-
+    
         dbg('SelectCreateDialog', '_startDrag', {
             clientX: ev.clientX,
             clientY: ev.clientY,
             modalLeft: r.left,
             modalTop: r.top,
-            titleLeft: tr.left,
-            titleTop: tr.top,
             offsetX: this._drag.offsetX,
             offsetY: this._drag.offsetY,
         });
-
+    
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
@@ -257,37 +254,25 @@ patch(SelectCreateDialog.prototype, {
 
     _move(ev) {
         if (!this.dialogEl) return;
-
+    
         if (this._drag) {
-            const dx = ev.clientX - this._drag.pointerX;
-            const dy = ev.clientY - this._drag.pointerY;
-            const x = clamp(this._drag.left + dx, 0, window.innerWidth - 50);
-            const y = clamp(this._drag.top + dy, 0, window.innerHeight - 50);
-
+            const x = ev.clientX - this._drag.offsetX;
+            const y = ev.clientY - this._drag.offsetY;
+    
             dbg('SelectCreateDialog', '_move drag', {
                 clientX: ev.clientX,
                 clientY: ev.clientY,
-                dx,
-                dy,
                 nextLeft: x,
                 nextTop: y,
             });
-
-            this.dialogEl.style.left = `${x}px`;
-            this.dialogEl.style.top = `${y}px`;
+    
+            this.dialogEl.style.left = `${Math.max(0, x)}px`;
+            this.dialogEl.style.top = `${Math.max(0, y)}px`;
         }
-
+    
         if (this._resize) {
             const w = Math.max(420, this._resize.width + (ev.clientX - this._resize.pointerX));
             const h = Math.max(180, this._resize.height + (ev.clientY - this._resize.pointerY));
-
-            dbg('SelectCreateDialog', '_move resize', {
-                clientX: ev.clientX,
-                clientY: ev.clientY,
-                nextWidth: w,
-                nextHeight: h,
-            });
-
             this.dialogEl.style.width = `${w}px`;
             this.dialogEl.style.height = `${h}px`;
         }
