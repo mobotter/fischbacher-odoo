@@ -2,7 +2,7 @@
 
 import { patch } from '@web/core/utils/patch';
 import { rpc } from '@web/core/network/rpc';
-import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
+import { onMounted, onWillUnmount, onRendered } from '@web/owl';
 import { SelectCreateDialog } from '@web/views/view_dialogs/select_create_dialog';
 
 function layoutKey(props) {
@@ -173,6 +173,18 @@ patch(SelectCreateDialog.prototype, {
         this.dialogEl.style.height = '100vh';
     },
 
+    _prepareDragBase() {
+        const rect = this.dialogEl.getBoundingClientRect();
+        const style = this.dialogEl.style;
+        style.position = 'fixed';
+        style.left = `${Math.round(rect.left)}px`;
+        style.top = `${Math.round(rect.top)}px`;
+        style.transform = 'none';
+        style.margin = '0';
+        style.willChange = 'left, top';
+        return this.dialogEl.getBoundingClientRect();
+    },
+
     _cleanup() {
         const title = document.querySelector('.modal-title');
         if (title && this._onHeaderDown) title.removeEventListener('pointerdown', this._onHeaderDown);
@@ -185,28 +197,28 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         if (ev.target.closest('button,a,input,textarea,select,.odoo-dialog-resize-handle')) return;
-    
-        const modalRect = this.dialogEl.getBoundingClientRect();
+
+        const frozen = this._prepareDragBase();
         const titleRect = ev.currentTarget.getBoundingClientRect();
         const style = window.getComputedStyle(this.dialogEl);
-    
+
         this._drag = {
             pointerX: ev.clientX,
             pointerY: ev.clientY,
-            left: modalRect.left,
-            top: modalRect.top,
+            left: frozen.left,
+            top: frozen.top,
             offsetX: ev.clientX - titleRect.left,
             offsetY: ev.clientY - titleRect.top,
             pointerId: ev.pointerId,
             target: ev.currentTarget,
         };
         this._resize = null;
-    
+
         dbg('SelectCreateDialog', '_startDrag', {
             clientX: ev.clientX,
             clientY: ev.clientY,
-            modalLeft: modalRect.left,
-            modalTop: modalRect.top,
+            frozenLeft: frozen.left,
+            frozenTop: frozen.top,
             titleLeft: titleRect.left,
             titleTop: titleRect.top,
             offsetX: this._drag.offsetX,
@@ -217,13 +229,12 @@ patch(SelectCreateDialog.prototype, {
             pos: style.position,
             hasCapture: ev.currentTarget.hasPointerCapture?.(ev.pointerId),
         });
-    
+
         ev.preventDefault();
         ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
-
 
     _startResize(ev) {
         ev.preventDefault();
@@ -264,12 +275,12 @@ patch(SelectCreateDialog.prototype, {
 
     _move(ev) {
         if (!this.dialogEl) return;
-    
+
         if (this._drag) {
             const style = window.getComputedStyle(this.dialogEl);
             const x = ev.clientX - this._drag.offsetX;
             const y = ev.clientY - this._drag.offsetY;
-    
+
             dbg('SelectCreateDialog', '_move drag', {
                 clientX: ev.clientX,
                 clientY: ev.clientY,
@@ -280,7 +291,7 @@ patch(SelectCreateDialog.prototype, {
                 transform: style.transform,
                 hasCapture: this._drag.target?.hasPointerCapture?.(this._drag.pointerId),
             });
-    
+
             this.dialogEl.style.left = `${Math.max(0, x)}px`;
             this.dialogEl.style.top = `${Math.max(0, y)}px`;
         }
