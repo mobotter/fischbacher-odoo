@@ -14,6 +14,10 @@ function dbg(scope, ...args) {
     console.log(`[odoo-dialog:${scope}]`, ...args);
 }
 
+function sleepFrame() {
+    return new Promise((resolve) => requestAnimationFrame(resolve));
+}
+
 function makeDialogBehavior(options = {}) {
     const {
         targetSelector = '.modal-content',
@@ -35,15 +39,25 @@ function makeDialogBehavior(options = {}) {
             onWillUnmount(() => this._cleanup());
         },
 
-        async _waitForDialogRoot(retries = 20) {
+        async _waitForDialogRoot(retries = 30) {
+            dbg(name, '_waitForDialogRoot start', { retries, targetSelector });
             for (let i = 0; i < retries; i++) {
-                const root = this.el;
-                const found = root?.querySelector(targetSelector) || root?.querySelector('.modal-dialog') || root;
+                const found =
+                    document.querySelector('.modal-content.o_select_create_dialog_content') ||
+                    document.querySelector(targetSelector) ||
+                    document.querySelector('.modal-content') ||
+                    document.querySelector('.modal-dialog');
+                dbg(name, '_waitForDialogRoot tick', {
+                    i,
+                    found: !!found,
+                    className: found?.className,
+                });
                 if (found) {
                     return found;
                 }
-                await new Promise((resolve) => requestAnimationFrame(resolve));
+                await sleepFrame();
             }
+            dbg(name, '_waitForDialogRoot timeout');
             return null;
         },
 
@@ -103,7 +117,7 @@ function makeDialogBehavior(options = {}) {
 
             if (this._handleObserver) this._handleObserver.disconnect();
             this._handleObserver = new MutationObserver((mutations) => {
-                dbg(name, 'mutation', mutations.map(m => ({
+                dbg(name, 'mutation', mutations.map((m) => ({
                     type: m.type,
                     added: m.addedNodes?.length,
                     removed: m.removedNodes?.length,
@@ -115,7 +129,7 @@ function makeDialogBehavior(options = {}) {
         },
 
         _ensureHeaderBindings() {
-            const header = this.el?.querySelector('.modal-header');
+            const header = document.querySelector('.modal-header');
             dbg(name, '_ensureHeaderBindings', {
                 header: !!header,
                 className: header?.className,
@@ -182,6 +196,8 @@ function makeDialogBehavior(options = {}) {
             this._resizeHandle.style.background = 'red';
             this._resizeHandle.style.width = '40px';
             this._resizeHandle.style.height = '40px';
+            this._resizeHandle.style.display = 'block';
+            this._resizeHandle.style.opacity = '1';
             this._resizeHandle.textContent = '↘';
             host.appendChild(this._resizeHandle);
 
@@ -205,7 +221,7 @@ function makeDialogBehavior(options = {}) {
 
         _cleanup() {
             dbg(name, '_cleanup start');
-            const header = this.el?.querySelector('.modal-header');
+            const header = document.querySelector('.modal-header');
             if (header && this._onHeaderDown) header.removeEventListener('pointerdown', this._onHeaderDown);
             if (this._resizeHandle && this._onResizeDown) this._resizeHandle.removeEventListener('pointerdown', this._onResizeDown);
             if (this._handleObserver) this._handleObserver.disconnect();
