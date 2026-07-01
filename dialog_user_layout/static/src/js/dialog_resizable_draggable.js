@@ -13,18 +13,6 @@ function clamp(n, min, max) {
     return Math.min(max, Math.max(min, n));
 }
 
-function getViewportRect() {
-    return { w: window.innerWidth, h: window.innerHeight };
-}
-
-function dragOffset(ev, el) {
-    const rect = el.getBoundingClientRect();
-    const cs = window.getComputedStyle(el);
-    const left = parseFloat(cs.left || rect.left) || rect.left;
-    const top = parseFloat(cs.top || rect.top) || rect.top;
-    return { x: ev.clientX - left, y: ev.clientY - top };
-}
-
 async function saveUserLayout(key, values) {
     return await rpc('/odoo_dialog_user_layout/set', { key, values });
 }
@@ -145,11 +133,12 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         const r = this.dialogEl.getBoundingClientRect();
-        const off = dragOffset(ev, this.dialogEl);
-        this._drag = { pointerId: ev.pointerId, offsetX: off.x, offsetY: off.y, left: r.left, top: r.top, target: ev.currentTarget };
+        const left = parseFloat(this.dialogEl.style.left || r.left) || r.left;
+        const top = parseFloat(this.dialogEl.style.top || r.top) || r.top;
+        this._drag = { pointerId: ev.pointerId, offsetX: ev.clientX - left, offsetY: ev.clientY - top, target: ev.currentTarget };
         this._resize = null;
-        this.dialogEl.style.left = `${r.left}px`;
-        this.dialogEl.style.top = `${r.top}px`;
+        this.dialogEl.style.left = `${left}px`;
+        this.dialogEl.style.top = `${top}px`;
         this.dialogEl.style.transform = 'none';
         ev.preventDefault();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
@@ -178,10 +167,8 @@ patch(SelectCreateDialog.prototype, {
 
     _move(ev) {
         if (this._drag) {
-            const x = ev.clientX - this._drag.offsetX;
-            const y = ev.clientY - this._drag.offsetY;
-            this.dialogEl.style.left = `${Math.max(0, x)}px`;
-            this.dialogEl.style.top = `${Math.max(0, y)}px`;
+            this.dialogEl.style.left = `${Math.max(0, ev.clientX - this._drag.offsetX)}px`;
+            this.dialogEl.style.top = `${Math.max(0, ev.clientY - this._drag.offsetY)}px`;
             ev.preventDefault();
             return;
         }
@@ -208,12 +195,6 @@ patch(SelectCreateDialog.prototype, {
             const key = layoutKey(this.props);
             const values = { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height), maximized: false };
             await saveUserLayout(key, values);
-            this.dialogEl.style.left = `${values.left}px`;
-            this.dialogEl.style.top = `${values.top}px`;
-            this.dialogEl.style.width = `${values.width}px`;
-            this.dialogEl.style.height = `${values.height}px`;
-            this.dialogEl.style.transform = 'none';
-            await new Promise((r2) => requestAnimationFrame(r2));
         }
         this._drag = null;
         this._resize = null;
