@@ -35,10 +35,10 @@
 @media (min-width: 576px) {
     .modal-dialog.odoo-dialog-resizable {
         max-width: none !important;
-        width: fit-content;
+        width: 90vw;
     }
     .modal-dialog {
         max-width: none!important;
-        width: fit-content!important;
+        width: 90vw!important;
     }
 }
