@@ -49,10 +49,7 @@ patch(SelectCreateDialog.prototype, {
 
     async _waitForDialogRoot(retries = 30) {
         for (let i = 0; i < retries; i++) {
-            const found = document.querySelector('.modal-dialog.o_dialog')
-                || document.querySelector('.modal-dialog')
-                || document.querySelector('.modal-content.o_select_create_dialog_content')
-                || document.querySelector('.modal-content');
+            const found = document.querySelector('.modal-dialog.o_dialog') || document.querySelector('.modal-dialog') || document.querySelector('.modal-content.o_select_create_dialog_content') || document.querySelector('.modal-content');
             if (found) return found;
             await sleepFrame();
         }
@@ -72,6 +69,8 @@ patch(SelectCreateDialog.prototype, {
         this.dialogEl.style.position = 'fixed';
         this.dialogEl.style.margin = '0';
         this.dialogEl.style.maxWidth = 'none';
+        this.dialogEl.style.width = '90vw';
+        this.dialogEl.style.height = '70vh';
         this.dialogEl.style.transform = 'none';
         this.dialogEl.style.willChange = 'left, top, width, height';
 
@@ -82,8 +81,8 @@ patch(SelectCreateDialog.prototype, {
         if (v && !v.maximized) {
             const vpW = window.innerWidth;
             const vpH = window.innerHeight;
-            const width = v.width || 980;
-            const height = v.height || 600;
+            const width = v.width || Math.round(vpW * 0.9);
+            const height = v.height || Math.round(vpH * 0.7);
             const maxW = Math.max(320, vpW - 20);
             const maxH = Math.max(240, vpH - 20);
             this.dialogEl.style.width = `${Math.min(width, maxW)}px`;
@@ -100,7 +99,7 @@ patch(SelectCreateDialog.prototype, {
 
         if (this._handleObserver) this._handleObserver.disconnect();
         this._handleObserver = new MutationObserver(() => this._ensureResizeHandle());
-        this._handleObserver.observe(this.dialogEl, { childList: true, subtree: false });
+        this._handleObserver.observe(this.dialogEl, { childList: true, subtree: true });
     },
 
     _ensureHeaderBindings() {
@@ -115,47 +114,33 @@ patch(SelectCreateDialog.prototype, {
             this._startDrag(ev);
         };
         header.addEventListener('pointerdown', this._onHeaderDown);
-        if (!header.querySelector('.odoo-dialog-reset-btn')) {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'btn btn-secondary btn-sm odoo-dialog-reset-btn';
-            btn.textContent = '↺';
-            btn.title = 'Reset layout';
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const key = layoutKey(this.props);
-                await this._resetLayout(key);
-                location.reload();
-            });
-            header.appendChild(btn);
-        }
     },
 
     _ensureResizeHandle() {
         if (!this.dialogEl) return;
-    
-        this.dialogEl.style.maxWidth = 'none';
-        this.dialogEl.style.width = this.dialogEl.style.width || '980px';
-        this.dialogEl.style.height = this.dialogEl.style.height || '600px';
-    
         let footer = this.dialogEl.querySelector('.modal-footer');
         if (!footer) {
             footer = document.createElement('div');
             footer.className = 'modal-footer odoo-dialog-resize-footer';
             this.dialogEl.appendChild(footer);
         }
-    
+        footer.style.position = 'relative';
+        footer.style.minHeight = '24px';
         const existing = footer.querySelector('.odoo-dialog-resize-handle');
         if (existing) {
             this._resizeHandle = existing;
             return;
         }
-    
         this._resizeHandle = document.createElement('div');
         this._resizeHandle.className = 'odoo-dialog-resize-handle';
         this._resizeHandle.textContent = '↘';
+        this._resizeHandle.style.position = 'absolute';
+        this._resizeHandle.style.right = '6px';
+        this._resizeHandle.style.bottom = '4px';
+        this._resizeHandle.style.cursor = 'nwse-resize';
+        this._resizeHandle.style.userSelect = 'none';
+        this._resizeHandle.style.touchAction = 'none';
         footer.appendChild(this._resizeHandle);
-    
         this._onResizeDown = (ev) => this._startResize(ev);
         this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
     },
@@ -179,18 +164,9 @@ patch(SelectCreateDialog.prototype, {
 
     _startDrag(ev) {
         const rect = this.dialogEl.getBoundingClientRect();
-        const startLeft = rect.left;
-        const startTop = rect.top;
-        this.dialogEl.style.left = `${startLeft}px`;
-        this.dialogEl.style.top = `${startTop}px`;
-        this._drag = {
-            pointerId: ev.pointerId,
-            startX: ev.clientX,
-            startY: ev.clientY,
-            startLeft,
-            startTop,
-            target: ev.currentTarget,
-        };
+        this.dialogEl.style.left = `${rect.left}px`;
+        this.dialogEl.style.top = `${rect.top}px`;
+        this._drag = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, startLeft: rect.left, startTop: rect.top, target: ev.currentTarget };
         this._resize = null;
         ev.preventDefault();
         ev.stopPropagation();
@@ -203,14 +179,7 @@ patch(SelectCreateDialog.prototype, {
         ev.preventDefault();
         ev.stopPropagation();
         ev.stopImmediatePropagation?.();
-        this._resize = {
-            pointerId: ev.pointerId,
-            pointerX: ev.clientX,
-            pointerY: ev.clientY,
-            width: r.width,
-            height: r.height,
-            target: ev.currentTarget,
-        };
+        this._resize = { pointerId: ev.pointerId, pointerX: ev.clientX, pointerY: ev.clientY, width: r.width, height: r.height, target: ev.currentTarget };
         this._drag = null;
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
@@ -241,7 +210,6 @@ patch(SelectCreateDialog.prototype, {
             const dy = ev.clientY - this._resize.pointerY;
             const w = Math.max(320, this._resize.width + dx);
             const h = Math.max(240, this._resize.height + dy);
-        
             this.dialogEl.style.width = `${Math.min(w, window.innerWidth - 20)}px`;
             this.dialogEl.style.height = `${Math.min(h, window.innerHeight - 20)}px`;
             this.dialogEl.style.maxWidth = 'none';
@@ -254,20 +222,12 @@ patch(SelectCreateDialog.prototype, {
         const target = active?.target;
         const pointerId = active?.pointerId;
         if (target && pointerId != null) {
-            try {
-                if (target.hasPointerCapture?.(pointerId)) target.releasePointerCapture(pointerId);
-            } catch {}
+            try { if (target.hasPointerCapture?.(pointerId)) target.releasePointerCapture(pointerId); } catch {}
         }
         if (this.dialogEl && active) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
-            await this._saveLayout(key, {
-                left: Math.round(clamp(r.left, 0, Math.max(0, window.innerWidth - r.width))),
-                top: Math.round(clamp(r.top, 0, Math.max(0, window.innerHeight - r.height))),
-                width: Math.round(Math.min(r.width, window.innerWidth - 20)),
-                height: Math.round(Math.min(r.height, window.innerHeight - 20)),
-                maximized: false,
-            });
+            await this._saveLayout(key, { left: Math.round(clamp(r.left, 0, Math.max(0, window.innerWidth - r.width))), top: Math.round(clamp(r.top, 0, Math.max(0, window.innerHeight - r.height))), width: Math.round(Math.min(r.width, window.innerWidth - 20)), height: Math.round(Math.min(r.height, window.innerHeight - 20)), maximized: false });
         }
         this._drag = null;
         this._resize = null;
