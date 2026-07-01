@@ -2,36 +2,21 @@
 
 import { patch } from '@web/core/utils/patch';
 import { rpc } from '@web/core/network/rpc';
-import { FormController } from '@web/views/form/form_controller';
-import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 import { SelectCreateDialog } from '@web/views/view_dialogs/select_create_dialog';
+import { onMounted, onWillUnmount, onRendered } from '@odoo/owl';
 
 function layoutKey(props) {
     return props?.title || props?.bodyId || props?.className || 'default_dialog';
-}
-
-function sleepFrame() {
-    return new Promise((resolve) => requestAnimationFrame(resolve));
 }
 
 function clamp(n, min, max) {
     return Math.min(max, Math.max(min, n));
 }
 
-async function resetLayoutKey(key) {
-    await rpc('/odoo_dialog_user_layout/reset', { key });
-}
-
-patch(FormController.prototype, {
-    async onResetDialogLayouts() {
-        await resetLayoutKey('default_dialog');
-        location.reload();
-    },
-});
-
 patch(SelectCreateDialog.prototype, {
     setup() {
         super.setup(...arguments);
+        this.dialogEl = null;
         this._drag = null;
         this._resize = null;
         this._handleObserver = null;
@@ -49,16 +34,15 @@ patch(SelectCreateDialog.prototype, {
 
     async _waitForDialogRoot(retries = 30) {
         for (let i = 0; i < retries; i++) {
-            const found = document.querySelector('.modal-dialog.o_dialog') || document.querySelector('.modal-dialog') || document.querySelector('.modal-content.o_select_create_dialog_content') || document.querySelector('.modal-content');
+            const found = document.querySelector('.modal-dialog.o_dialog') || document.querySelector('.modal-dialog');
             if (found) return found;
-            await sleepFrame();
+            await new Promise((r) => requestAnimationFrame(r));
         }
         return null;
     },
 
     async _fetchLayout(key) { return await rpc('/odoo_dialog_user_layout/get', { key }); },
     async _saveLayout(key, values) { return await rpc('/odoo_dialog_user_layout/set', { key, values }); },
-    async _resetLayout(key) { return await rpc('/odoo_dialog_user_layout/reset', { key }); },
 
     async _initDialog() {
         if (!this._isMounted) return;
@@ -72,28 +56,22 @@ patch(SelectCreateDialog.prototype, {
         this.dialogEl.style.width = '90vw';
         this.dialogEl.style.height = '70vh';
         this.dialogEl.style.transform = 'none';
-        this.dialogEl.style.willChange = 'left, top, width, height';
 
         const key = layoutKey(this.props);
-        const layout = await this._fetchLayout(key);
-        const v = layout && layout[key];
-
-        if (v && !v.maximized) {
-            const vpW = window.innerWidth;
-            const vpH = window.innerHeight;
-            const width = v.width || Math.round(vpW * 0.9);
-            const height = v.height || Math.round(vpH * 0.7);
-            const maxW = Math.max(320, vpW - 20);
-            const maxH = Math.max(240, vpH - 20);
-            this.dialogEl.style.width = `${Math.min(width, maxW)}px`;
-            this.dialogEl.style.height = `${Math.min(height, maxH)}px`;
-            this.dialogEl.style.left = `${clamp(v.left ?? 0, 0, Math.max(0, vpW - 50))}px`;
-            this.dialogEl.style.top = `${clamp(v.top ?? 0, 0, Math.max(0, vpH - 50))}px`;
+        const saved = await this._fetchLayout(key);
+        const v = saved?.[key];
+        if (v) {
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const width = Math.min(v.width || Math.round(vw * 0.9), vw - 20);
+            const height = Math.min(v.height || Math.round(vh * 0.7), vh - 20);
+            this.dialogEl.style.width = `${width}px`;
+            this.dialogEl.style.height = `${height}px`;
+            this.dialogEl.style.left = `${clamp(v.left ?? 0, 0, Math.max(0, vw - width))}px`;
+            this.dialogEl.style.top = `${clamp(v.top ?? 0, 0, Math.max(0, vh - height))}px`;
         }
 
-        if (v?.maximized) this._maximize();
-
-        await sleepFrame();
+        await new Promise((r) => requestAnimationFrame(r));
         this._ensureHeaderBindings();
         this._ensureResizeHandle();
 
@@ -125,31 +103,19 @@ patch(SelectCreateDialog.prototype, {
             this.dialogEl.appendChild(footer);
         }
         footer.style.position = 'relative';
-        footer.style.minHeight = '24px';
-        const existing = footer.querySelector('.odoo-dialog-resize-handle');
-        if (existing) {
-            this._resizeHandle = existing;
-            return;
+        footer.style.minHeight = '28px';
+        let handle = footer.querySelector('.odoo-dialog-resize-handle');
+        if (!handle) {
+            handle = document.createElement('div');
+            handle.className = 'odoo-dialog-resize-handle';
+            handle.textContent = '↘';
+            footer.appendChild(handle);
         }
-        this._resizeHandle = document.createElement('div');
-        this._resizeHandle.className = 'odoo-dialog-resize-handle';
-        this._resizeHandle.textContent = '↘';
-        this._resizeHandle.style.position = 'absolute';
-        this._resizeHandle.style.right = '6px';
-        this._resizeHandle.style.bottom = '4px';
-        this._resizeHandle.style.cursor = 'nwse-resize';
-        this._resizeHandle.style.userSelect = 'none';
-        this._resizeHandle.style.touchAction = 'none';
-        footer.appendChild(this._resizeHandle);
-        this._onResizeDown = (ev) => this._startResize(ev);
-        this._resizeHandle.addEventListener('pointerdown', this._onResizeDown);
-    },
-
-    _maximize() {
-        this.dialogEl.style.left = '0px';
-        this.dialogEl.style.top = '0px';
-        this.dialogEl.style.width = '100vw';
-        this.dialogEl.style.height = '100vh';
+        this._resizeHandle = handle;
+        if (!this._onResizeDown) {
+            this._onResizeDown = (ev) => this._startResize(ev);
+            handle.addEventListener('pointerdown', this._onResizeDown);
+        }
     },
 
     _cleanup() {
@@ -163,24 +129,20 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _startDrag(ev) {
-        const rect = this.dialogEl.getBoundingClientRect();
-        this.dialogEl.style.left = `${rect.left}px`;
-        this.dialogEl.style.top = `${rect.top}px`;
-        this._drag = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, startLeft: rect.left, startTop: rect.top, target: ev.currentTarget };
+        const r = this.dialogEl.getBoundingClientRect();
+        this._drag = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, left: r.left, top: r.top, target: ev.currentTarget };
         this._resize = null;
         ev.preventDefault();
-        ev.stopPropagation();
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
 
     _startResize(ev) {
         const r = this.dialogEl.getBoundingClientRect();
+        this._resize = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, width: r.width, height: r.height, target: ev.currentTarget };
+        this._drag = null;
         ev.preventDefault();
         ev.stopPropagation();
-        ev.stopImmediatePropagation?.();
-        this._resize = { pointerId: ev.pointerId, pointerX: ev.clientX, pointerY: ev.clientY, width: r.width, height: r.height, target: ev.currentTarget };
-        this._drag = null;
         ev.currentTarget.setPointerCapture?.(ev.pointerId);
         this._bindMove();
     },
@@ -196,38 +158,34 @@ patch(SelectCreateDialog.prototype, {
     },
 
     _move(ev) {
-        if (!this.dialogEl) return;
         if (this._drag) {
-            const x = this._drag.startLeft + (ev.clientX - this._drag.startX);
-            const y = this._drag.startTop + (ev.clientY - this._drag.startY);
-            this.dialogEl.style.left = `${Math.max(0, x)}px`;
-            this.dialogEl.style.top = `${Math.max(0, y)}px`;
+            this.dialogEl.style.left = `${Math.max(0, this._drag.left + (ev.clientX - this._drag.startX))}px`;
+            this.dialogEl.style.top = `${Math.max(0, this._drag.top + (ev.clientY - this._drag.startY))}px`;
             ev.preventDefault();
             return;
         }
         if (this._resize) {
-            const dx = ev.clientX - this._resize.pointerX;
-            const dy = ev.clientY - this._resize.pointerY;
+            const dx = ev.clientX - this._resize.startX;
+            const dy = ev.clientY - this._resize.startY;
             const w = Math.max(320, this._resize.width + dx);
             const h = Math.max(240, this._resize.height + dy);
             this.dialogEl.style.width = `${Math.min(w, window.innerWidth - 20)}px`;
             this.dialogEl.style.height = `${Math.min(h, window.innerHeight - 20)}px`;
-            this.dialogEl.style.maxWidth = 'none';
             ev.preventDefault();
         }
     },
 
-    async _stop(ev) {
+    async _stop() {
         const active = this._drag || this._resize;
         const target = active?.target;
         const pointerId = active?.pointerId;
         if (target && pointerId != null) {
-            try { if (target.hasPointerCapture?.(pointerId)) target.releasePointerCapture(pointerId); } catch {}
+            try { target.releasePointerCapture?.(pointerId); } catch {}
         }
         if (this.dialogEl && active) {
             const r = this.dialogEl.getBoundingClientRect();
             const key = layoutKey(this.props);
-            await this._saveLayout(key, { left: Math.round(clamp(r.left, 0, Math.max(0, window.innerWidth - r.width))), top: Math.round(clamp(r.top, 0, Math.max(0, window.innerHeight - r.height))), width: Math.round(Math.min(r.width, window.innerWidth - 20)), height: Math.round(Math.min(r.height, window.innerHeight - 20)), maximized: false });
+            await this._saveLayout(key, { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height), maximized: false });
         }
         this._drag = null;
         this._resize = null;
