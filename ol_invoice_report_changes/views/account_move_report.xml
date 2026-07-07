@@ -398,7 +398,6 @@
                                     </t>
                                 </div>
 
-                                <t t-if="doc.move_type != 'out_refund'">
                                     <div style="font-size:12px;">
                                         Payment Terms:
                                         <t t-if="doc.invoice_payment_term_id">
@@ -409,6 +408,7 @@
                                         </t>
                                     </div>
 
+                                <t t-if="doc.move_type != 'out_refund'">
                                     <t t-if="doc.invoice_payment_term_id and doc.invoice_payment_term_id.early_discount and doc.state == 'posted'">
                                         <div style="font-size:12px;">
                                             <t t-esc="doc.discount_amount" t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
