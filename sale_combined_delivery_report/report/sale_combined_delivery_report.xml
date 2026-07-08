@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <report
-        id="action_report_combined_delivery"
-        model="sale.order"
-        string="Kombinierter Lieferschein"
-        report_type="qweb-pdf"
-        name="sale_combined_delivery_report.report_combined_delivery_template"
-        file="sale_combined_delivery_report.report_combined_delivery_template"
-        print_report_name="'Lieferschein_Gesamt_' + object.name"
-        attachment_use="False"
-    />
+    <data>
+        <report
+            id="action_report_combined_delivery"
+            model="sale.order"
+            string="Kombinierter Lieferschein"
+            report_type="qweb-pdf"
+            name="sale_combined_delivery_report.report_combined_delivery_template"
+            file="sale_combined_delivery_report.report_combined_delivery_template"
+            print_report_name="'Lieferschein_Gesamt_' + object.name"
+            attachment_use="False"
+        />
+    </data>
 </odoo>
