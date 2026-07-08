@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- Report Action als record (kein <report>-Shortcut) -->
+    <record id="action_report_combined_delivery" model="ir.actions.report">
+        <field name="name">Kombinierter Lieferschein</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_combined_delivery_report.report_combined_delivery_template</field>
+        <field name="report_file">sale_combined_delivery_report.report_combined_delivery_template</field>
+        <field name="print_report_name">'Lieferschein_Gesamt_' + object.name</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
     <!-- Smart-Button im Verkaufsauftrag -->
     <record id="view_sale_order_form_combined_delivery_btn" model="ir.ui.view">
         <field name="name">sale.order.form.combined.delivery.btn</field>
@@ -20,15 +33,4 @@
         </field>
     </record>
 
-    <!-- Eintrag im Drucken-Menü des Auftrags -->
-    <record id="action_sale_combined_delivery_report_from_sale" model="ir.actions.report">
-        <field name="name">Kombinierter Lieferschein</field>
-        <field name="model">sale.order</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">sale_combined_delivery_report.report_combined_delivery_template</field>
-        <field name="report_file">sale_combined_delivery_report.report_combined_delivery_template</field>
-        <field name="print_report_name">'Lieferschein_Gesamt_' + object.name</field>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
-        <field name="binding_type">report</field>
-    </record>
 </odoo>
