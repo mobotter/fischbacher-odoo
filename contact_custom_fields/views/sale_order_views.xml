@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="domain">[('type', '!=', 'private'), ('sale_blocked', '=', False)]</attribute>
+                <attribute name="domain">[('sale_blocked', '=', False), ('customer_rank', '>', 0), ('parent_id', '=', False)]</attribute>
             </xpath>
         </field>
     </record>
