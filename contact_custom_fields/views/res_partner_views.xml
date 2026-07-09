@@ -1,13 +1,11 @@
 <odoo>
-    
     <record id="partner_form_view_inherit_base_fb" model="ir.ui.view">
         <field name="name">partner.form.view.inherit.base.fb</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            
-            <!-- Alle Custom-Felder gesammelt NACH dem Feld 'website' platzieren -->
-            <xpath expr="//field[@name='website']" position="after">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="sale_blocked"/>
                 <field name="steuer_id" placeholder="z. B. 12 345 678 901"/>
                 <field name="steuer_nr" placeholder="z. B. 143/815/0815"/>
                 <field name="x_telefax" widget="phone"/>
@@ -17,5 +15,5 @@
                 <field name="dsp3_id"/>
             </xpath>
         </field>
-        </record>
+    </record>
 </odoo>
