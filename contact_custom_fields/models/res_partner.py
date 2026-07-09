@@ -23,3 +23,7 @@ class ContactCustom(models.Model):
         string="DSP 3 ID",
         help="Interne oder externe DSP-3-Referenznummer."
     )
+    sale_blocked = fields.Boolean(
+        string="Auftragssperre",
+        help="Wenn aktiviert, kann an diesen Kunden nichts verkauft werden."
+    )
