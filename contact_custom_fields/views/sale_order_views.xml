@@ -1,0 +1,12 @@
+<odoo>
+    <record id="partner_form_view_inherit_sale_blocked" model="ir.ui.view">
+        <field name="name">partner.form.view.inherit.sale.blocked</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="sale_blocked"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
