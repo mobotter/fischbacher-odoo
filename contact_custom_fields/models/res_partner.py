@@ -25,5 +25,5 @@ class ContactCustom(models.Model):
     )
     sale_blocked = fields.Boolean(
         string="Auftragssperre",
-        help="Wenn aktiviert, kann an diesen Kunden nichts verkauft werden."
+        help="Wenn aktiviert, kann dieser Kontakt in Verkauf, Vermietung und Abo nicht ausgewählt werden."
     )
