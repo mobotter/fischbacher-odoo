@@ -1,53 +1,48 @@
 # Adds Custom Fields to Contacts
 
-Kleines Odoo-Modul zur Erweiterung des Kontaktmodells `res.partner` um zusätzliche Stammdatenfelder.  
-Das Modul ergänzt die Kontaktmaske in Odoo und fügt eigene Felder direkt im bestehenden Partnerformular ein.
+Dieses Modul erweitert `res.partner` um zusätzliche Kontakt- und Steuerfelder und ergänzt optional eine Verkaufssperre für Kunden. Wenn zusätzlich `sale` als Abhängigkeit eingebunden ist, kann das Modul auch `sale.order` erweitern, damit gesperrte Kunden im Verkaufsauftrag nicht auswählbar sind.[web:100][web:123]
 
 ## Funktionen
 
-Das Modul ergänzt folgende Felder im Modell `res.partner`:
+- Steuer-Identifikationsnummer
+- Steuernummer
+- Telefax
+- Supplier Customer Number
+- DSP 3 ID
+- Verkaufssperre am Kontakt
 
-- `x_telefax` – Telefax
-- `telefax` – Fax
-- `supplier_customer_number` – Supplier Customer Number
-- `dsp3_id` – DSP 3 ID
+## Modulstruktur
 
-Zusätzlich wird die Standard-Kontaktansicht von Odoo erweitert:
-
-- nach `website` werden `x_telefax` und `supplier_customer_number` eingefügt
-- nach `ref` wird `dsp3_id` eingefügt
-
-## Technische Details
-
-- Odoo-Version: `19.0.1.0.0`
-- Abhängigkeit: `base`
-- Lizenz: `LGPL-3`
-- Modell-Erweiterung: `res.partner`
-- View-Inheritance über `base.view_partner_form` 
+```text
+contact_custom_fields/
+├── __init__.py
+├── __manifest__.py
+├── README.md
+├── models/
+│   ├── __init__.py
+│   ├── res_partner.py
+│   └── sale_order.py
+└── views/
+    ├── res_partner_views.xml
+    └── sale_order_views.xml
+```
 
 ## Installation
 
-1. Modul in das Odoo-Addons-Verzeichnis kopieren.
-2. Apps-Liste in Odoo aktualisieren.
-3. Nach dem Modul **Adds Custom Fields to Contacts** suchen.
-4. Modul installieren. 
+1. Das Modul in den Custom-Addons-Ordner legen.
+2. In `__manifest__.py` die benötigten Abhängigkeiten eintragen, mindestens `base`, für die Verkaufslogik zusätzlich `sale`.[web:100][web:123]
+3. Odoo neu starten.
+4. Das Modul installieren oder aktualisieren.
 
-## Verzeichnisstruktur
+## Update
 
-```contact_custom_fields/
-├── __init__.py
-├── __manifest__.py
-├── models/
-│   ├── __init__.py
-│   └── res_partner.py
-└── views/
-    └── res_partner.xml
+```bash
+./odoo-bin -d DEINE_DB -u contact_custom_fields --stop-after-init
 ```
-
-## Einsatzbereich
-
-Geeignet für Installationen, in denen Kontakte um zusätzliche Kommunikations- oder Identifikationsdaten erweitert werden müssen, ohne das Standardmodell stark umzubauen. Die Erweiterung bleibt dabei nah an der Odoo-Standardstruktur. 
 
 ## Hinweise
 
-Aktuell handelt es sich um eine sehr schlanke Erweiterung ohne Business-Logik, Validierungen oder Security-spezifische Zusatzregeln. Das Modul eignet sich daher gut als Basis für weitere kundenspezifische Anpassungen. 
+- Die Partnerfelder liegen in `models/res_partner.py`.
+- Die Verkaufssperre für Aufträge liegt in `models/sale_order.py`.
+- Die Formularansichten liegen im Ordner `views/`.
+- Daten-Dateien wie XML-Views müssen im Manifest unter `data` eingetragen werden, damit Odoo sie lädt.[web:100]
