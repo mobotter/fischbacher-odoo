@@ -12,12 +12,7 @@ class SaleOrder(models.Model):
         change_default=True,
         index=True,
         tracking=1,
-        domain="""
-            [
-                ('type', '!=', 'private'),
-                ('sale_blocked', '=', False)
-            ]
-        """,
+        domain="[('type', '!=', 'private'), ('sale_blocked', '=', False)]",
     )
 
     @api.model_create_multi
@@ -27,24 +22,18 @@ class SaleOrder(models.Model):
             if partner_id:
                 partner = self.env['res.partner'].browse(partner_id)
                 if partner.sale_blocked:
-                    raise ValidationError(
-                        _("Dieser Kunde ist für den Verkauf gesperrt.")
-                    )
+                    raise ValidationError(_("Dieser Kunde ist für den Verkauf gesperrt."))
         return super().create(vals_list)
 
     def write(self, vals):
         if vals.get('partner_id'):
             partner = self.env['res.partner'].browse(vals['partner_id'])
             if partner.sale_blocked:
-                raise ValidationError(
-                    _("Dieser Kunde ist für den Verkauf gesperrt.")
-                )
+                raise ValidationError(_("Dieser Kunde ist für den Verkauf gesperrt."))
         return super().write(vals)
 
     def action_confirm(self):
         for order in self:
             if order.partner_id.sale_blocked:
-                raise ValidationError(
-                    _("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden.")
-                )
+                raise ValidationError(_("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden."))
         return super().action_confirm()
