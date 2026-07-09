@@ -12,7 +12,7 @@ class SaleOrder(models.Model):
         change_default=True,
         index=True,
         tracking=1,
-        domain="[('type', '!=', 'private'), ('sale_blocked', '=', False)]",
+        domain="[('sale_blocked', '=', False), ('customer_rank', '>', 0), ('parent_id', '=', False)]",
     )
 
     @api.model_create_multi
