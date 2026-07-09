@@ -12,12 +12,14 @@ selected or sold to.
 ''',
     'version': '19.0.1.0.0',
     'author': 'Odolution & Moritz Kern',
-    'depends': ['base', 'sale'],
+    'depends': ['base', 'sale', 'point_of_sale'],
     'data': [
         'views/res_partner_views.xml',
-        'views/sale_order_views.xml',
     ],
-    'external_dependencies': {
+    'assets': {
+        'point_of_sale._assets_pos': [
+            'contact_custom_fields/static/src/js/pos_partner_filter.js',
+        ],
     },
     'license': 'LGPL-3',
     'installable': True,
