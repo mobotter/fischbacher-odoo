@@ -16,11 +16,6 @@ selected or sold to.
     'data': [
         'views/res_partner_views.xml',
     ],
-    'assets': {
-        'point_of_sale._assets_pos': [
-            'contact_custom_fields/static/src/js/pos_partner_filter.js',
-        ],
-    },
     'license': 'LGPL-3',
     'installable': True,
     'application': False,
