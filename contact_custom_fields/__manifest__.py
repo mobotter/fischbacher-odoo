@@ -16,7 +16,7 @@ pricelist items are accepted.
 ''',
     'version': '19.0.2.0.0',
     'author': 'Moritz Kern',
-    'depends': ['base', 'product', 'sale', 'point_of_sale'],
+    'depends': ['base', 'product', 'sale_management', 'point_of_sale'],
     'data': [
         'views/res_partner_views.xml',
         'views/product_views.xml',
