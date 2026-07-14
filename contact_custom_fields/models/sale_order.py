@@ -45,16 +45,32 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    def _is_strict_lock_ready(self):
+        self.ensure_one()
+        return bool(
+            self.order_id
+            and self.product_id
+            and self.product_uom_id
+            and not self.display_type
+        )
+
     def _product_has_strict_lock(self):
         self.ensure_one()
         return bool(self.product_id and not self.product_id.product_tmpl_id.strict_pricelist_lock)
 
+    def _should_apply_strict_lock(self):
+        self.ensure_one()
+        return self._is_strict_lock_ready() and self._product_has_strict_lock()
+
     def _get_matching_pricelist_items(self):
         self.ensure_one()
+        if not self._is_strict_lock_ready():
+            return self.env['product.pricelist.item']
+
         order = self.order_id
         pricelist = order.pricelist_id
         product = self.product_id
-        if not pricelist or not product:
+        if not pricelist:
             return self.env['product.pricelist.item']
 
         quantity = self.product_uom_qty or 1.0
@@ -96,6 +112,9 @@ class SaleOrderLine(models.Model):
 
     def _get_product_locked_pricelist_item(self):
         self.ensure_one()
+        if not self._should_apply_strict_lock():
+            return self.env['product.pricelist.item']
+
         allowed_items = self._get_matching_pricelist_items().filtered(
             lambda item: self._is_allowed_strict_pricelist_item(item)
         )
@@ -127,7 +146,7 @@ class SaleOrderLine(models.Model):
             return
 
         for line in self:
-            if not line.product_id or line.display_type or not line._product_has_strict_lock():
+            if not line._should_apply_strict_lock():
                 continue
 
             locked_price = line._get_locked_base_price()
@@ -147,7 +166,7 @@ class SaleOrderLine(models.Model):
             return
 
         for line in self:
-            if not line.product_id or line.display_type or not line._product_has_strict_lock():
+            if not line._should_apply_strict_lock():
                 continue
 
             item = line._get_product_locked_pricelist_item()
@@ -186,13 +205,13 @@ class SaleOrderLine(models.Model):
         self._check_strict_pricelist_lock()
         return res
 
-    @api.onchange('product_id', 'product_uom_qty', 'price_unit', 'order_id.pricelist_id')
+    @api.onchange('product_id', 'product_uom_id', 'product_uom_qty', 'price_unit', 'order_id.pricelist_id')
     def _onchange_strict_pricelist_lock(self):
         if self.env.context.get('skip_strict_pricelist_lock'):
             return
 
         for line in self:
-            if not line.product_id or line.display_type or not line._product_has_strict_lock():
+            if not line._should_apply_strict_lock():
                 continue
             line._apply_locked_price()
             line._check_strict_pricelist_lock()
