@@ -23,14 +23,14 @@ class SaleOrder(models.Model):
             partner_id = vals.get('partner_id')
             if partner_id:
                 partner = self.env['res.partner'].browse(partner_id)
-                if partner.sale_blocked:
+                if partner.exists() and partner.sale_blocked:
                     raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt."))
         return super().create(vals_list)
 
     def write(self, vals):
         if vals.get('partner_id'):
             partner = self.env['res.partner'].browse(vals['partner_id'])
-            if partner.sale_blocked:
+            if partner.exists() and partner.sale_blocked:
                 raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt."))
 
         res = super().write(vals)
@@ -39,9 +39,9 @@ class SaleOrder(models.Model):
             return res
 
         if 'pricelist_id' in vals:
-            for order in self:
-                locked_lines = order.order_line.filtered(lambda l: l._should_use_only_product_pricelist())
-                normal_lines = order.order_line - locked_lines
+            for order in self.exists():
+                locked_lines = order.order_line.exists().filtered(lambda l: l._should_use_only_product_pricelist())
+                normal_lines = order.order_line.exists() - locked_lines
 
                 locked_lines._enforce_product_pricelist_only()
                 normal_lines._apply_standard_pricelist_price()
@@ -49,11 +49,11 @@ class SaleOrder(models.Model):
         return res
 
     def action_confirm(self):
-        for order in self:
-            if order.partner_id.sale_blocked:
+        for order in self.exists():
+            if order.partner_id.exists() and order.partner_id.sale_blocked:
                 raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden."))
 
-            locked_lines = order.order_line.filtered(lambda l: l._should_use_only_product_pricelist())
+            locked_lines = order.order_line.exists().filtered(lambda l: l._should_use_only_product_pricelist())
             locked_lines._enforce_product_pricelist_only()
 
         return super().action_confirm()
@@ -63,9 +63,9 @@ class SaleOrder(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return
 
-        for order in self:
-            locked_lines = order.order_line.filtered(lambda l: l._should_use_only_product_pricelist())
-            normal_lines = order.order_line - locked_lines
+        for order in self.exists():
+            locked_lines = order.order_line.exists().filtered(lambda l: l._should_use_only_product_pricelist())
+            normal_lines = order.order_line.exists() - locked_lines
 
             locked_lines._enforce_product_pricelist_only()
             normal_lines._apply_standard_pricelist_price()
@@ -76,11 +76,16 @@ class SaleOrderLine(models.Model):
 
     def _is_product_pricelist_ready(self):
         self.ensure_one()
-        return bool(self.order_id and self.product_id and self.product_uom_id and not self.display_type)
+        return bool(self.exists() and self.order_id and self.product_id and self.product_uom_id and not self.display_type)
 
     def _product_uses_only_product_pricelist(self):
         self.ensure_one()
-        return bool(self.product_id and self.product_id.product_tmpl_id.use_only_product_pricelist)
+        return bool(
+            self.exists()
+            and self.product_id.exists()
+            and self.product_id.product_tmpl_id.exists()
+            and self.product_id.product_tmpl_id.use_only_product_pricelist
+        )
 
     def _should_use_only_product_pricelist(self):
         self.ensure_one()
@@ -105,10 +110,10 @@ class SaleOrderLine(models.Model):
             ('min_quantity', '<=', quantity),
         ]
 
-        items = self.env['product.pricelist.item'].search(domain)
+        items = self.env['product.pricelist.item'].search(domain).exists()
 
         return items.filtered(
-            lambda item: (
+            lambda item: item.exists() and (
                 (item.applied_on == '0_product_variant' and item.product_id == product)
                 or (item.applied_on == '1_product' and item.product_tmpl_id == product.product_tmpl_id)
             )
@@ -116,7 +121,7 @@ class SaleOrderLine(models.Model):
 
     def _get_selected_product_pricelist_item(self):
         self.ensure_one()
-        items = self._get_product_scoped_pricelist_items()
+        items = self._get_product_scoped_pricelist_items().exists()
         if not items:
             return self.env['product.pricelist.item']
 
@@ -128,17 +133,20 @@ class SaleOrderLine(models.Model):
                 item.id,
             )
 
-        return items.sorted(key=priority_key)[:1]
+        return items.sorted(key=priority_key)[:1].exists()
 
     def _get_price_from_product_pricelist_rule(self):
         self.ensure_one()
 
-        rule = self._get_selected_product_pricelist_item()
+        rule = self._get_selected_product_pricelist_item().exists()
         if not rule:
             return None
 
         product = self.product_id
         qty = self.product_uom_qty or 1.0
+
+        if not product.exists():
+            return None
 
         if rule.compute_price == 'fixed':
             return rule.fixed_price
@@ -147,8 +155,8 @@ class SaleOrderLine(models.Model):
             base_price = product.lst_price
         elif rule.base == 'standard_price':
             base_price = product.standard_price
-        elif rule.base == 'pricelist' and rule.base_pricelist_id:
-            partner = self.order_id.partner_id if self.order_id else False
+        elif rule.base == 'pricelist' and rule.base_pricelist_id.exists():
+            partner = self.order_id.partner_id if self.order_id and self.order_id.partner_id.exists() else False
             base_price = rule.base_pricelist_id._get_product_price(product, qty, partner)
         else:
             base_price = product.lst_price
@@ -178,8 +186,8 @@ class SaleOrderLine(models.Model):
             return None
 
         line = self.with_context(
-            lang=self.order_id.partner_id.lang,
-            partner=self.order_id.partner_id.id,
+            lang=self.order_id.partner_id.lang if self.order_id.partner_id else False,
+            partner=self.order_id.partner_id.id if self.order_id.partner_id else False,
             quantity=self.product_uom_qty,
             date=self.order_id.date_order,
             pricelist=self.order_id.pricelist_id.id,
@@ -192,7 +200,7 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return
 
-        for line in self:
+        for line in self.exists():
             if not line._is_product_pricelist_ready():
                 continue
 
@@ -215,7 +223,7 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return
 
-        for line in self:
+        for line in self.exists():
             if not line._should_use_only_product_pricelist():
                 continue
 
@@ -240,7 +248,8 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return
 
-        locked_lines = self.filtered(lambda l: l._should_use_only_product_pricelist())
+        valid_lines = self.exists().filtered(lambda l: l._is_product_pricelist_ready())
+        locked_lines = valid_lines.filtered(lambda l: l._should_use_only_product_pricelist())
         locked_lines._enforce_product_pricelist_only()
 
     @api.model_create_multi
@@ -249,6 +258,7 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return lines
 
+        lines = lines.exists()
         locked = lines.filtered(lambda l: l._should_use_only_product_pricelist())
         normal = lines - locked
 
@@ -263,8 +273,9 @@ class SaleOrderLine(models.Model):
 
         trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty'}
         if trigger_fields.intersection(vals.keys()):
-            locked = self.filtered(lambda l: l._should_use_only_product_pricelist())
-            normal = self - locked
+            valid_lines = self.exists()
+            locked = valid_lines.filtered(lambda l: l._should_use_only_product_pricelist())
+            normal = valid_lines - locked
 
             locked._enforce_product_pricelist_only()
             normal._apply_standard_pricelist_price()
@@ -276,8 +287,9 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return
 
-        locked = self.filtered(lambda l: l._should_use_only_product_pricelist())
-        normal = self - locked
+        valid_lines = self.exists()
+        locked = valid_lines.filtered(lambda l: l._should_use_only_product_pricelist())
+        normal = valid_lines - locked
 
         locked._enforce_product_pricelist_only()
         normal._apply_standard_pricelist_price()
