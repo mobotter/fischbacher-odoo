@@ -38,7 +38,10 @@ class SaleOrder(models.Model):
         for order in self:
             if order.partner_id.sale_blocked:
                 raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden."))
-            order.order_line._check_strict_pricelist_lock()
+
+            order.order_line._apply_locked_price(force=True)
+            order.order_line._check_missing_locked_pricelist_rules()
+
         return super().action_confirm()
 
 
@@ -71,7 +74,6 @@ class SaleOrderLine(models.Model):
         order = self.order_id
         pricelist = order.pricelist_id
         product = self.product_id
-
         quantity = self.product_uom_qty or 1.0
         date = order.date_order.date() if order.date_order else fields.Date.context_today(self)
         partner = order.partner_id
@@ -140,7 +142,7 @@ class SaleOrderLine(models.Model):
         item = self._get_product_locked_pricelist_item()
         return item.fixed_price if item else None
 
-    def _apply_locked_price(self):
+    def _apply_locked_price(self, force=False):
         if self.env.context.get('skip_strict_pricelist_lock'):
             return
 
@@ -150,6 +152,10 @@ class SaleOrderLine(models.Model):
 
             locked_price = line._get_locked_base_price()
             if locked_price is None:
+                if force:
+                    raise UserError(_(
+                        "Für '%s' fehlt in der aktiven Preisliste ein artikelbezogener Festpreis."
+                    ) % line.product_id.display_name)
                 continue
 
             rounding = line.currency_id.rounding if line.currency_id else 0.01
@@ -160,10 +166,7 @@ class SaleOrderLine(models.Model):
                 'price_unit': locked_price,
             })
 
-    def _check_strict_pricelist_lock(self):
-        if self.env.context.get('skip_strict_pricelist_lock'):
-            return
-
+    def _check_missing_locked_pricelist_rules(self):
         for line in self:
             if not line._should_apply_strict_lock():
                 continue
@@ -171,16 +174,7 @@ class SaleOrderLine(models.Model):
             item = line._get_product_locked_pricelist_item()
             if not item:
                 raise UserError(_(
-                    "Für '%s' muss in der aktiven Preisliste ein produktbezogener Festpreis hinterlegt sein."
-                ) % line.product_id.display_name)
-
-            locked_price = item.fixed_price
-            rounding = line.currency_id.rounding if line.currency_id else 0.01
-
-            if not isclose(line.price_unit, locked_price, rel_tol=0.0, abs_tol=rounding):
-                raise UserError(_(
-                    "Der Artikelpreis von '%s' muss aus der Artikelpreisliste kommen. "
-                    "Positionsrabatt ist erlaubt, andere Preislogik auf den Artikelpreis nicht."
+                    "Für '%s' fehlt in der aktiven Preisliste ein artikelbezogener Festpreis."
                 ) % line.product_id.display_name)
 
     @api.model_create_multi
