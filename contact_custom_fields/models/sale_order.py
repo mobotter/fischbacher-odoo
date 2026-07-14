@@ -1,7 +1,7 @@
 from math import isclose
 
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
@@ -24,20 +24,20 @@ class SaleOrder(models.Model):
             if partner_id:
                 partner = self.env['res.partner'].browse(partner_id)
                 if partner.sale_blocked:
-                    raise ValidationError(_("Dieser Kunde ist für den Verkauf gesperrt."))
+                    raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt."))
         return super().create(vals_list)
 
     def write(self, vals):
         if vals.get('partner_id'):
             partner = self.env['res.partner'].browse(vals['partner_id'])
             if partner.sale_blocked:
-                raise ValidationError(_("Dieser Kunde ist für den Verkauf gesperrt."))
+                raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt."))
         return super().write(vals)
 
     def action_confirm(self):
         for order in self:
             if order.partner_id.sale_blocked:
-                raise ValidationError(_("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden."))
+                raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden."))
             order.order_line._check_strict_pricelist_lock()
         return super().action_confirm()
 
@@ -49,6 +49,7 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         return bool(
             self.order_id
+            and self.order_id.pricelist_id
             and self.product_id
             and self.product_uom_id
             and not self.display_type
@@ -70,8 +71,6 @@ class SaleOrderLine(models.Model):
         order = self.order_id
         pricelist = order.pricelist_id
         product = self.product_id
-        if not pricelist:
-            return self.env['product.pricelist.item']
 
         quantity = self.product_uom_qty or 1.0
         date = order.date_order.date() if order.date_order else fields.Date.context_today(self)
@@ -171,27 +170,24 @@ class SaleOrderLine(models.Model):
 
             item = line._get_product_locked_pricelist_item()
             if not item:
-                raise ValidationError(_(
-                    "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. "
-                    "Es muss eine produkt- oder variantenbezogene Festpreis-Regel in der aktiven Preisliste vorhanden sein."
+                raise UserError(_(
+                    "Für '%s' muss in der aktiven Preisliste ein produktbezogener Festpreis hinterlegt sein."
                 ) % line.product_id.display_name)
 
             locked_price = item.fixed_price
             rounding = line.currency_id.rounding if line.currency_id else 0.01
 
             if not isclose(line.price_unit, locked_price, rel_tol=0.0, abs_tol=rounding):
-                raise ValidationError(_(
-                    "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. "
-                    "Der Artikelpreis muss aus der produktbezogenen Preislistenregel stammen (%s). "
-                    "Zusätzlicher Positionsrabatt ist erlaubt, aber keine weitere Preislisten- oder Preisänderungslogik auf den Artikelpreis."
-                ) % (line.product_id.display_name, locked_price))
+                raise UserError(_(
+                    "Der Artikelpreis von '%s' muss aus der Artikelpreisliste kommen. "
+                    "Positionsrabatt ist erlaubt, andere Preislogik auf den Artikelpreis nicht."
+                ) % line.product_id.display_name)
 
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
         if not self.env.context.get('skip_strict_pricelist_lock'):
             lines._apply_locked_price()
-            lines._check_strict_pricelist_lock()
         return lines
 
     def write(self, vals):
@@ -202,10 +198,9 @@ class SaleOrderLine(models.Model):
         if 'discount' not in vals:
             self._apply_locked_price()
 
-        self._check_strict_pricelist_lock()
         return res
 
-    @api.onchange('product_id', 'product_uom_id', 'product_uom_qty', 'price_unit', 'order_id.pricelist_id')
+    @api.onchange('product_id', 'product_uom_id', 'product_uom_qty', 'order_id.pricelist_id')
     def _onchange_strict_pricelist_lock(self):
         if self.env.context.get('skip_strict_pricelist_lock'):
             return
@@ -214,4 +209,3 @@ class SaleOrderLine(models.Model):
             if not line._should_apply_strict_lock():
                 continue
             line._apply_locked_price()
-            line._check_strict_pricelist_lock()
