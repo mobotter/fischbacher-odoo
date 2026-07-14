@@ -175,15 +175,11 @@ class SaleOrderLine(models.Model):
 
             rule = line._get_selected_product_pricelist_item()
             if not rule:
-                raise UserError(_(
-                    "Für '%s' fehlt eine produktbezogene Preislistenregel."
-                ) % line.product_id.display_name)
+                continue
 
             target_price = line._get_price_from_product_pricelist_rule()
             if target_price is None:
-                raise UserError(_(
-                    "Für '%s' konnte kein Preis aus der Produkt-Preisliste ermittelt werden."
-                ) % line.product_id.display_name)
+                continue
 
             rounding = line.currency_id.rounding if line.currency_id else 0.01
             if isclose(line.price_unit, target_price, rel_tol=0.0, abs_tol=rounding):
