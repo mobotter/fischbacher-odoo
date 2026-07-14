@@ -48,7 +48,7 @@ class SaleOrderLine(models.Model):
 
     def _product_has_strict_lock(self):
         self.ensure_one()
-        return bool(self.product_id and self.product_id.product_tmpl_id.strict_pricelist_lock)
+        return bool(self.product_id and not self.product_id.product_tmpl_id.strict_pricelist_lock)
 
     def _get_matching_pricelist_items(self):
         self.ensure_one()
@@ -145,7 +145,7 @@ class SaleOrderLine(models.Model):
             item = line._get_final_locked_pricelist_item()
             if not item:
                 raise ValidationError(_(
-                    "Für das Produkt '%s' ist eine strenge Preislisten-Sperre aktiv. "
+                    "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. "
                     "Es muss eine produkt- oder variantenbezogene Festpreis-Regel in der aktiven Preisliste vorhanden sein."
                 ) % line.product_id.display_name)
 
@@ -154,13 +154,13 @@ class SaleOrderLine(models.Model):
 
             if float_compare(line.discount or 0.0, 0.0, precision_rounding=rounding) != 0:
                 raise ValidationError(_(
-                    "Für das Produkt '%s' ist eine strenge Preislisten-Sperre aktiv. Zusätzliche Rabatte sind nicht erlaubt."
+                    "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. Zusätzliche Zeilenrabatte sind nicht erlaubt."
                 ) % line.product_id.display_name)
 
             if not isclose(line.price_unit, locked_price, rel_tol=0.0, abs_tol=rounding):
                 raise ValidationError(_(
-                    "Für das Produkt '%s' ist eine strenge Preislisten-Sperre aktiv. "
-                    "Der Preis muss exakt dem Produkt-Sonderpreis aus der Preislistenregel entsprechen (%s)."
+                    "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. "
+                    "Der Preis muss dem Produkt-Sonderpreis aus der Preislistenregel entsprechen (%s)."
                 ) % (line.product_id.display_name, locked_price))
 
     @api.model_create_multi
