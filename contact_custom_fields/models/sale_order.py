@@ -50,19 +50,11 @@ class SaleOrderLine(models.Model):
 
     def _is_product_pricelist_ready(self):
         self.ensure_one()
-        return bool(
-            self.order_id
-            and self.product_id
-            and self.product_uom_id
-            and not self.display_type
-        )
+        return bool(self.order_id and self.product_id and self.product_uom_id and not self.display_type)
 
     def _product_uses_only_product_pricelist(self):
         self.ensure_one()
-        return bool(
-            self.product_id
-            and self.product_id.product_tmpl_id.use_only_product_pricelist
-        )
+        return bool(self.product_id and self.product_id.product_tmpl_id.use_only_product_pricelist)
 
     def _should_use_only_product_pricelist(self):
         self.ensure_one()
@@ -89,13 +81,12 @@ class SaleOrderLine(models.Model):
 
         items = self.env['product.pricelist.item'].search(domain)
 
-        items = items.filtered(
+        return items.filtered(
             lambda item: (
                 (item.applied_on == '0_product_variant' and item.product_id == product)
                 or (item.applied_on == '1_product' and item.product_tmpl_id == product.product_tmpl_id)
             )
         )
-        return items
 
     def _get_selected_product_pricelist_item(self):
         self.ensure_one()
@@ -104,12 +95,8 @@ class SaleOrderLine(models.Model):
             return self.env['product.pricelist.item']
 
         def priority_key(item):
-            applied_on_rank = {
-                '0_product_variant': 0,
-                '1_product': 1,
-            }
             return (
-                applied_on_rank.get(item.applied_on, 99),
+                0 if item.applied_on == '0_product_variant' else 1,
                 -(item.min_quantity or 0.0),
                 item.sequence,
                 item.id,
@@ -145,25 +132,53 @@ class SaleOrderLine(models.Model):
 
         if rule.compute_price == 'formula':
             price = base_price
-
             if rule.price_discount:
                 price = price * (1 - rule.price_discount)
-
             if rule.price_surcharge:
                 price += rule.price_surcharge
-
             if rule.price_round:
                 price = round(price / rule.price_round) * rule.price_round
-
             if rule.price_min_margin:
                 price = max(price, base_price + rule.price_min_margin)
-
             if rule.price_max_margin:
                 price = min(price, base_price + rule.price_max_margin)
-
             return price
 
         return base_price
+
+    def _get_standard_pricelist_price(self):
+        self.ensure_one()
+        if not self.order_id or not self.order_id.pricelist_id or not self.product_id or not self.product_uom_id:
+            return None
+
+        product = self.product_id.with_context(
+            lang=self.order_id.partner_id.lang,
+            partner=self.order_id.partner_id,
+            quantity=self.product_uom_qty,
+            date=self.order_id.date_order,
+            pricelist=self.order_id.pricelist_id.id,
+            uom=self.product_uom.id,
+            fiscal_position=self.env.context.get('fiscal_position'),
+        )
+        return self.env['account.tax']._fix_tax_included_price_company(
+            self._get_display_price(product),
+            product.taxes_id,
+            self.tax_id,
+            self.company_id,
+        )
+
+    def _apply_standard_pricelist_price(self):
+        for line in self:
+            if not line._is_product_pricelist_ready():
+                continue
+
+            price = line._get_standard_pricelist_price()
+            if price is None:
+                continue
+
+            line.with_context(skip_product_pricelist_only=True).write({
+                'price_unit': price,
+            })
 
     def _enforce_product_pricelist_only(self):
         if self.env.context.get('skip_product_pricelist_only'):
@@ -193,8 +208,14 @@ class SaleOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
-        if not self.env.context.get('skip_product_pricelist_only'):
-            lines.filtered(lambda l: l._should_use_only_product_pricelist())._enforce_product_pricelist_only()
+        if self.env.context.get('skip_product_pricelist_only'):
+            return lines
+
+        locked = lines.filtered(lambda l: l._should_use_only_product_pricelist())
+        normal = lines - locked
+
+        locked._enforce_product_pricelist_only()
+        normal._apply_standard_pricelist_price()
         return lines
 
     def write(self, vals):
@@ -202,9 +223,12 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return res
 
-        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty', 'price_unit', 'discount'}
+        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty', 'discount', 'price_unit'}
         if trigger_fields.intersection(vals.keys()):
-            self.filtered(lambda l: l._should_use_only_product_pricelist())._enforce_product_pricelist_only()
+            locked = self.filtered(lambda l: l._should_use_only_product_pricelist())
+            normal = self - locked
+            locked._enforce_product_pricelist_only()
+            normal._apply_standard_pricelist_price()
 
         return res
 
@@ -213,4 +237,8 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return
 
-        self.filtered(lambda l: l._should_use_only_product_pricelist())._enforce_product_pricelist_only()
+        locked = self.filtered(lambda l: l._should_use_only_product_pricelist())
+        normal = self - locked
+
+        locked._enforce_product_pricelist_only()
+        normal._apply_standard_pricelist_price()
