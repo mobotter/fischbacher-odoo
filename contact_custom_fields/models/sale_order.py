@@ -157,7 +157,7 @@ class SaleOrderLine(models.Model):
             quantity=self.product_uom_qty,
             date=self.order_id.date_order,
             pricelist=self.order_id.pricelist_id.id,
-            uom=self.product_uom.id,
+            uom=self.product_uom_id.id,
             fiscal_position=self.env.context.get('fiscal_position'),
         )
         return self.env['account.tax']._fix_tax_included_price_company(
