@@ -7,7 +7,7 @@
         <field name="priority" eval="99"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='barcode']" position="after">
-                <label for="use_only_product_pricelist"/>
+                <label for="use_only_product_pricelist" string="Nur Produkt-Preisliste verwenden (Rabattsperre)"/>
                 <field name="use_only_product_pricelist" nolabel="1"/>
             </xpath>
         </field>
