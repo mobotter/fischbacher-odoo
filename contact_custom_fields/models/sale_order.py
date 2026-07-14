@@ -196,6 +196,9 @@ class SaleOrderLine(models.Model):
             if not line._is_product_pricelist_ready():
                 continue
 
+            if line._should_use_only_product_pricelist():
+                continue
+
             price = line._get_standard_pricelist_price()
             if price is None:
                 continue
@@ -216,22 +219,29 @@ class SaleOrderLine(models.Model):
             if not line._should_use_only_product_pricelist():
                 continue
 
-            rule = line._get_selected_product_pricelist_item()
-            if not rule:
-                continue
-
             target_price = line._get_price_from_product_pricelist_rule()
             if target_price is None:
                 continue
 
             rounding = line.currency_id.rounding if line.currency_id else 0.01
             if isclose(line.price_unit, target_price, rel_tol=0.0, abs_tol=rounding):
+                if line.discount:
+                    line.update({'discount': 0.0})
                 continue
 
-            line.with_context(skip_product_pricelist_only=True).write({
+            line.update({
                 'price_unit': target_price,
                 'discount': 0.0,
             })
+
+    def _compute_price_unit(self):
+        super()._compute_price_unit()
+
+        if self.env.context.get('skip_product_pricelist_only'):
+            return
+
+        locked_lines = self.filtered(lambda l: l._should_use_only_product_pricelist())
+        locked_lines._enforce_product_pricelist_only()
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -255,6 +265,7 @@ class SaleOrderLine(models.Model):
         if trigger_fields.intersection(vals.keys()):
             locked = self.filtered(lambda l: l._should_use_only_product_pricelist())
             normal = self - locked
+
             locked._enforce_product_pricelist_only()
             normal._apply_standard_pricelist_price()
 
