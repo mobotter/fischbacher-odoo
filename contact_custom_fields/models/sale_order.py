@@ -32,7 +32,21 @@ class SaleOrder(models.Model):
             partner = self.env['res.partner'].browse(vals['partner_id'])
             if partner.sale_blocked:
                 raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt."))
-        return super().write(vals)
+
+        res = super().write(vals)
+
+        if self.env.context.get('skip_product_pricelist_only'):
+            return res
+
+        if 'pricelist_id' in vals:
+            for order in self:
+                locked_lines = order.order_line.filtered(lambda l: l._should_use_only_product_pricelist())
+                normal_lines = order.order_line - locked_lines
+
+                locked_lines._enforce_product_pricelist_only()
+                normal_lines._apply_standard_pricelist_price()
+
+        return res
 
     def action_confirm(self):
         for order in self:
@@ -43,6 +57,18 @@ class SaleOrder(models.Model):
             locked_lines._enforce_product_pricelist_only()
 
         return super().action_confirm()
+
+    @api.onchange('pricelist_id')
+    def _onchange_pricelist_id_reapply_line_prices(self):
+        if self.env.context.get('skip_product_pricelist_only'):
+            return
+
+        for order in self:
+            locked_lines = order.order_line.filtered(lambda l: l._should_use_only_product_pricelist())
+            normal_lines = order.order_line - locked_lines
+
+            locked_lines._enforce_product_pricelist_only()
+            normal_lines._apply_standard_pricelist_price()
 
 
 class SaleOrderLine(models.Model):
