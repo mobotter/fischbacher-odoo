@@ -39,8 +39,8 @@ class SaleOrder(models.Model):
             if order.partner_id.sale_blocked:
                 raise UserError(_("Dieser Kunde ist für den Verkauf gesperrt und kann nicht bestätigt werden."))
 
-            order.order_line._apply_locked_price(force=True)
-            order.order_line._check_missing_locked_pricelist_rules()
+            locked_lines = order.order_line.filtered(lambda l: l._should_apply_strict_lock())
+            locked_lines._enforce_strict_locked_price()
 
         return super().action_confirm()
 
@@ -66,9 +66,9 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         return self._is_strict_lock_ready() and self._product_has_strict_lock()
 
-    def _get_matching_pricelist_items(self):
+    def _get_allowed_fixed_pricelist_items(self):
         self.ensure_one()
-        if not self._is_strict_lock_ready():
+        if not self._should_apply_strict_lock():
             return self.env['product.pricelist.item']
 
         order = self.order_id
@@ -76,58 +76,38 @@ class SaleOrderLine(models.Model):
         product = self.product_id
         quantity = self.product_uom_qty or 1.0
         date = order.date_order.date() if order.date_order else fields.Date.context_today(self)
-        partner = order.partner_id
         company = order.company_id
 
         domain = [
             ('pricelist_id', '=', pricelist.id),
+            ('compute_price', '=', 'fixed'),
+            ('applied_on', 'in', ['0_product_variant', '1_product']),
             '|', ('company_id', '=', False), ('company_id', '=', company.id),
             '|', ('date_start', '=', False), ('date_start', '<=', date),
             '|', ('date_end', '=', False), ('date_end', '>=', date),
-            '|', ('min_quantity', '=', False), ('min_quantity', '<=', quantity),
+            ('min_quantity', '<=', quantity),
         ]
 
         items = self.env['product.pricelist.item'].search(domain)
-        if hasattr(items, '_filter_applicable_rules'):
-            items = items._filter_applicable_rules(product, quantity, partner)
-        else:
-            items = items.filtered(
-                lambda item: (
-                    item.applied_on == '3_global'
-                    or (item.applied_on == '2_product_category' and product.categ_id and item.categ_id == product.categ_id)
-                    or (item.applied_on == '1_product' and item.product_tmpl_id == product.product_tmpl_id)
-                    or (item.applied_on == '0_product_variant' and item.product_id == product)
-                )
+
+        items = items.filtered(
+            lambda item: (
+                (item.applied_on == '0_product_variant' and item.product_id == product)
+                or (item.applied_on == '1_product' and item.product_tmpl_id == product.product_tmpl_id)
             )
+        )
         return items
 
-    def _is_allowed_strict_pricelist_item(self, item):
+    def _get_strict_fixed_price_rule(self):
         self.ensure_one()
-        if not item or item.compute_price != 'fixed':
-            return False
-        if item.applied_on == '0_product_variant':
-            return item.product_id == self.product_id
-        if item.applied_on == '1_product':
-            return item.product_tmpl_id == self.product_id.product_tmpl_id
-        return False
-
-    def _get_product_locked_pricelist_item(self):
-        self.ensure_one()
-        if not self._should_apply_strict_lock():
-            return self.env['product.pricelist.item']
-
-        allowed_items = self._get_matching_pricelist_items().filtered(
-            lambda item: self._is_allowed_strict_pricelist_item(item)
-        )
-        if not allowed_items:
+        items = self._get_allowed_fixed_pricelist_items()
+        if not items:
             return self.env['product.pricelist.item']
 
         def priority_key(item):
             applied_on_rank = {
                 '0_product_variant': 0,
                 '1_product': 1,
-                '2_product_category': 2,
-                '3_global': 3,
             }
             return (
                 applied_on_rank.get(item.applied_on, 99),
@@ -135,14 +115,14 @@ class SaleOrderLine(models.Model):
                 item.id,
             )
 
-        return allowed_items.sorted(key=priority_key)[:1]
+        return items.sorted(key=priority_key)[:1]
 
-    def _get_locked_base_price(self):
+    def _get_strict_locked_price(self):
         self.ensure_one()
-        item = self._get_product_locked_pricelist_item()
-        return item.fixed_price if item else None
+        rule = self._get_strict_fixed_price_rule()
+        return rule.fixed_price if rule else None
 
-    def _apply_locked_price(self, force=False):
+    def _enforce_strict_locked_price(self):
         if self.env.context.get('skip_strict_pricelist_lock'):
             return
 
@@ -150,13 +130,11 @@ class SaleOrderLine(models.Model):
             if not line._should_apply_strict_lock():
                 continue
 
-            locked_price = line._get_locked_base_price()
+            locked_price = line._get_strict_locked_price()
             if locked_price is None:
-                if force:
-                    raise UserError(_(
-                        "Für '%s' fehlt in der aktiven Preisliste ein artikelbezogener Festpreis."
-                    ) % line.product_id.display_name)
-                continue
+                raise UserError(_(
+                    "Für '%s' fehlt in der aktiven Preisliste ein artikelbezogener Festpreis."
+                ) % line.product_id.display_name)
 
             rounding = line.currency_id.rounding if line.currency_id else 0.01
             if isclose(line.price_unit, locked_price, rel_tol=0.0, abs_tol=rounding):
@@ -166,22 +144,11 @@ class SaleOrderLine(models.Model):
                 'price_unit': locked_price,
             })
 
-    def _check_missing_locked_pricelist_rules(self):
-        for line in self:
-            if not line._should_apply_strict_lock():
-                continue
-
-            item = line._get_product_locked_pricelist_item()
-            if not item:
-                raise UserError(_(
-                    "Für '%s' fehlt in der aktiven Preisliste ein artikelbezogener Festpreis."
-                ) % line.product_id.display_name)
-
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
         if not self.env.context.get('skip_strict_pricelist_lock'):
-            lines._apply_locked_price()
+            lines.filtered(lambda l: l._should_apply_strict_lock())._enforce_strict_locked_price()
         return lines
 
     def write(self, vals):
@@ -189,8 +156,9 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_strict_pricelist_lock'):
             return res
 
-        if 'discount' not in vals:
-            self._apply_locked_price()
+        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty', 'order_id', 'price_unit'}
+        if trigger_fields.intersection(vals.keys()) and 'discount' not in vals:
+            self.filtered(lambda l: l._should_apply_strict_lock())._enforce_strict_locked_price()
 
         return res
 
@@ -199,7 +167,4 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_strict_pricelist_lock'):
             return
 
-        for line in self:
-            if not line._should_apply_strict_lock():
-                continue
-            line._apply_locked_price()
+        self.filtered(lambda l: l._should_apply_strict_lock())._enforce_strict_locked_price()
