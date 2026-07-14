@@ -2,7 +2,6 @@ from math import isclose
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from odoo.tools import float_compare
 
 
 class SaleOrder(models.Model):
@@ -85,7 +84,7 @@ class SaleOrderLine(models.Model):
             )
         return items
 
-    def _get_final_locked_pricelist_item(self):
+    def _get_product_locked_pricelist_item(self):
         self.ensure_one()
         allowed_items = self._get_matching_pricelist_items().filtered(self._is_allowed_strict_pricelist_item)
         if not allowed_items:
@@ -118,8 +117,9 @@ class SaleOrderLine(models.Model):
             return item.product_tmpl_id == self.product_id.product_tmpl_id
         return False
 
-    def _get_locked_price_from_item(self, item):
+    def _get_locked_base_price(self):
         self.ensure_one()
+        item = self._get_product_locked_pricelist_item()
         if not item:
             return None
         return item.fixed_price
@@ -128,11 +128,9 @@ class SaleOrderLine(models.Model):
         for line in self:
             if not line.product_id or line.display_type or not line._product_has_strict_lock():
                 continue
-            item = line._get_final_locked_pricelist_item()
-            if not item:
+            locked_price = line._get_locked_base_price()
+            if locked_price is None:
                 continue
-            locked_price = line._get_locked_price_from_item(item)
-            line.discount = 0.0
             line.price_unit = locked_price
 
     def _check_strict_pricelist_lock(self):
@@ -142,25 +140,21 @@ class SaleOrderLine(models.Model):
             if not line._product_has_strict_lock():
                 continue
 
-            item = line._get_final_locked_pricelist_item()
+            item = line._get_product_locked_pricelist_item()
             if not item:
                 raise ValidationError(_(
                     "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. "
                     "Es muss eine produkt- oder variantenbezogene Festpreis-Regel in der aktiven Preisliste vorhanden sein."
                 ) % line.product_id.display_name)
 
-            locked_price = line._get_locked_price_from_item(item)
+            locked_price = item.fixed_price
             rounding = line.currency_id.rounding if line.currency_id else 0.01
-
-            if float_compare(line.discount or 0.0, 0.0, precision_rounding=rounding) != 0:
-                raise ValidationError(_(
-                    "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. Zusätzliche Zeilenrabatte sind nicht erlaubt."
-                ) % line.product_id.display_name)
 
             if not isclose(line.price_unit, locked_price, rel_tol=0.0, abs_tol=rounding):
                 raise ValidationError(_(
                     "Für das Produkt '%s' ist die Rabattfähigkeit deaktiviert. "
-                    "Der Preis muss dem Produkt-Sonderpreis aus der Preislistenregel entsprechen (%s)."
+                    "Der Artikelpreis muss aus der produktbezogenen Preislistenregel stammen (%s). "
+                    "Zusätzlicher Positionsrabatt ist erlaubt, aber keine weitere Preislisten- oder Preisänderungslogik auf den Artikelpreis."
                 ) % (line.product_id.display_name, locked_price))
 
     @api.model_create_multi
@@ -172,11 +166,12 @@ class SaleOrderLine(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        self._apply_locked_price()
+        if 'discount' not in vals:
+            self._apply_locked_price()
         self._check_strict_pricelist_lock()
         return res
 
-    @api.onchange('product_id', 'product_uom_qty', 'discount', 'price_unit', 'order_id.pricelist_id')
+    @api.onchange('product_id', 'product_uom_qty', 'price_unit', 'order_id.pricelist_id')
     def _onchange_strict_pricelist_lock(self):
         for line in self:
             if not line.product_id or line.display_type or not line._product_has_strict_lock():
