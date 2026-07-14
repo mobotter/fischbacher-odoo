@@ -151,23 +151,21 @@ class SaleOrderLine(models.Model):
         if not self.order_id or not self.order_id.pricelist_id or not self.product_id or not self.product_uom_id:
             return None
 
-        product = self.product_id.with_context(
+        line = self.with_context(
             lang=self.order_id.partner_id.lang,
-            partner=self.order_id.partner_id,
+            partner=self.order_id.partner_id.id,
             quantity=self.product_uom_qty,
             date=self.order_id.date_order,
             pricelist=self.order_id.pricelist_id.id,
             uom=self.product_uom_id.id,
-            fiscal_position=self.env.context.get('fiscal_position'),
+            fiscal_position=self.order_id.fiscal_position_id.id if self.order_id.fiscal_position_id else False,
         )
-        return self.env['account.tax']._fix_tax_included_price_company(
-            self._get_display_price(product),
-            product.taxes_id,
-            self.tax_id,
-            self.company_id,
-        )
+        return line._get_display_price()
 
     def _apply_standard_pricelist_price(self):
+        if self.env.context.get('skip_product_pricelist_only'):
+            return
+
         for line in self:
             if not line._is_product_pricelist_ready():
                 continue
@@ -176,7 +174,11 @@ class SaleOrderLine(models.Model):
             if price is None:
                 continue
 
-            line.with_context(skip_product_pricelist_only=True).write({
+            rounding = line.currency_id.rounding if line.currency_id else 0.01
+            if isclose(line.price_unit, price, rel_tol=0.0, abs_tol=rounding):
+                continue
+
+            line.update({
                 'price_unit': price,
             })
 
@@ -223,7 +225,7 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return res
 
-        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty', 'discount', 'price_unit'}
+        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty'}
         if trigger_fields.intersection(vals.keys()):
             locked = self.filtered(lambda l: l._should_use_only_product_pricelist())
             normal = self - locked
