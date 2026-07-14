@@ -84,9 +84,21 @@ class SaleOrderLine(models.Model):
             )
         return items
 
+    def _is_allowed_strict_pricelist_item(self, item):
+        self.ensure_one()
+        if not item or item.compute_price != 'fixed':
+            return False
+        if item.applied_on == '0_product_variant':
+            return item.product_id == self.product_id
+        if item.applied_on == '1_product':
+            return item.product_tmpl_id == self.product_id.product_tmpl_id
+        return False
+
     def _get_product_locked_pricelist_item(self):
         self.ensure_one()
-        allowed_items = self._get_matching_pricelist_items().filtered(self._is_allowed_strict_pricelist_item)
+        allowed_items = self._get_matching_pricelist_items().filtered(
+            lambda item: self._is_allowed_strict_pricelist_item(item)
+        )
         if not allowed_items:
             return self.env['product.pricelist.item']
 
@@ -105,39 +117,37 @@ class SaleOrderLine(models.Model):
 
         return allowed_items.sorted(key=priority_key)[:1]
 
-    def _is_allowed_strict_pricelist_item(self, item):
-        self.ensure_one()
-        if not item:
-            return False
-        if item.compute_price != 'fixed':
-            return False
-        if item.applied_on == '0_product_variant':
-            return item.product_id == self.product_id
-        if item.applied_on == '1_product':
-            return item.product_tmpl_id == self.product_id.product_tmpl_id
-        return False
-
     def _get_locked_base_price(self):
         self.ensure_one()
         item = self._get_product_locked_pricelist_item()
-        if not item:
-            return None
-        return item.fixed_price
+        return item.fixed_price if item else None
 
     def _apply_locked_price(self):
+        if self.env.context.get('skip_strict_pricelist_lock'):
+            return
+
         for line in self:
             if not line.product_id or line.display_type or not line._product_has_strict_lock():
                 continue
+
             locked_price = line._get_locked_base_price()
             if locked_price is None:
                 continue
-            line.price_unit = locked_price
+
+            rounding = line.currency_id.rounding if line.currency_id else 0.01
+            if isclose(line.price_unit, locked_price, rel_tol=0.0, abs_tol=rounding):
+                continue
+
+            line.with_context(skip_strict_pricelist_lock=True).write({
+                'price_unit': locked_price,
+            })
 
     def _check_strict_pricelist_lock(self):
+        if self.env.context.get('skip_strict_pricelist_lock'):
+            return
+
         for line in self:
-            if not line.product_id or line.display_type:
-                continue
-            if not line._product_has_strict_lock():
+            if not line.product_id or line.display_type or not line._product_has_strict_lock():
                 continue
 
             item = line._get_product_locked_pricelist_item()
@@ -160,19 +170,27 @@ class SaleOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
-        lines._apply_locked_price()
-        lines._check_strict_pricelist_lock()
+        if not self.env.context.get('skip_strict_pricelist_lock'):
+            lines._apply_locked_price()
+            lines._check_strict_pricelist_lock()
         return lines
 
     def write(self, vals):
         res = super().write(vals)
+        if self.env.context.get('skip_strict_pricelist_lock'):
+            return res
+
         if 'discount' not in vals:
             self._apply_locked_price()
+
         self._check_strict_pricelist_lock()
         return res
 
     @api.onchange('product_id', 'product_uom_qty', 'price_unit', 'order_id.pricelist_id')
     def _onchange_strict_pricelist_lock(self):
+        if self.env.context.get('skip_strict_pricelist_lock'):
+            return
+
         for line in self:
             if not line.product_id or line.display_type or not line._product_has_strict_lock():
                 continue
