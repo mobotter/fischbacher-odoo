@@ -52,7 +52,6 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         return bool(
             self.order_id
-            and self.order_id.pricelist_id
             and self.product_id
             and self.product_uom_id
             and not self.display_type
@@ -75,14 +74,12 @@ class SaleOrderLine(models.Model):
             return self.env['product.pricelist.item']
 
         order = self.order_id
-        pricelist = order.pricelist_id
         product = self.product_id
         quantity = self.product_uom_qty or 1.0
-        date = order.date_order.date() if order.date_order else fields.Date.context_today(self)
-        company = order.company_id
+        date = order.date_order.date() if order and order.date_order else fields.Date.context_today(self)
+        company = order.company_id if order else self.env.company
 
         domain = [
-            ('pricelist_id', '=', pricelist.id),
             ('applied_on', 'in', ['0_product_variant', '1_product']),
             '|', ('company_id', '=', False), ('company_id', '=', company.id),
             '|', ('date_start', '=', False), ('date_start', '<=', date),
@@ -133,14 +130,13 @@ class SaleOrderLine(models.Model):
         if rule.compute_price == 'fixed':
             return rule.fixed_price
 
-        base_price = None
-
         if rule.base == 'list_price':
             base_price = product.lst_price
         elif rule.base == 'standard_price':
             base_price = product.standard_price
         elif rule.base == 'pricelist' and rule.base_pricelist_id:
-            base_price = rule.base_pricelist_id._get_product_price(product, qty, self.order_id.partner_id)
+            partner = self.order_id.partner_id if self.order_id else False
+            base_price = rule.base_pricelist_id._get_product_price(product, qty, partner)
         else:
             base_price = product.lst_price
 
@@ -180,7 +176,7 @@ class SaleOrderLine(models.Model):
             rule = line._get_selected_product_pricelist_item()
             if not rule:
                 raise UserError(_(
-                    "Für '%s' fehlt eine produktbezogene Preislistenregel in der aktiven Preisliste."
+                    "Für '%s' fehlt eine produktbezogene Preislistenregel."
                 ) % line.product_id.display_name)
 
             target_price = line._get_price_from_product_pricelist_rule()
@@ -195,6 +191,7 @@ class SaleOrderLine(models.Model):
 
             line.with_context(skip_product_pricelist_only=True).write({
                 'price_unit': target_price,
+                'discount': 0.0,
             })
 
     @api.model_create_multi
@@ -209,13 +206,13 @@ class SaleOrderLine(models.Model):
         if self.env.context.get('skip_product_pricelist_only'):
             return res
 
-        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty', 'price_unit'}
-        if trigger_fields.intersection(vals.keys()) and 'discount' not in vals:
+        trigger_fields = {'product_id', 'product_uom_id', 'product_uom_qty', 'price_unit', 'discount'}
+        if trigger_fields.intersection(vals.keys()):
             self.filtered(lambda l: l._should_use_only_product_pricelist())._enforce_product_pricelist_only()
 
         return res
 
-    @api.onchange('product_id', 'product_uom_id', 'product_uom_qty', 'order_id.pricelist_id')
+    @api.onchange('product_id', 'product_uom_id', 'product_uom_qty')
     def _onchange_product_pricelist_only(self):
         if self.env.context.get('skip_product_pricelist_only'):
             return
