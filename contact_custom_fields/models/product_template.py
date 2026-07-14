@@ -6,5 +6,5 @@ class ProductTemplate(models.Model):
 
     use_only_product_pricelist = fields.Boolean(
         string="Nur Produkt-Preisliste verwenden",
-        help="Wenn aktiv, werden nur produkt- oder variantenbezogene Preislistenregeln verwendet.",
+        help="Wenn aktiv, werden für Verkaufsauftragszeilen nur produkt- oder variantenbezogene Preislistenregeln berücksichtigt. Globale und Kategorie-Regeln werden ignoriert.",
     )
