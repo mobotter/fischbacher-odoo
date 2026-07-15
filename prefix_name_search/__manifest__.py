@@ -1,8 +1,9 @@
 {
-    "name": "Prefix Name Search",
+    "name": "Prefix Search Multi",
     "version": "19.0.1.0.0",
-    "summary": "Ändert die Suche in Many2one-Feldern auf Beginnt mit",
-    "depends": ["base"],
+    "author": "Moritz Kern",
+    "summary": "Many2one-Suche für Partner und Produkte auf Beginnt mit umstellen",
+    "depends": ["base", "product"],
     "data": [],
     "installable": True,
     "application": False,
