@@ -1,5 +1,4 @@
 from odoo import models, api
-from odoo.osv import expression
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -17,16 +16,13 @@ class ResPartner(models.Model):
                 name_get_uid=name_get_uid,
             )
 
-        domain = expression.OR([
-            [("name", "=ilike", f"{name}%")],
-            [("ref", "=ilike", f"{name}%")],
-            [("email", "=ilike", f"{name}%")],
-            [("phone", "=ilike", f"{name}%")],
-            [("mobile", "=ilike", f"{name}%")],
-        ])
+        domain = [
+            "|", "|", "|", "|",
+            ("name", "=ilike", f"{name}%"),
+            ("ref", "=ilike", f"{name}%"),
+            ("email", "=ilike", f"{name}%"),
+            ("phone", "=ilike", f"{name}%"),
+            ("mobile", "=ilike", f"{name}%"),
+        ]
 
-        return self._search(
-            expression.AND([args, domain]),
-            limit=limit,
-            access_rights_uid=name_get_uid,
-        )
+        return self._search(args + domain, limit=limit, access_rights_uid=name_get_uid)
