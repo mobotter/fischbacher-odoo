@@ -1,8 +1,7 @@
 from odoo import models, api
-from odoo.osv import expression
 
-class ProductProduct(models.Model):
-    _inherit = "product.product"
+class ProductTemplate(models.Model):
+    _inherit = "product.template"
 
     @api.model
     def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
@@ -17,14 +16,11 @@ class ProductProduct(models.Model):
                 name_get_uid=name_get_uid,
             )
 
-        domain = expression.OR([
-            [("name", "=ilike", f"{name}%")],
-            [("default_code", "=ilike", f"{name}%")],
-            [("barcode", "=ilike", f"{name}%")],
-        ])
+        domain = [
+            "|", "|",
+            ("name", "=ilike", f"{name}%"),
+            ("default_code", "=ilike", f"{name}%"),
+            ("barcode", "=ilike", f"{name}%"),
+        ]
 
-        return self._search(
-            expression.AND([args, domain]),
-            limit=limit,
-            access_rights_uid=name_get_uid,
-        )
+        return self._search(args + domain, limit=limit, access_rights_uid=name_get_uid)
