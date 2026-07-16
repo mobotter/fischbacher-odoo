@@ -21,7 +21,14 @@ class ResPartner(models.Model):
     def _name_search(self, name='', domain=None, operator='ilike', limit=100, order=None):
         domain = list(domain or [])
         if name and self.env.context.get('show_ref_prefix'):
-            search_domain = ['|', ('ref', operator, name), ('name', operator, name)]
+            search_domain = [
+                '|', '|', '|', '|',
+                ('ref', operator, name),
+                ('name', operator, name),
+                ('commercial_company_name', operator, name),
+                ('company_name', operator, name),
+                ('x_short_term', operator, name),
+            ]
             if name.strip().isdigit():
                 search_domain = ['|', ('id', '=', int(name.strip()))] + search_domain
             domain = search_domain + domain
