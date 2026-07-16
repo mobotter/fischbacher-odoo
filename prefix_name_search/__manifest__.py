@@ -1,10 +1,12 @@
 {
-    "name": "Prefix Search Multi",
+    "name": "Prefix Search View",
     "version": "19.0.1.0.0",
     "author": "Moritz Kern",
-    "summary": "Many2one-Suche für Partner und Produkte auf Beginnt mit umstellen",
+    "summary": "Search View Filter auf begins with umstellen",
     "depends": ["base", "product"],
-    "data": [],
+    "data": [
+        "views/search_views.xml",
+    ],
     "installable": True,
     "application": False,
     "license": "LGPL-3",
