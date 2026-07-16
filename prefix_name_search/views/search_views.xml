@@ -5,6 +5,7 @@
             <field name="name">res.partner.search.prefix</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
                     <field name="name" string="Unternehmen" filter_domain="[('name', '=ilike', self + '%')]"/>
@@ -20,6 +21,7 @@
             <field name="name">product.template.search.prefix</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
                     <field name="name" string="Produkt" filter_domain="['|', '|', '|', ('default_code', '=ilike', self + '%'), ('name', '=ilike', self + '%'), ('barcode', '=ilike', self + '%'), ('description_sale', '=ilike', self + '%')]"/>
@@ -31,6 +33,7 @@
             <field name="name">product.product.search.prefix</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
                     <field name="name" string="Produktvariante" filter_domain="['|', '|', '|', '|', '|', ('default_code', '=ilike', self + '%'), ('name', '=ilike', self + '%'), ('barcode', '=ilike', self + '%'), ('description_sale', '=ilike', self + '%'), ('search_term', '=ilike', self + '%'), ('short_term', '=ilike', self + '%')]"/>
