@@ -9,9 +9,9 @@
                 <xpath expr="//search" position="inside">
                     <field name="name" string="Unternehmen" filter_domain="[('name', '=ilike', self + '%')]"/>
                     <field name="ref" string="Referenz" filter_domain="[('ref', '=ilike', self + '%')]"/>
-                    <field name="email" string="E-Mail" filter_domain="[('email', '=ilike', self + '%')]"/>
-                    <field name="phone" string="Telefon" filter_domain="[('phone', '=ilike', self + '%')]"/>
-                    <field name="mobile" string="Mobil" filter_domain="[('mobile', '=ilike', self + '%')]"/>
+                    <field name="short_term" string="Kurzbegriff" filter_domain="[('short_term', '=ilike', self + '%')]"/>
+                    <field name="street" string="Straße" filter_domain="[('street', '=ilike', self + '%')]"/>
+                    <field name="city" string="Ort" filter_domain="[('city', '=ilike', self + '%')]"/>
                 </xpath>
             </field>
         </record>
