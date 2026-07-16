@@ -7,9 +7,11 @@
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
-                    <field name="name" string="Name Prefix" filter_domain="[('name', '=ilike', self + '%')]"/>
-                    <field name="ref" string="Reference Prefix" filter_domain="[('ref', '=ilike', self + '%')]"/>
-                    <field name="email" string="Email Prefix" filter_domain="[('email', '=ilike', self + '%')]"/>
+                    <field name="name" string="Unternehmen" filter_domain="[('name', '=ilike', self + '%')]"/>
+                    <field name="ref" string="Referenz" filter_domain="[('ref', '=ilike', self + '%')]"/>
+                    <field name="email" string="E-Mail" filter_domain="[('email', '=ilike', self + '%')]"/>
+                    <field name="phone" string="Telefon" filter_domain="[('phone', '=ilike', self + '%')]"/>
+                    <field name="mobile" string="Mobil" filter_domain="[('mobile', '=ilike', self + '%')]"/>
                 </xpath>
             </field>
         </record>
@@ -20,9 +22,10 @@
             <field name="inherit_id" ref="product.product_template_search_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
-                    <field name="name" string="Name Prefix" filter_domain="[('name', '=ilike', self + '%')]"/>
-                    <field name="default_code" string="Internal Reference Prefix" filter_domain="[('default_code', '=ilike', self + '%')]"/>
-                    <field name="barcode" string="Barcode Prefix" filter_domain="[('barcode', '=ilike', self + '%')]"/>
+                    <field name="name" string="Produkt" filter_domain="[('name', '=ilike', self + '%')]"/>
+                    <field name="default_code" string="Interne Referenz" filter_domain="[('default_code', '=ilike', self + '%')]"/>
+                    <field name="barcode" string="Barcode" filter_domain="[('barcode', '=ilike', self + '%')]"/>
+                    <field name="description_sale" string="Verkaufsbeschreibung" filter_domain="[('description_sale', '=ilike', self + '%')]"/>
                 </xpath>
             </field>
         </record>
