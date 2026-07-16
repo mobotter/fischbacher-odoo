@@ -27,7 +27,7 @@ class ResPartner(models.Model):
                 ('name', operator, name),
                 ('commercial_company_name', operator, name),
                 ('company_name', operator, name),
-                ('x_short_term', operator, name),
+                ('short_term', operator, name),
             ]
             if name.strip().isdigit():
                 search_domain = ['|', ('id', '=', int(name.strip()))] + search_domain
