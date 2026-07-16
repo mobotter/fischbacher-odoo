@@ -22,10 +22,18 @@
             <field name="inherit_id" ref="product.product_template_search_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
-                    <field name="name" string="Produkt" filter_domain="[('name', '=ilike', self + '%')]"/>
-                    <field name="default_code" string="Interne Referenz" filter_domain="[('default_code', '=ilike', self + '%')]"/>
-                    <field name="barcode" string="Barcode" filter_domain="[('barcode', '=ilike', self + '%')]"/>
-                    <field name="description_sale" string="Verkaufsbeschreibung" filter_domain="[('description_sale', '=ilike', self + '%')]"/>
+                    <field name="name" string="Produkt" filter_domain="['|', '|', '|', ('default_code', '=ilike', self + '%'), ('name', '=ilike', self + '%'), ('barcode', '=ilike', self + '%'), ('description_sale', '=ilike', self + '%')]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_product_search_prefix" model="ir.ui.view">
+            <field name="name">product.product.search.prefix</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="name" string="Produktvariante" filter_domain="['|', '|', '|', '|', '|', ('default_code', '=ilike', self + '%'), ('name', '=ilike', self + '%'), ('barcode', '=ilike', self + '%'), ('description_sale', '=ilike', self + '%'), ('search_term', '=ilike', self + '%'), ('short_term', '=ilike', self + '%')]"/>
                 </xpath>
             </field>
         </record>
