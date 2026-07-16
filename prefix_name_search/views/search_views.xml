@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+
+        <record id="view_res_partner_search_prefix" model="ir.ui.view">
+            <field name="name">res.partner.search.prefix</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="name" string="Name Prefix" filter_domain="[('name', '=ilike', self + '%')]"/>
+                    <field name="ref" string="Reference Prefix" filter_domain="[('ref', '=ilike', self + '%')]"/>
+                    <field name="email" string="Email Prefix" filter_domain="[('email', '=ilike', self + '%')]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_template_search_prefix" model="ir.ui.view">
+            <field name="name">product.template.search.prefix</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="name" string="Name Prefix" filter_domain="[('name', '=ilike', self + '%')]"/>
+                    <field name="default_code" string="Internal Reference Prefix" filter_domain="[('default_code', '=ilike', self + '%')]"/>
+                    <field name="barcode" string="Barcode Prefix" filter_domain="[('barcode', '=ilike', self + '%')]"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
