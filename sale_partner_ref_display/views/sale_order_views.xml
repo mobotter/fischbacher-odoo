@@ -10,7 +10,6 @@
                 <attribute name="context">
                     {
                         'display_website': True,
-                        'res_partner_search_mode': 'customer',
                         'show_address': 1,
                         'show_vat': True,
                         'show_ref_prefix': True
