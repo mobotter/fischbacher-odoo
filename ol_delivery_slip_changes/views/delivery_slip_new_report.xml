@@ -3,7 +3,7 @@
     <!--
         Delivery Slip Report Changes
         This template overrides the standard delivery slip from stock.report_deliveryslip.
-    -->
+    --> 
     <template id="delivery_slip_new" inherit_id="stock.report_deliveryslip">
         <xpath expr="//t" position="replace">
             <t t-foreach="docs" t-as="doc">
