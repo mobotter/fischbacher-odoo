@@ -559,6 +559,10 @@
                                                 <br/>
                                                 <span t-field="move.product_id.description"/>
                                             </t>
+                                            <t t-if="move.description_picking and move.description_picking != move.product_id.display_name">
+                                                <br/>
+                                                <span t-field="move.description_picking" style="font-size:12px; color:#555;"/>
+                                            </t>
                                         </td>
 
                                         <td class="line-cell text-end">
