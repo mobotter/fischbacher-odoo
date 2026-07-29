@@ -5,22 +5,33 @@ import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment
 
 patch(PaymentScreen.prototype, {
     async validateOrder(isForceValidate) {
-        // Originale Validierung ausführen
+        const order = this.currentOrder;
+
+        // Guard: Falls keine Order vorhanden ist, normal validieren
+        if (!order) {
+            return await super.validateOrder(...arguments);
+        }
+
+        // Guard gegen doppelte Ausführung auf derselben Order
+        if (order._doubleReceiptPrinted) {
+            return await super.validateOrder(...arguments);
+        }
+
+        // Standard-Validierung inkl. normalem Odoo-Receipt-Flow
         await super.validateOrder(...arguments);
 
-        // Direkter doppelter Druck ohne Delay
+        // Nach erfolgreicher Validierung genau EINE Zusatzkopie drucken
         if (this.env.printer) {
             try {
-                // Erstes BON
-                await this.env.printer.printReceipt();
+                order._doubleReceiptPrinted = true;
 
-                // Minimaler Delay nur für Printer-Puffer
-                // await new Promise(resolve => setTimeout(resolve, 100));
-                
-                // Zweites BON direkt danach (ohne Delay)
+                // Kleiner Buffer-Delay für manche Netzwerk-/ePOS-Drucker
+                await new Promise((resolve) => setTimeout(resolve, 250));
+
                 await this.env.printer.printReceipt();
             } catch (e) {
-                console.warn("[double_print] Druck fehlgeschlagen:", e);
+                console.warn("[double_print] Zweiter Bon fehlgeschlagen:", e);
+                order._doubleReceiptPrinted = false;
             }
         }
     },
