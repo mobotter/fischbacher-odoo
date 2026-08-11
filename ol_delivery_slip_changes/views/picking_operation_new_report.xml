@@ -82,12 +82,17 @@
                                                     <t t-esc="o.sale_id.date_order" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                 </td></tr>
                                             </t>
-                                            <t t-if="o.partner_id.ref">
-                                                <tr><td style="font-size:13px; border:0 !important;">Client Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.partner_id.ref"/></td></tr>
-                                            </t>
-                                            <t t-else="">
-                                                <tr><td style="font-size:13px; border:0 !important;">Client Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.partner_id.id"/></td></tr>
-                                            </t>
+                                            
+                                            <t t-set="customer_partner"
+                                               t-value="customer.parent_id or customer"/>
+                                            
+                                            <tr>
+                                                <td style="font-size:13px; border:0 !important;">Client Number: </td>
+                                                <td style="font-size:13px;padding-left:3px; border:0 !important;">
+                                                    <t t-esc="customer_partner.ref or customer_partner.id"/>
+                                                </td>
+                                            </tr>
+                                            
                                             <t t-if="o.sale_id.client_order_name">
                                                 <tr><td style="font-size:13px; border:0 !important;">Ordered by: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.client_order_name"/></td></tr>
                                             </t>
@@ -117,7 +122,7 @@
                             <div style="margin-top:2mm; text-align:left; margin-left:-40px;">
                                 <div t-field="o.name" t-options='{"widget": "barcode", "width": 600, "height": 100, "img_style": "width:300px; height:50px;"}'/>
                             </div>
-
+                            
                             <table class="table-borderless mt-5" style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; margin-top:20px; border:0 !important;">
                                 <tr>
                                     <td style="vertical-align:top; width:50%; border:0 !important;">
@@ -167,6 +172,16 @@
                                         </td>
                                         <td style="font-size:14px; padding:10px; border:0 !important;">
                                             <span t-esc="ml.product_id.display_name"/>
+                                            <t t-if="ml.move_id.description_picking">
+                                                <br/>
+                                                <span t-field="ml.move_id.description_picking"
+                                                      style="font-size:12px; color:#555; white-space:pre-wrap;"/>
+                                            </t>
+                                            <t t-elif="ml.move_id.sale_line_id and ml.move_id.sale_line_id.name and ml.move_id.sale_line_id.name != ml.product_id.display_name">
+                                                <br/>
+                                                <span t-out="ml.move_id.sale_line_id.name"
+                                                      style="font-size:12px; color:#555; white-space:pre-wrap;"/>
+                                            </t>
                                         </td>
                                         <td style="font-size:14px; padding:10px; text-align:right; border:0 !important;">
                                             <span t-field="ml.qty_done" t-options='{"widget": "float", "precision": 2}'/>
