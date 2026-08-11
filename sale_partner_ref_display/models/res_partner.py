@@ -19,16 +19,24 @@ class ResPartner(models.Model):
 
     @api.model
     def _name_search(self, name='', domain=None, operator='ilike', limit=100, order=None):
+        """
+        Erweitert die Suche um ref, name, commercial_company_name, company_name, short_term, email, phone, mobile.
+        Sucht in ALLEN Kontakten (unabhngig von customer_rank oder supplier_rank).
+        """
         domain = list(domain or [])
         if name and self.env.context.get('show_ref_prefix'):
             search_domain = [
-                '|', '|', '|', '|',
+                '|', '|', '|', '|', '|', '|', '|',
                 ('ref', operator, name),
                 ('name', operator, name),
                 ('commercial_company_name', operator, name),
                 ('company_name', operator, name),
                 ('short_term', operator, name),
+                ('email', operator, name),
+                ('phone', operator, name),
+                ('mobile', operator, name),
             ]
+            # Suche nach ID, wenn name eine Zahl ist
             if name.strip().isdigit():
                 search_domain = ['|', ('id', '=', int(name.strip()))] + search_domain
             domain = search_domain + domain
