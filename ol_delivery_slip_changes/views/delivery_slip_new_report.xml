@@ -14,6 +14,12 @@
                     <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
                     <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
                     <t t-set="shipping_partner" t-value="o.partner_id"/>
+                    
+                    <t t-set="customer_partner"
+                       t-value="(invoice_partner.parent_id or invoice_partner)
+                                if invoice_partner
+                                else (shipping_partner.parent_id or shipping_partner)"/>
+                                
                     <t t-set="inv" t-value="sale_order and sale_order.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1] or False"/>
 
                     <main>
@@ -381,22 +387,12 @@
                                                 </tr>
                                             </t>
 
-                                            <t t-if="o.partner_id.ref">
-                                                <tr>
-                                                    <td class="meta-label">Client Number:</td>
-                                                    <td class="meta-value">
-                                                        <t t-esc="o.partner_id.ref"/>
-                                                    </td>
-                                                </tr>
-                                            </t>
-                                            <t t-else="">
-                                                <tr>
-                                                    <td class="meta-label">Client Number:</td>
-                                                    <td class="meta-value">
-                                                        <t t-esc="o.partner_id.id"/>
-                                                    </td>
-                                                </tr>
-                                            </t>
+                                            <tr>
+                                                <td class="meta-label">Client Number:</td>
+                                                <td class="meta-value">
+                                                    <t t-esc="customer_partner.ref or customer_partner.id"/>
+                                                </td>
+                                            </tr>
 
                                             <t t-if="sale_order and sale_order.client_order_name">
                                                 <tr>
@@ -555,15 +551,16 @@
 
                                         <td class="line-cell">
                                             <span t-field="move.product_id.display_name"/>
-                                            <t t-if="move.sale_line_id and move.sale_line_id.name 
+                                            <t t-if="move.description_picking">
+                                                <br/>
+                                                <span t-field="move.description_picking"
+                                                      style="font-size:12px; color:#555; white-space:pre-wrap;"/>
+                                            </t>
+                                            <t t-elif="move.sale_line_id and move.sale_line_id.name 
                                                      and move.sale_line_id.name != move.product_id.display_name">
                                                 <br/>
                                                 <span t-out="move.sale_line_id.name" 
                                                       style="font-size:12px; color:#555; white-space:pre-wrap;"/>
-                                            </t>
-                                            <t t-elif="not o.is_description_report and move.product_id.description">
-                                                <br/>
-                                                <span t-field="move.product_id.description"/>
                                             </t>
                                         </td>
 
