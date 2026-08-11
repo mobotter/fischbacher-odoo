@@ -1,38 +1,26 @@
-/** @odoo-module **/
+/** @odoo-module */
 
-import { patch } from "@web/core/utils/patch";
-import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
+import { ReceiptScreen } from "@point_of_sale/app/screens/receipt_screen/receipt_screen";
+import { patch } from "@web/core/patch";
 
-patch(PaymentScreen.prototype, {
-    async validateOrder(isForceValidate) {
-        const order = this.currentOrder;
+/**
+ * Patch ReceiptScreen, um den Kassenbon automatisch 2x zu drucken.
+ * Nach dem Bestellen wird der ReceiptScreen angezeigt und der Druck-Befehl
+ * wird automatisch zweimal ausgelöst.
+ */
 
-        // Guard: Falls keine Order vorhanden ist, normal validieren
-        if (!order) {
-            return await super.validateOrder(...arguments);
-        }
+patch(ReceiptScreen.prototype, {
+    /**
+     * Überschreibt die validatePayment-Methode, um nach dem ersten Druck
+     * automatisch einen zweiten Druck auszulösen.
+     */
+    async validatePayment() {
+        // Erster Druck (Original-Verhalten)
+        await super.validatePayment();
 
-        // Guard gegen doppelte Ausführung auf derselben Order
-        if (order._doubleReceiptPrinted) {
-            return await super.validateOrder(...arguments);
-        }
-
-        // Standard-Validierung inkl. normalem Odoo-Receipt-Flow
-        await super.validateOrder(...arguments);
-
-        // Nach erfolgreicher Validierung genau EINE Zusatzkopie drucken
-        if (this.env.printer) {
-            try {
-                order._doubleReceiptPrinted = true;
-
-                // Kleiner Buffer-Delay für manche Netzwerk-/ePOS-Drucker
-                await new Promise((resolve) => setTimeout(resolve, 250));
-
-                await this.env.printer.printReceipt();
-            } catch (e) {
-                console.warn("[double_print] Zweiter Bon fehlgeschlagen:", e);
-                order._doubleReceiptPrinted = false;
-            }
-        }
+        // Zweiter Druck - kurz verzögert, damit der erste Druck abgeschlossen ist
+        setTimeout(() => {
+            this.env.pos.printReceipt();
+        }, 1000);
     },
 });
