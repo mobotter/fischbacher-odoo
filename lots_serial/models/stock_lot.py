@@ -13,6 +13,9 @@ class StockProductionLot(models.Model):
     uvv_date = fields.Date(string="UVV Date", help='Safety inspection date' , tracking=True)
     safety_brake_date = fields.Date(string="Brake Date", help='Brake replacement/inspection date' , tracking=True)
 
+    airtag_name = fields.Char(string='AirTag Name', help='Name des zugewiesenen AirTags')
+    airtag_id = fields.Char(string='AirTag ID', help='Eindeutige ID des AirTags')
+    
     # Status fields
     tuv_status = fields.Char(string="TÜV Status", compute="_compute_statuses", store=False)
     uvv_status = fields.Char(string="UVV Status", compute="_compute_statuses", store=False)
