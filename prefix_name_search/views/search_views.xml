@@ -8,11 +8,11 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
-                    <field name="name" string="Unternehmen" filter_domain="[('name', '=ilike', self + '%')]"/>
-                    <field name="ref" string="Referenz" filter_domain="[('ref', '=ilike', self + '%')]"/>
-                    <field name="short_term" string="Kurzbegriff" filter_domain="[('short_term', '=ilike', self + '%')]"/>
-                    <field name="street" string="Straße" filter_domain="[('street', '=ilike', self + '%')]"/>
-                    <field name="city" string="Ort" filter_domain="[('city', '=ilike', self + '%')]"/>
+                    <field name="name" string="Unternehmen" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="ref" string="Referenz" filter_domain="[('ref', 'ilike', self)]"/>
+                    <field name="short_term" string="Kurzbegriff" filter_domain="[('short_term', 'ilike', self)]"/>
+                    <field name="street" string="StraÃ¿e" filter_domain="[('street', 'ilike', self)]"/>
+                    <field name="city" string="Ort" filter_domain="[('city', 'ilike', self)]"/>
                 </xpath>
             </field>
         </record>
@@ -24,7 +24,7 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
-                    <field name="name" string="Produkt" filter_domain="['|', '|', '|', ('default_code', '=ilike', self + '%'), ('name', '=ilike', self + '%'), ('barcode', '=ilike', self + '%'), ('description_sale', '=ilike', self + '%')]"/>
+                    <field name="name" string="Produkt" filter_domain="['|', '|', '|', ('default_code', 'ilike', self), ('name', 'ilike', self), ('barcode', 'ilike', self), ('description_sale', 'ilike', self)]"/>
                 </xpath>
             </field>
         </record>
@@ -36,7 +36,7 @@
             <field name="priority" eval="100"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
-                    <field name="name" string="Produktvariante" filter_domain="['|', '|', '|', '|', '|', ('default_code', '=ilike', self + '%'), ('name', '=ilike', self + '%'), ('barcode', '=ilike', self + '%'), ('description_sale', '=ilike', self + '%'), ('search_term', '=ilike', self + '%'), ('short_term', '=ilike', self + '%')]"/>
+                    <field name="name" string="Produktvariante" filter_domain="['|', '|', '|', '|', '|', ('default_code', 'ilike', self), ('name', 'ilike', self), ('barcode', 'ilike', self), ('description_sale', 'ilike', self), ('search_term', 'ilike', self), ('short_term', 'ilike', self)]"/>
                 </xpath>
             </field>
         </record>
