@@ -551,15 +551,19 @@
 
                                         <td class="line-cell">
                                             <span t-field="move.product_id.display_name"/>
-                                            <t t-if="move.description_picking">
+                                            <t t-if="move.description_picking and move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
                                                 <br/>
                                                 <span t-field="move.description_picking"
                                                       style="font-size:12px; color:#555; white-space:pre-wrap;"/>
                                             </t>
-                                            <t t-elif="move.sale_line_id and move.sale_line_id.name 
-                                                     and move.sale_line_id.name != move.product_id.display_name">
+                                            <t t-elif="move.sale_line_id and move.sale_line_id.name and move.sale_line_id.name != move.product_id.name and move.sale_line_id.name != move.product_id.display_name">
                                                 <br/>
                                                 <span t-out="move.sale_line_id.name" 
+                                                      style="font-size:12px; color:#555; white-space:pre-wrap;"/>
+                                            </t>
+                                            <t t-elif="move.product_id.description">
+                                                <br/>
+                                                <span t-field="move.product_id.description" 
                                                       style="font-size:12px; color:#555; white-space:pre-wrap;"/>
                                             </t>
                                         </td>
