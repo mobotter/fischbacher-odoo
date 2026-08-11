@@ -77,21 +77,15 @@
                                             <t t-if="o.sale_id.name">
                                                 <tr><td style="width:55%;font-size:13px; border:0 !important;">Quote Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.name"/></td></tr>
                                             </t>
+                                            
+                                            <t t-set="customer_partner" t-value="customer.parent_id or customer"/>
                                             <t t-if="o.sale_id.date_order">
                                                 <tr><td style="font-size:13px; border:0 !important;">Quote Date: </td><td style="font-size:13px;padding-left:3px; border:0 !important;">
                                                     <t t-esc="o.sale_id.date_order" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                 </td></tr>
                                             </t>
                                             
-                                            <t t-set="customer_partner"
-                                               t-value="customer.parent_id or customer"/>
-                                            
-                                            <tr>
-                                                <td style="font-size:13px; border:0 !important;">Client Number: </td>
-                                                <td style="font-size:13px;padding-left:3px; border:0 !important;">
-                                                    <t t-esc="customer_partner.ref or customer_partner.id"/>
-                                                </td>
-                                            </tr>
+                                            <tr><td style="font-size:13px; border:0 !important;">Client Number: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="customer_partner.ref or customer_partner.id"/></td></tr>
                                             
                                             <t t-if="o.sale_id.client_order_name">
                                                 <tr><td style="font-size:13px; border:0 !important;">Ordered by: </td><td style="font-size:13px;padding-left:3px; border:0 !important;"><t t-esc="o.sale_id.client_order_name"/></td></tr>
@@ -170,15 +164,14 @@
                                         <td style="font-size:14px; padding:10px 0; border:0 !important;">
                                             <span t-esc="ml_index + 1"/>
                                         </td>
-                                        <td class="line-cell">
-                                            <span t-field="move.product_id.display_name"/>
+                                        <td style="font-size:14px; padding:10px; border:0 !important;">
+                                            <span t-field="ml.product_id.display_name"/>
                                             
-                                            <t t-set="extra_desc" t-value="move.description_picking or (move.sale_line_id and move.sale_line_id.name) or move.product_id.description or ''"/>
+                                            <t t-set="extra_desc" t-value="ml.move_id.description_picking or (ml.move_id.sale_line_id and ml.move_id.sale_line_id.name) or ml.product_id.description or ''"/>
                                             <t t-if="extra_desc">
                                                 <t t-set="desc_parts" t-value="extra_desc.split('\n')"/>
-                                                <!-- We only loop over lines that aren't the exact same as the product display name (often the first line) -->
                                                 <t t-foreach="desc_parts" t-as="dline">
-                                                    <t t-if="dline.strip() and not (dline.strip() == move.product_id.display_name or dline.strip() == move.product_id.name)">
+                                                    <t t-if="dline.strip() and not (dline.strip() == ml.product_id.display_name or dline.strip() == ml.product_id.name)">
                                                         <br/><span t-out="dline" style="font-size:12px; color:#555;"/>
                                                     </t>
                                                 </t>
