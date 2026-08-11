@@ -159,8 +159,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" 
-                                        style="border:0 !important;">
+                                    <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" style="border:0 !important;">
                                         <td style="font-size:14px; padding:10px 0; border:0 !important;">
                                             <span t-esc="ml_index + 1"/>
                                         </td>
