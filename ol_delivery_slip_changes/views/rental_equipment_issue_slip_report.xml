@@ -9,6 +9,11 @@
                 <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
                 <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
                 <t t-set="shipping_partner" t-value="o.partner_id"/>
+                
+                <t t-set="customer_partner"
+                   t-value="(invoice_partner.parent_id or invoice_partner)
+                            if invoice_partner
+                            else (shipping_partner.parent_id or shipping_partner)"/>
 
                 <!-- 1. EIGENER HEADER -->
                 <div class="header">
@@ -179,12 +184,14 @@
                                     <t t-if="sale_order and sale_order.date_order">
                                         <tr><td>Order Date:</td><td style="padding-left: 3px;"><span t-field="sale_order.date_order" t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/></td></tr>
                                     </t>
-                                    <t t-if="o.partner_id.ref">
-                                        <tr><td>Client Number:</td><td style="padding-left: 3px;"><t t-esc="o.partner_id.ref"/></td></tr>
-                                    </t>
-                                    <t t-else="">
-                                        <tr><td>Client Number:</td><td style="padding-left: 3px;"><t t-esc="o.partner_id.id"/></td></tr>
-                                    </t>
+                                    
+                                    <tr>
+                                        <td>Client Number:</td>
+                                        <td style="padding-left: 3px;">
+                                            <t t-esc="customer_partner.ref or customer_partner.id"/>
+                                        </td>
+                                    </tr>
+                                    
                                     <t t-if="sale_order and sale_order.client_order_name">
                                         <tr><td>Ordered by:</td><td style="padding-left: 3px;"><t t-esc="sale_order.client_order_name"/></td></tr>
                                     </t>
@@ -253,8 +260,15 @@
                                 <td style="padding: 5px 0; vertical-align: top;"><t t-esc="pos"/></td>
                                 <td style="padding: 5px 0; vertical-align: top;">
                                     <span t-field="move.product_id.display_name"/>
-                                    <t t-if="not o.is_description_report and move.product_id.description">
-                                        <br/><span t-field="move.product_id.description"/>
+                                    <t t-if="move.description_picking">
+                                        <br/>
+                                        <span t-field="move.description_picking"
+                                              style="font-size:11px; color:#555; white-space:pre-wrap;"/>
+                                    </t>
+                                    <t t-elif="move.sale_line_id and move.sale_line_id.name and move.sale_line_id.name != move.product_id.display_name">
+                                        <br/>
+                                        <span t-out="move.sale_line_id.name"
+                                              style="font-size:11px; color:#555; white-space:pre-wrap;"/>
                                     </t>
                                 </td>
                                 <td style="padding: 5px 0; text-align: right; vertical-align: top;">
@@ -300,7 +314,7 @@
                             <td style="width: 33%; vertical-align: top; color: #1f6fd2;">
                                 <span style="color:#000;">Telefon</span> 089 / 14 99 08-0<br/>
                                 <span style="color:#000;">Internet</span> www.fischbacher.de<br/>
-                                <span style="color:#000;">E-Mail</span> info@fischbacher.de
+                                <span style="color:#000;">E-Mail</span> [info@fischbacher.de](mailto:info@fischbacher.de)
                             </td>
                             <td style="width: 33%; vertical-align: top; color: #1f6fd2;">
                                 <span style="color:#000;">Bank</span> VR-Bank Fürstenfeldbruck<br/>
