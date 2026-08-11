@@ -11,17 +11,17 @@
                 <xpath expr="//group[@name='main_group']" position="after">
                         <!-- Create a box for the dates -->
                     <group>
-                        <group/>
+                        <group string="AirTag Tracking" name="group_airtag">
+                            <field name="airtag_name"/>
+                            <field name="airtag_id"/>
+                        </group>
                         <group>
                             <field name="tuv_date" widget="date"/>
                             <field name="uvv_date" widget="date"/>
                             <field name="safety_brake_date" widget="date"/>
                         </group>
                     </group>
-                    <group string="AirTag Tracking" name="group_airtag">
-                        <field name="airtag_name"/>
-                        <field name="airtag_id"/>
-                    </group>
+                    
                 </xpath>
             </field>
         </record>
@@ -35,6 +35,10 @@
             <field name="arch" type="xml">
                 <!-- Add the three fields after the product_id field -->
                 <xpath expr="//field[@name='product_id']" position="after">
+                    <!-- AirTag Felder in der Listenansicht (optional, standardmäßig ausgeblendet) -->
+                    <field name="airtag_name" optional="hide"/>
+                    <field name="airtag_id" optional="hide"/>
+                    
                     <field name="tuv_date"
                         decoration-success="tuv_status == 'green'"
                         decoration-warning="tuv_status == 'orange'"
@@ -54,7 +58,3 @@
 
     </data>
 </odoo>
-
-
-
-
