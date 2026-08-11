@@ -143,23 +143,24 @@
                                     <tr style="margin-bottom:10px; border:0 !important;">
                                         <th style="width:5%; text-align:left; font-size:14px; border:0 !important;"><strong>POS</strong></th>
                                         <th style="width:45%; text-align:left; font-size:14px; border:0 !important;"><strong>Product</strong></th>
-                                        <th style="width:15%; text-align:left; font-size:14px; border:0 !important;"><strong>Quantity</strong></th>
+                                        <th style="width:15%; text-align:right; font-size:14px; border:0 !important;"><strong>Quantity</strong></th>
                                         <th style="width:10%; text-align:left; padding-left:10px; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'incoming'" groups="stock.group_stock_multi_locations">
                                             <strong>From</strong>
                                         </th>
                                         <th style="width:10%; text-align:left; padding-left:10px; font-size:14px; border:0 !important;" t-if="o.picking_type_id.code != 'outgoing'" groups="stock.group_stock_multi_locations">
                                             <strong>To</strong>
                                         </th>
-                                        <th style="width:15%; text-align:left; font-size:14px; border:0 !important;" t-if="has_serial_number">
+                                        <th style="width:15%; text-align:center; font-size:14px; border:0 !important;" t-if="has_serial_number">
                                             <strong>Lot/Serial Number</strong>
                                         </th>
-                                        <th style="width:10%; text-align:left; font-size:14px; border:0 !important;" t-if="has_barcode">
+                                        <th style="width:10%; text-align:center; font-size:14px; border:0 !important;" t-if="has_barcode">
                                             <strong>Product Barcode</strong>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" style="border:0 !important;">
+                                    <tr t-foreach="o.move_line_ids.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml" 
+                                        style="border:0 !important;">
                                         <td style="font-size:14px; padding:10px 0; border:0 !important;">
                                             <span t-esc="ml_index + 1"/>
                                         </td>
@@ -176,8 +177,9 @@
                                                 </t>
                                             </t>
                                         </td>
-                                        <td style="font-size:14px; padding:10px; text-align:left; border:0 !important;">
-                                            <span t-field="ml.qty_done" t-options='{"widget": "float", "precision": 2}'/>
+                                        <td style="font-size:14px; padding:10px; text-align:right; border:0 !important;">
+                                            <span t-if="o.state != 'done'" t-field="ml.reserved_uom_qty" t-options='{"widget": "float", "precision": 2}'/>
+                                            <span t-if="o.state == 'done'" t-field="ml.qty_done" t-options='{"widget": "float", "precision": 2}'/>
                                             <span t-field="ml.product_uom_id"/>
                                             <t t-if="ml.result_package_id">
                                                 (<t t-esc="ml.result_package_id.name"/>)
@@ -191,7 +193,7 @@
                                             <span t-esc="ml.location_dest_id.display_name"/>
                                             <t t-if="ml.result_package_id"> / <t t-esc="ml.result_package_id.name"/></t>
                                         </td>
-                                        <td t-if="has_serial_number" style="font-size:14px; padding:10px; text-align:left; border:0 !important;">
+                                        <td t-if="has_serial_number" style="font-size:14px; padding:10px; text-align:center; border:0 !important;">
                                             <t t-if="ml.lot_id">
                                                 <span t-esc="ml.lot_id.name"/>
                                             </t>
@@ -199,7 +201,7 @@
                                                 <span t-esc="ml.lot_name"/>
                                             </t>
                                         </td>
-                                        <td t-if="has_barcode and ml.product_id.barcode" style="font-size:14px; padding:10px; text-align:left; border:0 !important;">
+                                        <td t-if="has_barcode and ml.product_id.barcode" style="font-size:14px; padding:10px; text-align:center; border:0 !important;">
                                             <span t-esc="ml.product_id.barcode" t-options='{"widget": "barcode", "width": 400, "height": 100, "img_style": "height:35px;"}'/>
                                         </td>
                                     </tr>
