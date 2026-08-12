@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Form View Vererbung für product.product, um den Smart-Button hinzuzufügen -->
         <record id="view_product_product_form_inherit_order_lines" model="ir.ui.view">
             <field name="name">product.product.form.inherit.order.lines</field>
             <field name="model">product.product</field>
-            <!-- Die spezifische View für Produktvarianten -->
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
+                <!-- Wir suchen gezielt die button_box, die Odoo standardmäßig verwendet -->
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="action_view_product_sale_order_lines" 
                             type="object" 
