@@ -24,6 +24,10 @@
             
             <!-- Pfad zum Icon-Bild in DEINEM Modul -->
             <field name="web_icon">fb_modul_icons,static/description/products_icon.png</field>
+            
+            <!-- LÖSUNG DES FEHLERS: Zugriffsrechte hinzufügen -->
+            <!-- Nur wenn eine Gruppe definiert ist, zeigt Odoo das Menü auf dem Haupt-Dashboard an. -->
+            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
         </record>
     </data>
 </odoo>
