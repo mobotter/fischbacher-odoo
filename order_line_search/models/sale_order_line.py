@@ -3,11 +3,22 @@ from odoo import models, fields
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    # DIESES Feld hat in Odoo vorher gefehlt!
+    # Einkaufspreis vom Produkt holen
     product_cost = fields.Float(
         related='product_id.standard_price', 
         string='Einkaufspreis (Produkt)', 
         readonly=True
+    )
+    
+    # WIR LEGEN DAS FELD SELBST AN!
+    # Wenn Odoo das Modul 'sale_stock' installiert hat, wird Odoo diese Definition 
+    # einfach mit der eigenen verschmelzen. Wenn nicht, haben wir das Feld erschaffen 
+    # und können es in der XML-Ansicht nutzen, ohne dass Odoo abstürzt!
+    route_id = fields.Many2one(
+        'stock.route',
+        string='Route',
+        domain=[('sale_selectable', '=', True)],
+        ondelete='restrict',
     )
 
     def action_open_product(self):
