@@ -50,19 +50,31 @@
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
                 <list string="Auftragszeilen" create="false" edit="false" delete="false">
-                    <!-- Spalten wie gewünscht -->
+                    <!-- Währung unsichtbar laden (wird für das Geldsymbol benötigt) -->
+                    <field name="currency_id" invisible="1"/>
+                    
                     <field name="order_id" string="Auftragsreferenz" widget="many2one"/>
+                    
+                    <!-- Den Status farbig als Badge anzeigen -->
+                    <field name="state" string="Auftragsstatus" widget="badge" 
+                           decoration-success="state == 'sale' or state == 'done'" 
+                           decoration-info="state == 'draft' or state == 'sent'"/>
+
                     <field name="order_partner_id" string="Kunde" widget="many2one"/>
-                    <!-- Das Datum holen wir uns über das related field vom Auftrag -->
                     <field name="create_date" string="Verkaufsdatum" widget="date"/>
                     <field name="name" string="Beschreibung"/>
                     <field name="salesman_id" string="Vertriebsmitarbeiter" widget="many2one_avatar_user"/>
                     <field name="product_uom_qty" string="Menge" sum="Gesamtmenge"/>
                     <field name="discount" string="Rabatt (%)"/>
-                    <field name="price_unit" string="Verkaufspreis"/>
                     
-                    <!-- Status ausblenden, aber für Filter bereithalten -->
-                    <field name="state" invisible="1"/>
+                    <!-- Verkaufspreis mit Währungssymbol -->
+                    <field name="price_unit" string="Verkaufspreis" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    
+                    <!-- Einkaufspreis (über Python-Feld vom Produkt geholt) -->
+                    <field name="product_cost" string="Einkaufspreis" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                    
+                    <!-- Die auftragsspezifische Route (direkt aus dem Auftrag) -->
+                    <field name="route_id" string="Route" optional="show"/>
 
                     <!-- Action-Buttons / Links am Ende der Zeile -->
                     <button name="action_open_product" type="object" string="Produkt" icon="fa-cube" class="btn-link"/>
