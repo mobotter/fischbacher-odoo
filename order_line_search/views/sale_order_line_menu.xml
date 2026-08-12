@@ -52,7 +52,7 @@
                 <list string="Auftragszeilen" create="false" edit="false" delete="false">
                     
                     <!-- Versteckte Währungsfelder laden (Pflicht für das Symbol!) -->
-                    <field name="currency_id" invisible="1"/>
+                    <field name="currency_id" column_invisible="True"/>
                     
                     <field name="order_id" string="Auftragsreferenz" widget="many2one"/>
                     
