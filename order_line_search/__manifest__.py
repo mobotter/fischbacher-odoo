@@ -10,7 +10,7 @@
         'base',
         'sale', 
         'sale_management',
-        'sale_stock',!
+        'sale_stock',
     ],
     'data': [
         'views/sale_order_line_menu.xml',
