@@ -50,12 +50,13 @@
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
                 <list string="Auftragszeilen" create="false" edit="false" delete="false">
-                    <!-- Währung unsichtbar laden (wird für das Geldsymbol benötigt) -->
+                    
+                    <!-- Versteckte Währungsfelder laden (Pflicht für das Symbol!) -->
                     <field name="currency_id" invisible="1"/>
                     
                     <field name="order_id" string="Auftragsreferenz" widget="many2one"/>
                     
-                    <!-- Den Status farbig als Badge anzeigen -->
+                    <!-- Status als Badge -->
                     <field name="state" string="Auftragsstatus" widget="badge" 
                            decoration-success="state == 'sale' or state == 'done'" 
                            decoration-info="state == 'draft' or state == 'sent'"/>
@@ -67,13 +68,13 @@
                     <field name="product_uom_qty" string="Menge" sum="Gesamtmenge"/>
                     <field name="discount" string="Rabatt (%)"/>
                     
-                    <!-- Verkaufspreis mit Währungssymbol -->
+                    <!-- Verkaufspreis mit Monetary Widget -->
                     <field name="price_unit" string="Verkaufspreis" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     
-                    <!-- Einkaufspreis (über Python-Feld vom Produkt geholt) -->
-                    <field name="product_cost" string="Einkaufspreis" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                    <!-- Einkaufspreis mit Monetary Widget -->
+                    <field name="product_cost" string="Einkaufspreis" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                     
-                    <!-- Die auftragsspezifische Route (direkt aus dem Auftrag) -->
+                    <!-- Route -->
                     <field name="route_id" string="Route" optional="show"/>
 
                     <!-- Action-Buttons / Links am Ende der Zeile -->
