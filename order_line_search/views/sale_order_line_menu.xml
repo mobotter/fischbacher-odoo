@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 1. Aktion (Window Action) für Auftragszeilen definieren -->
+        <record id="action_sale_order_line_reporting" model="ir.actions.act_window">
+            <field name="name">Auftragszeilen</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="domain">[('state', 'in', ['sale', 'done'])]</field>
+            <field name="context">{'search_default_group_by_product': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Noch keine Auftragszeilen vorhanden.
+                </p>
+                <p>
+                    Hier können Sie alle Positionen Ihrer bestätigten Aufträge durchsuchen, analysieren und nach Artikeln oder Kunden filtern.
+                </p>
+            </field>
+        </record>
+
+        <!-- 2. Menüpunkt unter Verkauf -> Berichtswesen einfügen -->
+        <menuitem id="menu_sale_order_line_reporting"
+                  name="Auftragszeilen"
+                  parent="sale.menu_sale_report"
+                  action="action_sale_order_line_reporting"
+                  sequence="25"/>
+                  
+        <!-- 3. Erweiterung der Suchansicht für sale.order.line (falls nicht schon standardmäßig ausreichend) -->
+        <record id="view_sales_order_line_filter_custom" model="ir.ui.view">
+            <field name="name">sale.order.line.select.custom</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="arch" type="xml">
+                <!-- Suchfeld für Artikelnummer (Interne Referenz) -->
+                <xpath expr="//field[@name='order_partner_id']" position="after">
+                    <field name="product_id" string="Artikel/Artikelnummer" filter_domain="['|', ('product_id.default_code', 'ilike', self), ('product_id.name', 'ilike', self)]"/>
+                </xpath>
+                
+                <!-- Gruppierungen für Kunden und Produkte hinzufügen -->
+                <xpath expr="//group" position="inside">
+                    <filter string="Kunde" name="group_by_partner" domain="[]" context="{'group_by':'order_partner_id'}"/>
+                    <filter string="Produkt" name="group_by_product" domain="[]" context="{'group_by':'product_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- 4. Optionale Anpassung der Tree-View zur besseren Übersicht -->
+        <record id="view_order_line_tree_custom" model="ir.ui.view">
+            <field name="name">sale.order.line.tree.custom</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Auftragszeilen" create="false" edit="false" delete="false">
+                    <field name="order_id" widget="many2one"/>
+                    <field name="order_partner_id"/>
+                    <field name="product_id"/>
+                    <field name="name"/>
+                    <field name="product_uom_qty" sum="Gesamtmenge"/>
+                    <field name="qty_delivered"/>
+                    <field name="qty_invoiced"/>
+                    <field name="price_unit"/>
+                    <field name="price_subtotal" sum="Gesamtsumme"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Standard Tree/Form-View Referenzen zur Window-Action hinzufügen -->
+        <record id="action_sale_order_line_reporting_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_order_line_tree_custom"/>
+            <field name="act_window_id" ref="action_sale_order_line_reporting"/>
+        </record>
+    </data>
+</odoo>
