@@ -6,7 +6,12 @@
     'maintainer': 'Moritz Kern',
     'website': 'https://github.com/Fischbacher-GmbH-Co-KG/odoo/tree/main/order_line_search',
     'summary': 'Schnelle Suche und Analyse aller Auftragspositionen im Verkaufs-Berichtswesen',
-    'depends': ['sale', 'sale_management'],
+    'depends': [
+        'base',
+        'sale', 
+        'sale_management',
+        'sale_stock',!
+    ],
     'data': [
         'views/sale_order_line_menu.xml',
         'views/res_partner_views.xml',
