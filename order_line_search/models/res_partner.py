@@ -19,6 +19,5 @@ class ResPartner(models.Model):
             'domain': [('order_partner_id', 'child_of', self.id)],
             'context': {
                 'default_order_partner_id': self.id,
-                'search_default_group_by_product': 1,
             }
         }
