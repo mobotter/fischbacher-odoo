@@ -10,6 +10,7 @@
     'data': [
         'views/sale_order_line_menu.xml',
         'views/res_partner_views.xml',
+        'views/product_views.xml',
     ],
     'installable': True,
     'application': False,
