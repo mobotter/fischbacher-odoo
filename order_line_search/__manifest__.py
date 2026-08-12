@@ -4,7 +4,7 @@
     'category': 'Sales',
     'author': 'Moritz Kern',
     'maintainer': 'Moritz Kern',
-    'website': 'https://fischbacher.de',
+    'website': 'https://github.com/Fischbacher-GmbH-Co-KG/odoo/tree/main/order_line_search',
     'summary': 'Schnelle Suche und Analyse aller Auftragspositionen im Verkaufs-Berichtswesen',
     'depends': ['sale', 'sale_management'],
     'data': [
