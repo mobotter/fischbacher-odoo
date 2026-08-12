@@ -1,0 +1,14 @@
+{
+    'name': 'Order Line Search',
+    'version': '19.0.1.0.0',
+    'category': 'Sales',
+    'author': 'Moritz Kern',
+    'summary': 'Fügt einen Menüpunkt für alle Auftragspositionen im Berichtswesen hinzu',
+    'depends': ['sale', 'sale_management'],
+    'data': [
+        'views/sale_order_line_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'license': 'LGPL-3',
+}
