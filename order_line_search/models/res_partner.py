@@ -13,7 +13,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'sale.order.line',
             # Kanäle/Ansichten die wir öffnen wollen
-            'view_mode': 'tree,form,pivot,graph',
+            'view_mode': 'list,form,pivot,graph',
             # Nur die Positionen dieses Kunden anzeigen.
             # Durch child_of erwischen wir auch Lieferadressen und Ansprechpartner dieses Kunden!
             'domain': [('order_partner_id', 'child_of', self.id)],
