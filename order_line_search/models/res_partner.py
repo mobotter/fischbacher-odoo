@@ -4,21 +4,19 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     def action_view_sale_order_lines(self):
-        """Öffnet die Auftragszeilen für diesen speziellen Kunden"""
         self.ensure_one()
         
-        # Action-Definition zurückgeben
+        # ID unserer eigens erstellten Listenansicht holen
+        list_view_id = self.env.ref('order_line_search.view_order_line_tree_custom').id
+        
         return {
             'name': _('Auftragszeilen'),
             'type': 'ir.actions.act_window',
             'res_model': 'sale.order.line',
-            # Kanäle/Ansichten die wir öffnen wollen
             'view_mode': 'list,form,pivot,graph',
-            # Nur die Positionen dieses Kunden anzeigen.
-            # Durch child_of erwischen wir auch Lieferadressen und Ansprechpartner dieses Kunden!
+            # Hier weisen wir Odoo an, genau diese Listenansicht zu nutzen:
+            'views': [(list_view_id, 'list'), (False, 'form'), (False, 'pivot'), (False, 'graph')],
             'domain': [('order_partner_id', 'child_of', self.id)],
-            # context sorgt dafür, dass bei Neuanlage (falls doch erlaubt) der Kunde gesetzt ist, 
-            # und gruppiert die Baumansicht evtl. direkt nach Produkt.
             'context': {
                 'default_order_partner_id': self.id,
                 'search_default_group_by_product': 1,
