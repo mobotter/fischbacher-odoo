@@ -17,7 +17,6 @@ class ProductTemplate(models.Model):
             'views': [(list_view_id, 'list'), (False, 'form'), (False, 'pivot'), (False, 'graph')],
             'domain': [('product_id', 'in', variant_ids)],
             'context': {
-                'search_default_group_by_partner': 1,
             }
         }
 
@@ -38,6 +37,5 @@ class ProductProduct(models.Model):
             'domain': [('product_id', '=', self.id)],
             'context': {
                 'default_product_id': self.id,
-                'search_default_group_by_partner': 1,
             }
         }
