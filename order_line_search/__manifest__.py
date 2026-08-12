@@ -4,7 +4,7 @@
     'category': 'Sales',
     'author': 'Moritz Kern',
     'maintainer': 'Moritz Kern',
-    'website': 'https://www.ihre-domain.de', # Optional: Link zu Ihrer Website oder Ihrem GitHub-Repo
+    'website': 'https://fischbacher.de',
     'summary': 'Schnelle Suche und Analyse aller Auftragspositionen im Verkaufs-Berichtswesen',
     'depends': ['sale', 'sale_management'],
     'data': [
