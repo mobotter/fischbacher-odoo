@@ -1,6 +1,8 @@
 {
     'name': 'Order Line Search',
     'version': '19.0.1.0.0',
+    'category': 'Sales/Sales',
+    'keywords': 'Sale, Order, Line, Report, Positionen, Artikel, Auftragszeilen, Margen',
     'category': 'Sales',
     'author': 'Moritz Kern',
     'maintainer': 'Moritz Kern',
