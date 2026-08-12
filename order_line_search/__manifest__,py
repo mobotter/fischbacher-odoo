@@ -3,7 +3,9 @@
     'version': '19.0.1.0.0',
     'category': 'Sales',
     'author': 'Moritz Kern',
-    'summary': 'Fügt einen Menüpunkt für alle Auftragspositionen im Berichtswesen hinzu',
+    'maintainer': 'Moritz Kern',
+    'website': 'https://www.ihre-domain.de', # Optional: Link zu Ihrer Website oder Ihrem GitHub-Repo
+    'summary': 'Schnelle Suche und Analyse aller Auftragspositionen im Verkaufs-Berichtswesen',
     'depends': ['sale', 'sale_management'],
     'data': [
         'views/sale_order_line_menu.xml',
