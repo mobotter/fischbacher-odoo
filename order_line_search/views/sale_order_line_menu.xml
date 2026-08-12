@@ -44,7 +44,7 @@
             </field>
         </record>
 
-        <!-- 4. Angepasste Listenansicht zur besseren Übersicht (Odoo 19 nutzt <list>) -->
+        <!-- 4. Angepasste Listenansicht zur besseren Übersicht -->
         <record id="view_order_line_tree_custom" model="ir.ui.view">
             <field name="name">sale.order.line.list.custom</field>
             <field name="model">sale.order.line</field>
@@ -61,19 +61,12 @@
                     <field name="discount" string="Rabatt (%)"/>
                     <field name="price_unit" string="Verkaufspreis"/>
                     
-                    <!-- Einkaufspreis (Setzt das Modul 'sale_margin' voraus) -->
-                    <field name="purchase_price" string="Einkaufspreis" optional="show"/>
-                    
-                    <!-- Routen (Setzt 'sale_stock' voraus) -->
-                    <field name="route_id" string="Routen" optional="show"/>
-                    
                     <!-- Status ausblenden, aber für Filter bereithalten -->
                     <field name="state" invisible="1"/>
 
                     <!-- Action-Buttons / Links am Ende der Zeile -->
                     <button name="action_open_product" type="object" string="Produkt" icon="fa-cube" class="btn-link"/>
                     <button name="action_open_partner" type="object" string="Kunde" icon="fa-user" class="btn-link"/>
-                    <!-- Den Auftrag öffnen wir direkt über die order_id per Action -->
                     <button name="action_open_order" type="object" string="Auftrag" icon="fa-file-text-o" class="btn-link"/>
                 </list>
             </field>
