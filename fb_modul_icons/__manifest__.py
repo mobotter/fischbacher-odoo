@@ -21,6 +21,7 @@
     },
     'data': [
         'views/menu_icons.xml',
+        'views/menu_views.xml',
     ],
     'images': ['static/description/icon.png'],
     'installable': True,
