@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_custom_print_wizard_copies" model="ir.ui.view">
+        <field name="name">select.printers.wizard.inherit.copies</field>
+        <field name="model">select.printers.wizard</field>
+        <field name="inherit_id" ref="iot.view_select_printers_wizard"/> 
+        <field name="arch" type="xml">
+            
+            <xpath expr="//group[last()]" position="inside">
+                <!-- Durch das Weglassen spezifischer Widgets zwingen wir Odoo,
+                     es als echtes Formularfeld zu behandeln. -->
+                <field name="copies" />
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

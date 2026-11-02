@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="picking_operation_new" inherit_id="stock.report_picking">
+        <!-- Task ID 34124: New picking report by Johi Chawla -->
+        <xpath expr="//t" position="replace">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
+                    <t t-set="o" t-value="doc.with_context(lang=doc._get_report_lang())"/>
+                    <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
+
+                    <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
+                    <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
+                    <t t-set="shipping_partner" t-value="o.partner_id"/>
+                    <t t-set="customer_partner"
+                       t-value="(invoice_partner.parent_id or invoice_partner)
+                                if invoice_partner
+                                else (shipping_partner.parent_id or shipping_partner)"/>
+                    <t t-set="inv"
+                       t-value="sale_order and sale_order.invoice_ids.filtered(lambda i: i.invoice_date).sorted('invoice_date', reverse=True)[:1] or False"/>
+
+                    <!--
+                        Lieferadresse nur verwenden, wenn dort mindestens Straße oder Straße 2 gepflegt ist.
+                        Andernfalls wird die Rechnungsadresse verwendet.
+                    -->
+                    <t t-set="delivery_address_partner"
+                       t-value="shipping_partner
+                                if shipping_partner and (shipping_partner.street or shipping_partner.street2)
+                                else (invoice_partner or shipping_partner)"/>
+
+                    <!--
+                        Leistungsempfänger (Modul fb_partner_recipient, optional):
+                        1. partner_recipient_id am Picking
+                        2. partner_recipient_id am Verkaufsauftrag
+                    -->
+                    <t t-set="recipient_partner"
+                       t-value="('partner_recipient_id' in o._fields and o.partner_recipient_id)
+                                or (sale_order and 'partner_recipient_id' in sale_order._fields and sale_order.partner_recipient_id)"/>
+
+                    <!--
+                        Leistungsempfänger nur drucken, wenn er vom Kunden, von der
+                        Rechnungsadresse und von der Lieferadresse abweicht.
+                    -->
+                    <t t-set="show_recipient"
+                       t-value="bool(
+                           recipient_partner
+                           and recipient_partner != invoice_partner
+                           and recipient_partner != customer_partner
+                           and recipient_partner != delivery_address_partner
+                           and not (sale_order and recipient_partner == sale_order.partner_id)
+                       )"/>
+
+                    <main>
+                        <div class="page">
+                            <style>
+                                .page {
+                                    position: relative;
+                                    border: 1px solid #ffffff;
+                                }
+
+                                .page table,
+                                .page tr,
+                                .page td,
+                                .page th {
+                                    border: 0 !important;
+                                    border-width: 0 !important;
+                                    border-style: none !important;
+                                    border-color: transparent !important;
+                                    border-collapse: collapse !important;
+                                    box-shadow: none !important;
+                                    outline: none !important;
+                                    background-image: none !important;
+                                }
+
+                                .page table {
+                                    border-spacing: 0 !important;
+                                    background: transparent !important;
+                                }
+
+                                .page pre {
+                                    border: 0 !important;
+                                    border-style: none !important;
+                                    background: transparent !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                    white-space: pre-wrap !important;
+                                }
+
+                                .page .head-bottom th {
+                                    border-bottom: 1px solid #cccccc !important;
+                                }
+
+                                .page .line-bottom td,
+                                .page .line-bottom th {
+                                    border-bottom: 1px solid #e0e0e0 !important;
+                                }
+
+                                .page .fb_picking_address_window {
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 85mm;
+                                    height: 40mm;
+                                    overflow: hidden;
+                                    font-size: 10pt;
+                                    line-height: 4.5mm;
+                                }
+                                @media print {
+                                    table[name="stock_move_table_picking"] {
+                                        page-break-inside: auto;
+                                    }
+                                
+                                    table[name="stock_move_table_picking"] thead {
+                                        display: table-header-group;
+                                    }
+                                
+                                    table[name="stock_move_table_picking"] thead:before {
+                                        content: "";
+                                        display: block;
+                                        height: 25mm;
+                                    }
+                                }
+                                .page .fb_picking_return_address {
+                                    height: 5mm;
+                                    margin-bottom: 1.5mm;
+                                    overflow: hidden;
+                                    white-space: nowrap;
+                                    font-size: 8pt;
+                                    line-height: 3.5mm;
+                                    border-bottom: 2px solid #bfbfbf !important;
+                                }
+
+                                .page .fb_picking_recipient_address {
+                                    padding-top: 1.5mm;
+                                    white-space: normal;
+                                    word-wrap: break-word;
+                                    word-break: break-word;
+                                }
+
+                                .page .fb_picking_information_block {
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                    width: 85mm;
+                                    min-height: 40mm;
+                                    margin: 0;
+                                    padding: 0;
+                                    font-size: 13px;
+                                    line-height: 1.35;
+                                }
+
+                                .page .fb_picking_information_block table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+
+                                .page .fb_picking_information_block td {
+                                    vertical-align: top;
+                                    padding: 0 0 1.2mm 0 !important;
+                                }
+
+                                .page .fb_picking_information_block .label {
+                                    width: 46%;
+                                    padding-right: 3mm !important;
+                                    white-space: nowrap;
+                                }
+
+                                .page .fb_picking_header_spacer {
+                                    height: 65mm;
+                                }
+
+                                .page .title-blue {
+                                    color: #1f6fd2;
+                                    font-weight: 500;
+                                    font-size: 26px;
+                                    line-height: 1.2;
+                                    margin: 0 0 5mm 0;
+                                }
+
+                                .page .center {
+                                    text-align: center;
+                                }
+
+                                .page .left {
+                                    text-align: left;
+                                }
+
+                                .page .text-end {
+                                    text-align: right;
+                                }
+
+                                .page .picking-line-cell {
+                                    font-size: 14px;
+                                    padding: 10px 0 !important;
+                                    vertical-align: top;
+                                }
+
+                                .page .picking-line-product {
+                                    width: 45%;
+                                    padding-left: 10px !important;
+                                    padding-right: 10px !important;
+                                }
+
+                                .page .picking-line-qty {
+                                    width: 15%;
+                                    text-align: right;
+                                    padding-left: 10px !important;
+                                    padding-right: 10px !important;
+                                }
+
+                                .page .picking-line-location {
+                                    padding-left: 20px !important;
+                                    padding-right: 10px !important;
+                                }
+                            </style>
+
+                            <!-- Linker Anschriftenblock -->
+                            <div class="fb_picking_address_window">
+                                <div class="fb_picking_return_address">
+                                    <t t-if="o.company_id.name">
+                                        <span t-field="o.company_id.name"/>
+                                    </t>
+
+                                    <t t-if="o.company_id.street">
+                                        <span> · </span>
+                                        <span t-field="o.company_id.street"/>
+                                    </t>
+
+                                    <t t-if="o.company_id.zip or o.company_id.city">
+                                        <span> · </span>
+                                        <span t-field="o.company_id.zip"/>
+                                        <t t-if="o.company_id.zip and o.company_id.city">
+                                            <span> </span>
+                                        </t>
+                                        <span t-field="o.company_id.city"/>
+                                    </t>
+                                </div>
+
+                                <div class="fb_picking_recipient_address">
+                                    <t t-if="delivery_address_partner">
+                                        <strong t-esc="delivery_address_partner.display_name or ''"/>
+                                        <br/>
+
+                                        <t t-if="delivery_address_partner.street">
+                                            <t t-esc="delivery_address_partner.street"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="delivery_address_partner.street2">
+                                            <t t-esc="delivery_address_partner.street2"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="delivery_address_partner.zip or delivery_address_partner.city">
+                                            <t t-esc="delivery_address_partner.zip"/>
+                                            <t t-if="delivery_address_partner.zip and delivery_address_partner.city">
+                                                <span> </span>
+                                            </t>
+                                            <t t-esc="delivery_address_partner.city"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="delivery_address_partner.country_id">
+                                            <t t-esc="delivery_address_partner.country_id.name"/>
+                                        </t>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Rechter Informationsblock -->
+                            <div class="fb_picking_information_block">
+                                <table>
+                                    <tbody>
+                                        <t t-if="inv">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Invoice Number:</td>
+                                                <td t-esc="inv.name"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="inv and inv.invoice_date">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Invoice Date:</td>
+                                                <td>
+                                                    <span t-field="inv.invoice_date"
+                                                          t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.name">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Quote Number:</td>
+                                                <td t-esc="sale_order.name"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.date_order">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Quote Date:</td>
+                                                <td>
+                                                    <span t-field="sale_order.date_order"
+                                                          t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="customer_partner">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Client Number:</td>
+                                                <td t-esc="customer_partner.ref or customer_partner.id"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.client_order_name">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Ordered by:</td>
+                                                <td t-esc="sale_order.client_order_name"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.client_order_number">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Your Order Number:</td>
+                                                <td t-esc="sale_order.client_order_number"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.carrier_id">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Shipping Method:</td>
+                                                <td t-esc="sale_order.carrier_id.name"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.incoterm">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Delivery Terms:</td>
+                                                <td t-esc="sale_order.incoterm.name"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="sale_order and sale_order.user_id and sale_order.user_id.name">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Salesperson:</td>
+                                                <td t-esc="sale_order.user_id.name"/>
+                                            </tr>
+                                        </t>
+
+                                        <t t-if="o.scheduled_date">
+                                            <tr>
+                                                <td class="label" t-translate="yes">Est. Delivery Date:</td>
+                                                <td>
+                                                    <span t-field="o.scheduled_date"
+                                                          t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Reserviert Platz für die zwei absolut positionierten Kopfblöcke -->
+                            <div class="fb_picking_header_spacer"></div>
+
+                            <h2 class="title-blue" t-translate="yes">Commissioning Slip</h2>
+
+                            <div style="margin-top:2mm; text-align:left; margin-left:-40px;">
+                                <div t-field="o.name"
+                                     t-options="{'widget': 'barcode', 'width': 600, 'height': 100, 'img_style': 'width:300px; height:50px;'}"/>
+                            </div>
+
+                            <!--
+                                Adresszeile: Lager, Lieferadresse und optional Leistungsempfänger.
+                                Ohne Leistungsempfänger bleibt die bisherige 50/50-Aufteilung.
+                            -->
+                            <t t-set="address_col_width" t-value="'33%' if show_recipient else '50%'"/>
+
+                            <table style="width:100%; border-collapse:collapse; font-size:12px; margin:20px 0;">
+                                <tbody>
+                                    <tr>
+                                        <td t-att-style="'vertical-align:top; width:%s;' % address_col_width">
+                                            <strong t-translate="yes">Warehouse Address</strong>
+                                            <br/>
+                                            <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                                 t-options="{'widget': 'contact', 'fields': ['name', 'phone'], 'no_marker': true, 'phone_icons': true}"/>
+                                        </td>
+
+                                        <td t-att-style="'vertical-align:top; width:%s;' % address_col_width">
+                                            <strong t-translate="yes">Delivery Address</strong>
+                                            <br/>
+                                            <t t-if="delivery_address_partner">
+                                                <div t-out="delivery_address_partner"
+                                                     t-options="{'widget': 'contact', 'fields': ['address', 'name', 'phone'], 'no_marker': true, 'phone_icons': true}"/>
+                                            </t>
+                                        </td>
+
+                                        <td t-if="show_recipient"
+                                            t-att-style="'vertical-align:top; width:%s;' % address_col_width">
+                                            <strong t-translate="yes">Service Recipient</strong>
+                                            <br/>
+                                            <!-- Nur die Adresse des Leistungsempfängers, ohne Firmenname des Kunden -->
+                                            <t t-if="recipient_partner.name">
+                                                <t t-esc="recipient_partner.name"/>
+                                                <br/>
+                                            </t>
+                                            <t t-if="recipient_partner.street">
+                                                <t t-esc="recipient_partner.street"/>
+                                                <br/>
+                                            </t>
+                                            <t t-if="recipient_partner.street2">
+                                                <t t-esc="recipient_partner.street2"/>
+                                                <br/>
+                                            </t>
+                                            <t t-if="recipient_partner.zip or recipient_partner.city">
+                                                <t t-esc="recipient_partner.zip or ''"/>
+                                                <t t-if="recipient_partner.zip and recipient_partner.city">
+                                                    <span> </span>
+                                                </t>
+                                                <t t-esc="recipient_partner.city or ''"/>
+                                                <br/>
+                                            </t>
+                                            <t t-if="recipient_partner.country_id">
+                                                <t t-esc="recipient_partner.country_id.name"/>
+                                                <br/>
+                                            </t>
+                                            <t t-if="recipient_partner.phone">
+                                                <t t-esc="recipient_partner.phone"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table name="stock_move_table_picking" style="width:100%; border-collapse:collapse; font-size:14px;">
+                                <t t-set="has_barcode" t-value="any(move.product_id.barcode for move in o.move_ids)"/>
+                                <t t-set="has_serial_number"
+                                   t-value="any(ml.lot_id or ml.lot_name for move in o.move_ids for ml in move.move_line_ids)"
+                                   groups="stock.group_production_lot"/>
+                            
+                                <thead>
+                                    <tr class="head-bottom">
+                                        <th style="width:5%; text-align:left; font-size:14px;"
+                                            t-translate="yes">POS</th>
+                            
+                                        <th style="width:45%; text-align:left; font-size:14px;"
+                                            t-translate="yes">Product</th>
+                            
+                                        <th style="width:15%; text-align:right; font-size:14px;"
+                                            t-translate="yes">Quantity</th>
+                            
+                                        <th t-if="o.picking_type_id.code != 'incoming'"
+                                            groups="stock.group_stock_multi_locations"
+                                            style="width:10%; text-align:left; padding-left:10px !important; font-size:14px;"
+                                            t-translate="yes">From</th>
+                            
+                                        <th t-if="o.picking_type_id.code != 'outgoing'"
+                                            groups="stock.group_stock_multi_locations"
+                                            style="width:10%; text-align:left; padding-left:10px !important; font-size:14px;"
+                                            t-translate="yes">To</th>
+                            
+                                        <th t-if="has_serial_number"
+                                            style="width:15%; text-align:center; font-size:14px;"
+                                            t-translate="yes">Lot/Serial Number</th>
+                            
+                                        <th t-if="has_barcode"
+                                            style="width:10%; text-align:center; font-size:14px;"
+                                            t-translate="yes">Product Barcode</th>
+                                    </tr>
+                                </thead>
+                            
+                                <tbody>
+                                    <tr t-foreach="o.move_ids.sorted(lambda move: (move.sequence, move.id))"
+                                        t-as="move"
+                                        class="line-bottom">
+                            
+                                        <td class="picking-line-cell">
+                                            <span t-esc="move_index + 1"/>
+                                        </td>
+                            
+                                        <td class="picking-line-cell picking-line-product">
+                                            <span t-field="move.product_id.display_name"/>
+                            
+                                            <t t-set="extra_desc"
+                                               t-value="move.description_picking or (move.sale_line_id and move.sale_line_id.name) or move.product_id.description or ''"/>
+                            
+                                            <t t-if="extra_desc">
+                                                <t t-set="desc_parts" t-value="extra_desc.split('\n')"/>
+                                                <t t-foreach="desc_parts" t-as="dline">
+                                                    <t t-if="dline.strip() and not (dline.strip() == move.product_id.display_name or dline.strip() == move.product_id.name)">
+                                                        <br/>
+                                                        <span t-out="dline" style="font-size:12px; color:#555555;"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </td>
+                            
+                                        <td class="picking-line-cell picking-line-qty">
+                                            <t t-if="o.state == 'done'">
+                                                <span t-field="move.quantity"
+                                                      t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </t>
+                            
+                                            <t t-else="">
+                                                <span t-field="move.product_uom_qty"
+                                                      t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </t>
+                            
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+                            
+                                        <td t-if="o.picking_type_id.code != 'incoming'"
+                                            groups="stock.group_stock_multi_locations"
+                                            class="picking-line-cell picking-line-location">
+                                            <t t-if="move.move_line_ids">
+                                                <t t-foreach="move.move_line_ids" t-as="ml">
+                                                    <t t-if="ml_index">
+                                                        <br/>
+                                                    </t>
+                                                    <span t-esc="ml.location_id.display_name"/>
+                                                    <t t-if="ml.package_id">
+                                                        / <t t-esc="ml.package_id.name"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="move.location_id.display_name"/>
+                                            </t>
+                                        </td>
+                            
+                                        <td t-if="o.picking_type_id.code != 'outgoing'"
+                                            groups="stock.group_stock_multi_locations"
+                                            class="picking-line-cell picking-line-location">
+                                            <t t-if="move.move_line_ids">
+                                                <t t-foreach="move.move_line_ids" t-as="ml">
+                                                    <t t-if="ml_index">
+                                                        <br/>
+                                                    </t>
+                                                    <span t-esc="ml.location_dest_id.display_name"/>
+                                                    <t t-if="ml.result_package_id">
+                                                        / <t t-esc="ml.result_package_id.name"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="move.location_dest_id.display_name"/>
+                                            </t>
+                                        </td>
+                            
+                                        <td t-if="has_serial_number"
+                                            class="picking-line-cell"
+                                            style="text-align:center;">
+                                            <t t-foreach="move.move_line_ids" t-as="ml">
+                                                <t t-if="ml_index">
+                                                    <br/>
+                                                </t>
+                                                <t t-if="ml.lot_id">
+                                                    <span t-esc="ml.lot_id.name"/>
+                                                </t>
+                                                <t t-elif="ml.lot_name">
+                                                    <span t-esc="ml.lot_name"/>
+                                                </t>
+                                            </t>
+                                        </td>
+                            
+                                        <td t-if="has_barcode"
+                                            class="picking-line-cell"
+                                            style="text-align:center;">
+                                            <t t-if="move.product_id.barcode">
+                                                <span t-esc="move.product_id.barcode"
+                                                      t-options="{'widget': 'barcode', 'width': 400, 'height': 100, 'img_style': 'height:35px;'}"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Zahlungsbedingungen -->
+                            <t t-if="sale_order and sale_order.payment_term_id">
+                                <div style="margin-top:8mm; font-size:12px;">
+                                    <strong t-translate="yes">Payment Terms:</strong>
+                                    <span t-esc="sale_order.payment_term_id.name"/>
+                                </div>
+
+                                <t t-if="sale_order.payment_term_id.note">
+                                    <div style="margin-top:2mm; font-size:11px; color:#555555;">
+                                        <span t-out="sale_order.payment_term_id.note"/>
+                                    </div>
+                                </t>
+                            </t>
+
+                        </div>
+                    </main>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>

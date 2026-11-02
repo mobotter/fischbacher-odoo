@@ -1,0 +1,708 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ol_sale_subscription_extensions
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-25 09:22+0000\n"
+"PO-Revision-Date: 2026-08-25 11:23+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.actions.report,print_report_name:ol_sale_subscription_extensions.action_subscription_report
+msgid ""
+"(\n"
+"            'Rental Quote - %s' % (object.name) if object.state in "
+"('draft', 'sent') else\n"
+"            'Rental Order - %s' % (object.name)\n"
+"        )"
+msgstr ""
+"(object.state in ('draft', 'sent','sale') and 'RentalQuote - %s' % "
+"(object.name)) or 'Order - %s' % (object.name)"
+
+#. module: ol_sale_subscription_extensions
+#: model:mail.template,body_html:ol_sale_subscription_extensions.email_template_edi_sale_subscription
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"        <t t-set=\"doc_name\" t-value=\"'quotation' if object.state in "
+"('draft', 'sent','sale') else 'order'\"/>\n"
+"        Hello,\n"
+"        <br/><br/>\n"
+"        Your\n"
+"        <t t-if=\"ctx.get('proforma')\">\n"
+"            Pro forma invoice for <t t-out=\"doc_name or ''\">quotation</t> "
+"<span style=\"font-weight: bold;\" t-out=\"object.name or ''\">S00052</"
+"span>\n"
+"            <t t-if=\"object.origin\">\n"
+"                (with reference: <t t-out=\"object.origin or ''\"/> )\n"
+"            </t>\n"
+"            amounting in <span style=\"font-weight: bold;\" t-"
+"out=\"format_amount(object.amount_total, object.currency_id) or ''\">$ "
+"10.00</span> is available.\n"
+"        </t>\n"
+"        <t t-else=\"\">\n"
+"            <t t-out=\"doc_name or ''\">quotation</t> <span style=\"font-"
+"weight: bold;\" t-out=\"object.name or ''\"/>\n"
+"            <t t-if=\"object.origin\">\n"
+"                (with reference: <t t-out=\"object.origin or ''\">S00052</"
+"t> )\n"
+"            </t>\n"
+"            amounting in <span style=\"font-weight: bold;\" t-"
+"out=\"format_amount(object.amount_total, object.currency_id) or ''\">$ "
+"10.00</span> is ready for review.\n"
+"        </t>\n"
+"        <br/>\n"
+"        <t t-set=\"documents\" t-value=\"object._get_product_documents()\"/"
+">\n"
+"        <t t-if=\"documents\">\n"
+"            <br/> \n"
+"            <t t-if=\"len(documents)&gt;1\">\n"
+"                Here are some additional documents that may interest you:\n"
+"            </t>\n"
+"            <t t-else=\"\">\n"
+"                Here is an additional document that may interest you:\n"
+"            </t>\n"
+"            <ul style=\"margin-bottom: 0;\">\n"
+"                <t t-foreach=\"documents\" t-as=\"document\">\n"
+"                    <li style=\"font-size: 13px;\">\n"
+"                        <a t-out=\"document.ir_attachment_id.name\" t-att-"
+"href=\"object.get_portal_url('/document/' + str(document.id))\" t-att-"
+"target=\"target\"/>\n"
+"                    </li>\n"
+"                </t>\n"
+"            </ul>\n"
+"        </t>\n"
+"        <br/>\n"
+"        Do not hesitate to contact us if you have any questions.\n"
+"        <t t-if=\"not is_html_empty(object.user_id.signature)\" data-o-mail-"
+"quote-container=\"1\">\n"
+"            <br/><br/>\n"
+"            <t t-out=\"object.user_id.signature or ''\" data-o-mail-"
+"quote=\"1\">--<br data-o-mail-quote=\"1\"/>Mitchell Admin</t>\n"
+"        </t>\n"
+"        <br/><br/>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"\n"
+"<p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
+"\n"
+"<t t-set=\"doc_name\" t-value=\"'quotation' if object.state in ('draft', "
+"'sent','sale') else 'order'\"/>\n"
+"\n"
+"Hallo,\n"
+"\n"
+"<br/><br/>\n"
+"\n"
+"Ihre\n"
+"\n"
+"<t t-if=\"ctx.get('proforma')\">\n"
+"\n"
+"Pro-forma-Rechnung für <t t-out=\"doc_name or ''\">Angebot</t>\n"
+"<span style=\"font-weight: bold;\" t-out=\"object.name or ''\">S00052</"
+"span>\n"
+"\n"
+"<t t-if=\"object.origin\">\n"
+"\n"
+"(mit Bezug: <t t-out=\"object.origin or ''\"/> )\n"
+"\n"
+"</t>\n"
+"Ein Betrag von <span style=\"font-weight: bold;\" t-"
+"out=\"format_amount(object.amount_total, object.currency_id) or ''\">$ "
+"10.00</span> ist verfügbar.\n"
+"\n"
+"</t>\n"
+"\n"
+"<t t-else=\"\">\n"
+"\n"
+"<t t-out=\"doc_name or ''\">Zitat</t> <span style=\"font-weight: bold;\" t-"
+"out=\"object.name or ''\"/>\n"
+"<t t-if=\"object.origin\">\n"
+"\n"
+"(mit Referenz: <t t-out=\"object.origin or ''\">S00052</t> )\n"
+"\n"
+"</t>\n"
+"in Höhe von <span style=\"font-weight: bold;\" t-"
+"out=\"format_amount(object.amount_total, object.currency_id) or ''\">$ "
+"10.00</span> ist zur Überprüfung bereit.\n"
+"\n"
+"</t>\n"
+"\n"
+"<br/>\n"
+"\n"
+"<t t-set=\"documents\" t-value=\"object._get_product_documents()\"/>\n"
+"\n"
+"<t t-if=\"documents\">\n"
+"\n"
+"<br/>\n"
+"\n"
+"<t t-if=\"len(documents)&gt;1\">\n"
+"Hier sind einige weitere Dokumente, die Sie interessieren könnten:\n"
+"\n"
+"</t>\n"
+"\n"
+"<t t-else=\"\">\n"
+"Hier ist ein weiteres Dokument, das Sie interessieren könnte:\n"
+"\n"
+"</t>\n"
+"\n"
+"<ul style=\"margin-bottom: 0;\">\n"
+"\n"
+"<t t-foreach=\"documents\" t-as=\"document\">\n"
+"\n"
+"<li style=\"font-size: 13px;\">\n"
+"\n"
+"<a t-out=\"document.ir_attachment_id.name\" t-att-"
+"href=\"object.get_portal_url('/document/' + str(document.id))\" t-att-"
+"target=\"target\"/>\n"
+"\n"
+"</li>\n"
+"\n"
+"</t>\n"
+"\n"
+"</ul>\n"
+"\n"
+"</t>\n"
+"<br/>\n"
+"Bei Fragen können Sie sich jederzeit an uns wenden.\n"
+"\n"
+"<t t-if=\"not is_html_empty(object.user_id.signature)\" data-o-mail-quote-"
+"container=\"1\">\n"
+"\n"
+"<br/><br/>\n"
+"\n"
+"<t t-out=\"object.user_id.signature or ''\" data-o-mail-quote=\"1\">--<br "
+"data-o-mail-quote=\"1\"/>Mitchell Admin</t>\n"
+"\n"
+"</t>\n"
+"\n"
+"<br/><br/>\n"
+"\n"
+"</p>\n"
+"</div>"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields.selection,name:ol_sale_subscription_extensions.selection__sale_order__subscription_state__accepted
+msgid "Accepted"
+msgstr "Akzeptiert"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Accepted by Client"
+msgstr "Vom Kunden akzeptiert"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Add a note"
+msgstr "Notiz hinzufügen"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Add a product"
+msgstr "Produkt hinzufügen"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Add a section"
+msgstr "Abschnitt hinzufügen"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid ""
+"Agreements exist that may result in subsequent reductions of the final "
+"price."
+msgstr ""
+"Es bestehen Vereinbarungen, aus denen sich ggf. nachträgliche Minderungen "
+"des Entgelts ergeben."
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Amount"
+msgstr "Betrag"
+
+#. module: ol_sale_subscription_extensions
+#. odoo-javascript
+#: code:addons/ol_sale_subscription_extensions/static/src/xml/quotation_line_description_field.xml:0
+msgid "Beschreibung ein-/ausblenden"
+msgstr "Beschreibung ein-/ausblenden"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__billing_period_end
+msgid "Billing Period End"
+msgstr "Ende des Abrechnungszeitraums"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__billing_period_start
+msgid "Billing Period Start"
+msgstr "Beginn des Abrechnungszeitraums"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_subscription_plan__billing_timing
+msgid "Billing Timing"
+msgstr "Abrechnungszeitpunkte"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Client Number:"
+msgstr "Kundennummer:"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__company_id
+msgid "Company"
+msgstr "Unternehmen"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,help:ol_sale_subscription_extensions.field_sale_subscription_plan__billing_timing
+msgid ""
+"Controls whether the first recurring invoice is generated at the beginning "
+"of the period or after the first period ends."
+msgstr ""
+"Steuert, ob die erste wiederkehrende Rechnung zum Periodenbeginn oder nach "
+"Ablauf der ersten Periode erzeugt wird."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__create_uid
+msgid "Created by"
+msgstr "Erstellt von"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__create_date
+msgid "Created on"
+msgstr "Erstellt am"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__currency_id
+msgid "Currency"
+msgstr "Währung"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Delivery Terms:"
+msgstr "Lieferbedingungen:"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__name
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Description"
+msgstr "Beschreibung"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Disc.%"
+msgstr "Rabatt %"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_template_line__discount
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__discount
+msgid "Discount (%)"
+msgstr "Rabatt (%)"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__display_name
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_template_line__display_name
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__display_name
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_subscription_plan__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__display_type
+msgid "Display Type"
+msgstr "Anzeigetyp"
+
+#. module: ol_sale_subscription_extensions
+#. odoo-javascript
+#: code:addons/ol_sale_subscription_extensions/static/src/xml/quotation_line_description_field.xml:0
+#: code:addons/ol_sale_subscription_extensions/static/src/xml/quotation_line_product_field.xml:0
+msgid "Eine Beschreibung eingeben"
+msgstr "Eine Beschreibung eingeben"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Email:"
+msgstr "E-Mail:"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,help:ol_sale_subscription_extensions.field_sale_order__billing_period_end
+msgid ""
+"End date of the current billing period, calculated from the next invoice "
+"date."
+msgstr ""
+"Enddatum des aktuellen Abrechnungszeitraums, berechnet ausgehend vom "
+"nächsten Rechnungsdatum."
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid ""
+"Ex works, conditions as described above, subject to prior sale, plus "
+"statutory VAT."
+msgstr ""
+"Ab Werk, Bedingungen wie oben beschrieben, Zwischenverkauf vorbehalten, "
+"zuzüglich gesetzlicher Mehrwertsteuer."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,help:ol_sale_subscription_extensions.field_sale_quotation_line__product_type
+msgid ""
+"Goods are tangible materials and merchandise you provide.\n"
+"A service is a non-material product you provide."
+msgstr ""
+"Güter sind greifbare Materialien und Waren, die Sie bereitstellen.\n"
+"Eine Dienstleistung ist ein nicht-materielles Produkt, das Sie anbieten."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__id
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_line__id
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_template_line__id
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__id
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_subscription_plan__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields.selection,name:ol_sale_subscription_extensions.selection__sale_subscription_plan__billing_timing__advance
+msgid "In advance"
+msgstr "Im Voraus"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields.selection,name:ol_sale_subscription_extensions.selection__sale_subscription_plan__billing_timing__arrears
+msgid "In arrears"
+msgstr "Im Rückstand"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__is_configurable_product
+msgid "Is the product configurable?"
+msgstr "Ist das Produkt konfigurierbar?"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert von"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Lease Agreement No.:"
+msgstr "Mietvertrag Nr.:"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields.selection,name:ol_sale_subscription_extensions.selection__sale_quotation_line__display_type__line_note
+msgid "Note"
+msgstr "Notiz"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields.selection,name:ol_sale_subscription_extensions.selection__sale_order__state__accepted
+msgid "Order Accepted by Client"
+msgstr "Angebot vom Kunden angenommen"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Order Date:"
+msgstr "Bestelldatum:"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Order Number:"
+msgstr "Bestellnummer:"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Order Template"
+msgstr "Auftragsvorlage"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Ordered By:"
+msgstr "Bestellt durch:"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Payment Terms:"
+msgstr "Zahlungsbedingungen:"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Phone:"
+msgstr "Telefon:"
+
+#. module: ol_sale_subscription_extensions
+#. odoo-python
+#: code:addons/ol_sale_subscription_extensions/models/sale_order.py:0
+msgid ""
+"Please add a recurring plan on the subscription or remove the recurring "
+"product."
+msgstr ""
+"Bitte fügen Sie dem Abonnement einen wiederkehrenden Plan hinzu oder "
+"entfernen Sie das wiederkehrende Produkt."
+
+#. module: ol_sale_subscription_extensions
+#. odoo-python
+#: code:addons/ol_sale_subscription_extensions/models/sale_order.py:0
+msgid ""
+"Please add a recurring product in the subscription or remove the recurring "
+"plan."
+msgstr ""
+"Bitte fügen Sie dem Abonnement ein wiederkehrendes Produkt hinzu oder "
+"entfernen Sie den Plan für wiederkehrende Zahlungen."
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Pos."
+msgstr "Pos."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__pricelist_item_id
+msgid "Pricelist Item"
+msgstr "Preislistenartikel"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__product_id
+msgid "Product"
+msgstr "Produkt"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__product_template_id
+msgid "Product Template"
+msgstr "Produktvorlage"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__product_template_attribute_value_ids
+msgid "Product Template Attribute Values"
+msgstr "Produktvorlagen-Attributwerte"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__product_type
+msgid "Product Type"
+msgstr "Produkttyp"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Project:"
+msgstr "Bauvorhaben:"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__product_uom_qty
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Quantity"
+msgstr "Menge"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__quotation_line_ids
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Quotation Lines"
+msgstr "Angebotszeilen"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__quotation_template_id
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Quotation Lines Template"
+msgstr "Angebotsvorlage"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model,name:ol_sale_subscription_extensions.model_sale_order_template_line
+msgid "Quotation Template Line"
+msgstr "Angebotsvorlagenzeile"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Quotation send by email"
+msgstr "Angebot per E-Mail versendet"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Rental Order"
+msgstr "Mietvertrag"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Rental Quote"
+msgstr "Mietangebot"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.actions.report,name:ol_sale_subscription_extensions.action_subscription_report
+msgid "Rental Quote PDF"
+msgstr "Mietangebot (PDF)"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Rental price /"
+msgstr "Mietpreis /"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Reset to Quotation"
+msgstr "Auf Angebot zurücksetzen"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__order_id
+msgid "Sale Order"
+msgstr "Verkaufsauftrag"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model,name:ol_sale_subscription_extensions.model_sale_quotation_line
+msgid "Sale Quotation Line"
+msgstr "Verkaufsangebotszeile"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model,name:ol_sale_subscription_extensions.model_sale_order
+msgid "Sales Order"
+msgstr "Verkaufsauftrag"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model,name:ol_sale_subscription_extensions.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Verkaufsauftragszeile"
+
+#. module: ol_sale_subscription_extensions
+#: model:mail.template,name:ol_sale_subscription_extensions.email_template_edi_sale_subscription
+msgid "Sales: Send Quotation"
+msgstr "Vertrieb: Angebot senden"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Salesperson:"
+msgstr "Vertriebsmitarbeiter:"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields.selection,name:ol_sale_subscription_extensions.selection__sale_quotation_line__display_type__line_section
+msgid "Section"
+msgstr "Abschnitt"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__sequence
+msgid "Sequence"
+msgstr "Sequenz"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__service_tracking
+msgid "Service Tracking"
+msgstr "Serviceverfolgung"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Shipping Method:"
+msgstr "Versandart:"
+
+#. module: ol_sale_subscription_extensions
+#. odoo-python
+#: code:addons/ol_sale_subscription_extensions/models/sale_order.py:0
+msgid "Some orders are not in a state requiring confirmation."
+msgstr ""
+"Einige Bestellungen befinden sich nicht in einem Status, der eine "
+"Bestätigung erfordert."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,help:ol_sale_subscription_extensions.field_sale_order__billing_period_start
+msgid ""
+"Start date of the current billing period, calculated from the next invoice "
+"date."
+msgstr ""
+"Startdatum des aktuellen Abrechnungszeitraums, berechnet ausgehend vom "
+"nächsten Rechnungsdatum."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__state
+msgid "Status"
+msgstr "Status"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model,name:ol_sale_subscription_extensions.model_sale_subscription_plan
+msgid "Subscription Plan"
+msgstr "Aboplan"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order__subscription_state
+msgid "Subscription Status"
+msgstr "Abonnementstatus"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__price_subtotal
+msgid "Subtotal"
+msgstr "Zwischensumme"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_template_line__tax_id
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__tax_id
+msgid "Taxes"
+msgstr "Steuern"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,help:ol_sale_subscription_extensions.field_sale_order__quotation_template_id
+msgid "Template used to fill the Quotation Lines tab."
+msgstr "Vorlage zum Befüllen der Registerkarte „Angebotszeilen“."
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_form_inherit
+msgid "Terms and conditions..."
+msgstr "AGB..."
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__translated_product_name
+msgid "Translated Product Name"
+msgstr "Übersetzter Produktname"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_order_template_line__price_unit
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__price_unit
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Unit Price"
+msgstr "Einzelpreis"
+
+#. module: ol_sale_subscription_extensions
+#: model:ir.model.fields,field_description:ol_sale_subscription_extensions.field_sale_quotation_line__product_uom
+msgid "Unit of Measure"
+msgstr "Maßeinheit"
+
+#. module: ol_sale_subscription_extensions
+#: model:mail.template,description:ol_sale_subscription_extensions.email_template_edi_sale_subscription
+msgid "Used by salespeople when they send quotations or proforma to prospects"
+msgstr ""
+"Wird von Vertriebsmitarbeitern verwendet, wenn sie Angebote oder Proforma-"
+"Rechnungen an potenzielle Kunden senden."
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Validity Date:"
+msgstr "Gültigkeitsdatum:"
+
+#. module: ol_sale_subscription_extensions
+#: model_terms:ir.ui.view,arch_db:ol_sale_subscription_extensions.sale_subscription_report_new
+msgid "Your Order Number:"
+msgstr "Ihre Bestell-Nr.:"
+
+#. module: ol_sale_subscription_extensions
+#: model:mail.template,subject:ol_sale_subscription_extensions.email_template_edi_sale_subscription
+msgid ""
+"{{ object.company_id.name }} {{ object.state in ('draft', 'sent','sale') "
+"and (ctx.get('proforma') and 'Proforma' or 'Quotation') or 'Order' }} (Ref "
+"{{ object.name or 'n/a' }})"
+msgstr ""
+"{{ object.company_id.name }} {{ object.state in ('draft', 'sent','sale') "
+"and (ctx.get('proforma') and 'Proforma' or 'Quotation') or 'Order' }} (Ref "
+"{{ object.name or 'n/a' }})"
+
+#. module: sale_subscription
+#: model:ir.model.fields.selection,name:sale_subscription.selection__sale_order__subscription_state__6_churn
+msgid "Churned"
+msgstr "Beendet"

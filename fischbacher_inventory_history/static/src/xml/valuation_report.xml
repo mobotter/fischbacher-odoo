@@ -1,0 +1,833 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<templates xml:space="preserve">
+    <t t-name="fischbacher_inventory_history.StockValuationIndividual" t-inherit="stock_account.StockValuationReport" t-inherit-mode="extension">
+
+        <xpath expr="//table/tbody" position="after">
+            <tbody t-if="data.fischbacher_individual">
+                <t t-set="individual" t-value="data.fischbacher_individual"/>
+
+                <tr class="line_level_0">
+                    <td colspan="3" class="pt-4 fw-bold">
+                        Individuelle Bestandsbewertungen – separate Auswertung
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="small text-muted">
+                        Odoo-Standardbewertung oben unverändert.
+                        Keine Änderung von Kostenpreisen, Beständen oder
+                        Abschlussbuchungen.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="small text-muted">
+                        Für Bereich 1 gilt:
+                        Der Originalbestand stammt aus dem Odoo-Lagerbestand
+                        zum festen Stichtag 31.12.2025 und dient ausschließlich
+                        dem Bestandsvergleich.
+                        Die Wertberechnung erfolgt mit dem aktuellen Odoo-Bestand
+                        (qty_available) ohne historischen Datumsfilter und dem
+                        ermittelten Stückpreis.
+
+                        Ausgewählter Bestandsstichtag für die Bereiche 2a und 2b:
+                        <span class="fw-bold"><t t-esc="individual.date"/></span>.
+                        Ohne ausgewähltes Datum wird heute verwendet.
+                        In den Mietbereichen beträgt die Bewertungsmenge
+                        mindestens 1 je Variante.
+
+                        Mengen aus den Abwertungstabellen werden in den Bereichen
+                        1, 2a und 2b nicht für die Wertberechnung übernommen.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" class="small text-muted">
+                        Preisquelle für die Bereiche 1, 2a und 2b:
+                        historischer EK aus Lager 1 vom 31.12.2025.
+
+                        Fehlt dieser Eintrag, wird der jüngste vorhandene
+                        ältere Jahresend-Eintrag verwendet:
+                        31.12.2024, 31.12.2023 usw.
+                        Andere Datumswerte werden ignoriert.
+
+                        Die Preisquellensuche ist unabhängig vom
+                        ausgewählten Bestandsstichtag.
+
+                        Nur in den Bereichen 2a und 2b beträgt die
+                        Bewertungsmenge mindestens 1 je Variante.
+                        Die Zuordnung erfolgt anhand der heutigen
+                        Produkthaken.
+                    </td>
+                </tr>
+
+                <tr t-if="individual.missing_fields.length">
+                    <td colspan="3">
+                        <div class="alert alert-warning">
+                            Fehlende Produktfelder:
+                            <t t-esc="individual.missing_fields.join(', ')"/>.
+                        </div>
+                    </td>
+                </tr>
+
+                <tr t-elif="!individual.currency_ok">
+                    <td colspan="3">
+                        <div class="alert alert-warning">
+                            Historie in EUR, abweichende Firmenwährung:
+                            keine ungeprüfte Umrechnung.
+                        </div>
+                    </td>
+                </tr>
+
+                <t t-else="">
+                    <tr t-if="individual.rental_overlap.variants">
+                        <td colspan="3">
+                            <div class="alert alert-warning mb-2">
+                                <t t-esc="individual.rental_overlap.variants"/>
+                                Varianten /
+                                <t t-esc="individual.rental_overlap.templates"/>
+                                Produktvorlagen haben beide Haken.
+
+                                Sie erscheinen sowohl in der Kurzzeitmiete
+                                als auch in der Langzeitmiete.
+                                Die Summen 2a und 2b deshalb nicht ungeprüft
+                                addieren.
+                            </div>
+                        </td>
+                    </tr>
+
+                    <t t-foreach="individual.current" t-as="valuation" t-key="valuation.label">
+                        <t t-call="fischbacher_inventory_history.IndividualValuationSection"/>
+                    </t>
+
+                    <tr class="line_level_0">
+                        <td colspan="3" class="pt-4 fw-bold">
+                            4. Zusätzliche Lagerbewertung mit Abwertung –
+                            importierter Dezember 2025
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3" class="small text-muted">
+                            Unveränderte Importauswertung:
+                            Menge und EK stammen aus derselben neuesten
+                            Dezember-2025-Zeile je Variante und Lager.
+
+                            Hier sind alle Datumswerte vom 01.12.2025
+                            bis einschließlich 31.12.2025 als Quelle
+                            zulässig, nicht nur der 31.12.
+
+                            Die Mengen stammen ausschließlich aus
+                            der Importhistorie, nicht aus dem
+                            Odoo-Stichtagsbestand.
+                            Kein standard_price-Ersatz.
+
+                            Die zusätzliche Vergleichsspalte zeigt den aktuellen Odoo-Bestand (qty_available) ohne historischen Datumsfilter im bestehenden Bewertungslagerkontext. Dieser Vergleichsbestand ist nicht separat nach den Importlagern 1 und ML abgegrenzt.
+
+                            Lager 1 und ML werden separat ausgewiesen
+                            und nicht addiert.
+                            Diese Auswertung ist unabhängig vom
+                            ausgewählten Berichtsdatum.
+                        </td>
+                    </tr>
+
+                    <t t-foreach="individual.historical" t-as="valuation" t-key="valuation.label">
+                        <t t-call="fischbacher_inventory_history.IndividualValuationSection"/>
+                    </t>
+                </t>
+
+                <tr>
+                    <td colspan="3" class="small text-muted pt-3">
+                        Für die Bereiche 1, 2a und 2b gilt:
+                        Nur wenn kein Jahresend-Eintrag aus Lager 1
+                        zum 31.12.2025 oder zu einem älteren Jahresende
+                        vorhanden ist, wird der aktuelle firmenbezogene
+                        standard_price verwendet.
+                        Dieser Ersatzpreis ist kein historischer
+                        Kostenpreis.
+
+                        Ein historischer EK von 0,00 € bleibt gültig.
+                        Widersprüchliche oder unvollständige Preise
+                        am ausgewählten Jahresende werden nicht
+                        durch ältere Preise ersetzt.
+
+                        Keine Anlagenabschreibung.
+                        Die Importhistorie ist nicht nach Gesellschaft
+                        getrennt.
+                        Diese Erweiterung ergänzt ausschließlich den
+                        Backend-Bericht, nicht PDF/XLSX.
+                    </td>
+                </tr>
+            </tbody>
+        </xpath>
+    </t>
+
+    <t t-name="fischbacher_inventory_history.IndividualValuationSection">
+        <tr class="line_level_0">
+            <td colspan="2" class="pt-3 fw-bold">
+                <t t-esc="valuation.label"/>
+
+                <span t-if="!valuation.complete">
+                    – UNVOLLSTÄNDIGER TEILBETRAG
+                </span>
+            </td>
+
+            <td class="text-end fw-bold pt-3">
+                <t t-esc="formatMonetary(valuation.value)"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3" class="small text-muted">
+                <t t-if="valuation.mode === 'current' &amp;&amp; !valuation.minimum_quantity">
+                    Originalbestandsstichtag (nur Vergleich):
+                    <t t-esc="valuation.date"/>.
+                    Bewertungsmenge: aktueller Odoo-Bestand,
+                    Abfragetag <t t-esc="valuation.comparison_stock_date"/>.
+                </t>
+                <t t-else="">
+                    Bestandsstichtag:
+                    <t t-esc="valuation.date"/>.
+                </t>
+
+                Bewertete Varianten:
+                <t t-esc="valuation.valued_count"/>
+                von <t t-esc="valuation.count"/>.
+                Historischer EK exakt 0,00 €:
+                <t t-esc="valuation.zero_price_count"/>.
+            </td>
+        </tr>
+
+        <tr t-if="valuation.mode === 'current'">
+            <td colspan="3" class="small text-muted">
+                <t t-if="!valuation.minimum_quantity">
+                    Originalbestand: Odoo-Lagerbestand zum festen Stichtag
+                    31.12.2025, ausschließlich als Vergleichswert.
+                    Bewertungsmenge: aktueller Odoo-Bestand (qty_available)
+                    ohne historischen Datumsfilter.
+                    Wert = aktueller Odoo-Bestand × ermittelter Stückpreis.
+                    Auch Kategorie- und Gesamtsummen sowie Ersatzpreiswerte
+                    verwenden die aktuelle Bewertungsmenge.
+                </t>
+                <t t-else="">
+                    Mengenquelle: Odoo-Lagerbestand zum ausgewählten Berichtsdatum.
+                    Die Bewertungsmenge wird auf mindestens 1 je Variante angehoben.
+                </t>
+
+                Preisquelle:
+                Lager 1 vom 31.12.2025, andernfalls jüngster vorhandener älterer
+                31.12.-Eintrag. Ohne passende Jahresend-Quelle: aktueller standard_price.
+                Das tatsächlich verwendete Preisquelldatum steht in der Produktliste.
+            </td>
+        </tr>
+
+        <t t-if="valuation.minimum_quantity">
+            <tr>
+                <td colspan="3">
+                    <div t-att-class="valuation.zero_cost_count ? 'alert alert-warning mb-1' : 'alert alert-info mb-1'">
+                        <div class="fw-bold">
+                            Mit Stückkosten von 0,00 € bewertete Varianten:
+                            <t t-esc="valuation.zero_cost_count"/>
+                            von
+                            <t t-esc="valuation.valued_count"/>.
+                        </div>
+
+                        <div class="small mt-1">
+                            Davon aus historischen Jahresend-Einträgen:
+                            <t t-esc="valuation.zero_cost_history_count"/>.
+
+                            Davon ohne passende Jahresend-Quelle mit
+                            standard_price von 0,00 €:
+                            <t t-esc="valuation.zero_cost_fallback_count"/>.
+                        </div>
+
+                        <div class="small mt-1">
+                            Gezählt werden bewertete Produktvarianten,
+                            nicht Artikelmengen.
+                            Die Nullkostenprüfung erfolgt nach
+                            Firmenwährungsrundung.
+                            Preis-Konflikte werden nicht mitgezählt.
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <div class="alert alert-info mb-1">
+                        Miet-Bewertungsmenge mindestens 1 je Variante.
+
+                        Auf 1 angehobene Varianten:
+                        <t t-esc="valuation.adjusted_quantity_count"/>.
+
+                        Tatsächlicher Bestand 0:
+                        <t t-esc="valuation.zero_stock_count"/>;
+
+                        tatsächlicher negativer Bestand:
+                        <t t-esc="valuation.negative_stock_count"/>.
+
+                        Die tatsächlichen Odoo-Bestände bleiben
+                        unverändert.
+                        Diese Bestandszähler schließen Varianten
+                        mit Preis-Konflikten ein.
+                    </div>
+                </td>
+            </tr>
+
+            <tr t-if="valuation.scope_counts">
+                <td colspan="3" class="small text-muted">
+                    <div>
+                        Varianten im jeweiligen Bereich:
+                        Kurzzeitmiete
+                        <t t-esc="valuation.scope_counts.rent_variants"/>,
+                        Langzeitmiete
+                        <t t-esc="valuation.scope_counts.subscription_variants"/>,
+                        beide Haken
+                        <t t-esc="valuation.scope_counts.both_variants"/>,
+                        eindeutig gesamt
+                        <t t-esc="valuation.scope_counts.union_variants"/>.
+                    </div>
+
+                    <div>
+                        Produktvorlagen im jeweiligen Bereich:
+                        Kurzzeitmiete
+                        <t t-esc="valuation.scope_counts.rent_templates"/>,
+                        Langzeitmiete
+                        <t t-esc="valuation.scope_counts.subscription_templates"/>,
+                        beide Haken
+                        <t t-esc="valuation.scope_counts.both_templates"/>,
+                        eindeutig gesamt
+                        <t t-esc="valuation.scope_counts.union_templates"/>.
+                    </div>
+
+                    <div>
+                        Archivierte Varianten:
+                        <t t-esc="valuation.scope_counts.archived_variants"/>.
+
+                        Berücksichtigt werden lagergeführte Produkte
+                        derselben Firma oder ohne Firmenzuordnung,
+                        auch bei tatsächlichem Bestand 0.
+
+                        Eine historische Archivierungsregel ist
+                        in dieser Version nicht implementiert.
+                    </div>
+                </td>
+            </tr>
+        </t>
+
+        <tr t-if="valuation.fallback_count">
+            <td colspan="3">
+                <div class="alert alert-info mb-1">
+                    Für
+                    <t t-esc="valuation.fallback_count"/>
+                    Varianten ohne passende Jahresend-Quelle
+                    aus Lager 1 zum 31.12.2025 oder einem älteren
+                    Jahresende wurde der aktuelle standard_price
+                    verwendet.
+
+                    Der bereits enthaltene Ersatzwert beträgt:
+                    <t t-esc="formatMonetary(valuation.fallback_value)"/>.
+                </div>
+            </td>
+        </tr>
+
+        <tr t-if="valuation.conflict_count">
+            <td colspan="3">
+                <div class="alert alert-warning">
+                    <t t-esc="valuation.conflict_count"/>
+                    Varianten mit Preis-/Bestandskonflikten
+                    fehlen in Produktlisten und Kategoriesummen.
+
+                    Beispiele:
+                    <t t-esc="valuation.conflict_examples.join('; ')"/>.
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                <details>
+                    <summary class="mb-2">
+                        Produktliste nach Kategorie anzeigen
+                        (<t t-esc="valuation.rows.length"/> Varianten,
+                        <t t-esc="valuation.categories.length"/> Kategorien)
+                    </summary>
+
+                    <div class="alert alert-light border small mb-2">
+                        <div class="fw-bold">
+                            Vergleich mit dem aktuellen Odoo-Lagerbestand
+                        </div>
+                        <div class="mt-1">
+                            Abfragetag:
+                            <t t-esc="valuation.comparison_stock_date"/>.
+                            Abweichungen über 100 Mengeneinheiten:
+                            <t t-esc="valuation.imported_stock_difference_count"/>.
+                            Ohne aktuellen Vergleichsbestand:
+                            <t t-esc="valuation.imported_stock_missing_count"/>.
+                        </div>
+                        <div class="mt-1">
+                            Die Vergleichsspalte zeigt qty_available ohne
+                            historischen Datumsfilter im bestehenden
+                            Bewertungslagerkontext.
+                            Ein aktueller Bestand von 0 ist gültig.
+                            Nicht verfügbare Vergleichsbestände werden
+                            nicht als 0 behandelt.
+                        </div>
+                        <div class="mt-1">
+                            <t t-if="valuation.mode === 'current' &amp;&amp; !valuation.minimum_quantity">
+                                Originalbestand: Odoo-Bestand zum festen Stichtag 31.12.2025.
+                            </t>
+                            <t t-elif="valuation.mode === 'current'">
+                                Originalbestand: Odoo-Bestand zum ausgewählten Berichtsdatum.
+                            </t>
+                            <t t-else="">
+                                Originalbestand: importierter historischer
+                                Dezemberbestand des jeweiligen Importlagers.
+                                Der aktuelle Odoo-Vergleichsbestand wird nicht
+                                separat nach den Importlagern 1 und ML abgefragt.
+                            </t>
+                        </div>
+                        <div class="mt-1">
+                            Verglichen wird mit dem Originalbestand,
+                            nicht mit der gegebenenfalls auf 1 angehobenen
+                            Bewertungsmenge.
+                            Markiert wird nur eine absolute Differenz größer als 100
+                            in der jeweiligen Produkteinheit. Exakt +100 oder -100
+                            bleibt unmarkiert.
+                            <div class="mt-1">
+                                <t t-if="valuation.mode === 'current' &amp;&amp; !valuation.minimum_quantity">
+                                    In Bereich 1 ist der aktuelle Odoo-Bestand zugleich
+                                    die Bewertungsmenge.
+                                    Der Originalbestand vom 31.12.2025 dient nur dem Vergleich.
+                                </t>
+                                <t t-else="">
+                                    Der aktuelle Vergleichsbestand verändert in diesem Bereich
+                                    weder die Bewertungsmenge noch den Bewertungswert.
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted mb-2">
+                        Spaltenüberschrift anklicken:
+                        aufsteigend, erneut absteigend.
+
+                        Produktanzahl = Anzahl bewerteter Varianten.
+                        Artikelanzahl = verwendete Mengen,
+                        getrennt nach Mengeneinheit.
+
+                        Negative Originalbestände sind rot markiert.
+                        Abweichungen über 100 Mengeneinheiten
+                        zwischen Originalbestand und aktuellem Odoo-Bestand
+                        sind gelb markiert.
+                        Bei negativem Originalbestand bleibt die
+                        Zeile rot; die Bestandsabweichung wird zusätzlich gekennzeichnet.
+
+                        Kategorien mit gemischten Einheiten werden
+                        bei numerischer Artikelsortierung zuletzt
+                        eingeordnet.
+
+                        Die Einheiten werden getrennt in eckigen
+                        Klammern angezeigt.
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered mb-3 fh-valuation-sortable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-start text-body" data-fh-sort="text">
+                                            Produktkategorie
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Produkte
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Produktvorlagen
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Artikelanzahl
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Negative Bestände
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Kosten 0,00 €
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Bestandsabweichungen &gt; 100
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+
+                                    <th class="text-end" aria-sort="none">
+                                        <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                            Gesamtwert
+                                            <span data-fh-sort-indicator="">↕</span>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr t-foreach="valuation.categories" t-as="category" t-key="category.id">
+                                    <td t-att-data-fh-sort-value="category.name">
+                                        <t t-esc="category.name"/>
+                                    </td>
+
+                                    <td class="text-end" t-att-data-fh-sort-value="category.product_count">
+                                        <t t-esc="category.product_count"/>
+                                    </td>
+
+                                    <td class="text-end" t-att-data-fh-sort-value="category.template_count">
+                                        <t t-esc="category.template_count"/>
+                                    </td>
+
+                                    <td class="text-end" t-att-data-fh-sort-value="category.mixed_uom ? '' : category.single_quantity">
+                                        <div t-foreach="category.quantity_by_uom" t-as="unit" t-key="unit.id">
+                                            <t t-esc="unit.quantity"/>
+                                            <span class="text-muted ms-1">
+                                                [<t t-esc="unit.name"/>]
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-end" t-att-data-fh-sort-value="category.negative_stock_count">
+                                        <span t-att-class="category.negative_stock_count ? 'badge text-bg-danger' : ''">
+                                            <t t-esc="category.negative_stock_count"/>
+                                        </span>
+                                    </td>
+
+                                    <td class="text-end" t-att-data-fh-sort-value="category.zero_cost_count">
+                                        <span t-att-class="category.zero_cost_count ? 'badge text-bg-warning' : ''">
+                                            <t t-esc="category.zero_cost_count"/>
+                                        </span>
+                                    </td>
+
+                                    <td class="text-end" t-att-data-fh-sort-value="category.imported_stock_difference_count">
+                                        <span t-att-class="category.imported_stock_difference_count ? 'badge text-bg-warning' : ''">
+                                            <t t-esc="category.imported_stock_difference_count"/>
+                                        </span>
+                                    </td>
+
+                                    <td class="text-end fw-bold" t-att-data-fh-sort-value="category.value">
+                                        <t t-esc="formatMonetary(category.value)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div t-foreach="valuation.categories" t-as="category" t-key="category.id" class="border rounded mb-3">
+                        <details>
+                            <summary class="p-2 bg-light">
+                                <span class="fw-bold">
+                                    <t t-esc="category.name"/>
+                                </span>
+
+                                –
+                                <t t-esc="category.product_count"/>
+                                Produkte /
+                                <t t-esc="category.template_count"/>
+                                Vorlagen
+                                –
+
+                                <span class="fw-bold">
+                                    <t t-esc="formatMonetary(category.value)"/>
+                                </span>
+
+                                <span t-if="category.negative_stock_count" class="badge text-bg-danger ms-2">
+                                    <t t-esc="category.negative_stock_count"/>
+                                    negative Bestände
+                                </span>
+
+                                <span t-if="category.zero_cost_count" class="badge text-bg-warning ms-2">
+                                    <t t-esc="category.zero_cost_count"/>
+                                    mit Kosten 0,00 €
+                                </span>
+
+                                <span t-if="category.imported_stock_difference_count" class="badge text-bg-warning ms-2">
+                                    <t t-esc="category.imported_stock_difference_count"/>
+                                    Bestandsabweichungen &gt; 100
+                                </span>
+                            </summary>
+
+                            <div class="p-2">
+                                <div class="small text-muted mb-2">
+                                    Artikelanzahl:
+                                    <span t-foreach="category.quantity_by_uom" t-as="unit" t-key="unit.id" class="me-3">
+                                        <t t-esc="unit.quantity"/>
+                                        <span class="text-muted ms-1">
+                                            [<t t-esc="unit.name"/>]
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div t-if="category.imported_stock_missing_count" class="small text-muted mb-2">
+                                    Ohne aktuellen Vergleichsbestand:
+                                    <t t-esc="category.imported_stock_missing_count"/>.
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-sm mb-0 fh-valuation-sortable">
+                                        <thead>
+                                            <tr>
+                                                <th aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="text">
+                                                        Produkt
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th class="text-end" aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                                        Originalbestand
+                                                        <t t-if="valuation.mode === 'current' &amp;&amp; !valuation.minimum_quantity">(31.12.2025)</t>
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th class="text-end" aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                                        Odoo-Bestand aktuell
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th class="text-end" aria-sort="none" t-if="valuation.mode !== 'current' || valuation.minimum_quantity">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                                        <t t-if="valuation.minimum_quantity">
+                                                            Bewertungsmenge
+                                                        </t>
+                                                        <t t-else="">
+                                                            Verwendeter Bestand
+                                                        </t>
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th class="text-end" aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                                        Stückpreis
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th class="text-end" aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="number">
+                                                        Wert
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="text">
+                                                        Quelle
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+
+                                                <th aria-sort="none">
+                                                    <button type="button" class="btn btn-link btn-sm p-0 text-body" data-fh-sort="text">
+                                                        Quelldatum
+                                                        <span data-fh-sort-indicator="">↕</span>
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <t t-foreach="category.rows" t-as="row" t-key="row.id">
+                                                <t t-set="stock_difference_over_100" t-value="row.odoo_stock_status === 'ok' &amp;&amp; (row.odoo_stock_delta &gt; 100 || row.odoo_stock_delta &lt; -100)"/>
+                                                <tr t-att-class="row.negative_stock ? 'table-danger' : (stock_difference_over_100 ? 'table-warning' : '')">
+                                                <td t-att-data-fh-sort-value="row.name">
+                                                    <a t-att-href="'/web#id=' + row.id + '&amp;model=product.product&amp;view_type=form'" target="_blank" rel="noopener noreferrer" class="text-decoration-none" title="Produktvariante in einem neuen Tab öffnen">
+                                                        <t t-esc="row.name"/>
+                                                    </a>
+
+                                                    <div t-if="row.negative_stock" class="small text-danger fw-bold">
+                                                        NEGATIVER ORIGINALBESTAND
+                                                    </div>
+
+                                                    <div t-if="stock_difference_over_100" class="small">
+                                                        <span class="badge text-bg-warning">
+                                                            ABWEICHUNG ZUM AKTUELLEN ODOO-BESTAND &gt; 100
+                                                        </span>
+                                                    </div>
+
+                                                    <div t-if="row.zero_cost" class="small">
+                                                        <span class="badge text-bg-warning">
+                                                            STÜCKKOSTEN 0,00 €
+                                                        </span>
+                                                    </div>
+
+                                                    <div t-if="valuation.minimum_quantity" class="small text-muted">
+                                                        <span t-if="row.rent_ok">
+                                                            Kurzzeitmiete
+                                                        </span>
+
+                                                        <span t-if="row.rent_ok &amp;&amp; row.recurring_invoice">
+                                                            /
+                                                        </span>
+
+                                                        <span t-if="row.recurring_invoice">
+                                                            Langzeitmiete
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-end" t-att-data-fh-sort-value="row.original_quantity">
+                                                    <span t-att-class="row.negative_stock ? 'text-danger fw-bold' : ''">
+                                                        <t t-esc="row.original_quantity"/>
+                                                    </span>
+
+                                                    <span class="text-muted ms-1">
+                                                        [<t t-esc="row.uom"/>]
+                                                    </span>
+                                                </td>
+
+                                                <td t-att-class="stock_difference_over_100 ? 'text-end table-warning fw-bold' : 'text-end'" t-att-data-fh-sort-value="row.odoo_stock_status === 'ok' ? row.odoo_quantity : ''">
+
+                                                    <t t-if="row.odoo_stock_status === 'ok'">
+                                                        <span t-att-class="row.odoo_quantity &lt; 0 ? 'text-danger fw-bold' : ''">
+                                                            <t t-esc="row.odoo_quantity"/>
+                                                        </span>
+
+                                                        <span class="text-muted ms-1">
+                                                            [<t t-esc="row.uom"/>]
+                                                        </span>
+
+                                                        <div t-if="stock_difference_over_100" class="small mt-1">
+                                                            Differenz Original − Odoo aktuell:
+                                                            <t t-esc="row.odoo_stock_delta"/>
+                                                        </div>
+                                                    </t>
+
+                                                    
+
+                                                    <span t-else="" class="text-muted">
+                                                        Produkt nicht gefunden
+                                                    </span>
+                                                </td>
+
+                                                <td class="text-end" t-att-data-fh-sort-value="row.quantity" t-if="valuation.mode !== 'current' || valuation.minimum_quantity">
+                                                    <t t-esc="row.quantity"/>
+
+                                                    <span class="text-muted ms-1">
+                                                        [<t t-esc="row.uom"/>]
+                                                    </span>
+
+                                                    <div t-if="row.quantity_adjusted" class="small text-warning">
+                                                        Für Bewertung auf 1 angehoben.
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-end" t-att-data-fh-sort-value="row.price">
+                                                    <t t-esc="formatMonetary(row.price)"/>
+                                                </td>
+
+                                                <td class="text-end" t-att-data-fh-sort-value="row.value">
+                                                    <t t-esc="formatMonetary(row.value)"/>
+                                                </td>
+
+                                                <td class="small" t-att-data-fh-sort-value="row.source">
+                                                    <t t-esc="row.source"/>
+                                                </td>
+
+                                                <td class="small" t-att-data-fh-sort-value="row.source_date">
+                                                    <t t-esc="row.source_date"/>
+                                                </td>
+                                            </tr>
+                                            </t>
+                                        </tbody>
+
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td class="fw-bold">
+                                                    Kategorie gesamt
+                                                </td>
+
+                                                <td class="text-end">
+                                                    <div t-foreach="category.quantity_by_uom" t-as="unit" t-key="unit.id">
+                                                        <t t-esc="unit.original_quantity"/>
+
+                                                        <span class="text-muted ms-1">
+                                                            [<t t-esc="unit.name"/>]
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-end">
+                                                    <div t-foreach="category.quantity_by_uom" t-as="unit" t-key="unit.id">
+                                                        <t t-if="unit.imported_count">
+                                                            <t t-esc="unit.imported_quantity"/>
+
+                                                            <span class="text-muted ms-1">
+                                                                [<t t-esc="unit.name"/>]
+                                                            </span>
+
+                                                            <div t-if="!unit.imported_complete" class="small text-warning">
+                                                                Unvollständige Teilmenge
+                                                            </div>
+                                                        </t>
+
+                                                        <span t-else="" class="small text-muted">
+                                                            Kein aktueller Vergleichsbestand
+                                                            [<t t-esc="unit.name"/>]
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-end" t-if="valuation.mode !== 'current' || valuation.minimum_quantity">
+                                                    <div t-foreach="category.quantity_by_uom" t-as="unit" t-key="unit.id">
+                                                        <t t-esc="unit.quantity"/>
+
+                                                        <span class="text-muted ms-1">
+                                                            [<t t-esc="unit.name"/>]
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td/>
+
+                                                <td class="text-end fw-bold">
+                                                    <t t-esc="formatMonetary(category.value)"/>
+                                                </td>
+
+                                                <td colspan="2"/>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </details>
+            </td>
+        </tr>
+    </t>
+</templates>

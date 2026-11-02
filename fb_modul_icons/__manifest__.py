@@ -11,6 +11,7 @@
     'license': 'OPL-1',
     'depends': [
         'base',
+        'sale',
         'sale_renting',       # Vermietung
         'sale_subscription',  # Abonnements
     ],

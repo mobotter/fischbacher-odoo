@@ -193,3 +193,23 @@
     font-size: 0.82em;
     color: #555;
 }
+
+.mk_tab_wrapper .o_mk_price_value {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.15rem;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.mk_tab_wrapper .o_mk_price_value .o_field_widget,
+.mk_tab_wrapper .o_mk_price_value .o_field_monetary,
+.mk_tab_wrapper .o_mk_price_value .o_field_monetary span {
+    display: inline-block;
+    width: auto;
+}
+
+.mk_tab_wrapper .o_mk_price_value .text-muted {
+    color: var(--o-gray-600) !important;
+}

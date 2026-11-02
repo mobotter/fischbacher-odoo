@@ -4,16 +4,25 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+
+             <xpath expr="//field[@name='name']" position="after">
+                <field name="department_name"
+                       placeholder="z. B. Abteilung Buchhaltung"/>
+            </xpath>
+
             <xpath expr="//field[@name='website']" position="after">
                 <field name="sale_blocked"/>
                 <field name="steuer_id" placeholder="z. B. 12 345 678 901"/>
                 <field name="steuer_nr" placeholder="z. B. 143/815/0815"/>
                 <field name="x_telefax" widget="phone"/>
+                <field name="mobile" widget="phone"/>
                 <field name="supplier_customer_number"/>
             </xpath>
+
             <xpath expr="//field[@name='ref']" position="after">
                 <field name="dsp3_id"/>
             </xpath>
+
         </field>
     </record>
 </odoo>

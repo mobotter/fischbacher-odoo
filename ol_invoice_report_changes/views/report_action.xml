@@ -1,39 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!--
+        Standard sales report.
+        Used by Odoo's regular Print and Send Quotation workflow.
+
+        Filename:
+        - draft / sent: Quotation - S01387.pdf
+        - sale:         Order Confirmation - S01387.pdf
+        - cancel:       Order - S01387.pdf
+    -->
     <record id="sale.action_report_saleorder" model="ir.actions.report">
-        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
-        <field name="print_report_name">
-            (
-             object.env._('Rental Quote - %s') % (object.name)
-             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan)) and object.state in ('draft', 'sent')
-             else object.env._('Rental Order - %s') % (object.name)
-             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan)) and object.state not in ('draft', 'sent')
-             else object.env._('Quotation - %s') % (object.name)
-             if object.state in ('draft', 'sent')
-             else object.env._('Order - %s') % (object.name)
-            )
-        </field>
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+        <field name="print_report_name">object._get_sale_report_filename()</field>
     </record>
 
+    <!--
+        Separate print menu entry for an order confirmation.
+        Available from form and list views without state restriction.
+    -->
+    <record id="action_report_saleorder_confirmation" model="ir.actions.report">
+        <field name="name">Order Confirmation</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ol_invoice_report_changes.sale_report_confirmation</field>
+        <field name="report_file">ol_invoice_report_changes.sale_report_confirmation</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">form,list</field>
+        <field name="domain">[]</field>
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+        <field name="print_report_name">object.env._('Order Confirmation - %s') % (object.name or object.env._('Draft'))</field>
+    </record>
+
+    <!-- Hide the raw Quote Builder report from the Print menu. -->
+    <record id="sale_pdf_quote_builder.action_report_saleorder_raw" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <!--
+        Standard-Pro-forma-Aktion auf den eigenen QWeb-Report umstellen.
+    
+        Wichtig:
+        report_name und report_file müssen einzeilig bleiben, damit keine
+        Zeilenumbrüche bzw. Einrückungen als Teil der externen ID gespeichert werden.
+    -->
     <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
-        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+    
+        <field name="report_name">ol_invoice_report_changes.pro_forma_invoice_quotation_report</field>
+        <field name="report_file">ol_invoice_report_changes.pro_forma_invoice_quotation_report</field>
+    
+        <field name="print_report_name">object.env._('Rental Pro-Forma Invoice - %s') % (object.name or object.env._('Draft')) if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan)) else object.env._('Pro-Forma Invoice - %s') % (object.name or object.env._('Draft'))</field>
+    </record>
+
+    <!--
+        Customer invoice.
+        Uses a rental invoice filename when the invoice origin indicates a
+        rental or subscription document.
+    -->
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
         <field name="print_report_name">
-            (
-             object.env._('Rental Pro-Forma Invoice - %s') % (object.name)
-             if (('is_subscription' in object._fields and object.is_subscription) or ('plan_id' in object._fields and object.plan_id) or ('has_plan' in object._fields and object.has_plan))
-             else object.env._('Pro-Forma Invoice - %s') % (object.name)
-            )
+(
+    object.env._('Rental Invoice - %s') % (
+        object.name or object.env._('Draft')
+    )
+    if (
+        object.invoice_origin
+        and (
+            'RENT' in object.invoice_origin
+            or 'SUB' in object.invoice_origin
+        )
+    )
+    else object.env._('Invoice - %s') % (
+        object.name or object.env._('Draft')
+    )
+)
         </field>
     </record>
 
-    <record id="account.account_invoices" model="ir.actions.report">
-        <field name="paperformat_id" ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
-        <field name="print_report_name">
-            (
-             object.env._('Rental Invoice - %s') % (object.name or 'Draft')
-             if (object.invoice_origin and ('RENT' in object.invoice_origin or 'SUB' in object.invoice_origin))
-             else object.env._('Invoice - %s') % (object.name or 'Draft')
-            )
-        </field>
-    </record>
 </odoo>

@@ -1,24 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="sale_order_report_form_inherit" model="ir.ui.view">
-            <field name="name">sale.order.report.form.inherit</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='tag_ids']" position="after">
-                    <field name="purchase_no"/>
-                    <field name="client_order_number"/>
-                    <field name="lease_agreement_no"/>
-                    <field name="client_order_name"/>
-                </xpath>
+    <record id="sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
 
-                <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="hide_total"/>
-                </xpath>
-            </field>
-        </record>
+            <!-- TASK ID: 51580 -->
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                <field name="delivery_address"/>
+            </xpath>
+            <!-- TASK ID: 51580 -->
 
-        <!-- Der acc_move_report_form_inherit Block wurde entfernt, da is_rent nicht mehr existiert -->
-    </data>
+            <!-- Zusätzliche Auftrags- und Mietvertragsfelder -->
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="purchase_no"/>
+                <field name="client_order_number"/>
+                
+                <field name="client_order_name"/>
+
+                <!-- Bestehende / externe Mietvertragsnummer -->
+                <field name="lease_agreement_no"/>
+
+                <field
+                    name="mk_rental_contract_id"
+                    options="{'no_create': True, 'no_create_edit': True}"
+                />
+                
+            </xpath>
+
+            <!-- Feld nach payment_term_id -->
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="hide_total"/>
+            </xpath>
+
+            <!-- Delivery Time nach commitment_date -->
+            <xpath
+                expr="//div[hasclass('o_row') and field[@name='commitment_date']]"
+                position="after"
+            >
+                <field
+                    name="delivery_time"
+                    string="Delivery Time"
+                />
+            </xpath>
+
+            <!-- Einleitungstext oberhalb der Tabs / Auftragspositionen -->
+            <xpath expr="//notebook" position="before">
+                <group string="Introductory text for the offer" col="1">
+                    <field
+                        name="offer_intro_text"
+                        nolabel="1"
+                        placeholder="Dear Sir or Madam,
+Please find our quotation attached.
+Feel free to contact us if you have any questions."
+                    />
+                </group>
+            </xpath>
+
+        </field>
+    </record>
 </odoo>

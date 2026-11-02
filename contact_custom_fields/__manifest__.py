@@ -14,7 +14,7 @@ It also adds a strict pricelist lock on products. For locked products,
 manual discounts are forbidden and only product-specific fixed-price
 pricelist items are accepted.
 ''',
-    'version': '19.0.2.0.0',
+    'version': '19.0.2.0.1',
     'author': 'Moritz Kern',
     'depends': ['base', 'product', 'sale_management', 'point_of_sale'],
     'data': [

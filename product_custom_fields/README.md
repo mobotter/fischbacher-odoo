@@ -1,239 +1,409 @@
-# Adds Custom Fields to Products
+Adds Custom Fields to Products
+==============================
 
-## Übersicht
+Autor: Moritz Kern
+Firma: Fischbacher GmbH + Co. KG
 
-Dieses Modul erweitert Odoo-Produkte (`product.product`) und Produktkategorien (`product.category`) um zahlreiche projektspezifische Felder. Es unterstützt insbesondere:
+Übersicht
+=========
 
-- **Suche und Identifikation**: Suchbegriff, Kurzname, Herstellernummer, DSP3-ID
-- **Vermietung**: Prüfdaten für TÜV, UVV und Bremsen
-- **Webshop**: Webshop-Link, externe IDs, nicht-variantierende Website-Attribute
-- **Lieferanten**: Hauptlieferant und Lieferanten-Produktnummer
-- **Kategorien**: Kategorie-Nummer für vollständige Namensbildung
-- **Boni und Sonderverkäufe**: Bonus- und Sonderverkauf-Flags
+Dieses Modul erweitert Odoo-Produkte (``product.product``) und
+Produktkategorien (``product.category``) um projektspezifische Felder und
+Validierungen. Es unterstützt insbesondere:
 
-## Technische Details
+- Pflicht-Stammdaten: Produktname, Artikelnummer, Barcode und Verkaufspreis
+- Suche und Identifikation: Suchbegriff, Kurzname, Herstellernummer und DSP3-ID
+- Vermietung: Prüfdaten für TÜV, UVV und Bremsen
+- Webshop: Webshop-Link, externe IDs und nicht-variantierende Website-Attribute
+- Lieferanten: Hauptlieferant und Lieferanten-Produktnummer
+- Kategorien: Kategorie-Nummer für vollständige Namensbildung
+- Boni und Sonderverkäufe: Bonus- und Sonderverkauf-Flags
 
-| Feld | Wert |
-|---|---|
-| Technischer Name | `product_custom_fields` |
-| Name | `Adds Custom Fields to Products` |
-| Author | `Odolution` |
-| Version | `19.0.1.0.0` |
-| Lizenz | `LGPL-3` |
-| Abhängigkeiten | `sale`, `website_sale` |
-| Installable | `True` |
-| Auto Install | `False` |
+Technische Details
+==================
 
-## Erweiterte Modelle
+- Technischer Name: ``product_custom_fields``
+- Name: ``Adds Custom Fields to Products``
+- Autor: ``Moritz Kern, Odolution``
+- Version: ``19.0.1.1.0``
+- Lizenz: ``LGPL-3``
+- Abhängigkeiten: ``sale``, ``website_sale``
+- Installierbar: ``True``
+- Auto Install: ``False``
 
-### `product.product`
+Pflichtangaben bei Produkten
+=============================
 
-Erweitert das Produktmodell um folgende Felder:
+Beim Anlegen und Speichern eines Produkts sind folgende Daten verpflichtend:
 
-**Suche und Identifikation:**
-- `search_term` (Char): Suchbegriff für erweiterte Produktsuche
-- `short_term` (Char): Kurzname des Produkt
-- `manufacturer_number` (Char): Herstellernummer
-- `dsp3_id` (Char): DSP3-ID
+- Produktname (``name``)
+- Artikelnummer / interne Referenz (``default_code``)
+- Barcode (``barcode``)
+- Verkaufspreis größer als ``0,00 €`` (``list_price``)
 
-**Vermietung:**
-- `is_rental_available` (Boolean): Ist für Vermietung verfügbar
-- `inspection_date` (Date): Prüfdatum (TÜV)
-- `uvv_date` (Date): UVV-Prüfdatum
-- `brake_inspection_date` (Date): Bremsen-Prüfdatum
+Im Produktformular wird oben folgender Warnhinweis angezeigt:
 
-**Lieferanten:**
-- `main_supplier_id` (Many2one → `product.supplierinfo`): Hauptlieferant (automatisch berechnet aus `seller_ids[0]`)
-- `main_supplier_product_number` (Char): Lieferanten-Produktnummer (automatisch berechnet)
+    Bitte Produktname, Artikelnummer, Barcode und Preis eintragen!
 
-**Webshop und externe IDs:**
-- `webshop_link` (Char): Webshop-Link (mit URL-Widget)
-- `external_id` (Integer): Externe ID
-- `brand_id` (Many2one → `product.brand`): Marke
+Validierungsverhalten
+=====================
 
-**Dimensionen:**
-- `length` (Char): Länge
-- `width` (Char): Breite  
-- `height` (Char): Höhe
+Die Prüfung erfolgt auf zwei Ebenen.
 
-**One2many/Many2many:**
-- `product_website_product_attribute_ids` (One2many → `product.website.attribute.product`): Website-Attributwerte für Produkt
-- `product_website_attribute_ids` (Many2many → `product.website.attribute`): Website-Attribute
+Formularansicht
+---------------
 
-**Boni und Sonderverkäufe:**
-- `bonus_applicable` (Boolean): Bonus anwendbar
-- `special_sale_applicable` (Boolean): Sonderverkauf anwendbar
+- Die vier Angaben sind als Pflichtfelder markiert.
+- Der Nutzer erhält den sichtbaren Warnhinweis im Produktformular.
 
-### `product.category`
+Serverseitige Prüfung
+---------------------
+
+- Das Speichern wird bei fehlenden Angaben oder einem Preis von ``0,00 €``
+  beziehungsweise weniger blockiert.
+- Die Prüfung greift auch bei CSV-/XLSX-Importen, XML-RPC/JSON-RPC,
+  API-Aufrufen, Connectoren, automatisierten Aktionen und sonstigen
+  Hintergrundprozessen.
+- Beim Öffnen eines neuen Produktformulars erfolgt keine serverseitige
+  Pflichtdatenvalidierung, damit die leere Eingabemaske geöffnet werden kann.
+
+Preis-Default
+=============
+
+Ein möglicherweise durch eine Fremdanpassung gesetzter Default von ``1,00 €``
+wird beim Anlegen eines Produkts auf ``0,00 €`` zurückgesetzt. Dadurch kann
+kein Produkt versehentlich mit diesem Standardwert gespeichert werden.
+
+``list_price`` ist ein Float-Feld. Ein nicht eingegebener Preis wird technisch
+als ``0.0`` geführt; deshalb prüft das Modul ausdrücklich, ob der
+Verkaufspreis größer als ``0.0`` ist.
+
+Erweiterte Modelle
+==================
+
+product.product
+---------------
+
+Erweitert das Produktmodell um folgende Felder und Funktionen.
+
+Pflicht-Stammdaten
+~~~~~~~~~~~~~~~~~~
+
+- ``name`` (Char): Produktname; beim Speichern erforderlich
+- ``default_code`` (Char): Artikelnummer / interne Referenz; beim Speichern erforderlich
+- ``barcode`` (Char): Barcode; beim Speichern erforderlich
+- ``list_price`` (Float): Verkaufspreis; muss größer als ``0,00 €`` sein
+
+Suche und Identifikation
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- ``search_term`` (Char): Suchbegriff für erweiterte Produktsuche
+- ``short_term`` (Char): Kurzname des Produkts
+- ``manufacturer_number`` (Char): Herstellernummer
+- ``dsp3_id`` (Char): DSP3-ID
+
+Vermietung
+~~~~~~~~~~
+
+- ``is_rental_available`` (Boolean): Ist für Vermietung verfügbar
+- ``inspection_date`` (Date): Prüfdatum / TÜV
+- ``uvv_date`` (Date): UVV-Prüfdatum
+- ``brake_inspection_date`` (Date): Bremsen-Prüfdatum
+
+Lieferanten
+~~~~~~~~~~~
+
+- ``main_supplier_id`` (Many2one zu ``product.supplierinfo``): Hauptlieferant;
+  automatisch aus dem ersten Lieferantendatensatz berechnet
+- ``main_supplier_product_number`` (Char): Lieferanten-Produktnummer;
+  automatisch berechnet
+
+Webshop und externe IDs
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- ``webshop_link`` (Char): Webshop-Link; mit URL-Widget dargestellt
+- ``external_id`` (Integer): Externe ID
+- ``brand_id`` (Many2one zu ``product.brand``): Marke
+
+Dimensionen
+~~~~~~~~~~~
+
+- ``length`` (Char): Länge
+- ``width`` (Char): Breite
+- ``height`` (Char): Höhe
+
+Website-Attribute
+~~~~~~~~~~~~~~~~~
+
+- ``product_website_product_attribute_ids`` (One2many zu
+  ``product.website.attribute.product``): Website-Attributwerte für das Produkt
+- ``product_website_attribute_ids`` (Many2many zu
+  ``product.website.attribute``): Website-Attribute
+
+Boni und Sonderverkäufe
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- ``bonus_applicable`` (Boolean): Bonus anwendbar
+- ``special_sale_applicable`` (Boolean): Sonderverkauf anwendbar
+
+product.category
+----------------
 
 Erweitert Produktkategorien um:
 
-- `category_number` (Char): Kategorie-Nummer
-- `complete_name` (Char, computed): Vollständiger Name mit Kategorie-Nummer
+- ``category_number`` (Char): Kategorie-Nummer
+- ``complete_name`` (Char, berechnet): Vollständiger Name mit Kategorie-Nummer
 
-**Berechnung von `complete_name`:**
-- Mit Parent: `Parent /[{category_number}] Name`
-- Ohne Parent: `[{category_number}] Name`
+Berechnung von ``complete_name``:
 
-### Neue Modelle
+- Mit übergeordneter Kategorie: ``Parent / [Kategorie-Nummer] Name``
+- Ohne übergeordnete Kategorie: ``[Kategorie-Nummer] Name``
 
-#### `product.brand`
+Neue Modelle
+============
+
+product.brand
+-------------
 
 Eigenes Modell für Produktmarken:
 
-- `name` (Char): Markenname (auch `_rec_name`)
-- `image` (Image): Markenbild
-- `external_id` (Integer): Externe ID
+- ``name`` (Char): Markenname; auch ``_rec_name``
+- ``image`` (Image): Markenbild
+- ``external_id`` (Integer): Externe ID
 
-#### `product.website.attribute`
+product.website.attribute
+-------------------------
 
-Modell für **nicht-variantierende** Website-Attribute (erzeugen keine Produktvarianten):
+Modell für nicht-variantierende Website-Attribute. Diese Attribute erzeugen
+keine Produktvarianten.
 
-- `name` (Char): Attributname (auch `_rec_name`)
-- `external_id` (Integer): Externe ID
-- `sequence` (Integer): Sequenz
-- `visible` (Boolean): Sichtbar
-- `option_ids` (One2many → `product.website.attribute.value`): Attributoptionen
+- ``name`` (Char): Attributname; auch ``_rec_name``
+- ``external_id`` (Integer): Externe ID
+- ``sequence`` (Integer): Reihenfolge
+- ``visible`` (Boolean): Sichtbar
+- ``option_ids`` (One2many zu ``product.website.attribute.value``):
+  Attributoptionen
 
-#### `product.website.attribute.value`
+product.website.attribute.value
+-------------------------------
 
-Modell für Attributoptionen:
+Modell für Optionen von Website-Attributen:
 
-- `name` (Char): Optionname (auch `_rec_name`)
-- `external_id` (Integer): Externe ID
-- `attribute_id` (Many2one → `product.website.attribute`): Attribut
+- ``name`` (Char): Optionsname; auch ``_rec_name``
+- ``external_id`` (Integer): Externe ID
+- ``attribute_id`` (Many2one zu ``product.website.attribute``):
+  Zugehöriges Attribut
 
-#### `product.website.attribute.product`
+product.website.attribute.product
+---------------------------------
 
-Verknüpfung von Produkten mit Website-Attributen:
+Verknüpfung zwischen Produkten und Website-Attributen:
 
-- `product_id` (Many2one → `product.product`): Produkt
-- `attribute_id` (Many2one → `product.website.attribute`): Attribut
-- `value_ids` (Many2many → `product.website.attribute.value`): Werte
+- ``product_id`` (Many2one zu ``product.product``): Produkt
+- ``attribute_id`` (Many2one zu ``product.website.attribute``): Attribut
+- ``value_ids`` (Many2many zu ``product.website.attribute.value``):
+  Ausgewählte Werte
 
-### `product.supplierinfo` (indirekt)
+product.supplierinfo
+--------------------
 
-Die Felder `main_supplier_id` und `main_supplier_product_number` auf `product.product` werden automatisch aus `seller_ids[0]` berechnet.
+Die Felder ``main_supplier_id`` und ``main_supplier_product_number`` auf
+``product.product`` werden aus dem ersten Lieferantendatensatz
+(``seller_ids[0]``) berechnet.
 
-## Enthaltene Views
+Enthaltene Views
+================
 
-### `views/product_form.xml`
+views/product_form.xml
+----------------------
 
-**View:** `product_form_view_inherit`
+View: ``product_form_view_inherit``
 
-Erweiterte Produktformularansicht:
+Erweitert die normale Produktformularansicht
+(``product.product_normal_form_view``) um:
 
-- Felder nach `categ_id`: `search_term`, `short_term`
-- Felder nach `default_code`: `dsp3_id`
-- Felder nach `product_tooltip`: `bonus_applicable`, `special_sale_applicable`, `manufacturer_number`, `main_supplier_id`, `main_supplier_product_number`
-- Neuer Notebook-Page **"Product Data"** mit:
-  - Group **"Base Data"**: `brand_id`, `width`, `length`, `height`, `weight`
-  - Group **"Rent Data"**: `inspection_date`, `uvv_date`, `brake_inspection_date`
-  - Group **"Website Data"**: `webshop_link` (URL-Widget), `external_id`, `product_website_product_attribute_ids` (One2many-Liste)
+- Gelben Warnhinweis: „Bitte Produktname, Artikelnummer, Barcode und Preis eintragen!“
+- Pflicht-Markierung für ``name``, ``default_code``, ``barcode`` und ``list_price``
+- ``search_term`` und ``short_term`` nach ``categ_id``
+- ``dsp3_id`` nach ``default_code``
+- ``bonus_applicable``, ``special_sale_applicable``, ``manufacturer_number``,
+  ``main_supplier_id`` und ``main_supplier_product_number`` nach
+  ``product_tooltip``
+- Zusätzliche Notebook-Seite Product Data mit:
 
-### `views/product_search.xml`
+  - Gruppe Base Data: ``brand_id``, ``width``, ``length``, ``height``, ``weight``
+  - Gruppe Rent Data: ``inspection_date``, ``uvv_date``, ``brake_inspection_date``
+  - Gruppe Website Data: ``webshop_link``, ``external_id``,
+    ``product_website_product_attribute_ids``
 
-**Views:** 4 separate Records für erweiterte Produktsuche:
+views/product_search.xml
+------------------------
 
-1. `product_search_form_view_inherited_name`: "Product" – Suche nach default_code, name, barcode, search_term, short_term
-2. `product_search_form_view_inherited_shortterm`: "Kurzname" – Suche nach short_term
-3. `product_search_form_view_inherited_searchterm`: "Suchbegriff" – Suche nach search_term
-4. `product_search_form_view_inherited_manufacturer`: "Herstellernummer" – Suche nach manufacturer_number
+Vier Erweiterungen der Produktsuche:
 
-### `views/category.xml`
+1. ``product_search_form_view_inherited_name``: Produktsuche nach
+   ``default_code``, ``name``, ``barcode``, ``search_term`` und ``short_term``
+2. ``product_search_form_view_inherited_shortterm``: Suche nach Kurzname
+   (``short_term``)
+3. ``product_search_form_view_inherited_searchterm``: Suche nach Suchbegriff
+   (``search_term``)
+4. ``product_search_form_view_inherited_manufacturer``: Suche nach
+   Herstellernummer (``manufacturer_number``)
 
-**View:** `product_category_form_view_inherit`
+views/category.xml
+------------------
 
-Erweiterte Kategorieansicht:
+View: ``product_category_form_view_inherit``
 
-- Feld nach `parent_id`: `category_number`
+Erweitert die Kategorieansicht um ``category_number`` nach ``parent_id``.
 
-### `views/product_attribute.xml`
+views/product_attribute.xml
+---------------------------
 
-**Views:**
+Enthält die Ansichten für Website-Attribute:
 
-- `product_website_attribute_view_form`: Formular für Website-Attribute
-- `product_website_attribute_view_tree`: Liste für Website-Attribute (editable="bottom", sequence mit handle)
-- `product_website_attribute_value_view_tree`: Liste für Website-Attributwerte (editable="bottom")
+- ``product_website_attribute_view_form``: Formularansicht für Website-Attribute
+- ``product_website_attribute_view_tree``: Listenansicht für Website-Attribute;
+  bearbeitbar am Listenende und mit Reihenfolge-Handle
+- ``product_website_attribute_value_view_tree``: Listenansicht für
+  Website-Attributwerte; bearbeitbar am Listenende
 
-### `views/menu.xml`
+views/menu.xml
+--------------
 
-**Menüpunkte unter "Produktkonfiguration" (sale.prod_config_main):**
+Menüpunkte unter Produktkonfiguration (``sale.prod_config_main``):
 
-- `menu_website_attribute_config`: "Website Attributes" → Action `website_attribute_action`
-- `menu_website_attribute_value_config`: "Website Attribute Values" → Action `website_attribute_value_action`
+- ``menu_website_attribute_config``: Website Attributes → ``website_attribute_action``
+- ``menu_website_attribute_value_config``: Website Attribute Values →
+  ``website_attribute_value_action``
 
-## Security
+Security
+========
 
-### `security/groups.xml`
+security/groups.xml
+-------------------
 
-Definiert Benutzergruppen für neue Modelle:
+Definiert Benutzergruppen für die neuen Modelle:
 
-- `product_brand_user`: Product Brand User
-- `product_website_attribute_user`: Website Attribute User
-- `product_website_attribute_value_user`: Website Attribute Value User
-- `product_website_attribute_product_user`: Website Attribute Product User
+- ``product_brand_user``: Product Brand User
+- ``product_website_attribute_user``: Website Attribute User
+- ``product_website_attribute_value_user``: Website Attribute Value User
+- ``product_website_attribute_product_user``: Website Attribute Product User
 
-### `security/ir.model.access.csv`
+security/ir.model.access.csv
+-----------------------------
 
-Definiert Zugriffsrechte (Read/Write/Create/Delete = 1,1,1,1) für:
+Definiert Vollzugriff (Lesen, Schreiben, Anlegen, Löschen) für:
 
-- `product.brand`
-- `product.website.attribute`
-- `product.website.attribute.value`
-- `product.website.attribute.product`
+- ``product.brand``
+- ``product.website.attribute``
+- ``product.website.attribute.value``
+- ``product.website.attribute.product``
 
-## Methods
+Methoden
+========
 
-### `product.product._compute_supplier()`
+product.product.create()
+------------------------
 
-**Depends:** `seller_ids`, `seller_ids.product_code`, `seller_ids.partner_id`, `seller_ids.price`
+Ergänzt die Produkterstellung wie folgt:
+
+- Ein übergebener Preis-Default von exakt ``1.0`` wird auf ``0.0`` zurückgesetzt.
+- Es erfolgt bewusst keine Pflichtdatenprüfung innerhalb von ``create()``, da
+  Odoo beim Klick auf „Neu“ bereits einen unvollständigen technischen
+  Produktdatensatz beziehungsweise eine Standardvariante anlegen kann.
+
+product.product.write()
+-----------------------
+
+Prüft bei Änderungen an ``name``, ``default_code``, ``barcode`` oder
+``list_price`` die Pflicht-Stammdaten. So kann kein Produkt durch eine
+Bearbeitung in einen unzulässigen Zustand gebracht werden.
+
+product.product._check_required_product_data()
+----------------------------------------------
+
+Prüft pro Produkt:
+
+- Produktname vorhanden
+- Artikelnummer vorhanden
+- Barcode vorhanden
+- Verkaufspreis größer als ``0.0``
+
+Fehlende oder ungültige Angaben führen zu einer ``ValidationError``-Meldung
+mit einer Auflistung der betroffenen Felder.
+
+product.product._compute_supplier()
+------------------------------------
+
+Abhängigkeiten: ``seller_ids``, ``seller_ids.product_code``,
+``seller_ids.partner_id``, ``seller_ids.price``
 
 Berechnet automatisch:
-- `main_supplier_id` = `seller_ids[0].partner_id`
-- `main_supplier_product_number` = `seller_ids[0].product_code`
 
-### `product.product.name_search()`
+- ``main_supplier_id`` = ``seller_ids[0].partner_id``
+- ``main_supplier_product_number`` = ``seller_ids[0].product_code``
+
+product.product.name_search()
+-----------------------------
 
 Erweiterte Suche nach:
-- `name`
-- `default_code`
-- `description_sale`
-- `search_term`
-- `short_term`
 
-### `product.category._compute_complete_name()`
+- ``name``
+- ``default_code``
+- ``description_sale``
+- ``search_term``
+- ``short_term``
 
-**Depends:** `name`, `parent_id.complete_name`
+product.category._compute_complete_name()
+-----------------------------------------
 
-Berechnet `complete_name` mit Kategorie-Nummer im Format:
-- Mit Parent: `Parent /[{category_number}] Name`
-- Ohne Parent: `[{category_number}] Name`
+Abhängigkeiten: ``name``, ``parent_id.complete_name``
 
-## Odoo 19 Upgrade
+Berechnet ``complete_name`` einschließlich Kategorie-Nummer.
 
-Dieses Modul wurde für **Odoo 19** aktualisiert:
+Odoo-19-Status
+==============
 
-✅ `version: '19.0.1.0.0'` im Manifest  
-✅ `installable: True` im Manifest  
-✅ `auto_install: False` im Manifest  
-✅ `@api.model` entfernt (deprecated in Odoo 19)  
-✅ `_rec_name = "name"` für neue Modelle (`product.brand`, `product.website.attribute`, `product.website.attribute.value`)  
-✅ Duplicate View ID korrigiert (`product_website_attribute_value_view_tree`)  
-✅ Duplicate Action ID korrigiert (`website_attribute_value_action`)  
-✅ Search View mit separate Records umstrukturiert (4 Records statt 1 mit multiple field)  
-✅ Groups in `security/groups.xml` definiert  
+Das Modul ist für Odoo 19 ausgelegt:
 
-## Installation
+- Version ``19.0.1.1.0`` im Manifest
+- ``installable: True`` im Manifest
+- ``auto_install: False`` im Manifest
+- Produkt-Pflichtdaten im Formular und serverseitig bei relevanten Änderungen validiert
+- ``_rec_name = 'name'`` für die neuen Stammdatenmodelle
+- Korrigierte, eindeutige View- und Action-IDs
+- Getrennte Records für die erweiterten Search Views
+- Benutzergruppen in ``security/groups.xml``
 
-1. Modul in den Addons-Pfad von Odoo legen
-2. App-Liste in Odoo aktualisieren
-3. Modul installieren oder bei bestehender Installation upgraden
+Installation und Upgrade
+========================
 
-## Hinweise
+1. Den Modulordner ``product_custom_fields`` in einen konfigurierten
+   Odoo-Addons-Pfad legen.
+2. Den Odoo-Dienst neu starten.
+3. Entwicklermodus aktivieren.
+4. In Apps die App-Liste aktualisieren.
+5. Das Modul installieren oder die bestehende Installation upgraden.
 
-- Das Modul ist primär für **Vermietungs-Baumaschinen** konzipiert (Prüfdaten, Vermietung-Flag)
-- Website-Attribute sind **"non Variant Creating"** – erzeugen keine Produktvarianten
-- `main_supplier_id` wird **automatisch** aus dem ersten Seller (`seller_ids[0]`) berechnet
-- `complete_name` bei Kategorien enthält Kategorie-Nummer für bessere Lesbarkeit
-- `webshop_link` nutzt das Odoo **URL-Widget** für klickbare Links
+Beispiel für ein Upgrade über die Kommandozeile::
+
+    ./odoo-bin -d DEINE_DATENBANK -u product_custom_fields --stop-after-init
+
+Danach Odoo normal starten. Bei einer systemd-Installation beispielsweise::
+
+    sudo systemctl restart odoo
+
+Hinweise
+========
+
+- Das Modul ist primär für Vermietungs-Baumaschinen konzipiert.
+- Website-Attribute sind nicht variantenerzeugend.
+- Der Hauptlieferant wird aus dem ersten Lieferanten in ``seller_ids`` ermittelt.
+- Die Kategorie-Nummer verbessert die Lesbarkeit vollständiger Kategorienamen.
+- ``webshop_link`` verwendet das Odoo-URL-Widget.
+- Die Pflichtprüfung wurde auf ``product.product`` implementiert, da das Modul
+  und die vorhandene Formularansicht auf Variantenebene arbeiten.
+- Bei Produkten mit mehreren Varianten kann es sinnvoll sein, eine zusätzliche
+  Prüfung auf ``product.template`` umzusetzen, wenn Produktnamen oder
+  Verkaufspreise bereits bei der Template-Anlage verbindlich sein sollen.

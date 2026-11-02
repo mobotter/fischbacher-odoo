@@ -1,0 +1,43 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* fb_partner_recipient
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Last-Translator: Moritz Kern\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+"Language: de\n"
+
+#. module: fb_partner_recipient
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_account_bank_statement_line__partner_recipient_id
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_account_move__partner_recipient_id
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_sale_order__partner_recipient_id
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_stock_picking__partner_recipient_id
+#: model:ir.model.fields.selection,name:fb_partner_recipient.selection__res_partner__type__recipient
+msgid "Service Recipient"
+msgstr "Leistungsempfänger"
+
+#. module: fb_partner_recipient
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_sale_order__fb_has_invoice_address
+msgid "Has Invoice Addresses"
+msgstr "Hat Rechnungsadressen"
+
+#. module: fb_partner_recipient
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_sale_order__fb_has_delivery_address
+msgid "Has Delivery Addresses"
+msgstr "Hat Lieferadressen"
+
+#. module: fb_partner_recipient
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_sale_order__fb_has_recipient_address
+msgid "Has Service Recipients"
+msgstr "Hat Leistungsempfänger"
+
+#. module: fb_partner_recipient
+#: model:ir.model.fields,field_description:fb_partner_recipient.field_sale_order__fb_commercial_partner_id
+msgid "Commercial Entity"
+msgstr "Kommerzielle Einheit"

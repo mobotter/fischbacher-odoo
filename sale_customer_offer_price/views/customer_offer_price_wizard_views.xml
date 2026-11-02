@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_customer_offer_price_wizard_form" model="ir.ui.view">
+        <field name="name">customer.offer.price.wizard.form</field>
+        <field name="model">customer.offer.price.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Günstigerer Kundenpreis">
+                <group>
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="product_uom_id" readonly="1" groups="uom.group_uom"/>
+                        <field name="customer_id" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <group string="Preisvergleich">
+                        <field name="current_price" readonly="1"/>
+                        <field name="cheaper_price" readonly="1"/>
+                        <field name="price_difference" readonly="1"/>
+                    </group>
+                </group>
+
+                <group string="Quellangebot">
+                    <group>
+                        <field name="source_order_id" readonly="1"/>
+                        <field name="source_state" readonly="1"/>
+                        <field name="source_order_date" readonly="1"/>
+                        <field name="source_create_date" readonly="1"/>
+                        <field name="source_validity_date" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="source_quantity" readonly="1"/>
+                        <field name="source_discount" readonly="1"/>
+                        <field name="source_price_subtotal" readonly="1"/>
+                    </group>
+                </group>
+
+                <div class="alert alert-info" role="alert">
+                    Der günstigere Preis wird als Festpreis übernommen.
+                    Auf der Zielposition wird der Rabatt auf 0,00 % gesetzt;
+                    der Festpreis ist anschließend nicht rabattierbar.
+                </div>
+
+                <footer>
+                    <button
+                        name="action_accept"
+                        string="Festpreis übernehmen"
+                        type="object"
+                        class="btn-primary"
+                        data-hotkey="q"
+                    />
+                    <button
+                        string="Abbrechen"
+                        special="cancel"
+                        class="btn-secondary"
+                        data-hotkey="x"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

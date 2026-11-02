@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Angebotsformular:
+        - technische Festpreisfelder in Liste und Positionsformular laden
+        - force_save="1": readonly-Felder aus Onchanges beim Speichern übertragen
+        - nur übernommene Wizard-Preise gegen zusätzliche Rabatte sperren
+        - manuell geänderte Einzelpreise bleiben rabattierbar
+    -->
+    <record id="view_order_form_inherit_customer_offer_price" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.customer.offer.price</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Positionsliste (Desktop) -->
+            <xpath expr="//field[@name='order_line']/list/field[@name='discount']"
+                   position="attributes">
+                <attribute name="readonly">fixed_price and price_source == 'wizard'</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list" position="inside">
+                <field name="fixed_price" column_invisible="True" force_save="1"/>
+                <field name="fixed_price_value" column_invisible="True" force_save="1"/>
+                <field name="price_source" column_invisible="True" force_save="1"/>
+                <field name="price_source_line_id" column_invisible="True" force_save="1"/>
+                <field name="has_cheaper_customer_offer" column_invisible="True"/>
+
+                <button name="action_save_and_open_wizard"
+                        type="object"
+                        string="Preis prüfen"
+                        icon="fa-tags"
+                        class="btn btn-secondary btn-sm"
+                        title="Günstigeren Preis aus einem laufenden Kundenangebot prüfen"
+                        invisible="not has_cheaper_customer_offer"/>
+            </xpath>
+
+            <!-- Positionsformular (Mobil / Formularmodus) -->
+            <xpath expr="//field[@name='order_line']/form//field[@name='discount']"
+                   position="attributes">
+                <attribute name="readonly">fixed_price and price_source == 'wizard'</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/form//field[@name='technical_price_unit']"
+                   position="after">
+                <field name="fixed_price" invisible="1" force_save="1"/>
+                <field name="fixed_price_value" invisible="1" force_save="1"/>
+                <field name="price_source" invisible="1" force_save="1"/>
+                <field name="price_source_line_id" invisible="1" force_save="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

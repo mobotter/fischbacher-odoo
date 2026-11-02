@@ -11,7 +11,10 @@
     'author': 'Moritz Kern',
     'website': 'https://fischbacher.odoo.com',
     'category': 'Sales/Subscriptions',
-    'depends': ['sale_subscription'],
+    'depends': [
+        'sale_subscription',
+        'ol_sale_subscription_extensions',
+    ],
     'data': [
         'security/ir.model.access.csv',
         'data/mk_preistabelle_data.xml',

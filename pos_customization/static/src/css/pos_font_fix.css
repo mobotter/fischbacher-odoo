@@ -1,0 +1,9 @@
+/* POS Bon: Fonts auf lokale Standardschrift zwingen */
+.pos-receipt,
+.pos-receipt *,
+.pos-receipt-container,
+.pos-receipt-container * {
+    font-family: Arial, "DejaVu Sans", sans-serif !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+}

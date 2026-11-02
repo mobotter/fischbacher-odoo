@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Einstiegspunkt der Report-Action.
+        Der Dokumentinhalt wird in einem separaten Template mit t-lang gerendert,
+        damit QWeb-Texte aus i18n/de.po zuverlässig übersetzt werden.
+    -->
+    <template id="rental_equipment_issue_slip_report">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
+                <t t-call="ol_delivery_slip_changes.rental_equipment_issue_slip_document"
+                   t-lang="'de_DE'"/>
+            </t>
+        </t>
+    </template>
+
+    <!--
+        Übersetzbares Dokumenttemplate.
+        Alle festen Textknoten dieses Templates werden im durch t-lang gesetzten
+        Sprachkontext verarbeitet.
+    -->
+    <template id="rental_equipment_issue_slip_document">
+        <t t-set="o" t-value="doc.with_context(lang='de_DE')"/>
+        <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/>
+
+        <t t-set="sale_order" t-value="o.sale_id or o.move_ids.mapped('sale_line_id.order_id')[:1]"/>
+        <t t-set="invoice_partner" t-value="sale_order and sale_order.partner_invoice_id or False"/>
+        <t t-set="shipping_partner" t-value="o.partner_id"/>
+
+        <!--
+            Lieferadresse nur nutzen, wenn mindestens Straße oder Straße 2 gepflegt ist.
+            Andernfalls wird die Rechnungsadresse verwendet.
+        -->
+        <t t-set="delivery_address_partner"
+           t-value="shipping_partner
+                    if shipping_partner and (shipping_partner.street or shipping_partner.street2)
+                    else (invoice_partner or shipping_partner)"/>
+
+        <t t-set="customer_partner"
+           t-value="(invoice_partner.parent_id or invoice_partner)
+                    if invoice_partner
+                    else (shipping_partner.parent_id or shipping_partner)"/>
+
+        <!--
+            Leistungsempfänger (Modul fb_partner_recipient, optional):
+            1. partner_recipient_id am Picking
+            2. partner_recipient_id am Verkaufsauftrag
+        -->
+        <t t-set="recipient_partner"
+           t-value="('partner_recipient_id' in o._fields and o.partner_recipient_id)
+                    or (sale_order and 'partner_recipient_id' in sale_order._fields and sale_order.partner_recipient_id)"/>
+
+        <!--
+            Leistungsempfänger nur drucken, wenn er vom Kunden, von der
+            Rechnungsadresse und von der links gedruckten Anschrift abweicht.
+        -->
+        <t t-set="show_recipient"
+           t-value="bool(
+               recipient_partner
+               and recipient_partner != invoice_partner
+               and recipient_partner != customer_partner
+               and recipient_partner != delivery_address_partner
+               and not (sale_order and recipient_partner == sale_order.partner_id)
+           )"/>
+
+        <main>
+            <div class="page">
+                <style>
+                    .page {
+                        position: relative;
+                        border: 1px solid #ffffff;
+                    }
+
+                    .page table,
+                    .page tr,
+                    .page td,
+                    .page th {
+                        border: 0 !important;
+                        border-width: 0 !important;
+                        border-style: none !important;
+                        border-color: transparent !important;
+                        border-collapse: collapse !important;
+                        box-shadow: none !important;
+                        outline: none !important;
+                        background-image: none !important;
+                    }
+
+                    .page table {
+                        border-spacing: 0 !important;
+                        background: transparent !important;
+                    }
+
+                    .page pre {
+                        border: 0 !important;
+                        border-style: none !important;
+                        background: transparent !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        white-space: pre-wrap !important;
+                    }
+
+                    .page .layout-table,
+                    .page .layout-table td,
+                    .page .layout-table th {
+                        border: 0 !important;
+                    }
+
+                    .page .layout-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    .page .head-bottom th {
+                        border-bottom: 1px solid #cccccc !important;
+                    }
+
+                    .page .line-bottom td,
+                    .page .line-bottom th {
+                        border-bottom: 1px solid #e0e0e0 !important;
+                    }
+
+                    .page .fb_delivery_address_window {
+                        border: 1px solid #ffffff;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 85mm;
+                        height: 40mm;
+                        overflow: hidden;
+                        font-size: 10pt;
+                        line-height: 4.5mm;
+                    }
+
+                    .page .fb_delivery_return_address {
+                        height: 5mm;
+                        margin-bottom: 1.5mm;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        font-size: 8pt;
+                        line-height: 3.5mm;
+                        border-bottom: 2px solid #bfbfbf !important;
+                    }
+
+                    .page .fb_delivery_recipient_address {
+                        padding-top: 1.5mm;
+                        white-space: normal;
+                        word-wrap: break-word;
+                        word-break: break-word;
+                    }
+
+                    .page .fb_delivery_information_block {
+                        border: 1px solid #ffffff;
+                        width: 85mm;
+                        min-height: 40mm;
+                        margin: 0 0 10mm auto;
+                        padding: 0;
+                        font-size: 13px;
+                        line-height: 1.35;
+                    }
+
+                    .page .fb_delivery_information_block table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    .page .fb_delivery_information_block td {
+                        vertical-align: top;
+                        padding: 0 0 1.2mm 0 !important;
+                    }
+
+                    .page .fb_delivery_information_block .label {
+                        width: 46%;
+                        padding-right: 3mm !important;
+                        white-space: nowrap;
+                    }
+
+                    .page .title-blue {
+                        color: #1f6fd2;
+                        font-weight: 500;
+                        font-size: 26px;
+                        line-height: 1.2;
+                        margin: 0 0 5mm 0;
+                    }
+
+                    /*
+                        Seite 1:
+                        15 mm Abstand zwischen Titel und erster Tabellenzeile.
+                    */
+                    .page .rental-issue-title {
+                        margin-bottom: 15mm !important;
+                    }
+
+                    /*
+                        Seite 2:
+                        Eigener Seitenumbruch. Danach 25 mm Abstand im
+                        Content-Bereich nach Header und Logo.
+                    */
+                    .page .rental-following-page {
+                        display: block;
+                        page-break-before: always;
+                        break-before: page;
+                    }
+
+                    .page .rental-following-page-inner {
+                        padding-top: 25mm;
+                    }
+
+                    .page .center {
+                        text-align: center;
+                    }
+
+                    .page .left {
+                        text-align: left;
+                    }
+
+                    .page .text-end {
+                        text-align: right;
+                    }
+
+                    .page .text-center {
+                        text-align: center;
+                    }
+
+                    .page .cell-sm {
+                        font-size: 13px;
+                    }
+
+                    .page .line-cell {
+                        font-size: 14px;
+                        padding-top: 6px !important;
+                        padding-bottom: 6px !important;
+                        vertical-align: top;
+                    }
+
+                    .page .line-pos {
+                        width: 5%;
+                    }
+
+                    .page .line-product {
+                        width: 42%;
+                    }
+
+                    .page .line-qty-output {
+                        width: 18%;
+                    }
+
+                    .page .line-other {
+                        width: 35%;
+                    }
+
+                    .page .spacer-row td {
+                        height: 20px !important;
+                        padding: 0 !important;
+                        border: none !important;
+                    }
+
+                    .page .project-cell {
+                        white-space: normal;
+                        word-wrap: break-word;
+                        word-break: break-word;
+                        vertical-align: top;
+                    }
+
+                    .page .signature-wrap {
+                        margin-top: 50px;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+
+                    .page .signature-table {
+                        width: 100%;
+                        max-width: 600px;
+                        margin: auto;
+                        border-collapse: collapse;
+                    }
+
+                    .page .signature-date-col,
+                    .page .signature-sign-col {
+                        width: 35%;
+                        padding-bottom: 40px !important;
+                        font-size: 14px;
+                    }
+
+                    .page .signature-spacer-col {
+                        width: 30%;
+                    }
+
+                    .page .signature-line {
+                        border-bottom: 2px solid black !important;
+                        height: 35px;
+                    }
+
+                    /*
+                        Abschlussbereich wird auf einer eigenen Seite ausgegeben.
+                        Header und Logo kommen weiterhin aus external_layout_for_invoice.
+                    */
+                    .page .rental-confirmation-page {
+                        display: block;
+                        page-break-before: always;
+                        break-before: page;
+                    }
+
+                    /*
+                        Bei 15 mm oberem Paperformat-Rand ergibt ein 30-mm-Padding
+                        die gewünschte Position von rund 45 mm ab Papieroberkante.
+                    */
+                    .page .rental-confirmation-inner {
+                        padding-top: 30mm;
+                        page-break-inside: avoid;
+                        break-inside: avoid;
+                    }
+
+                    .page .rental-confirmation-inner .signature-wrap {
+                        margin-top: 0 !important;
+                    }
+
+                    .page .rental-picked-by {
+                        margin: 0 0 28px 0;
+                        font-size: 14px;
+                    }
+
+                    .page .rental-inline-line {
+                        display: inline-block;
+                        width: 95mm;
+                        height: 5mm;
+                        margin-left: 4mm;
+                        vertical-align: bottom;
+                        border-bottom: 2px solid black !important;
+                    }
+
+                    .page .rental-terms-note {
+                        margin: 0 0 16px 0;
+                        font-size: 12px;
+                        line-height: 1.35;
+                        max-width: 175mm;
+                    }
+
+                    .page .rental-confirmation-table {
+                        max-width: none;
+                        margin: 0;
+                    }
+
+                    .page .rental-confirmation-table td {
+                        vertical-align: top;
+                    }
+
+                    .page .continued-header {
+                        width: 100%;
+                        margin: 0 0 6mm 0;
+                    }
+
+                    .page .continued-header td {
+                        text-align: right;
+                        padding: 0 !important;
+                        font-size: 10.5px;
+                        color: #444444;
+                    }
+
+                    .page .continued-sep {
+                        padding: 0 6px;
+                    }
+
+                    .footer,
+                    .footer p,
+                    .footer span,
+                    .footer td,
+                    .footer div {
+                        font-size: 6px !important;
+                    }
+                </style>
+
+                <!-- Linker Anschriftenblock -->
+                <div class="fb_delivery_address_window">
+                    <div class="fb_delivery_return_address">
+                        <t t-if="o.company_id.name">
+                            <span t-field="o.company_id.name"/>
+                        </t>
+
+                        <t t-if="o.company_id.street">
+                            <span> · </span>
+                            <span t-field="o.company_id.street"/>
+                        </t>
+
+                        <t t-if="o.company_id.zip or o.company_id.city">
+                            <span> · </span>
+                            <span t-field="o.company_id.zip"/>
+                            <t t-if="o.company_id.zip and o.company_id.city">
+                                <span> </span>
+                            </t>
+                            <span t-field="o.company_id.city"/>
+                        </t>
+                    </div>
+
+                    <div class="fb_delivery_recipient_address">
+                        <t t-if="delivery_address_partner">
+                            <strong t-esc="delivery_address_partner.display_name or ''"/>
+                            <br/>
+
+                            <t t-if="delivery_address_partner.street">
+                                <t t-esc="delivery_address_partner.street"/>
+                                <br/>
+                            </t>
+
+                            <t t-if="delivery_address_partner.street2">
+                                <t t-esc="delivery_address_partner.street2"/>
+                                <br/>
+                            </t>
+
+                            <t t-if="delivery_address_partner.zip or delivery_address_partner.city">
+                                <t t-esc="delivery_address_partner.zip"/>
+                                <t t-if="delivery_address_partner.zip and delivery_address_partner.city">
+                                    <span> </span>
+                                </t>
+                                <t t-esc="delivery_address_partner.city"/>
+                                <br/>
+                            </t>
+
+                            <t t-if="delivery_address_partner.country_id">
+                                <t t-esc="delivery_address_partner.country_id.name"/>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Rechter Informationsblock -->
+                <div class="fb_delivery_information_block">
+                    <table>
+                        <tbody>
+                            <t t-if="sale_order and sale_order.name">
+                                <tr>
+                                    <td class="label">Order Number:</td>
+                                    <td t-esc="sale_order.name"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.date_order">
+                                <tr>
+                                    <td class="label">Order Date:</td>
+                                    <td>
+                                        <span t-field="sale_order.date_order"
+                                              t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="customer_partner">
+                                <tr>
+                                    <td class="label">Client Number:</td>
+                                    <td t-esc="customer_partner.ref or customer_partner.id"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.client_order_name">
+                                <tr>
+                                    <td class="label">Ordered by:</td>
+                                    <td t-esc="sale_order.client_order_name"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.client_order_number">
+                                <tr>
+                                    <td class="label">Your Order Number:</td>
+                                    <td t-esc="sale_order.client_order_number"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and 'lease_agreement_no' in sale_order._fields and sale_order.lease_agreement_no">
+                                <tr>
+                                    <td class="label">Lease Agreement No.:</td>
+                                    <td t-esc="sale_order.lease_agreement_no"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.carrier_id">
+                                <tr>
+                                    <td class="label">Shipping Method:</td>
+                                    <td t-esc="sale_order.carrier_id.name"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.incoterm">
+                                <tr>
+                                    <td class="label">Delivery Terms:</td>
+                                    <td t-esc="sale_order.incoterm.name"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.user_id and sale_order.user_id.name">
+                                <tr>
+                                    <td class="label">Salesperson:</td>
+                                    <td t-esc="sale_order.user_id.name"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.user_id and sale_order.user_id.phone">
+                                <tr>
+                                    <td class="label">Phone:</td>
+                                    <td t-esc="sale_order.user_id.phone"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.user_id and sale_order.user_id.login">
+                                <tr>
+                                    <td class="label">Email:</td>
+                                    <td t-esc="sale_order.user_id.login"/>
+                                </tr>
+                            </t>
+
+                            <t t-if="sale_order and sale_order.client_order_ref">
+                                <tr>
+                                    <td class="label" style="vertical-align: top;">Project:</td>
+                                    <td class="project-cell"
+                                        t-esc="sale_order.client_order_ref"/>
+                                </tr>
+                            </t>
+
+                            <!-- Leistungsempfänger -->
+                            <t t-if="show_recipient">
+                                <tr>
+                                    <td class="label" style="vertical-align: top;">Service Recipient:</td>
+                                    <td class="project-cell">
+                                        <t t-if="recipient_partner.name">
+                                            <t t-esc="recipient_partner.name"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="'department_name' in recipient_partner._fields and recipient_partner.department_name">
+                                            <t t-esc="recipient_partner.department_name"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="recipient_partner.street">
+                                            <t t-esc="recipient_partner.street"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="recipient_partner.street2">
+                                            <t t-esc="recipient_partner.street2"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="recipient_partner.zip or recipient_partner.city">
+                                            <t t-esc="recipient_partner.zip"/>
+                                            <t t-if="recipient_partner.zip and recipient_partner.city">
+                                                <span> </span>
+                                            </t>
+                                            <t t-esc="recipient_partner.city"/>
+                                            <br/>
+                                        </t>
+
+                                        <t t-if="recipient_partner.country_id">
+                                            <t t-esc="recipient_partner.country_id.name"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="title-blue rental-issue-title">Rental Equipment Issue Slip</h2>
+
+                <!-- Alle nicht stornierten Moves, auch ohne Reservierung/Bestand -->
+                <t t-set="lines"
+                   t-value="o.move_ids.filtered(lambda x: x.state != 'cancel')"/>
+                <t t-set="first_page_lines" t-value="lines[:5]"/>
+                <t t-set="following_page_lines" t-value="lines[5:]"/>
+
+                <!-- Seite 1 -->
+                <table class="layout-table table-borderless"
+                       name="rental_issue_table_page_1"
+                       style="font-size:14px; width:100%; border-collapse:collapse; border:none !important;">
+                    <thead>
+                        <tr style="margin-bottom:10px;">
+                            <td t-if="o.origin"
+                                colspan="1"
+                                class="center"
+                                style="padding-bottom:15px !important;">
+                                <strong t-translate="yes">Order</strong>
+                                <br/>
+                                <span t-field="o.origin"/>
+                            </td>
+
+                            <td t-if="o.state"
+                                colspan="1"
+                                class="center"
+                                style="padding-bottom:15px !important;">
+                                <strong t-translate="yes">Issue Date</strong>
+                                <br/>
+                                <span t-if="o.state == 'done'"
+                                      t-field="o.date_done"
+                                      t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                <span t-else=""
+                                      t-field="o.scheduled_date"
+                                      t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                            </td>
+
+                            <td t-if="o.name"
+                                colspan="2"
+                                class="center"
+                                style="padding-bottom:15px !important;">
+                                <strong t-translate="yes">Issue Slip No.</strong>
+                                <br/>
+                                <span t-field="o.name"/>
+                            </td>
+                        </tr>
+
+                        <tr class="spacer-row">
+                            <td colspan="4"/>
+                        </tr>
+
+                        <tr class="head-bottom">
+                            <th class="line-pos left cell-sm">POS</th>
+                            <th class="line-product left cell-sm">Product</th>
+                            <th class="line-qty-output text-center cell-sm">Output Quantity</th>
+                            <th class="line-other left cell-sm">Other</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <t t-set="pos" t-value="0"/>
+
+                        <tr t-foreach="first_page_lines" t-as="move" class="line-bottom">
+                            <t t-set="pos" t-value="pos + 1"/>
+
+                            <td class="line-cell">
+                                <t t-esc="pos"/>
+                            </td>
+
+                            <td class="line-cell">
+                                <span t-field="move.product_id.display_name"/>
+
+                                <t t-if="move.description_picking and move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
+                                    <br/>
+                                    <span t-field="move.description_picking"
+                                          style="font-size:12px; color:#555555; white-space:pre-wrap;"/>
+                                </t>
+
+                                <t t-elif="move.sale_line_id and move.sale_line_id.name and move.sale_line_id.name != move.product_id.name and move.sale_line_id.name != move.product_id.display_name">
+                                    <br/>
+                                    <span t-out="move.sale_line_id.name"
+                                          style="font-size:12px; color:#555555; white-space:pre-wrap;"/>
+                                </t>
+
+                                <t t-elif="move.product_id.description">
+                                    <br/>
+                                    <span t-field="move.product_id.description"
+                                          style="font-size:12px; color:#555555; white-space:pre-wrap;"/>
+                                </t>
+
+                                <t t-if="o.is_dropship">
+                                    <span class="text-muted"> (Drop shipping)</span>
+                                </t>
+                            </td>
+
+                            <td class="line-cell text-center">
+                                <span t-field="move.product_uom_qty"/>
+                                <span t-field="move.product_uom"/>
+                            </td>
+
+                            <td class="line-cell"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Seite 2, nur falls weitere Positionen vorhanden sind -->
+                <t t-if="following_page_lines">
+                    <div class="rental-following-page">
+                        <div class="rental-following-page-inner">
+                            <table class="layout-table table-borderless"
+                                   name="rental_issue_table_page_2"
+                                   style="font-size:14px; width:100%; border-collapse:collapse; border:none !important;">
+                                <thead>
+                                    <tr style="margin-bottom:10px;">
+                                        <td t-if="o.origin"
+                                            colspan="1"
+                                            class="center"
+                                            style="padding-bottom:15px !important;">
+                                            <strong t-translate="yes">Order</strong>
+                                            <br/>
+                                            <span t-field="o.origin"/>
+                                        </td>
+
+                                        <td t-if="o.state"
+                                            colspan="1"
+                                            class="center"
+                                            style="padding-bottom:15px !important;">
+                                            <strong t-translate="yes">Issue Date</strong>
+                                            <br/>
+                                            <span t-if="o.state == 'done'"
+                                                  t-field="o.date_done"
+                                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                            <span t-else=""
+                                                  t-field="o.scheduled_date"
+                                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        </td>
+
+                                        <td t-if="o.name"
+                                            colspan="2"
+                                            class="center"
+                                            style="padding-bottom:15px !important;">
+                                            <strong t-translate="yes">Issue Slip No.</strong>
+                                            <br/>
+                                            <span t-field="o.name"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="spacer-row">
+                                        <td colspan="4"/>
+                                    </tr>
+
+                                    <tr class="head-bottom">
+                                        <th class="line-pos left cell-sm">POS</th>
+                                        <th class="line-product left cell-sm">Product</th>
+                                        <th class="line-qty-output text-center cell-sm">Output Quantity</th>
+                                        <th class="line-other left cell-sm">Other</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t t-set="pos" t-value="5"/>
+
+                                    <tr t-foreach="following_page_lines" t-as="move" class="line-bottom">
+                                        <t t-set="pos" t-value="pos + 1"/>
+
+                                        <td class="line-cell">
+                                            <t t-esc="pos"/>
+                                        </td>
+
+                                        <td class="line-cell">
+                                            <span t-field="move.product_id.display_name"/>
+
+                                            <t t-if="move.description_picking and move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
+                                                <br/>
+                                                <span t-field="move.description_picking"
+                                                      style="font-size:12px; color:#555555; white-space:pre-wrap;"/>
+                                            </t>
+
+                                            <t t-elif="move.sale_line_id and move.sale_line_id.name and move.sale_line_id.name != move.product_id.name and move.sale_line_id.name != move.product_id.display_name">
+                                                <br/>
+                                                <span t-out="move.sale_line_id.name"
+                                                      style="font-size:12px; color:#555555; white-space:pre-wrap;"/>
+                                            </t>
+
+                                            <t t-elif="move.product_id.description">
+                                                <br/>
+                                                <span t-field="move.product_id.description"
+                                                      style="font-size:12px; color:#555555; white-space:pre-wrap;"/>
+                                            </t>
+
+                                            <t t-if="o.is_dropship">
+                                                <span class="text-muted"> (Drop shipping)</span>
+                                            </t>
+                                        </td>
+
+                                        <td class="line-cell text-center">
+                                            <span t-field="move.product_uom_qty"/>
+                                            <span t-field="move.product_uom"/>
+                                        </td>
+
+                                        <td class="line-cell"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Abschlussbereich auf eigener Seite -->
+                <div class="rental-confirmation-page">
+                    <div class="rental-confirmation-inner">
+                        <div class="signature-wrap">
+                            <p class="rental-picked-by">
+                                <span t-translate="yes">Order picked by:</span>
+                                <span class="rental-inline-line"></span>
+                            </p>
+
+                            <p class="rental-terms-note">
+                                <span t-translate="yes">This signature confirms that this contract is concluded ONLY subject to the Terms of Sale and Delivery.</span>
+                                <span t-translate="yes">Our Terms of Sale and Delivery and our General Terms and Conditions of Rental apply.</span>
+                            </p>
+
+                            <table class="signature-table rental-confirmation-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="signature-date-col">
+                                            <div>Date of issue:</div>
+                                            <div class="signature-line"></div>
+                                        </td>
+
+                                        <td class="signature-spacer-col"></td>
+
+                                        <td class="signature-sign-col">
+                                            <div>Acknowledgment of receipt:</div>
+                                            <div class="signature-line"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </template>
+</odoo>

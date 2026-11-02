@@ -20,9 +20,7 @@
         'views/sale_order_views.xml',
     ],
     'assets': {
-        'web.assets_backend': [
-            'sale_partner_ref_display/static/src/js/partner_ref_widget.js',
-        ],
+        'web.assets_backend': [],
     },
     'installable': True,
     'auto_install': False,

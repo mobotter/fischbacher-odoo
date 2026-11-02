@@ -13,26 +13,42 @@ class SaleOrder(models.Model):
     state = fields.Selection(
         selection_add=[
             ('accepted', "Order Accepted by Client"),
-            ('sale',)
         ],
-        ondelete={'accepted': 'set null'}
+        ondelete={'accepted': 'set null'},
+        tracking=True,
     )
 
     subscription_state = fields.Selection(
         selection_add=[('accepted', 'Accepted')],
-        ondelete={'accepted': 'set null'}
+        ondelete={'accepted': 'set null'},
+        tracking=True,
     )
 
     quotation_line_ids = fields.One2many(
         'sale.quotation.line',
         'order_id',
-        string='Quotation Lines'
+        string='Quotation Lines',
     )
 
     quotation_template_id = fields.Many2one(
         'sale.order.template',
         string='Quotation Lines Template',
         help='Template used to fill the Quotation Lines tab.',
+        tracking=True,
+    )
+
+    billing_period_start = fields.Date(
+        string="Billing Period Start",
+        compute="_compute_billing_period",
+        store=True,
+        tracking=True,
+    )
+    
+    billing_period_end = fields.Date(
+        string="Billing Period End",
+        compute="_compute_billing_period",
+        store=True,
+        tracking=True,
     )
 
     @api.onchange('quotation_template_id')

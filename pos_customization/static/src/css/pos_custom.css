@@ -1,31 +1,71 @@
 .product-list {
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr))
-}
-/* Erlaubt dem Produktnamen, über mehrere Zeilen umzubrechen */
-.pos .product-list .product .product-name {
-    white-space: normal !important;        /* Zeilenumbrüche erlauben */
-    text-overflow: clip !important;        /* Keine '...' mehr anzeigen */
-    overflow: visible !important;          /* Text darf komplett sichtbar sein */
-    
-    /* Falls Odoo 19 webkit-line-clamp nutzt, heben wir das hier auf: */
-    display: block !important;
-    -webkit-line-clamp: unset !important;
-    
-    /* Ggf. die Zeilenhöhe etwas anpassen, damit mehrzeiliger Text gut lesbar ist */
-    line-height: 1.2 !important;
-    height: auto !important;               /* Automatische Höhe für den Text */
-    max-height: none !important;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 }
 
-/* Optional: Gibt der Box, in der der Name steht, mehr Platz,
-   damit die Karte bei langen Namen nach unten mitwächst */
+/* Erlaubt mehrzeilige Produktnamen auf POS-Produktkarten. */
+.pos .product-list .product .product-name {
+    display: block !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    -webkit-line-clamp: unset !important;
+}
+
+/* Reserviert ausreichend Raum für lange Produktnamen. */
 .pos .product-list .product .product-content {
     height: auto !important;
-    min-height: 40% !important; /* Mindestplatz für den Text unten */
+    min-height: 40% !important;
 }
 
-/* Lässt die gesamte Produktkarte in der Höhe flexibel mitwachsen */
+/* Produktkarten wachsen bei langen Namen in der Höhe mit. */
 .pos .product-list .product {
     height: auto !important;
-    min-height: 180px !important; 
+    min-height: 180px !important;
+}
+
+/* Kennzeichnung am Ende des Bons: MIETE oder VERKAUF. */
+.pos-receipt-transaction-type {
+    margin: 12px 0 5px;
+    padding: 8px 0 4px;
+    border-top: 1px dashed #000;
+    border-bottom: 1px dashed #000;
+    color: #000;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1.3;
+    text-align: center;
+}
+
+/* Optionaler selbst definierter Bonfuß. */
+.pos-receipt-custom-footer {
+    color: #000;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.pos-receipt-custom-footer-text {
+    margin-top: 5px;
+}
+
+/* Nur auf dem gedruckten bzw. angezeigten Kassenbon. */
+.pos-receipt .pos-receipt-default-code {
+    margin-top: 3px;
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+/* Nur auf dem gedruckten bzw. angezeigten Kassenbon. */
+.pos-receipt .pos-receipt-rental-product {
+    margin-top: 2px;
+    color: #000;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.35;
 }

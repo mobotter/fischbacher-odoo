@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Autor: Moritz Kern
+        Firma: Fischbacher GmbH + Co. KG
+    -->
+
+    <!-- Reparaturformular -->
+    <record id="repair_order_form_contract_inherit" model="ir.ui.view">
+        <field name="name">repair.order.form.contract.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="lease_agreement_no"/>
+
+                <field
+                    name="mk_rental_contract_id"
+                    options="{'no_create': True, 'no_create_edit': True}"
+                />
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Reparaturliste -->
+    <record id="repair_order_list_contract_inherit" model="ir.ui.view">
+        <field name="name">repair.order.list.contract.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='name']" position="after">
+                <field
+                    name="lease_agreement_no"
+                    optional="hide"
+                />
+
+                <field
+                    name="mk_rental_contract_id"
+                    optional="show"
+                />
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Suche und Gruppierung -->
+    <record id="repair_order_search_contract_inherit" model="ir.ui.view">
+        <field name="name">repair.order.search.contract.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form_filter"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//search" position="inside">
+                <field name="lease_agreement_no"/>
+                <field name="mk_rental_contract_id"/>
+
+                <filter
+                    name="group_by_mk_rental_contract"
+                    string="Mietvertrag"
+                    context="{'group_by': 'mk_rental_contract_id'}"
+                />
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

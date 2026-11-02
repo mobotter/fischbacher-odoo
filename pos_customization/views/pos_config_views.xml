@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="pos_config_view_form_open_invoice_settlement" model="ir.ui.view">
+        <field name="name">pos.config.form.open.invoice.settlement</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='pos_payment_method']" position="after">
+                <setting id="allow_open_invoice_settlement"
+                         string="Offene Rechnungen im POS kassieren"
+                         help="Erlaubt das Suchen und Kassieren gebuchter Kundenrechnungen mit offenem Restbetrag.">
+                    <field name="allow_open_invoice_settlement"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

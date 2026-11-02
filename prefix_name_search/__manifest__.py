@@ -18,6 +18,7 @@ arbeiten können. Es betrifft insbesondere Contacts und Produktansichten.
     ],
     "data": [
         "views/search_views.xml",
+        "views/sale_order_views.xml",
     ],
     "installable": True,
     "application": False,

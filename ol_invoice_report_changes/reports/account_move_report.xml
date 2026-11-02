@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_with_payments_inherit"
+              inherit_id="account.report_invoice_with_payments"
+              priority="20">
+        <xpath expr="//t[@t-call='account.report_invoice']" position="replace">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
+                    <t t-set="sale_orders" t-value="doc.invoice_line_ids.mapped('sale_line_ids.order_id')"/>
+                    <t t-set="sale_order" t-value="sale_orders[:1]"/>
+                    <t t-set="invoice_partner" t-value="doc.partner_id or doc.env['res.partner'].browse()"/>
+                    <!-- Service recipient (module fb_partner_recipient, optional):
+                         invoice field first, fallback to the sale order -->
+                    <t t-set="recipient_partner"
+                       t-value="('partner_recipient_id' in doc._fields and doc.partner_recipient_id)
+                                or (sale_order and 'partner_recipient_id' in sale_order._fields and sale_order.partner_recipient_id)"/>
+                    <t t-set="report_salesperson" t-value="sale_order.user_id or doc.invoice_user_id or invoice_partner.user_id"/>
+
+                    <t t-set="is_rental_invoice"
+                       t-value="bool(sale_order and (
+                           ('is_subscription' in sale_order._fields and sale_order.is_subscription)
+                           or ('plan_id' in sale_order._fields and sale_order.plan_id)
+                           or ('has_plan' in sale_order._fields and sale_order.has_plan)
+                       ))"/>
+
+                    <!-- Positionen entsprechend der gespeicherten Positionsreihenfolge ausgeben. -->
+                    <t t-set="lines_to_report"
+                       t-value="doc.invoice_line_ids.sorted(key=lambda line: (line.sequence, line.id))"/>
+                    <t t-set="display_discount" t-value="any(line.discount for line in lines_to_report)"/>
+
+                    <!-- TODO: Die Datenbank-ID 7 später durch eine XML-ID ersetzen. -->
+                    <t t-set="dropship_route" t-value="env['stock.route'].browse(7)"/>
+                    <t t-set="has_dropship_line"
+                       t-value="any(
+                           line.sale_line_ids
+                           and 'route_ids' in line.sale_line_ids[0]._fields
+                           and line.sale_line_ids[0].route_ids
+                           and dropship_route in line.sale_line_ids[0].route_ids
+                           for line in lines_to_report
+                       )"/>
+
+                    <style>
+                        .page {
+                            position: relative;
+                            border: 1px solid #fff;
+                        }
+
+                        .page table,
+                        .page tr,
+                        .page td,
+                        .page th {
+                            border: 0 !important;
+                            border-width: 0 !important;
+                            border-style: none !important;
+                            border-color: transparent !important;
+                            border-collapse: collapse !important;
+                            box-shadow: none !important;
+                            outline: none !important;
+                            background-image: none !important;
+                        }
+
+                        .page table {
+                            border-spacing: 0 !important;
+                            background: transparent !important;
+                        }
+
+                        .page pre {
+                            border: 0 !important;
+                            border-style: none !important;
+                            background: transparent !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            white-space: pre-wrap !important;
+                        }
+
+                        .page .head-bottom th {
+                            border-bottom: 1px solid #cccccc !important;
+                        }
+
+                        .page .line-bottom td,
+                        .page .line-bottom th {
+                            border-bottom: 1px solid #e0e0e0 !important;
+                        }
+
+                        .page table.table,
+                        .page .table,
+                        .page .table td,
+                        .page .table th,
+                        .page .table tr {
+                            border: 0 !important;
+                            border-top: 0 !important;
+                            border-right: 0 !important;
+                            border-left: 0 !important;
+                            box-shadow: none !important;
+                            outline: none !important;
+                        }
+                        /*
+                         * DIN 5008 Form B – Fensteranschrift.
+                         * Die Maße gelten relativ zum .page-Container.
+                         * Bei nicht-null Papierformat-Rändern müssen diese
+                         * im verwendeten external_layout_for_invoice berücksichtigt werden.
+                         */
+                        .fb_invoice_address_window {
+                            border: 1px solid #fff;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 85mm;
+                            height: 40mm;
+                            overflow: hidden;
+                            font-size: 10pt;
+                            line-height: 4.5mm;
+                        }
+                        .fb_invoice_return_address {
+                            height: 5mm;
+                            margin-bottom: 1.5mm;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            font-size: 8pt;
+                            line-height: 3.5mm;
+                            border-bottom: 1px solid #666666;
+                        }
+
+                        .fb_invoice_recipient_address {
+                            padding-top: 1.5mm;
+                            padding-left: 0;
+                            white-space: normal;
+                            word-wrap: break-word;
+                            word-break: break-word;
+                        }
+                        
+                        .fb_invoice_information_block {
+                            border: 1px solid #fff;
+                            width: 85mm;
+                            min-height: 40mm;
+                            margin: 0 0 10mm auto;
+                            padding: 0;
+                            font-size: 13px;
+                            line-height: 1.35;
+                        }
+
+                        .fb_invoice_information_block table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+
+                        .fb_invoice_information_block td {
+                            vertical-align: top;
+                            padding: 0 0 1.2mm 0;
+                        }
+
+                        .fb_invoice_information_block .label {
+                            width: 46%;
+                            padding-right: 3mm;
+                            white-space: nowrap;
+                        }
+
+                        .fb_invoice_document_title {
+                            color: #1f6fd2;
+                            font-weight: 500;
+                            font-size: 26px;
+                            line-height: 1.2;
+                            margin: 0 0 5mm 0;
+                        }
+                    </style>
+
+                    <!--
+                        Eigenständige Anschrift, weil der aktuelle Wrapper
+                        external_layout_for_invoice keine Variable "address"
+                        an das zentrale DIN-5008-Layout durchreicht.
+                    -->
+                    <div class="fb_invoice_address_window">
+                        <div class="fb_invoice_return_address">
+                            <t t-if="doc.company_id.name">
+                                <span t-field="doc.company_id.name"/>
+                            </t>
+                            <t t-if="doc.company_id.street">
+                                <span> · </span>
+                                <span t-field="doc.company_id.street"/>
+                            </t>
+                            <t t-if="doc.company_id.zip or doc.company_id.city">
+                                <span> · </span>
+                                <span t-field="doc.company_id.zip"/>
+                                <t t-if="doc.company_id.zip and doc.company_id.city">
+                                    <span> </span>
+                                </t>
+                                <span t-field="doc.company_id.city"/>
+                            </t>
+                        </div>
+
+                        <div class="fb_invoice_recipient_address">
+                            <t t-if="invoice_partner">
+                                <strong t-esc="invoice_partner.name"/><br/>
+                                <t t-if="'department_name' in invoice_partner._fields and invoice_partner.department_name">
+                                    <strong t-esc="invoice_partner.department_name"/><br/>
+                                </t>
+                                <t t-if="invoice_partner.street">
+                                    <t t-esc="invoice_partner.street"/><br/>
+                                </t>
+                                <t t-if="invoice_partner.street2">
+                                    <t t-esc="invoice_partner.street2"/><br/>
+                                </t>
+                                <t t-if="invoice_partner.zip or invoice_partner.city">
+                                    <t t-esc="invoice_partner.zip"/>
+                                    <t t-if="invoice_partner.zip and invoice_partner.city">
+                                        <span> </span>
+                                    </t>
+                                    <t t-esc="invoice_partner.city"/><br/>
+                                </t>
+                                <t t-if="invoice_partner.country_id">
+                                    <t t-esc="invoice_partner.country_id.name"/>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Rechnungs- und Auftragsinformationen -->
+                    <div class="fb_invoice_information_block">
+                        <table>
+                            <tbody>
+                                <t t-if="doc.name">
+                                    <tr>
+                                        <td class="label">Invoice number:</td>
+                                        <td t-esc="doc.name"/>
+                                    </tr>
+                                </t>
+
+                                <!-- Mietvertragsnummer nur bei gepflegter Referenz oder echtem Miet-/Aboauftrag -->
+                                <t t-set="lease_order_numbers" t-value="[]"/>
+
+                                <t t-foreach="sale_orders" t-as="lease_sale_order">
+                                    <t t-set="lease_is_rental_contract"
+                                       t-value="bool(
+                                           ('is_rental_order' in lease_sale_order._fields
+                                            and lease_sale_order.is_rental_order)
+                                           or ('is_subscription' in lease_sale_order._fields
+                                               and lease_sale_order.is_subscription)
+                                           or ('plan_id' in lease_sale_order._fields
+                                               and lease_sale_order.plan_id)
+                                       )"/>
+
+                                    <t t-set="lease_order_number"
+                                       t-value="(
+                                           'lease_agreement_no' in lease_sale_order._fields
+                                           and lease_sale_order.lease_agreement_no
+                                       ) or (
+                                           'mk_rental_contract_id' in lease_sale_order._fields
+                                           and lease_sale_order.mk_rental_contract_id.name
+                                       ) or (
+                                           lease_sale_order.name
+                                           if lease_is_rental_contract
+                                           else False
+                                       )"/>
+
+                                    <t t-if="lease_order_number and lease_order_number not in lease_order_numbers">
+                                        <t t-set="lease_order_numbers"
+                                           t-value="lease_order_numbers + [lease_order_number]"/>
+                                    </t>
+                                </t>
+
+                                <!-- Kein pauschaler Fallback auf invoice_origin oder Rechnungsnummer -->
+                                <t t-set="lease_number"
+                                   t-value="(
+                                       'lease_agreement_no' in doc._fields
+                                       and doc.lease_agreement_no
+                                   ) or ', '.join(lease_order_numbers)"/>
+
+                                <t t-if="lease_number">
+                                    <tr>
+                                        <td class="label">Lease Agreement No.:</td>
+                                        <td style="white-space:normal; word-wrap:break-word; word-break:break-word;"
+                                            t-esc="lease_number"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="doc.invoice_date">
+                                    <tr>
+                                        <td class="label">Invoice date:</td>
+                                        <td>
+                                            <span t-field="doc.invoice_date"
+                                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="doc.invoice_date_due">
+                                    <tr>
+                                        <td class="label">Due Date:</td>
+                                        <td>
+                                            <span t-field="doc.invoice_date_due"
+                                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="doc.reversed_entry_id and doc.move_type == 'out_refund'">
+                                    <t t-if="doc.reversed_entry_id.name">
+                                        <tr>
+                                            <td class="label">Invoice Reference:</td>
+                                            <td t-esc="doc.reversed_entry_id.name"/>
+                                        </tr>
+                                    </t>
+                                    <t t-if="doc.reversed_entry_id.invoice_date">
+                                        <tr>
+                                            <td class="label">Dated:</td>
+                                            <td>
+                                                <span t-field="doc.reversed_entry_id.invoice_date"
+                                                      t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+
+                                <t t-if="doc.invoice_origin">
+                                    <tr>
+                                        <td class="label">Quote number:</td>
+                                        <td t-esc="doc.invoice_origin"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="sale_order and sale_order.date_order">
+                                    <tr>
+                                        <td class="label">Order Date:</td>
+                                        <td>
+                                            <span t-field="sale_order.date_order"
+                                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="invoice_partner and invoice_partner.ref">
+                                    <tr>
+                                        <td class="label">Client Number:</td>
+                                        <td t-esc="invoice_partner.ref"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="invoice_partner">
+                                    <tr>
+                                        <td class="label">Client Number:</td>
+                                        <td t-esc="invoice_partner.id"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="sale_order and 'client_order_name' in sale_order._fields and sale_order.client_order_name">
+                                    <tr>
+                                        <td class="label">Ordered by:</td>
+                                        <td t-esc="sale_order.client_order_name"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="sale_order and 'client_order_number' in sale_order._fields and sale_order.client_order_number">
+                                    <tr>
+                                        <td class="label">Your Order Number:</td>
+                                        <td t-esc="sale_order.client_order_number"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="sale_orders">
+                                    <t t-set="all_pickings"
+                                       t-value="sale_orders.mapped('picking_ids').filtered(lambda p: p.state == 'done')"/>
+                                    <t t-if="all_pickings">
+                                        <t t-set="picking_index" t-value="0"/>
+                                        <t t-foreach="all_pickings" t-as="picking">
+                                            <tr>
+                                                <td class="label">
+                                                    <t t-if="picking_index == 0">Delivery Note No.:</t>
+                                                    <t t-else="">Delivery Note No. (<t t-esc="picking_index + 1"/>):</t>
+                                                </td>
+                                                <td t-esc="picking.name"/>
+                                            </tr>
+                                            <tr t-if="picking.scheduled_date or picking.date_done">
+                                                <td class="label">
+                                                    <t t-if="picking_index == 0">Delivery Date:</t>
+                                                    <t t-else="">Delivery Date (<t t-esc="picking_index + 1"/>):</t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="picking.date_done">
+                                                        <span t-field="picking.date_done"
+                                                              t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-field="picking.scheduled_date"
+                                                              t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                            <t t-set="picking_index" t-value="picking_index + 1"/>
+                                        </t>
+                                    </t>
+                                </t>
+
+                                <t t-if="sale_order and 'carrier_id' in sale_order._fields and sale_order.carrier_id">
+                                    <tr>
+                                        <td class="label">Shipping Method:</td>
+                                        <td t-esc="sale_order.carrier_id.name"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="has_dropship_line">
+                                    <tr>
+                                        <td class="label">Delivery Method:</td>
+                                        <td>Drop-Shipping</td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="doc.invoice_incoterm_id">
+                                    <tr>
+                                        <td class="label">Delivery Terms:</td>
+                                        <td t-esc="doc.invoice_incoterm_id.with_context(lang='de_DE').name"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="report_salesperson">
+                                    <tr t-if="report_salesperson.name">
+                                        <td class="label">Salesperson:</td>
+                                        <td t-esc="report_salesperson.name"/>
+                                    </tr>
+                                    <tr t-if="report_salesperson.phone">
+                                        <td class="label">Phone:</td>
+                                        <td t-esc="report_salesperson.phone"/>
+                                    </tr>
+                                    <tr t-if="report_salesperson.login">
+                                        <td class="label">Email:</td>
+                                        <td t-esc="report_salesperson.login"/>
+                                    </tr>
+                                </t>
+
+                                <t t-if="sale_order and 'client_order_ref' in sale_order._fields and sale_order.client_order_ref">
+                                    <tr>
+                                        <td class="label">Project:</td>
+                                        <td style="white-space:normal; word-wrap:break-word; word-break:break-word;"
+                                            t-esc="sale_order.client_order_ref"/>
+                                    </tr>
+                                </t>
+
+                                <!--
+                                    Service recipient.
+                                    Only printed if it differs from the invoice partner.
+                                -->
+                                <t t-if="recipient_partner">
+                                    <tr>
+                                        <td class="label" style="vertical-align:top;">Service Recipient:</td>
+                                        <td style="white-space:normal; word-wrap:break-word; word-break:break-word; vertical-align:top;">
+                                            <t t-if="recipient_partner.name">
+                                                <t t-esc="recipient_partner.name"/>
+                                                <br/>
+                                            </t>
+
+                                            <t t-if="'department_name' in recipient_partner._fields and recipient_partner.department_name">
+                                                <t t-esc="recipient_partner.department_name"/>
+                                                <br/>
+                                            </t>
+
+                                            <t t-if="recipient_partner.street">
+                                                <t t-esc="recipient_partner.street"/>
+                                                <br/>
+                                            </t>
+
+                                            <t t-if="recipient_partner.street2">
+                                                <t t-esc="recipient_partner.street2"/>
+                                                <br/>
+                                            </t>
+
+                                            <t t-if="recipient_partner.zip or recipient_partner.city">
+                                                <t t-esc="recipient_partner.zip"/>
+                                                <t t-if="recipient_partner.zip and recipient_partner.city">
+                                                    <span> </span>
+                                                </t>
+                                                <t t-esc="recipient_partner.city"/>
+                                                <br/>
+                                            </t>
+
+                                            <t t-if="recipient_partner.country_id">
+                                                <t t-esc="recipient_partner.country_id.name"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-if="invoice_partner and 'reverse_charge' in invoice_partner._fields and invoice_partner.reverse_charge and invoice_partner.vat">
+                                    <tr>
+                                        <td class="label">Client VAT:</td>
+                                        <td t-esc="invoice_partner.vat"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Dokumenttitel -->
+                    <t t-if="doc.move_type == 'out_invoice' and doc.state == 'posted' and is_rental_invoice">
+                        <h2 class="fb_invoice_document_title">Rental Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft' and is_rental_invoice">
+                        <h2 class="fb_invoice_document_title">Rental Draft Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_invoice' and doc.state == 'posted'">
+                        <h2 class="fb_invoice_document_title">Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_invoice' and doc.state == 'draft'">
+                        <h2 class="fb_invoice_document_title">Proforma Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_invoice' and doc.state == 'cancel'">
+                        <h2 class="fb_invoice_document_title">Cancelled Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_refund' and doc.state == 'posted'">
+                        <h2 class="fb_invoice_document_title">Corrected Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_refund' and doc.state == 'draft'">
+                        <h2 class="fb_invoice_document_title">Draft Corrected Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'out_refund' and doc.state == 'cancel'">
+                        <h2 class="fb_invoice_document_title">Cancelled Corrected Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'in_refund'">
+                        <h2 class="fb_invoice_document_title">Vendor Corrected Invoice</h2>
+                    </t>
+                    <t t-elif="doc.move_type == 'in_invoice'">
+                        <h2 class="fb_invoice_document_title">Vendor Bill</h2>
+                    </t>
+
+                    <!-- Mietinformationen -->
+                    <t t-if="is_rental_invoice and sale_order">
+                        <div style="font-size:12px; margin:0 0 2px 0;">
+                            <t t-if="'plan_id' in sale_order._fields and sale_order.plan_id">
+                                Rental price / <t t-esc="sale_order.plan_id.name"/>
+                            </t>
+                        </div>
+                        <div t-if="'rental_billing_period_start' in doc._fields and 'rental_billing_period_end' in doc._fields and doc.rental_billing_period_start and doc.rental_billing_period_end"
+                             style="font-size:12px; margin:0 0 5mm 0;">
+                            Billing period from
+                            <span t-field="doc.rental_billing_period_start"
+                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                            to
+                            <span t-field="doc.rental_billing_period_end"
+                                  t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                        </div>
+                    </t>
+
+                    <!-- Rechnungspositionen -->
+                    <table name="invoice_line_table"
+                           style="width:100%; border-collapse:collapse; font-size:12px;">
+                        <thead>
+                            <tr>
+                                <th colspan="3"
+                                    style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
+                                </th>
+                                <th t-att-colspan="3 if display_discount else 2"
+                                    style="text-align:right; font-size:12px; font-weight:600; padding:6px 0;">
+                                    <t t-if="doc.move_type == 'out_invoice' and doc.state == 'draft' and doc.invoice_origin">
+                                        Order Number: <t t-esc="doc.invoice_origin"/>
+                                    </t>
+                                    <t t-else="">
+                                        Invoice-Nr: <t t-esc="doc.name"/>
+                                    </t>
+                                </th>
+                            </tr>
+                            <tr class="head-bottom">
+                                <th style="width:5%; text-align:left; font-size:14px;">POS</th>
+                                <th style="width:45%; text-align:left; font-size:14px;">Description</th>
+                                <th style="width:15%; text-align:right; font-size:14px;">Quantity</th>
+                                <th style="width:12%; text-align:right; font-size:14px;">Unit Price</th>
+                                <th t-if="display_discount" style="width:10%; text-align:right; font-size:14px;">Disc.%</th>
+                                <th style="width:13%; text-align:right; font-size:14px;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="pos" t-value="0"/>
+                            <t t-set="hide_prices_for_section" t-value="False"/>
+
+                            <t t-foreach="lines_to_report" t-as="line">
+                                <t t-if="line.display_type == 'line_section'">
+                                    <t t-set="hide_prices_for_section"
+                                       t-value="'hide_price_section' in line._fields and line.hide_price_section or False"/>
+                                    <tr class="line-bottom">
+                                        <td colspan="99"
+                                            style="background-color:#d3d3d3; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                            <span t-field="line.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-elif="line.display_type == 'line_note'">
+                                    <tr class="line-bottom">
+                                        <td colspan="99"
+                                            style="font-style:italic; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                            <span t-field="line.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <t t-elif="line.display_type == 'product' or not line.display_type">
+                                    <t t-set="pos" t-value="pos + 1"/>
+                                    <tr class="line-bottom">
+                                        <td style="font-size:14px;" t-esc="pos"/>
+                                        <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding:7px 0; text-align:left; vertical-align:top;">
+                                            <t t-set="raw_lines" t-value="[part.strip() for part in (line.name or '').splitlines() if part.strip()]"/>
+                                            <t t-set="first_line" t-value="raw_lines[0] if raw_lines else ''"/>
+                                            <t t-set="desc_lines" t-value="raw_lines[1:] if len(raw_lines) &gt; 1 else []"/>
+                                            <t t-set="desc_lines" t-value="desc_lines[1:] if desc_lines and desc_lines[0].startswith('[') else desc_lines"/>
+                                            <t t-set="desc_lines" t-value="desc_lines[:-1] if desc_lines and ('Woche' in desc_lines[-1] or 'Monat' in desc_lines[-1] or ('von' in desc_lines[-1] and 'bis' in desc_lines[-1])) else desc_lines"/>
+                                            <div style="margin:0; padding:0; text-align:left; line-height:1.1;" t-esc="first_line"/>
+                                            <t t-foreach="desc_lines" t-as="description_line">
+                                                <div style="margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.1;"
+                                                     t-esc="description_line"/>
+                                            </t>
+                                            <t t-set="is_dropship" t-value="False"/>
+                                            <t t-if="dropship_route and line.sale_line_ids">
+                                                <t t-set="sale_line" t-value="line.sale_line_ids[0]"/>
+                                                <t t-set="is_dropship"
+                                                   t-value="bool('route_ids' in sale_line._fields and sale_line.route_ids and dropship_route in sale_line.route_ids)"/>
+                                            </t>
+                                            <t t-if="is_dropship">
+                                                <div class="text-muted"
+                                                     style="font-size:13px; color:#555; font-style:italic; margin-top:2px;">
+                                                    (Drop-Shipping)
+                                                </div>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:right; font-size:14px;">
+                                            <t t-esc="'{:.2f}'.format(line.quantity)"/>
+                                            <t t-if="line.product_uom_id">
+                                                <span t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:right; font-size:14px;">
+                                            <t t-if="not hide_prices_for_section">
+                                                <span t-field="line.price_unit"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </t>
+                                        </td>
+                                        <td t-if="display_discount" style="text-align:right; font-size:14px;">
+                                            <t t-if="not hide_prices_for_section">
+                                                <t t-esc="line.discount"/>%
+                                            </t>
+                                        </td>
+                                        <td style="text-align:right; font-size:14px;">
+                                            <t t-if="not hide_prices_for_section">
+                                                <t t-if="doc.move_type == 'out_refund'">-</t>
+                                                <span t-field="line.price_subtotal"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Zahlungsbedingungen und Summen -->
+                    <table style="margin-top:8mm; font-size:12px; line-height:1.2; width:100%; page-break-inside:avoid;">
+                        <tbody>
+                            <tr>
+                                <td style="width:60%; vertical-align:top;">
+                                    <div style="white-space:normal; font-size:12px; word-wrap:break-word; word-break:break-word; max-width:100%;">
+                                        <div>Agreements exist that may result in subsequent reductions of the final price.</div>
+                                    </div>
+                                    <div style="white-space:normal; font-size:12px; word-wrap:break-word; word-break:break-word; max-width:100%;">
+                                        <t t-if="doc.narration" t-esc="doc.narration"/>
+                                    </div>
+                                    <!-- Zahlungsbedingung nur ausgeben, wenn sie am Beleg gesetzt ist.
+                                         Kein fest hinterlegter Ersatztext. -->
+                                    <t t-if="doc.invoice_payment_term_id">
+                                        <div style="font-size:12px;">
+                                            Payment Terms:
+                                            <span t-field="doc.invoice_payment_term_id.name"/>
+                                        </div>
+
+                                        <!-- Skontoangaben weiterhin nicht bei Kundengutschriften. -->
+                                        <t t-if="doc.move_type != 'out_refund' and doc.invoice_payment_term_id.early_discount and doc.state == 'posted'">
+                                            <div style="font-size:12px;">
+                                                <span t-field="doc.discount_amount"
+                                                      t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                with <t t-esc="doc.invoice_payment_term_id.discount_percentage"/>% discount until
+                                                <span t-field="doc.extended_date"
+                                                      t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>.
+                                                After that
+                                                <span t-field="doc.amount_total"
+                                                      t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                without deduction.
+                                            </div>
+                                        </t>
+
+                                        <!-- Beschreibung auch bei Kundengutschriften ausgeben. -->
+                                        <t t-if="doc.invoice_payment_term_id.display_on_invoice and doc.invoice_payment_term_id.note">
+                                            <div style="margin-top:2px;">
+                                                <span t-field="doc.invoice_payment_term_id.note"/>
+                                            </div>
+                                        </t>
+                                    </t>
+
+                                </td>
+
+                                <td style="width:40%; vertical-align:top; padding-left:10mm;">
+                                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                                        <tbody>
+                                            <tr style="font-size:14px;">
+                                                <td style="text-align:left;">
+                                                    <t t-if="not (invoice_partner and 'reverse_charge' in invoice_partner._fields and invoice_partner.reverse_charge)">
+                                                        Untaxed Amount:
+                                                    </t>
+                                                    <t t-else="">Total Amount:</t>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <t t-if="doc.move_type == 'out_refund'">-</t>
+                                                    <span t-field="doc.amount_untaxed"
+                                                          t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                </td>
+                                            </tr>
+                                            <t t-if="not (invoice_partner and 'reverse_charge' in invoice_partner._fields and invoice_partner.reverse_charge)">
+                                                <tr style="font-size:14px;">
+                                                    <td style="text-align:left;">VAT 19%:</td>
+                                                    <td style="text-align:right;">
+                                                        <t t-if="doc.move_type == 'out_refund'">-</t>
+                                                        <span t-field="doc.amount_tax"
+                                                              t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr style="font-weight:bold; font-size:14px;">
+                                                    <td style="text-align:left;">Total:</td>
+                                                    <td style="text-align:right;">
+                                                        <t t-if="doc.move_type == 'out_refund'">-</t>
+                                                        <span t-field="doc.amount_total"
+                                                              t-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:5mm; font-size:14px; font-weight:bold; text-align:left;">
+                        <t t-if="invoice_partner and 'reverse_charge' in invoice_partner._fields and invoice_partner.reverse_charge">
+                            *** Value added tax is owed by the recipient of the service (reverse charge) ***
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_form_invoice_refund_smartbutton" model="ir.ui.view">
+        <field name="name">sale.order.form.invoice.refund.smartbutton</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_invoice']" position="attributes">
+                <attribute name="name">action_fb_view_invoices_and_refunds</attribute>
+                <attribute name="invisible">fb_invoice_refund_count == 0</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_fb_view_invoices_and_refunds']/field[@name='invoice_count']" position="replace">
+                <field name="fb_invoice_refund_count" widget="statinfo" string="Rechnungen / Gutschriften"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

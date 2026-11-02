@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_rental_equipment_issue_slip" model="ir.actions.report">
+        <field name="name">Mietausgabeschein</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+
+        <field name="report_name">ol_delivery_slip_changes.rental_equipment_issue_slip_report</field>
+        <field name="report_file">ol_delivery_slip_changes.rental_equipment_issue_slip_report</field>
+
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+
+        <field name="print_report_name">
+            'Mietausgabeschein - %s' % (object.name)
+        </field>
+    </record>
+</odoo>

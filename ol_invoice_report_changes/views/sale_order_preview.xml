@@ -1,14 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="sale_order_preview_inherit" inherit_id="sale.sale_order_portal_content">
-        <xpath expr="//div[@id='informations']" position="inside">
-            <div t-if="sale_order.client_order_ref or sale_order.subscription_id.name" class="row mb-3">
-                <div class="col-12">
-                    <strong>Reference:</strong>
-                    <br/>
-                    <span class="text-muted" style="white-space:normal; word-wrap:break-word; word-break:break-word;">
-                        <t t-out="sale_order.client_order_ref or sale_order.subscription_id.name"/>
-                    </span>
+    <!--
+        Autor: Moritz Kern
+        Firma: Fischbacher GmbH + Co. KG
+
+        Zeigt das tatsächliche Verkaufs-PDF im Dokumentbereich
+        der Portalseite an.
+
+        Die Standard-Portalroute verwendet:
+            sale.action_report_saleorder
+
+        Deren Bericht sale.report_saleorder wird durch
+        reports/sale_order_report.xml angepasst.
+
+        Die umgebenden Portalaktionen bleiben unverändert.
+    -->
+    <template
+        id="sale_order_preview_inherit"
+        inherit_id="sale.sale_order_portal_template"
+        priority="90"
+    >
+        <xpath
+            expr="//div[@id='portal_sale_content']"
+            position="replace"
+        >
+            <div
+                id="portal_sale_content"
+                class="pb-4"
+            >
+                <!--
+                    Standard-Portal-URL verwenden:
+                    enthält den Zugriffstoken des jeweiligen Auftrags.
+                    Keine ungeschützte direkte Report-URL verwenden.
+                -->
+                <t
+                    t-set="sale_pdf_url"
+                    t-value="sale_order.get_portal_url(report_type='pdf')"
+                />
+
+                <div class="fb_sale_pdf_preview">
+
+                    <!-- Alternative für Browser ohne eingebettete PDF-Anzeige -->
+                    <div
+                        class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"
+                    >
+                        <span class="text-muted">
+                            Dokumentvorschau
+                        </span>
+
+                        <a
+                            t-att-href="sale_pdf_url"
+                            class="btn btn-outline-primary btn-sm"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i
+                                class="fa fa-external-link me-1"
+                                aria-hidden="true"
+                            />
+                            PDF öffnen
+                        </a>
+                    </div>
+
+                    <!--
+                        Anzeige desselben PDFs wie beim Standard-PDF-Aufruf.
+                        Kein zusätzliches Rendern des Berichts im Portal-HTML.
+                    -->
+                    <iframe
+                        t-att-src="sale_pdf_url"
+                        t-att-title="'Dokumentvorschau – %s' % (sale_order.name or '')"
+                        class="fb_sale_pdf_frame"
+                        width="100%"
+                        height="1100"
+                        style="display:block; width:100%; height:80vh; min-height:600px; border:1px solid #dee2e6; border-radius:6px; background-color:#f3f4f6;"
+                    ></iframe>
+
+                    <p class="small text-muted mt-2 mb-0">
+                        Wird die Vorschau nicht angezeigt, öffne das
+                        Dokument über „PDF öffnen“.
+                    </p>
+
                 </div>
             </div>
         </xpath>

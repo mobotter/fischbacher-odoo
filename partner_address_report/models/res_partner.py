@@ -4,7 +4,6 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     def split_by_limit(self, text, limit):
-        # Wichtig: Abfangen, falls text False/None ist (z.B. wenn keine Straße hinterlegt ist)
         if not text:
             return []
             

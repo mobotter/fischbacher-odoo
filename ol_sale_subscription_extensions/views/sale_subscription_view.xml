@@ -1,171 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <!-- ============================================== -->
     <!-- 1. ANPASSUNG DER FORMULARANSICHT               -->
     <!-- ============================================== -->
     <record id="sale_subscription_form_inherit" model="ir.ui.view">
         <field name="name">sale.subscription.form.inherit</field>
         <field name="model">sale.order</field>
-        <!-- WICHTIG: Zurück auf die spezifische Abo-Maske -->
-        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view" />
+        <field name="inherit_id"
+               ref="sale_subscription.sale_subscription_primary_form_view"/>
         <field name="arch" type="xml">
-            
+
             <!-- A. Buttons im Header hinzufügen -->
             <xpath expr="//header" position="inside">
-                <button name="action_confirm" data-hotkey="q" string="Confirm" type="object" context="{'validate_analytic': True}" invisible="state != 'accepted'"/>
-                <button name="action_accept_by_client" type="object" string="Accepted by Client" class="btn-primary" invisible="state not in ('draft', 'sent')" />
-                <button name="action_reset_to_quotation" type="object" string="Reset to Quotation" class="btn-primary" invisible="state != 'accepted'"/>
-                <button name="action_quotation_send_subscription" id="send_by_email_subscription" string="Quotation send by email" class="btn-primary" type="object" invisible="state not in ('sent', 'sale', 'draft')" data-hotkey="g" context="{'validate_analytic': True, 'check_document_layout': True}"/>
+                <button name="action_confirm"
+                        data-hotkey="q"
+                        string="Confirm"
+                        type="object"
+                        context="{'validate_analytic': True}"
+                        invisible="state != 'accepted'"/>
+
+                <button name="action_accept_by_client"
+                        type="object"
+                        string="Accepted by Client"
+                        class="btn-primary"
+                        invisible="state not in ('draft', 'sent')"/>
+
+                <button name="action_reset_to_quotation"
+                        type="object"
+                        string="Reset to Quotation"
+                        class="btn-primary"
+                        invisible="state != 'accepted'"/>
+
+                <button name="action_quotation_send_subscription"
+                        id="send_by_email_subscription"
+                        string="Quotation send by email"
+                        class="btn-primary"
+                        type="object"
+                        invisible="state not in ('sent', 'sale', 'draft')"
+                        data-hotkey="g"
+                        context="{
+                            'validate_analytic': True,
+                            'check_document_layout': True
+                        }"/>
             </xpath>
 
-            <!-- B. Grünes Bändchen (Ribbon) im Formular -->
+            <!-- B. Grünes Bändchen für vom Kunden akzeptierte Angebote -->
             <xpath expr="//sheet" position="inside">
-                <widget name="web_ribbon" title="Accepted by Client" bg_color="text-bg-success" invisible="subscription_state != 'accepted'"/>
+                <widget name="web_ribbon"
+                        title="Accepted by Client"
+                        bg_color="text-bg-success"
+                        invisible="subscription_state != 'accepted'"/>
             </xpath>
-            
+
             <!-- Bestehendes Odoo-Feld umbenennen -->
-            <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+            <xpath expr="//field[@name='sale_order_template_id']"
+                   position="attributes">
                 <attribute name="string">Order Template</attribute>
             </xpath>
-            
-            <!-- Neues Dropdown direkt davor -->
-            <xpath expr="//field[@name='sale_order_template_id']" position="before">
-                <field name="quotation_template_id" string="Quotation Lines Template"/>
+
+            <!-- Angebotszeilen-Vorlage vor Standard-Auftragsvorlage -->
+            <xpath expr="//field[@name='sale_order_template_id']"
+                   position="before">
+                <field name="quotation_template_id"
+                       string="Quotation Lines Template"/>
             </xpath>
 
-            <!-- Nächstes Rechnungsdatum + berechnete Billing-Period anzeigen -->
-            <xpath expr="//field[@name='sale_order_template_id']" position="after">
+            <!-- Nächstes Rechnungsdatum und Abrechnungszeitraum -->
+            <xpath expr="//field[@name='sale_order_template_id']"
+                   position="after">
                 <field name="next_invoice_date"/>
-                <field name="billing_period_start" readonly="1"/>
-                <field name="billing_period_end" readonly="1"/>
+                <field name="billing_period_start"
+                       readonly="1"/>
+                <field name="billing_period_end"
+                       readonly="1"/>
             </xpath>
-            
-            <!-- C. Neuer Tab 'Quotation Lines' als ERSTEN Tab ins Notebook einfügen -->
+
+            <!-- C. Tab "Quotation Lines" als erster Notebook-Tab -->
             <xpath expr="//notebook/page[1]" position="before">
                 <page name="quotation_page" string="Quotation Lines">
-                    <field name="quotation_line_ids" widget="section_and_note_one2many" mode="list,kanban" readonly="state == 'cancel' or locked">
+
+                    <field name="quotation_line_ids"
+                           widget="section_and_note_one2many"
+                           mode="list,kanban"
+                           readonly="state == 'cancel' or locked">
+
                         <list editable="bottom" limit="200">
                             <control>
-                                <create name="add_product_control" string="Add a product"/>
-                                <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
-                                <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                <create name="add_product_control"
+                                        string="Add a product"/>
+
+                                <create name="add_section_control"
+                                        string="Add a section"
+                                        context="{
+                                            'default_display_type':
+                                            'line_section'
+                                        }"/>
+
+                                <create name="add_note_control"
+                                        string="Add a note"
+                                        context="{
+                                            'default_display_type':
+                                            'line_note'
+                                        }"/>
                             </control>
-                    
-                            <field name="display_type" force_save="1" column_invisible="True"/>
-                            <field name="sequence" widget="handle"/>
-                    
+
+                            <!-- Technische Felder -->
+                            <field name="display_type"
+                                   force_save="1"
+                                   column_invisible="True"/>
+
+                            <field name="sequence"
+                                   widget="handle"/>
+
+                            <!-- Freier Produktname:
+                                 z. B. "500 Z/ZP", ohne product.product. -->
+                            <field name="quotation_product_name"
+                                   string="Produkt"
+                                   invisible="display_type"/>
+
+                            <!-- Optionaler Link in den Produktstamm.
+                                 Standardmäßig über die Spaltenauswahl verborgen. -->
                             <field name="product_id"
-                                   required="not display_type"
+                                   string="Produktstamm"
+                                   optional="hide"
                                    options="{'no_open': True}"
                                    force_save="1"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
-                    
-                            <field name="name" widget="section_and_note_text"/>
-                    
+                                   invisible="display_type"/>
+
+                            <!-- Bei Abschnitt/Notiz übernimmt das Widget
+                                 die Darstellung über die gesamte Zeile. -->
+                            <field name="name"
+                                   string="Beschreibung"
+                                   widget="section_and_note_text"/>
+
                             <field name="product_uom_qty"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
-                    
+                                   string="Menge"
+                                   invisible="display_type"/>
+
                             <field name="product_uom"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
-                    
+                                   string="Einheit"
+                                   invisible="display_type"/>
+
                             <field name="price_unit"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
-                    
+                                   string="Einzelpreis"
+                                   widget="monetary"
+                                   invisible="display_type"/>
+
                             <field name="discount"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
-                    
+                                   string="Rabatt"
+                                   widget="percentage"
+                                   invisible="display_type"/>
+
                             <field name="tax_id"
+                                   string="Steuern"
                                    widget="many2many_tags"
                                    options="{'no_create': True}"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
-                    
+                                   invisible="display_type"/>
+
                             <field name="price_subtotal"
+                                   string="Zwischensumme"
+                                   widget="monetary"
                                    readonly="1"
-                                   attrs="{'column_invisible': [('display_type', '!=', False)]}"/>
+                                   invisible="display_type"/>
                         </list>
                     </field>
-                
-                    <group name="note_group" col="6" class="mt-2 mt-md-0">
-                        <group colspan="4" class="order-1 order-lg-0" col="6">
-                            <field colspan="2" name="note" nolabel="1" placeholder="Terms and conditions..."/>
+
+                    <group name="note_group"
+                           col="6"
+                           class="mt-2 mt-md-0">
+                        <group colspan="4"
+                               class="order-1 order-lg-0"
+                               col="6">
+                            <field name="note"
+                                   colspan="2"
+                                   nolabel="1"
+                                   placeholder="Terms and conditions..."/>
                         </group>
                     </group>
+
                 </page>
             </xpath>
+
         </field>
     </record>
 
     <!-- ============================================== -->
-    <!-- 2. ANPASSUNG DER LISTENANSICHT (LIST VIEW)     -->
+    <!-- 2. ANPASSUNG DER LISTENANSICHT                 -->
     <!-- ============================================== -->
     <record id="sale_subscription_list_view_inherit" model="ir.ui.view">
-        <!-- Namensanpassung von tree zu list -->
         <field name="name">sale.subscription.list.view.inherit</field>
         <field name="model">sale.order</field>
-        <!-- WICHTIG: Die Original-ID von Odoo bleibt sale_subscription.sale_subscription_view_tree -->
-        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_tree"/>
+        <field name="inherit_id"
+               ref="sale_subscription.sale_subscription_view_tree"/>
         <field name="arch" type="xml">
-            <!-- Überschreibt das Badge in der Abo-Übersicht -->
-            <xpath expr="//field[@name='subscription_state']" position="replace">
-                <field name="subscription_state" widget="badge" decoration-success="subscription_state in ('3_progress', 'accepted')" decoration-warning="subscription_state == '4_paused'" decoration-danger="subscription_state == '6_churn'" decoration-info="subscription_state == '1_draft'"/>
+
+            <xpath expr="//field[@name='subscription_state']"
+                   position="replace">
+                <field name="subscription_state"
+                       widget="badge"
+                       decoration-success="
+                           subscription_state in ('3_progress', 'accepted')
+                       "
+                       decoration-warning="
+                           subscription_state == '4_paused'
+                       "
+                       decoration-danger="
+                           subscription_state == '6_churn'
+                       "
+                       decoration-info="
+                           subscription_state == '1_draft'
+                       "/>
             </xpath>
+
         </field>
     </record>
 
     <!-- ============================================== -->
-    <!-- 3. MENÜ-AKTIONEN & FILTER                      -->
+    <!-- 3. MENÜ-AKTIONEN UND FILTER                    -->
     <!-- ============================================== -->
-    
-    <!-- A. Für den Menüpunkt: Subscriptions -> Quotations -->
-    <record id="sale_subscription.sale_subscription_action_quotes" model="ir.actions.act_window">
-        <field name="domain">[('is_subscription', '=', True), ('state', 'in', ['draft', 'sent', 'accepted'])]</field>
+
+    <!-- Subscriptions → Quotations -->
+    <record id="sale_subscription.sale_subscription_action_quotes"
+            model="ir.actions.act_window">
+        <field name="domain">
+            [
+                ('is_subscription', '=', True),
+                ('state', 'in', ['draft', 'sent', 'accepted'])
+            ]
+        </field>
     </record>
 
-    <!-- B. Für den Menüpunkt: Subscriptions -> Subscriptions (Hauptliste) -->
-    <record id="sale_subscription.sale_subscription_action" model="ir.actions.act_window">
-        <field name="domain">[('is_subscription', '=', True)]</field>
+    <!-- Subscriptions → Subscriptions -->
+    <record id="sale_subscription.sale_subscription_action"
+            model="ir.actions.act_window">
+        <field name="domain">
+            [('is_subscription', '=', True)]
+        </field>
     </record>
 
-    <!-- C. Erweitert die Standard-Suche, damit Filter nicht stören -->
-    <record id="sale_subscription_search_inherit_accept" model="ir.ui.view">
+    <!-- Erweitert Standard-Suche um Status "accepted" -->
+    <record id="sale_subscription_search_inherit_accept"
+            model="ir.ui.view">
         <field name="name">sale.subscription.search.inherit.accept</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="inherit_id"
+               ref="sale.sale_order_view_search_inherit_quotation"/>
         <field name="arch" type="xml">
-            <xpath expr="//filter[@name='draft']" position="attributes">
-                 <attribute name="domain">[('state', 'in', ('draft', 'sent', 'accepted'))]</attribute>
+
+            <xpath expr="//filter[@name='draft']"
+                   position="attributes">
+                <attribute name="domain">
+                    [('state', 'in', ('draft', 'sent', 'accepted'))]
+                </attribute>
             </xpath>
+
         </field>
     </record>
 
     <!-- ============================================== -->
-    <!-- 4. FARBE FÜR DEN 'ACCEPTED' STATUS IN VERKAUF  -->
+    <!-- 4. STATUSFARBE "ACCEPTED"                      -->
     <!-- ============================================== -->
-    
-    <!-- A. Für die Quotations-Liste (Angebote) -->
-    <record id="sale_order_list_view_inherit_accepted" model="ir.ui.view">
+
+    <!-- Angebot-/Quotation-Liste -->
+    <record id="sale_order_list_view_inherit_accepted"
+            model="ir.ui.view">
         <field name="name">sale.order.list.inherit.accepted</field>
         <field name="model">sale.order</field>
-        <!-- Original ref bleibt view_quotation_tree -->
         <field name="inherit_id" ref="sale.view_quotation_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='state']" position="attributes">
-                <attribute name="decoration-success">state in ('sale', 'done', 'accepted')</attribute>
+
+            <xpath expr="//field[@name='state']"
+                   position="attributes">
+                <attribute name="decoration-success">
+                    state in ('sale', 'done', 'accepted')
+                </attribute>
             </xpath>
+
         </field>
     </record>
 
-    <!-- B. Für die Sales-Order-Liste (Verkaufsaufträge) -->
-    <record id="sale_order_list_view_inherit_accepted_orders" model="ir.ui.view">
-        <field name="name">sale.order.list.inherit.accepted.orders</field>
+    <!-- Verkaufsauftragsliste -->
+    <record id="sale_order_list_view_inherit_accepted_orders"
+            model="ir.ui.view">
+        <field name="name">
+            sale.order.list.inherit.accepted.orders
+        </field>
         <field name="model">sale.order</field>
-        <!-- Original ref bleibt view_order_tree -->
         <field name="inherit_id" ref="sale.view_order_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='state']" position="attributes">
-                <attribute name="decoration-success">state in ('sale', 'done', 'accepted')</attribute>
+
+            <xpath expr="//field[@name='state']"
+                   position="attributes">
+                <attribute name="decoration-success">
+                    state in ('sale', 'done', 'accepted')
+                </attribute>
             </xpath>
+
         </field>
     </record>
 

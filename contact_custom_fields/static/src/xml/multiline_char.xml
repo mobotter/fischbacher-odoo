@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <t t-name="contact_custom_fields.MultilinePartnerNameField" owl="1">
+        <t t-if="props.readonly">
+            <span class="o_field_char text-break" t-esc="formattedValue"/>
+        </t>
+        <t t-else="">
+            <textarea
+                class="o_input"
+                t-att-id="props.id"
+                t-att-name="props.name"
+                t-att-placeholder="props.placeholder"
+                t-att-autofocus="props.autofocus"
+                t-att-disabled="props.readonly"
+                t-on-input="updateValue"><t t-esc="formattedValue"/></textarea>
+        </t>
+    </t>
+</templates>

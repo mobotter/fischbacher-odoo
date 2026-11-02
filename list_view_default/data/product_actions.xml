@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Produkte -->
+    <record id="product.product_template_action"
+            model="ir.actions.act_window">
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+
+    <!-- Produktvarianten -->
+    <record id="product.product_variant_action"
+            model="ir.actions.act_window">
+        <field name="view_mode">list,kanban,form</field>
+    </record>
+
+</odoo>

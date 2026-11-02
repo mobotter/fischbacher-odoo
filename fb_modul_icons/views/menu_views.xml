@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- 1. Aktion definieren: Öffnet Produkte, die verkauft werden können -->
-        <record id="action_dashboard_sales_products" model="ir.actions.act_window">
+    <data noupdate="0">
+
+        <record id="action_fb_dashboard_products" model="ir.actions.act_window">
             <field name="name">Produkte</field>
             <field name="res_model">product.template</field>
-            <field name="view_mode">kanban,list,form,activity</field>
-            <field name="domain">[('sale_ok', '=', True)]</field>
-            <field name="context">{"search_default_filter_to_sell": 1}</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Lege dein erstes Produkt an!
@@ -15,19 +14,13 @@
             </field>
         </record>
 
-        <!-- 2. Dashboard App-Icon anlegen -->
-        <record id="menu_dashboard_sales_products" model="ir.ui.menu">
+        <record id="menu_fb_dashboard_products" model="ir.ui.menu">
             <field name="name">Produkte</field>
             <field name="sequence">15</field>
-            <field name="action" ref="action_dashboard_sales_products"/>
-            <!-- WICHTIG: Das Parent-Menu weglassen! -->
-            
-            <!-- Pfad zum Icon-Bild in DEINEM Modul -->
+            <field name="parent_id" eval="False"/>
+            <field name="action" ref="action_fb_dashboard_products"/>
             <field name="web_icon">fb_modul_icons,static/description/products_icon.png</field>
-            
-            <!-- LÖSUNG DES FEHLERS: Zugriffsrechte hinzufügen -->
-            <!-- Nur wenn eine Gruppe definiert ist, zeigt Odoo das Menü auf dem Haupt-Dashboard an. -->
-            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
         </record>
+
     </data>
 </odoo>

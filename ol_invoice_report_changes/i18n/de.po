@@ -1,22 +1,349 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * ol_invoice_report_changes
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-27 09:21+0000\n"
+"PO-Revision-Date: 2026-09-23 10:00+0200\n"
+"Last-Translator: Moritz Kern\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+
 #. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Draft"
+msgstr "Entwurf"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "(Drop shipping)"
+msgstr "(Streckengeschäft)"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Invoice number:"
-msgstr "Rechnungsnummer:"
+msgid "(Drop-Shipping)"
+msgstr "(Streckengeschäft)"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "<span style=\"font-weight:normal; font-style:italic; color:#875A7B;\"> (Optional)</span>"
+msgstr "<span style=\"font-weight:normal; font-style:italic; color:#875A7B;\"> (Optional)</span>"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "<span style=\"font-weight:normal; font-style:italic;\"> (Composition hidden)</span>"
+msgstr "<span style=\"font-weight:normal; font-style:italic;\"> (Zusammensetzung ausgeblendet)</span>"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "<span style=\"font-weight:normal; font-style:italic;\"> (Prices hidden)</span>"
+msgstr "<span style=\"font-weight:normal; font-style:italic;\"> (Preise ausgeblendet)</span>"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Lease Agreement No.:"
-msgstr "Leasingvertragsnummer:"
+msgid "% discount unit"
+msgstr "% Rabatt"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Invoice date:"
-msgstr "Rechnungsdatum:"
+msgid "*** Value added tax is owed by the recipient of the service (reverse charge) ***"
+msgstr "*** Die Mehrwertsteuer ist vom Leistungsempfänger zu entrichten (Reverse Charge) ***"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid ""
+".\n"
+"                                            After that"
+msgstr ""
+".\n"
+"                                            Danach"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Agreements exist that may result in subsequent reductions of the final price."
+msgstr "Es bestehen Vereinbarungen, aus denen sich gegebenenfalls nachträgliche Minderungen des Entgelts ergeben."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Amount"
+msgstr "Betrag"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__billing_period_end
+msgid "Billing Period End"
+msgstr "Ende des Abrechnungszeitraums"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__billing_period_start
+msgid "Billing Period Start"
+msgstr "Beginn des Abrechnungszeitraums"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Billing period from"
+msgstr "Abrechnungszeitraum von"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Cancelled Corrected Invoice"
+msgstr "Stornierte und korrigierte Rechnung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Cancelled Invoice"
+msgstr "Stornorechnung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Client Number:"
+msgstr "Kundennummer:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Client-Vat:"
+msgstr "Umsatzsteuer-ID des Kunden:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model,name:ol_invoice_report_changes.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Corrected Invoice"
+msgstr "Korrekturrechnung"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model,website_form_label:ol_invoice_report_changes.model_res_partner
+msgid "Create a Customer"
+msgstr "Kunden erstellen"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__offer_intro_text
+msgid "Custom introduction text displayed on the quotation and sales order confirmation report."
+msgstr "Individueller Einleitungstext, der auf dem Angebots- und Auftragsbestätigungsbericht ausgegeben wird."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Dated:"
+msgstr "Datiert:"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/model/sale_order.py:0
+#. odoo-python
+msgid ""
+"Dear Sir or Madam,\n"
+"Thank you for your interest. Please find our quotation attached.\n"
+"We are happy to answer any questions you may have."
+msgstr ""
+"Sehr geehrte Damen und Herren,\n"
+"vielen Dank für Ihr Interesse. Anbei erhalten Sie unser Angebot.\n"
+"Bei Fragen stehen wir Ihnen gerne zur Verfügung."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_order_form_inherit
+msgid "Dear Sir or Madam, Please find our quotation attached. Feel free to contact us if you have any questions."
+msgstr "Sehr geehrte Damen und Herren, anbei erhalten Sie unser Angebot. Bei Fragen können Sie sich gerne an uns wenden."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Delivery Date ("
+msgstr "Lieferdatum ("
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Delivery Date:"
+msgstr "Lieferdatum:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Delivery Method:"
+msgstr "Versandart:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Delivery Note No. ("
+msgstr "Lieferschein-Nr. ("
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Delivery Note No.:"
+msgstr "Lieferschein-Nr.:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Delivery Terms:"
+msgstr "Lieferbedingungen:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_order_form_inherit
+msgid "Delivery Time"
+msgstr "Lieferzeit"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__delivery_time
+msgid "Delivery time"
+msgstr "Lieferzeit"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Description"
+msgstr "Beschreibung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Disc.%"
+msgstr "Rabatt %"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_bank_statement_line__discount_amount
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_move__discount_amount
+msgid "Discounted Amount"
+msgstr "Rabattbetrag"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_move__display_name
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Draft Corrected Invoice"
+msgstr "Entwurf der korrigierten Rechnung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Drop-Shipping"
+msgstr "Streckengeschäft"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
 msgid "Due Date:"
 msgstr "Fälligkeitsdatum:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Email:"
+msgstr "E-Mail:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_res_partner__reverse_charge
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_res_users__reverse_charge
+msgid "Enable this if the partner is subject to reverse charge mechanism."
+msgstr "Aktivieren Sie diese Option, wenn der Partner dem Reverse-Charge-Verfahren unterliegt."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__billing_period_end
+msgid "End date of the current billing period, calculated from the next invoice date."
+msgstr "Enddatum des aktuellen Abrechnungszeitraums, berechnet ausgehend vom nächsten Rechnungsdatum."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__lease_agreement_no
+msgid "Enter the lease agreement number from DSP3 for this rental order."
+msgstr "Geben Sie die Mietvertragsnummer aus DSP3 für diesen Mietauftrag ein."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Ex works, conditions as described above,"
+msgstr "Ab Werk, Bedingungen wie oben beschrieben,"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_bank_statement_line__extended_date
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_move__extended_date
+msgid "Extended Date"
+msgstr "Verlängertes Datum"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_invoice
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_sale_confirmation
+msgid ""
+"<strong style=\"display:inline-block; width:40px; color:#1f6fd2;\">Bank</strong>VR-Bank Fürstenfeldbruck<br/>\n"
+"                            <strong style=\"display:inline-block; width:40px; color:#1f6fd2;\">IBAN</strong>DE83 7016 3370 0000 "
+"3132 54<br/>\n"
+"                            <strong style=\"display:inline-block; width:40px; color:#1f6fd2;\">BIC</strong>GENODEF1FFB"
+msgstr ""
+"<strong style=\"display:inline-block; width:40px; color:#1f6fd2;\">Bank</strong>VR-Bank Fürstenfeldbruck<br/>\n"
+"                            <strong style=\"display:inline-block; width:40px; color:#1f6fd2;\">IBAN</strong>DE83 7016 3370 0000 "
+"3132 54<br/>\n"
+"                            <strong style=\"display:inline-block; width:40px; color:#1f6fd2;\">BIC</strong>GENODEF1FFB"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_invoice
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_sale_confirmation
+msgid ""
+"<strong style=\"display:inline-block; width:60px; color:#1f6fd2;\">Telefon</strong>089 / 14 99 08-0<br/>\n"
+"                            <strong style=\"display:inline-block; width:60px; color:#1f6fd2;\">Internet</strong>www.fischbacher.de<br/>\n"
+"                            <strong style=\"display:inline-block; width:60px; color:#1f6fd2;\">E-Mail</strong>info@fischbacher.de"
+msgstr ""
+"<strong style=\"display:inline-block; width:60px; color:#1f6fd2;\">Telefon</strong>089 / 14 99 08-0<br/>\n"
+"                            <strong style=\"display:inline-block; width:60px; color:#1f6fd2;\">Internet</strong>www.fischbacher.de<br/>\n"
+"                            <strong style=\"display:inline-block; width:60px; color:#1f6fd2;\">E-Mail</strong>info@fischbacher.de"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__hide_total
+msgid "Hide Total Amount"
+msgstr "Gesamtbetrag verbergen"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__order_number
+msgid "Internal order number for this sales order."
+msgstr "Interne Bestellnummer für diesen Kundenauftrag."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__purchase_no
+msgid "Internal purchase reference or purchase order number."
+msgstr "Interne Einkaufsreferenz oder Bestellnummer."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_order_form_inherit
+msgid "Introductory text for the offer"
+msgstr "Einleitungstext für das Angebot"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Invoice - %s"
+msgstr "Rechnung - %s"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
@@ -25,73 +352,56 @@ msgstr "Rechnungsreferenz:"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Dated:"
-msgstr "Datiert:"
+msgid "Invoice date:"
+msgstr "Rechnungsdatum:"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Quote number:"
-msgstr "Angebotsnummer:"
+msgid "Invoice number:"
+msgstr "Rechnungsnummer:"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Order Date:"
-msgstr "Auftragsdatum:"
+msgid "Invoice-Nr:"
+msgstr "Rechnungs-Nr.:"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Client Number:"
-msgstr "Kundennummer:"
+#: model:ir.model,name:ol_invoice_report_changes.model_account_move
+msgid "Journal Entry"
+msgstr "Journalbuchung"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Ordered by:"
-msgstr "Bestellt von:"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_invoice
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_sale_confirmation
+msgid ""
+"Kommanditgesellschaft · Sitz München, HRA 116761 ·\n"
+"                    Persönlich haftende Gesellschafterin: Fischbacher GmbH · Sitz München · HRB 278787<br/>\n"
+"                    USt-Id. DE355684446 · St-Nr. 143/518/60562 ·\n"
+"                    Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez"
+msgstr ""
+"Kommanditgesellschaft · Sitz München, HRA 116761 ·\n"
+"                    Persönlich haftende Gesellschafterin: Fischbacher GmbH · Sitz München · HRB 278787<br/>\n"
+"                    USt-Id. DE355684446 · St-Nr. 143/518/60562 ·\n"
+"                    Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Your Order Number:"
-msgstr "Ihre Bestellnummer:"
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_bank_statement_line__is_rent
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_move__is_rent
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__is_rent
+msgid "Rent"
+msgstr "Miete"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Shipping Method:"
-msgstr "Versandart:"
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_bank_statement_line__rental_billing_period_end
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_move__rental_billing_period_end
+msgid "Rental Billing Period End"
+msgstr "Ende des Mietabrechnungszeitraums"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Delivery Terms:"
-msgstr "Lieferbedingungen:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Salesperson:"
-msgstr "Verkäufer:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Phone:"
-msgstr "Telefon:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Email:"
-msgstr "E-Mail:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Project:"
-msgstr "Projekt:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Client-Vat:"
-msgstr "USt-IdNr. Kunde:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Rental Invoice"
-msgstr "Mietrechnung"
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_bank_statement_line__rental_billing_period_start
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_account_move__rental_billing_period_start
+msgid "Rental Billing Period Start"
+msgstr "Beginn des Mietabrechnungszeitraums"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
@@ -100,38 +410,289 @@ msgstr "Mietrechnungsentwurf"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Invoice"
-msgstr "Rechnung"
+msgid "Rental Invoice"
+msgstr "Mietrechnung"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Rental Invoice - %s"
+msgstr "Mietrechnung - %s"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Rental Pro-Forma Invoice - %s"
+msgstr "Miet-Pro-forma-Rechnung - %s"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Rental price /"
+msgstr "Mietpreis /"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__repair_id
+msgid "Repair Order"
+msgstr "Reparaturauftrag"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Repair:"
+msgstr "Reparatur:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_res_partner__reverse_charge
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_res_users__reverse_charge
+msgid "Reverse Charge"
+msgstr "Reverse-Charge-Verfahren"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Order - %s"
+msgstr "Auftrag - %s"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Order"
+msgstr "Auftrag"
+
+#. module: ol_invoice_report_changes
+#: model:ir.actions.report,name:ol_invoice_report_changes.action_report_saleorder_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+msgid "Order Confirmation"
+msgstr "Auftragsbestätigung"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Order Confirmation - %s"
+msgstr "Auftragsbestätigung - %s"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Order Date:"
+msgstr "Bestelldatum:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__order_number
+msgid "Order Number"
+msgstr "Angebots-Nr."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Order Number:"
+msgstr "Bestellnummer:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Ordered By:"
+msgstr "Bestellt durch:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__client_order_name
+msgid "Ordered by"
+msgstr "Bestellt durch"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "Ordered by:"
+msgstr "Bestellt durch:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+msgid "POS"
+msgstr "POS"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Payment Terms:"
+msgstr "Zahlungsbedingungen:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Payable immediately, or at the latest within 10 days net."
+msgstr "Sofort fällig, spätestens innerhalb von 10 Tagen netto."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Phone:"
+msgstr "Telefon:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Pos."
+msgstr "Pos."
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Pro-Forma Invoice - %s"
+msgstr "Pro-forma-Rechnung - %s"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
 msgid "Proforma Invoice"
-msgstr "Proforma-Rechnung"
+msgstr "Pro-forma-Rechnung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Prices:"
+msgstr "Preise:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Project:"
+msgstr "Bauvorhaben:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__purchase_no
+msgid "Purchase"
+msgstr "Kauf"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Quantity"
+msgstr "Menge"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/views/report_action.xml:0
+msgid "Quotation - %s"
+msgstr "Angebot - %s"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Cancelled Invoice"
-msgstr "Stornierte Rechnung"
+msgid "Quote number:"
+msgstr "Auftragsnummer:"
+
+#. module: ol_invoice_report_changes
+#: model:mail.template,name:ol_invoice_report_changes.email_template_edi_sale_proforma
+msgid "Sales: Send Quotation"
+msgstr "Vertrieb: Angebot senden"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model,name:ol_invoice_report_changes.model_sale_order
+msgid "Sales Order"
+msgstr "Verkaufsauftrag"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_order_preview_inherit
+msgid ""
+"<strong>Reference:</strong>\n"
+"                    <br/>"
+msgstr ""
+"<strong>Referenz:</strong>\n"
+"                    <br/>"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Salesperson:"
+msgstr "Vertriebsmitarbeiter:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_invoice
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.external_layout_for_sale_confirmation
+msgid "Seite <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr "Seite <span class=\"page\"/> / <span class=\"topage\"/>"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Shipping Method:"
+msgstr "Versandart:"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__delivery_time
+msgid "Specify the estimated delivery time. This information will be displayed on the quotation and sales order."
+msgstr "Geben Sie die voraussichtliche Lieferzeit an. Diese Information wird im Angebot und im Verkaufsauftrag angezeigt."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__billing_period_start
+msgid "Start date of the current billing period, calculated from the next invoice date."
+msgstr "Startdatum des aktuellen Abrechnungszeitraums, berechnet ausgehend vom nächsten Rechnungsdatum."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__client_order_number
+msgid "The customer's internal order or reference number for this order."
+msgstr "Die interne Bestell- oder Referenznummer des Kunden für diese Bestellung."
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Corrected Invoice"
-msgstr "Korrigierte Rechnung"
+msgid "Total Amount:"
+msgstr "Gesamtsumme:"
 
 #. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Draft Corrected Invoice"
-msgstr "Entwurf korrigierte Rechnung"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Total:"
+msgstr "Bruttobetrag:"
 
 #. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Cancelled Corrected Invoice"
-msgstr "Stornierte korrigierte Rechnung"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Unit Price"
+msgstr "Einzelpreis"
 
 #. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Vendor Corrected Invoice"
-msgstr "Korrigierte Lieferantenrechnung"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Untaxed Amount:"
+msgstr "Nettobetrag:"
+
+#. module: ol_invoice_report_changes
+#: model:mail.template,description:ol_invoice_report_changes.email_template_edi_sale_proforma
+msgid "Used by salespeople when they send quotations or proforma to prospects"
+msgstr "Wird von Vertriebsmitarbeitern verwendet, wenn sie Angebote oder Pro-forma-Rechnungen an Interessenten senden."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "VAT 19%:"
+msgstr "19 % MwSt.:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Validity Date:"
+msgstr "Gültigkeitsdatum:"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
@@ -140,53 +701,34 @@ msgstr "Lieferantenrechnung"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Billing period from"
-msgstr "Abrechnungszeitraum von"
+msgid "Vendor Corrected Invoice"
+msgstr "Korrigierte Lieferantenrechnung"
 
 #. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__client_order_number
+msgid "Your Order Number"
+msgstr "Ihre Bestell-Nr."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Your Order Number:"
+msgstr "Ihre Bestell-Nr.:"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "subject to prior sale, plus statutory VAT."
+msgstr "Zwischenverkauf vorbehalten, zuzüglich gesetzlicher Mehrwertsteuer."
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
 msgid "to"
 msgstr "bis"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Order Number:"
-msgstr "Auftragsnummer:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Description"
-msgstr "Beschreibung"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Quantity"
-msgstr "Menge"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Unit Price"
-msgstr "Einzelpreis"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Amount"
-msgstr "Betrag"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Agreements exist that may result in subsequent reductions of the final price."
-msgstr "Es bestehen Vereinbarungen, die zu nachträglichen Minderungen des Endpreises führen können."
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Payment Terms:"
-msgstr "Zahlungsbedingungen:"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Payable immediately, or at the latest within 10 days net."
-msgstr "Sofort zahlbar, spätestens jedoch innerhalb von 10 Tagen netto."
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
@@ -195,40 +737,91 @@ msgstr "mit"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "discount unit"
-msgstr "Skonto bis"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "After that"
-msgstr "Danach"
-
-#. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
 msgid "without deduction."
 msgstr "ohne Abzug."
 
 #. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Untaxed Amount:"
-msgstr "Nettobetrag:"
+msgid "Lease Agreement No.:"
+msgstr "Mietvertrags-Nr.:"
 
 #. module: ol_invoice_report_changes
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Total Amount:"
-msgstr "Gesamtbetrag:"
+msgid "Client VAT:"
+msgstr "Umsatzsteuer-ID des Kunden:"
 
 #. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
 #: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "VAT 19%:"
-msgstr "MwSt. 19%:"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "Service Recipient:"
+msgstr "Leistungsempfänger:"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "Total:"
-msgstr "Gesamt:"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "(Optional)"
+msgstr "(Optional)"
 
 #. module: ol_invoice_report_changes
-#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.report_invoice_with_payments_inherit
-msgid "*** Value added tax is owed by the recipient of the service (reverse charge) ***"
-msgstr "*** Die Umsatzsteuer schuldet der Leistungsempfänger (Reverse Charge) ***"
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "(Prices hidden)"
+msgstr "(Preise ausgeblendet)"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+msgid "(Composition hidden)"
+msgstr "(Zusammensetzung ausgeblendet)"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+msgid "Pro-Forma Invoice"
+msgstr "Proforma-Rechnung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.pro_forma_invoice_quotation_report
+msgid "Rental Pro-Forma Invoice"
+msgstr "Miet-Proforma-Rechnung"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__lease_agreement_no
+msgid "Lease Agreement No."
+msgstr "Mietvertrags-Nr."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,field_description:ol_invoice_report_changes.field_sale_order__offer_intro_text
+msgid "Offer Introduction Text"
+msgstr "Einleitungstext für das Angebot"
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__repair_id
+msgid "Link to the repair order (only for repair orders)."
+msgstr "Verknüpfung zum Reparaturauftrag (nur für Reparaturaufträge)."
+
+#. module: ol_invoice_report_changes
+#: model:ir.model.fields,help:ol_invoice_report_changes.field_sale_order__client_order_name
+msgid "Name of the person or department who placed this order."
+msgstr "Name der Person oder Abteilung, die den Auftrag erteilt hat."
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/model/sale_order.py:0
+#. odoo-python
+#, python-format
+msgid "Billing period from %(start)s to %(end)s"
+msgstr "Abrechnungszeitraum vom %(start)s bis zum %(end)s"
+
+#. module: ol_invoice_report_changes
+#: code:addons/ol_invoice_report_changes/model/sale_order.py:0
+#. odoo-python
+msgid "To be agreed"
+msgstr "Nach Vereinbarung"
+
+#. module: ol_invoice_report_changes
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_new
+#: model_terms:ir.ui.view,arch_db:ol_invoice_report_changes.sale_report_confirmation
+msgid "Delivery time:"
+msgstr "Lieferzeit:"

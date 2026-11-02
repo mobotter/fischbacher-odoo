@@ -1,0 +1,249 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ol_extension
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-25 14:24+0000\n"
+"PO-Revision-Date: 2026-08-25 16:24+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_invoice_document_inherit
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_saleorder_document_inherit
+msgid "<span class=\"fw-bold\">Beneficiary:</span>"
+msgstr "<span class=\"fw-bold\">Leistungsempfänger:</span>"
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_saleorder_document_inherit
+msgid "<span class=\"fw-bold\">Invoicing Address:</span>"
+msgstr "<span class=\"fw-bold\">Rechnungsadresse:</span>"
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_saleorder_document_inherit
+msgid "<span class=\"fw-bold\">Invoicing and Shipping Address:</span>"
+msgstr "<span class=\"fw-bold\">Rechnungs- und Lieferadresse:</span>"
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_invoice_document_inherit
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_saleorder_document_inherit
+msgid "<span class=\"fw-bold\">Shipping Address:</span>"
+msgstr "<span class=\"fw-bold\">Lieferadresse:</span>"
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_delivery_document2_inherit
+msgid "<strong>Warehouse</strong>"
+msgstr "<strong>Lagerort</strong>"
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__buchh
+msgid "Buchh."
+msgstr "Buchh."
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.res_partner_form_inherit
+msgid "Client Info"
+msgstr "Kundeninformationen"
+
+#. module: ol_extension
+#: model:ir.model,name:ol_extension.model_client_info
+#: model:ir.model.fields,field_description:ol_extension.field_res_partner__client_info_ids
+#: model:ir.model.fields,field_description:ol_extension.field_res_users__client_info_ids
+msgid "Client Info Lines"
+msgstr "Kundeninfo-Zeilen"
+
+#. module: ol_extension
+#: model:ir.model,name:ol_extension.model_res_partner
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__partner_id
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__partner_id
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: ol_extension
+#: model:ir.model,name:ol_extension.model_contact_person
+#: model:ir.model.fields,field_description:ol_extension.field_res_partner__contact_person_ids
+#: model:ir.model.fields,field_description:ol_extension.field_res_users__contact_person_ids
+#: model_terms:ir.ui.view,arch_db:ol_extension.res_partner_form_inherit
+msgid "Contact Persons"
+msgstr "Ansprechpartner"
+
+#. module: ol_extension
+#: model:ir.model,website_form_label:ol_extension.model_res_partner
+msgid "Create a Customer"
+msgstr "Kunden erstellen"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__create_uid
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__create_uid
+msgid "Created by"
+msgstr "Erstellt von"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__create_date
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__create_date
+msgid "Created on"
+msgstr "Erstellt am"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_sale_order__delivery_address
+msgid "Delivery Address 2"
+msgstr "Alternative Lieferadresse"
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_delivery_document_inherit
+msgid "Delivery Note"
+msgstr "Liefernotiz"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_sale_order__delivery_time
+msgid "Delivery time"
+msgstr "Lieferzeit"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__display_name
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__display_name
+#: model:ir.model.fields,field_description:ol_extension.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ol_extension.field_sale_order__display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__dr_med
+msgid "Dr. med."
+msgstr "Dr. med."
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__email
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__first_name
+msgid "First Name"
+msgstr "Vorname"
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__fr
+msgid "Fr."
+msgstr "Fr."
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__heerr
+msgid "Heerr"
+msgstr "Herr"
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__hr
+msgid "Hr"
+msgstr "Hr."
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__id
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__id
+#: model:ir.model.fields,field_description:ol_extension.field_res_partner__id
+#: model:ir.model.fields,field_description:ol_extension.field_sale_order__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__info
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__info
+msgid "Info"
+msgstr "Information"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__last_name
+msgid "Last Name"
+msgstr "Nachname"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__write_uid
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert von"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__write_date
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__mobile
+msgid "Mobile"
+msgstr "Mobil"
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__mr
+msgid "Mr."
+msgstr "Hr."
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__ms
+msgid "Ms."
+msgstr "Fr."
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__phone
+msgid "Phone"
+msgstr "Telefon"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__phone_prefix
+msgid "Phone Prefix"
+msgstr "Vorwahl"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__pos
+msgid "Pos"
+msgstr "POS"
+
+#. module: ol_extension
+#: model:ir.model,name:ol_extension.model_sale_order
+msgid "Sales Order"
+msgstr "Verkaufsauftrag"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_contact_person__salutation
+msgid "Salutation"
+msgstr "Anrede"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_client_info__sequence
+msgid "Sequence"
+msgstr "Sequenz"
+
+#. module: ol_extension
+#: model:ir.model.fields,field_description:ol_extension.field_res_partner__short_term
+#: model:ir.model.fields,field_description:ol_extension.field_res_users__short_term
+msgid "Short Term"
+msgstr "Kurzbezeichung"
+
+#. module: ol_extension
+#: model:ir.model.fields,help:ol_extension.field_sale_order__delivery_time
+msgid ""
+"Specify the estimated delivery time. This information will be displayed on "
+"the quotation and sales order."
+msgstr ""
+"Gib die geschätzte Lieferzeit an. Diese Informationen werden im Angebot und "
+"im Verkaufsauftrag angezeigt."
+
+#. module: ol_extension
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_invoice_document_inherit
+#: model_terms:ir.ui.view,arch_db:ol_extension.report_saleorder_document_inherit
+msgid "Tax ID"
+msgstr "USt-IdNr."
+
+#. module: ol_extension
+#: model:ir.model.fields.selection,name:ol_extension.selection__contact_person__salutation__vater
+msgid "Vater"
+msgstr "Vater"

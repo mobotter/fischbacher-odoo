@@ -23,14 +23,14 @@
         </record>
 
         <!-- 5. Mietpark → sequence 20 + Icon + Name -->
-        <record id="sale_renting.rental_menu_root" model="ir.ui.menu">
+        <record id="sale_renting.rental_menu_root" model="ir.ui.menu" context="{'lang': 'de_DE'}">
             <field name="sequence">20</field>
             <field name="name">Mietpark</field>
             <field name="web_icon">fb_modul_icons,static/description/mietpark.png</field>
         </record>
 
         <!-- 6. Geda-Vermietung → sequence 25 + Icon + Name -->
-        <record id="sale_subscription.menu_sale_subscription_root" model="ir.ui.menu">
+        <record id="sale_subscription.menu_sale_subscription_root" model="ir.ui.menu" context="{'lang': 'de_DE'}">
             <field name="sequence">25</field>
             <field name="name">Geda-Vermietung</field>
             <field name="web_icon">fb_modul_icons,static/description/abonnements.png</field>

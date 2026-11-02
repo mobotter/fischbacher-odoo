@@ -1,26 +1,50 @@
 /** @odoo-module */
 
-import { ReceiptScreen } from "@point_of_sale/app/screens/receipt_screen/receipt_screen";
-import { patch } from "@web/core/patch";
+import { PosStore } from "@point_of_sale/app/services/pos_store";
+import { patch } from "@web/core/utils/patch";
 
-/**
- * Patch ReceiptScreen, um den Kassenbon automatisch 2x zu drucken.
- * Nach dem Bestellen wird der ReceiptScreen angezeigt und der Druck-Befehl
- * wird automatisch zweimal ausgelöst.
- */
+patch(PosStore.prototype, {
+    async printReceipt(...args) {
+        if (this._doublePrintInProgress) {
+            // Verhindert rekursive Aufrufe
+            return super.printReceipt(...args);
+        }
 
-patch(ReceiptScreen.prototype, {
-    /**
-     * Überschreibt die validatePayment-Methode, um nach dem ersten Druck
-     * automatisch einen zweiten Druck auszulösen.
-     */
-    async validatePayment() {
-        // Erster Druck (Original-Verhalten)
-        await super.validatePayment();
+        this._doublePrintInProgress = true;
 
-        // Zweiter Druck - kurz verzögert, damit der erste Druck abgeschlossen ist
-        setTimeout(() => {
-            this.env.pos.printReceipt();
-        }, 1000);
+        try {
+            // Erster Druckversuch
+            const firstPrintPromise = super.printReceipt(...args);
+            
+            // Warte auf Abschluss oder Timeout (max. 5 Sekunden)
+            const timeoutPromise = new Promise((resolve) => {
+                setTimeout(() => resolve({ timedOut: true }), 5000);
+            });
+
+            const firstResult = await Promise.race([
+                firstPrintPromise.then(() => ({ success: true })),
+                timeoutPromise
+            ]);
+
+            // Kurze Pause, aber nur wenn erster Druck erfolgreich war
+            if (firstResult.success) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                
+                // Zweiter Druckversuch
+                const secondResult = await super.printReceipt(...args);
+                return secondResult;
+            }
+
+            // Wenn erster Druck fehlschlug, trotzdem zweiten Versuch machen
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return await super.printReceipt(...args);
+
+        } catch (error) {
+            // Fehler loggen, aber nicht werfen, um UI-Flow nicht zu unterbrechen
+            console.warn("Belegdruck fehlgeschlagen:", error);
+            throw error;
+        } finally {
+            this._doublePrintInProgress = false;
+        }
     },
 });

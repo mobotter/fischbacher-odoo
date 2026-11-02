@@ -2,8 +2,8 @@
 
 {
     'name': 'Adds Custom Fields to Products',
-    'author': 'Odolution',
-    'version': '19.0.1.0.0',
+    'author': 'Moritz Kern, Odolution',
+    'version': '19.0.1.1.0',
     'depends': ['sale', 'website_sale'],
     'data': [
         'views/product_form.xml',
@@ -11,7 +11,7 @@
         'views/product_attribute.xml',
         'views/category.xml',
         'views/menu.xml',
-        "security/ir.model.access.csv",
+        'security/ir.model.access.csv',
     ],
     'external_dependencies': {
     },

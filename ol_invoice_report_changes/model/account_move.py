@@ -56,3 +56,11 @@ class AccountMove(models.Model):
                 rec.discount_amount = rec.amount_total - (
                     rec.amount_total * rec.invoice_payment_term_id.discount_percentage / 100
                 )
+
+    def _get_report_base_filename(self):
+        """Überschreibt den Standard-Dateinamen für PDF-Rechnungen"""
+        self.ensure_one()
+        if self.move_type in ('out_invoice', 'out_refund') and self.name:
+            # Dateiname: INV/2025/0001.pdf (mit Schrägstrichen)
+            return self.name
+        return super()._get_report_base_filename()

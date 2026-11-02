@@ -10,6 +10,11 @@
                 <field name="delivery_address" />
             </xpath>
             <!-- TASK ID: 51580 -->
+            
+            <!-- NEU: Delivery Time nach Commitment Date einfügen -->
+            <xpath expr="//field[@name='commitment_date']" position="after">
+                <field name="delivery_time" />
+            </xpath>
         </field>
     </record>
 </odoo>

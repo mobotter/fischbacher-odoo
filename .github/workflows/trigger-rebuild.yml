@@ -1,0 +1,21 @@
+name: Trigger Rebuild
+
+on:
+  workflow_dispatch:  # Manueller Trigger
+
+jobs:
+  empty-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: production
+          fetch-depth: 0
+
+      - name: Create empty commit
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git commit --allow-empty -m "Trigger rebuild from Actions"
+          git push

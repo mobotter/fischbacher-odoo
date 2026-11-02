@@ -1,0 +1,12 @@
+<odoo noupdate="1">
+    <record id="cron_history_import" model="ir.cron">
+        <field name="name">Abwertungstabellen: Paketimport</field>
+        <field name="model_id" ref="model_product_history_import_job"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_import()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active">True</field>
+    </record>
+</odoo>

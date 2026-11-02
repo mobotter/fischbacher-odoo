@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_history_user,inventory.history.user,model_product_inventory_history,base.group_user,1,1,1,1
+job_admin,history.import.job.admin,model_product_history_import_job,base.group_system,1,1,1,1
+error_admin,history.import.error.admin,model_product_history_import_error,base.group_system,1,1,1,1

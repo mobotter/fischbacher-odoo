@@ -1,116 +1,390 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="sale_order_mietkalkulation_tab" model="ir.ui.view">
         <field name="name">sale.order.mietkalkulation.tab</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_subscription.sale_subscription_primary_form_view"/>
+        <field name="inherit_id"
+               ref="sale_subscription.sale_subscription_primary_form_view"/>
+        <field name="priority">1</field>
         <field name="arch" type="xml">
+
             <xpath expr="//notebook" position="inside">
                 <page string="Mietkalkulation" name="mietkalkulation">
                     <div class="mk_tab_wrapper">
 
-                        <!-- ── EINGABEN ───────────────────────────────────── -->
-                        <group string="📋 Eingaben">
+                        <!-- Mietpreis -->
+                        <group string="Mietpreis">
                             <group>
-                                <field name="mk_traglast"/>
+                                <field name="mk_preistabelle_id"
+                                       string="Aufzug / Preismodell"
+                                       placeholder="Aufzug auswählen ..."
+                                       options="{
+                                           'no_create': True,
+                                           'no_create_edit': True,
+                                           'no_open': True
+                                       }"/>
+
                                 <field name="mk_aufbauhoehe"/>
-                                <field name="mk_buehnengroesse"/>
-                                <field name="mk_personenbefoerderung"/>
-                                <field name="mk_extra_stationen"/>
+
+                                <!-- Technische Steuerfelder für die Sichtbarkeit -->
+                                <field name="mk_buehnengroesse_sichtbar"
+                                       invisible="1"/>
+
+                                <field name="mk_personenbefoerderung_sichtbar"
+                                       invisible="1"/>
+
+                                <!-- Nur bei GEDA 1200 Z/ZP und GEDA 1500 Z/ZP -->
+                                <field name="mk_buehnengroesse"
+                                       invisible="not mk_buehnengroesse_sichtbar"/>
                             </group>
+
                             <group>
                                 <field name="mk_mietdauer_wochen"/>
-                                <field name="mk_transport_stunden"/>
+
+                                <field name="mk_extra_stationen"
+                                       string="Zusätzliche Be-/Entladestellen"
+                                       help="EG und 1. OG sind im Grundpreis enthalten. Hier nur zusätzliche Be-/Entladestellen angeben."/>
+
+                                <div class="text-muted">
+                                    EG und 1. OG sind im Grundpreis enthalten.
+                                </div>
                             </group>
                         </group>
 
-                        <separator string="📊 Berechnung Mietpreis"/>
+                        <!-- Preiskomponenten und Rabatt -->
                         <group>
                             <group string="Preiskomponenten">
-                                <field name="mk_grundpreis"          widget="monetary" readonly="1"/>
-                                <field name="mk_extra_hoehenabschnitte"                readonly="1"/>
-                                <field name="mk_mehrpreis_hoehe"     widget="monetary" readonly="1"/>
-                                <field name="mk_mehrpreis_stationen" widget="monetary" readonly="1"/>
-                                <field name="mk_mehrpreis_buehne"    widget="monetary" readonly="1"/>
-                                <field name="mk_mehrpreis_person"    widget="monetary" readonly="1"/>
-                                <field name="mk_zwischensumme"       widget="monetary" readonly="1"/>
+                                <field name="mk_grundpreis"
+                                       widget="monetary"
+                                       readonly="1"/>
+
+                                <field name="mk_extra_hoehenabschnitte"
+                                       readonly="1"/>
+
+                                <field name="mk_mehrpreis_hoehe"
+                                       widget="monetary"
+                                       readonly="1"/>
+
+                                <field name="mk_mehrpreis_stationen"
+                                       widget="monetary"
+                                       readonly="1"
+                                       invisible="mk_extra_stationen &lt;= 0"/>
+
+                                <field name="mk_mehrpreis_buehne"
+                                       widget="monetary"
+                                       readonly="1"
+                                       invisible="not mk_buehnengroesse_sichtbar"/>
+
+                                <field name="mk_mehrpreis_person"
+                                       widget="monetary"
+                                       readonly="1"
+                                       invisible="not mk_personenbefoerderung_sichtbar"/>
+
+                                <field name="mk_zwischensumme"
+                                       widget="monetary"
+                                       readonly="1"/>
                             </group>
-                            <group string="Rabatt &amp; Endpreis">
-                                <field name="mk_rabatt_prozent"            readonly="1"
-                                       string="Rabatt % (nach Mietdauer)"/>
-                                <field name="mk_preis_nach_rabatt"         widget="monetary" readonly="1"/>
-                                <field name="mk_preis_verlaengerungswoche" widget="monetary" readonly="1"/>
-                                <field name="mk_maschinenbruch"            widget="monetary" readonly="1"
-                                       help="4% Maschinenbruchversicherung auf Preis nach Rabatt"/>
-                                <field name="mk_gesamt_4wochen"            widget="monetary" readonly="1"
-                                       string="✅ Gesamt pro 4 Wochen (€)"/>
-                                <field name="mk_gesamt_mietdauer"          widget="monetary" readonly="1"/>
+
+                            <group string="Rabatt und Endpreis">
+                                <field name="mk_rabatt_manuell"/>
+
+                                <field name="mk_rabatt_prozent_override"
+                                       string="Rabatt manuell (%)"
+                                       invisible="not mk_rabatt_manuell"
+                                       help="Manueller Rabatt zwischen 0,00 % und 100,00 %."/>
+
+                                <field name="mk_rabatt_prozent"
+                                       string="Rabatt angewendet (%)"
+                                       readonly="1"/>
+
+                                <label for="mk_preis_nach_rabatt"
+                                       string="Preis nach Rabatt (4 Wochen)"/>
+
+                                <div class="o_mk_price_value">
+                                    <field name="mk_preis_nach_rabatt"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="oe_inline"/>
+
+                                    <span class="text-muted ms-1">(</span>
+
+                                    <field name="mk_preis_nach_rabatt_roh"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="oe_inline text-muted"/>
+
+                                    <span class="text-muted">)</span>
+                                </div>
+
+                                <label for="mk_preis_verlaengerungswoche"
+                                       string="Preis Verlängerungswoche"/>
+
+                                <div class="o_mk_price_value">
+                                    <field name="mk_preis_verlaengerungswoche"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="oe_inline"/>
+
+                                    <span class="text-muted ms-1">(</span>
+
+                                    <field name="mk_preis_verlaengerungswoche_roh"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="oe_inline text-muted"/>
+
+                                    <span class="text-muted">)</span>
+                                </div>
+
+                                <label for="mk_maschinenbruch"
+                                       string="Maschinenbruchversicherung 4% (€)"/>
+
+                                <div class="o_mk_price_value">
+                                    <field name="mk_maschinenbruch"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="oe_inline"/>
+
+                                    <span class="text-muted ms-1">(</span>
+
+                                    <field name="mk_maschinenbruch_roh"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="oe_inline text-muted"/>
+
+                                    <span class="text-muted">)</span>
+                                </div>
+
+                                <field name="mk_gesamt_4wochen"
+                                       widget="monetary"
+                                       readonly="1"
+                                       string="Gesamt pro 4 Wochen (€)"/>
+
+                                <div colspan="2"
+                                     class="alert alert-success w-100 col-12 p-4 mt-3 mb-3 rounded-3"
+                                     role="status"
+                                     invisible="mk_gesamt_mietdauer &lt;= 0">
+                                    <label for="mk_gesamt_mietdauer"
+                                           string="Gesamtpreis für komplette Mietdauer (€)"
+                                           class="fw-bold fs-4 text-success"/>
+
+                                    <field name="mk_gesamt_mietdauer"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="fw-bold fs-1 text-success"/>
+                                </div>
+
+                                <div colspan="2"
+                                     class="alert alert-warning w-100 col-12 p-4 mt-3 mb-3 rounded-3"
+                                     role="status"
+                                     invisible="mk_gesamt_mietdauer &gt; 0">
+                                    <label for="mk_gesamt_mietdauer"
+                                           string="Gesamtpreis für komplette Mietdauer (€)"
+                                           class="fw-bold fs-4 text-warning-emphasis"/>
+
+                                    <field name="mk_gesamt_mietdauer"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="fw-bold fs-1 text-warning-emphasis"/>
+                                </div>
                             </group>
                         </group>
 
-                        <separator string="🔧 Montage &amp; Transport"/>
+                        <!-- Montage -->
+                        <separator string="Montage"/>
+
                         <group>
-                            <group string="Montage-Einstellwerte">
-                                <field name="mk_monteur_stundensatz" widget="monetary"/>
-                                <field name="mk_helfer_stundensatz"  widget="monetary"/>
-                                <field name="mk_std_je_station"/>
-                                <field name="mk_faktor_geruest"/>
-                                <field name="mk_faktor_gebaeude"/>
+                            <group string="Montage-Einstellungen">
+                                <field name="mk_montageart"/>
+
+                                <field name="mk_monteur_stundensatz"
+                                       widget="monetary"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_mit_helfer"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_helfer_stundensatz"
+                                       widget="monetary"
+                                       invisible="mk_montageart == 'selbstmontage' or not mk_mit_helfer"/>
+
+                                <field name="mk_std_je_station"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_faktor_geruest"
+                                       invisible="mk_montageart != 'geruest'"/>
+
+                                <field name="mk_faktor_gebaeude"
+                                       invisible="mk_montageart != 'gebaeude'"/>
                             </group>
-                            <group string="Berechnete Stunden">
-                                <field name="mk_stunden_aufbau"     readonly="1"/>
-                                <field name="mk_stunden_stationen"  readonly="1"/>
-                                <field name="mk_gesamtstunden"      readonly="1"/>
-                                <field name="mk_team_kosten_stunde" widget="monetary" readonly="1"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Montagekosten ohne Transport">
-                                <field name="mk_montage_geruest"  widget="monetary" readonly="1"/>
-                                <field name="mk_montage_gebaeude" widget="monetary" readonly="1"/>
-                            </group>
-                            <group string="Kosten inkl. Transport (LKW)">
-                                <field name="mk_transportkosten_lkw"     widget="monetary" readonly="1"/>
-                                <field name="mk_montage_gesamt_geruest"  widget="monetary" readonly="1"/>
-                                <field name="mk_montage_gesamt_gebaeude" widget="monetary" readonly="1"/>
+
+                            <group string="Berechnete Montage- und Demontagezeit">
+                                <field name="mk_stunden_aufbau"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_stunden_stationen"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_gesamtstunden"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_demontage_stunden"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_team_kosten_stunde"
+                                       widget="monetary"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
+
+                                <field name="mk_montage_gesamt"
+                                       widget="monetary"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"
+                                       string="Gesamtpreis für Montage (€)"/>
+
+                                <field name="mk_demontage_kosten"
+                                       widget="monetary"
+                                       readonly="1"
+                                       invisible="mk_montageart == 'selbstmontage'"/>
                             </group>
                         </group>
 
-                        <!-- ── PREISTABELLE (aus mk.preistabelle) ────────── -->
-                        <separator string="📋 Mietpreisliste Lastenaufzüge / Transportbühnen (pro 4 Wochen)"/>
-                        <field name="mk_preistabelle_ids"
-                               readonly="1"
-                               nolabel="1"
-                               mode="list"
-                               context="{'tree_view_ref': 'mietkalkulation_lastenaufzug.mk_preistabelle_view_tree_readonly'}">
-                            <list create="0" edit="0" delete="0">
-                                <field name="traglast"/>
-                                <field name="grundpreis" widget="monetary"/>
-                                <field name="mehrpreis_hoehe" widget="monetary"/>
-                                <field name="mehrpreis_station" widget="monetary"/>
-                                <field name="mehrpreis_buehne_145" widget="monetary"/>
-                                <field name="mehrpreis_buehne_165" widget="monetary"/>
-                                <field name="mehrpreis_person" widget="monetary"/>
-                            </list>
-                        </field>
-                        <div class="mk_preistabelle_hinweis">
-                            <em>Hinweis: 4% Maschinenbruchversicherung wird auf den berechneten Mietpreis (pro 4 Wochen) aufgeschlagen. – Preisliste 01/2023</em>
+                        <!-- Transport -->
+                        <separator string="Transport"/>
+
+                        <group>
+                            <group string="Transport-Einstellungen">
+                                <field name="mk_mit_transport"/>
+
+                                <field name="mk_transport_stunden"
+                                       invisible="not mk_mit_transport"/>
+                            </group>
+
+                            <group string="Transportkosten">
+                                <div colspan="2"
+                                     class="alert alert-success w-100 col-12 p-4 mt-3 mb-3 rounded-3"
+                                     role="status"
+                                     invisible="mk_transportkosten_lkw &lt;= 0">
+                                    <label for="mk_transportkosten_lkw"
+                                           string="Transportkosten (€)"
+                                           class="fw-bold fs-4 text-success"/>
+
+                                    <field name="mk_transportkosten_lkw"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="fw-bold fs-2 text-success"/>
+                                </div>
+
+                                <div colspan="2"
+                                     class="alert alert-warning w-100 col-12 p-4 mt-3 mb-3 rounded-3"
+                                     role="status"
+                                     invisible="mk_transportkosten_lkw &gt; 0">
+                                    <label for="mk_transportkosten_lkw"
+                                           string="Transportkosten (€)"
+                                           class="fw-bold fs-4 text-warning-emphasis"/>
+
+                                    <field name="mk_transportkosten_lkw"
+                                           widget="monetary"
+                                           readonly="1"
+                                           nolabel="1"
+                                           class="fw-bold fs-2 text-warning-emphasis"/>
+                                </div>
+                            </group>
+                        </group>
+
+                        <!-- Zusatzbedingungen -->
+                        <separator string="Zusatzbedingungen"/>
+
+                        <group>
+                            <group string="Wartung">
+                                <field name="mk_wartung_inklusive"/>
+                            </group>
+
+                            <group string="Baustrom">
+                                <field name="mk_baustromanschluss"
+                                       placeholder="Baustromanschluss auswählen ..."/>
+                            </group>
+                        </group>
+
+                        <!-- Aktion -->
+                        <div class="d-flex justify-content-end align-items-center mb-3">
+                            <button name="action_generate_mk_quotation_lines"
+                                    type="object"
+                                    string="Angebot generieren"
+                                    icon="fa-file-text-o"
+                                    class="btn-primary"
+                                    confirm="Die bisherigen automatisch erzeugten Mietkalkulations-Notizen werden ersetzt. Fortfahren?"
+                                    invisible="state == 'cancel'"/>
                         </div>
 
-                        <!-- ── HINWEISE ───────────────────────────────────── -->
-                        <separator string="ℹ️ Hinweise zur Kalkulation"/>
+                        <!-- Mietpreisliste -->
+                        <separator string="Mietpreisliste Lastenaufzüge / Transportbühnen (pro 4 Wochen)"/>
+
+                        <field name="mk_preistabelle_ids"
+                               readonly="1"
+                               nolabel="1">
+                            <list create="0" edit="0" delete="0">
+                                <field name="name" string="Aufzug"/>
+                                <field name="beschreibung"/>
+                                <field name="grundpreis"/>
+                                <field name="mehrpreis_hoehe"/>
+                                <field name="mehrpreis_station"/>
+                                <field name="mehrpreis_buehne_145"/>
+                                <field name="mehrpreis_buehne_165"/>
+                                <field name="mehrpreis_person"/>
+                                <field name="std_je_5m" optional="hide"/>
+                            </list>
+                        </field>
+
+                        <div class="mk_preistabelle_hinweis">
+                            <em>
+                                Hinweis: 4 % Maschinenbruchversicherung wird auf den berechneten
+                                Mietpreis pro vier Wochen aufgeschlagen. Preisliste 01/2023.
+                            </em>
+                        </div>
+
+                        <!-- Hinweise -->
+                        <separator string="Hinweise zur Kalkulation"/>
+
                         <div class="alert alert-info" role="alert">
                             <ul>
-                                <li>Grundpreis gilt bis 15 m Aufbauhöhe (EG + 1. OG inkl.)</li>
+                                <li>Der Grundpreis gilt bis 15 m Aufbauhöhe (EG und 1. OG inklusive).</li>
                                 <li>Jede weitere 1,5 m Höhe wird mit dem jeweiligen Mehrpreis berechnet.</li>
-                                <li>4 % Maschinenbruchversicherung wird auf den Preis nach Rabatt aufgeschlagen.</li>
-                                <li>Rabattstaffeln: ab 2 Mt. 5 % | ab 3 Mt. 10 % | ab 4 Mt. 12 % | ab 6 Mt. 15 % | ab 12 Mt. 20 %</li>
+                                <li>Zusätzliche Be-/Entladestellen werden erst über EG und 1. OG hinaus berechnet.</li>
+                                <li>Die Bühnengröße kann nur bei GEDA 1200 Z/ZP und GEDA 1500 Z/ZP ausgewählt werden.</li>
+                                <li>Bei GEDA 200 Z, GEDA 300 Z und GEDA 500 Z wird kein Mehrpreis für Personenbeförderung berechnet.</li>
+                                <li>Bei allen anderen Aufzugmodellen wird der hinterlegte Mehrpreis für Personenbeförderung automatisch berechnet.</li>
+                                <li>Der Preis je Verlängerungswoche wird auf volle 1 € aufgerundet.</li>
+                                <li>Der Preis nach Rabatt für vier Wochen entspricht immer genau vier Verlängerungswochen.</li>
+                                <li>Die Maschinenbruchversicherung wird auf volle 1 € aufgerundet.</li>
+                                <li>Bei aktivierter Option „Rabatt manuell festlegen“ überschreibt der manuelle Rabatt die Rabattstaffel.</li>
+                                <li>Bei Selbstmontage / Bausatz werden keine Montage- und Demontagekosten berechnet.</li>
+                                <li>Die Demontagezeit und die Demontagekosten betragen 80 % der jeweiligen Montagewerte.</li>
+                                <li>Bei deaktivierter Option „Mit Helfer“ wird nur der Monteur-Stundensatz für die Montage und Demontage berechnet.</li>
+                                <li>Bei aktivierter Wartung werden 140,00 € pro vier Wochen für Wartung inklusive erforderlicher Schmiermittel berechnet.</li>
+                                <li>Bei deaktiviertem Transport werden keine LKW-Transportkosten berechnet.</li>
+                                <li>Rabattstaffeln: ab 2 Monaten 5 %, ab 3 Monaten 10 %, ab 4 Monaten 12 %, ab 6 Monaten 15 % und ab 12 Monaten 20 %.</li>
                             </ul>
                         </div>
 
-                    </div><!-- /.mk_tab_wrapper -->
+                    </div>
                 </page>
             </xpath>
+
         </field>
     </record>
+
 </odoo>

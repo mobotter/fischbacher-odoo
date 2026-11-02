@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bestellung -->
+    <record id="purchase.action_report_purchase_order"
+            model="ir.actions.report">
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+    </record>
+
+    <!-- Angebotsanfrage -->
+    <record id="purchase.report_purchase_quotation"
+            model="ir.actions.report">
+        <field name="paperformat_id"
+               ref="ol_invoice_report_changes.report_invoice_custom_paperformat"/>
+    </record>
+</odoo>

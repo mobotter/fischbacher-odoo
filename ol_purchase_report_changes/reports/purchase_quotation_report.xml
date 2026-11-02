@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_purchasequotation_document_inherit"
+              inherit_id="purchase.report_purchasequotation_document"
+              priority="30">
+
+        <xpath expr="." position="replace">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ol_invoice_report_changes.external_layout_for_invoice">
+                        <t t-set="o" t-value="doc"/>
+                        <t t-set="company" t-value="doc.company_id"/>
+                        <t t-set="vendor" t-value="doc.partner_id"/>
+                        <t t-set="buyer" t-value="doc.user_id"/>
+                        <t t-set="lines_to_report" t-value="doc.order_line"/>
+                        <t t-set="display_discount"
+                           t-value="any(line.discount for line in lines_to_report)"/>
+
+                        <style>
+                            .page {
+                                position: relative;
+                                border: 1px solid #fff;
+                            }
+
+                            .page table,
+                            .page tr,
+                            .page td,
+                            .page th {
+                                border: 0 !important;
+                                border-width: 0 !important;
+                                border-style: none !important;
+                                border-color: transparent !important;
+                                border-collapse: collapse !important;
+                                box-shadow: none !important;
+                                outline: none !important;
+                                background-image: none !important;
+                            }
+
+                            .page table {
+                                border-spacing: 0 !important;
+                                background: transparent !important;
+                            }
+
+                            .page .head-bottom th {
+                                border-bottom: 1px solid #cccccc !important;
+                            }
+
+                            .page .line-bottom td,
+                            .page .line-bottom th {
+                                border-bottom: 1px solid #e0e0e0 !important;
+                            }
+
+                            .fb_purchase_address_window {
+                                border: 1px solid #fff;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 85mm;
+                                height: 40mm;
+                                overflow: hidden;
+                                font-size: 10pt;
+                                line-height: 4.5mm;
+                            }
+
+                            .fb_purchase_return_address {
+                                height: 5mm;
+                                margin-bottom: 1.5mm;
+                                overflow: hidden;
+                                white-space: nowrap;
+                                font-size: 8pt;
+                                line-height: 3.5mm;
+                                border-bottom: 1px solid #666666;
+                            }
+
+                            .fb_purchase_recipient_address {
+                                padding-top: 1.5mm;
+                                padding-left: 0;
+                                white-space: normal;
+                                word-wrap: break-word;
+                                word-break: break-word;
+                            }
+
+                            .fb_purchase_information_block {
+                                border: 1px solid #fff;
+                                width: 85mm;
+                                min-height: 40mm;
+                                margin: 0 0 10mm auto;
+                                padding: 0;
+                                font-size: 13px;
+                                line-height: 1.35;
+                            }
+
+                            .fb_purchase_information_block table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+
+                            .fb_purchase_information_block td {
+                                vertical-align: top;
+                                padding: 0 0 1.2mm 0;
+                            }
+
+                            .fb_purchase_information_block .label {
+                                width: 46%;
+                                padding-right: 3mm;
+                                white-space: nowrap;
+                            }
+
+                            .fb_purchase_document_title {
+                                color: #1f6fd2;
+                                font-weight: 500;
+                                font-size: 26px;
+                                line-height: 1.2;
+                                margin: 0 0 5mm 0;
+                            }
+                        </style>
+
+                        <!-- Anschrift des Lieferanten -->
+                        <div class="fb_purchase_address_window">
+                            <div class="fb_purchase_return_address">
+                                <t t-if="company.name">
+                                    <span t-field="company.name"/>
+                                </t>
+
+                                <t t-if="company.street">
+                                    <span> · </span>
+                                    <span t-field="company.street"/>
+                                </t>
+
+                                <t t-if="company.zip or company.city">
+                                    <span> · </span>
+                                    <span t-field="company.zip"/>
+                                    <t t-if="company.zip and company.city">
+                                        <span> </span>
+                                    </t>
+                                    <span t-field="company.city"/>
+                                </t>
+                            </div>
+
+                            <div class="fb_purchase_recipient_address">
+                                <t t-if="vendor">
+                                    <strong t-esc="vendor.name"/><br/>
+
+                                    <t t-if="'department_name' in vendor._fields and vendor.department_name">
+                                        <strong t-esc="vendor.department_name"/><br/>
+                                    </t>
+
+                                    <t t-if="vendor.street">
+                                        <t t-esc="vendor.street"/><br/>
+                                    </t>
+
+                                    <t t-if="vendor.street2">
+                                        <t t-esc="vendor.street2"/><br/>
+                                    </t>
+
+                                    <t t-if="vendor.zip or vendor.city">
+                                        <t t-esc="vendor.zip"/>
+                                        <t t-if="vendor.zip and vendor.city">
+                                            <span> </span>
+                                        </t>
+                                        <t t-esc="vendor.city"/><br/>
+                                    </t>
+
+                                    <t t-if="vendor.country_id">
+                                        <t t-esc="vendor.country_id.name"/>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Informationsblock -->
+                        <div class="fb_purchase_information_block">
+                            <table>
+                                <tbody>
+                                    <t t-if="doc.name">
+                                        <tr>
+                                            <td class="label">Anfragenummer:</td>
+                                            <td t-esc="doc.name"/>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="doc.date_order">
+                                        <tr>
+                                            <td class="label">Anfragedatum:</td>
+                                            <td>
+                                                <span t-field="doc.date_order"
+                                                      t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="doc.date_planned">
+                                        <tr>
+                                            <td class="label">Gewünschtes Lieferdatum:</td>
+                                            <td>
+                                                <span t-field="doc.date_planned"
+                                                      t-options="{'widget': 'date', 'format': 'dd.MM.yyyy'}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="doc.partner_ref">
+                                        <tr>
+                                            <td class="label">Ihre Referenz:</td>
+                                            <td t-esc="doc.partner_ref"/>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="vendor and vendor.ref">
+                                        <tr>
+                                            <td class="label">Lieferantennummer:</td>
+                                            <td t-esc="vendor.ref"/>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="doc.origin">
+                                        <tr>
+                                            <td class="label">Ursprungsbeleg:</td>
+                                            <td t-esc="doc.origin"/>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="doc.incoterm_id">
+                                        <tr>
+                                            <td class="label">Lieferbedingung:</td>
+                                            <td t-esc="doc.incoterm_id.name"/>
+                                        </tr>
+                                    </t>
+
+                                    <t t-if="buyer">
+                                        <tr t-if="buyer.name">
+                                            <td class="label">Einkäufer:</td>
+                                            <td t-esc="buyer.name"/>
+                                        </tr>
+
+                                        <tr t-if="buyer.phone">
+                                            <td class="label">Telefon:</td>
+                                            <td t-esc="buyer.phone"/>
+                                        </tr>
+
+                                        <tr t-if="buyer.email">
+                                            <td class="label">E-Mail:</td>
+                                            <td t-esc="buyer.email"/>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2 class="fb_purchase_document_title">
+                            Angebotsanfrage
+                        </h2>
+
+                        <!-- Anfragepositionen -->
+                        <table name="purchase_quotation_line_table"
+                               style="width:100%; border-collapse:collapse; font-size:12px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="3"
+                                        style="text-align:left; font-size:12px; font-weight:600; padding:6px 0;">
+                                    </th>
+
+                                    <th t-att-colspan="3 if display_discount else 2"
+                                        style="text-align:right; font-size:12px; font-weight:600; padding:6px 0;">
+                                        Anfragenummer: <t t-esc="doc.name"/>
+                                    </th>
+                                </tr>
+
+                                <tr class="head-bottom">
+                                    <th style="width:5%; text-align:left; font-size:14px;">Pos.</th>
+                                    <th style="width:45%; text-align:left; font-size:14px;">Bezeichnung</th>
+                                    <th style="width:15%; text-align:right; font-size:14px;">Menge</th>
+                                    <th style="width:12%; text-align:right; font-size:14px;">Einzelpreis</th>
+                                    <th t-if="display_discount"
+                                        style="width:10%; text-align:right; font-size:14px;">Rabatt</th>
+                                    <th style="width:13%; text-align:right; font-size:14px;">Betrag</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-set="position" t-value="0"/>
+
+                                <t t-foreach="lines_to_report" t-as="line">
+                                    <t t-if="line.display_type == 'line_section'">
+                                        <tr class="line-bottom">
+                                            <td colspan="99"
+                                                style="background-color:#d3d3d3; font-weight:bold; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <t t-elif="line.display_type == 'line_note'">
+                                        <tr class="line-bottom">
+                                            <td colspan="99"
+                                                style="font-style:italic; white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding-top:7px; padding-bottom:7px;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <t t-else="">
+                                        <t t-set="position" t-value="position + 1"/>
+
+                                        <tr class="line-bottom">
+                                            <td style="font-size:14px;" t-esc="position"/>
+
+                                            <td style="white-space:normal; font-size:14px; word-wrap:break-word; word-break:break-word; padding:7px 0; text-align:left; vertical-align:top;">
+                                                <t t-set="description_lines"
+                                                   t-value="[part.strip() for part in (line.name or '').splitlines() if part.strip()]"/>
+
+                                                <t t-if="description_lines">
+                                                    <div style="margin:0; padding:0; text-align:left; line-height:1.1;"
+                                                         t-esc="description_lines[0]"/>
+                                                </t>
+
+                                                <t t-foreach="description_lines[1:]"
+                                                   t-as="description_line">
+                                                    <div style="margin:0; padding:0; text-align:left; color:#444; font-size:13px; line-height:1.1;"
+                                                         t-esc="description_line"/>
+                                                </t>
+                                            </td>
+
+                                            <td style="text-align:right; font-size:14px;">
+                                                <t t-esc="'{:.2f}'.format(line.product_qty)"/>
+                                                <t t-if="line.product_uom_id">
+                                                    <span t-esc="line.product_uom_id.with_context(lang='de_DE').name"/>
+                                                </t>
+                                            </td>
+
+                                            <td style="text-align:right; font-size:14px;">
+                                                <span t-field="line.price_unit"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+
+                                            <td t-if="display_discount"
+                                                style="text-align:right; font-size:14px;">
+                                                <t t-esc="line.discount"/>%
+                                            </td>
+
+                                            <td style="text-align:right; font-size:14px;">
+                                                <span t-field="line.price_subtotal"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Hinweise und Summen -->
+                        <table style="margin-top:8mm; font-size:12px; line-height:1.2; width:100%; page-break-inside:avoid;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:60%; vertical-align:top;">
+                                        <t t-if="doc.note">
+                                            <div style="white-space:normal; font-size:12px; word-wrap:break-word; word-break:break-word; max-width:100%;">
+                                                <span t-field="doc.note"/>
+                                            </div>
+                                        </t>
+                                    </td>
+
+                                    <td style="width:40%; vertical-align:top; padding-left:10mm;">
+                                        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                                            <tbody>
+                                                <tr style="font-size:14px;">
+                                                    <td style="text-align:left;">Nettobetrag:</td>
+                                                    <td style="text-align:right;">
+                                                        <span t-field="doc.amount_untaxed"
+                                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+
+                                                <tr style="font-size:14px;">
+                                                    <td style="text-align:left;">Umsatzsteuer:</td>
+                                                    <td style="text-align:right;">
+                                                        <span t-field="doc.amount_tax"
+                                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+
+                                                <tr style="font-weight:bold; font-size:14px;">
+                                                    <td style="text-align:left;">Gesamtbetrag:</td>
+                                                    <td style="text-align:right;">
+                                                        <span t-field="doc.amount_total"
+                                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -28,10 +28,12 @@ Kompatibilität: Odoo 19.0 Enterprise
     "license": "LGPL-3",
     "depends": [
         "base",
+        "account",
         "sale_management",
         "stock",
         "sale_subscription",
         "mail",
+        'ol_invoice_report_changes'
     ],
     "assets": {
         "web.assets_backend": [

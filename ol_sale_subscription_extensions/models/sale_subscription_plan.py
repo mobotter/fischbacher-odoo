@@ -6,11 +6,11 @@ class SaleSubscriptionPlan(models.Model):
 
     billing_timing = fields.Selection(
         selection=[
-            ('advance', 'Im Voraus'),
-            ('arrears', 'Im Nachhinein'),
+            ('advance', 'In advance'),
+            ('arrears', 'In arrears'),
         ],
-        string='Abrechnungszeitpunkt',
+        string='Billing Timing',
         required=True,
         default='advance',
-        help='Steuert, ob die erste wiederkehrende Rechnung zum Periodenbeginn oder nach Ablauf der ersten Periode erzeugt wird.',
+        help='Controls whether the first recurring invoice is generated at the beginning of the period or after the first period ends.',
     )

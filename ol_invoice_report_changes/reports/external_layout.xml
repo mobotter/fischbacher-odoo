@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Gemeinsame externe Layouts für Odoo-PDF-Reports.
+
+        Rechnung:
+        - Paperformat: margin_top = 45 mm, header_spacing = 20 mm.
+        - Der tatsächliche Odoo-Header beginnt 20 mm unter dem oberen
+          Blattrand und hat eine Höhe von 25 mm.
+        - Das Logo ist rechtsbündig, maximal 75 mm breit und 25 mm hoch.
+        - Der Body beginnt unterhalb des vollständig reservierten
+          45-mm-Kopfbereichs auf jeder PDF-Seite.
+
+        Auftragsbestätigung:
+        - Bestehendes Header-Layout bleibt unverändert.
+    -->
+
+    <template id="external_layout_for_invoice">
+        <t t-set="company" t-value="env.company"/>
+
+        <t t-call="web.html_container">
+            <head>
+                <meta charset="utf-8"/>
+
+                <style>
+                    /* Rahmen des Odoo-Layouts entfernen */
+                    .article,
+                    .article .page,
+                    .page {
+                        border: none !important;
+                        box-shadow: none !important;
+                        outline: none !important;
+                    }
+
+                    .page table,
+                    .page tr,
+                    .page td,
+                    .page th {
+                        border: 0 !important;
+                        border-width: 0 !important;
+                        border-style: none !important;
+                        border-color: transparent !important;
+                        border-collapse: collapse !important;
+                        box-shadow: none !important;
+                        outline: none !important;
+                    }
+
+                    .page table {
+                        border-spacing: 0 !important;
+                        background: transparent !important;
+                    }
+
+                    .page pre {
+                        border: 0 !important;
+                        border-style: none !important;
+                        background: transparent !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        white-space: pre-wrap !important;
+                    }
+
+                    .page .head-bottom th {
+                        border-bottom: 1px solid #666666 !important;
+                    }
+
+                    .page .line-bottom td,
+                    .page .line-bottom th {
+                        border-bottom: 1px solid #e0e0e0 !important;
+                    }
+
+                    /*
+                     * ECHTER Odoo-Header:
+                     * wird von wkhtmltopdf auf jeder Seite erneut gerendert.
+                     * Die Position vertikal steuert ausschließlich das
+                     * Paperformat über margin_top und header_spacing.
+                     */
+                    .header.fb_invoice_pdf_header {
+                        width: 100% !important;
+                        height: 25mm !important;
+                        min-height: 25mm !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        overflow: visible !important;
+                        border: 0 !important;
+                        box-shadow: none !important;
+                    }
+
+                    .fb_invoice_pdf_header_inner {
+                        position: relative !important;
+                        width: 100% !important;
+                        height: 25mm !important;
+                        min-height: 25mm !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        overflow: visible !important;
+                    }
+
+                    /*
+                     * Wichtig:
+                     * - Keine width:100%-Regel.
+                     * - Nur maximale Grenzen.
+                     * - height:auto bewahrt das Seitenverhältnis.
+                     *
+                     * Bei breitem Logo führt height:25mm zu einer natürlichen
+                     * Breite. max-width:75mm begrenzt sie zusätzlich.
+                     */
+                    .header.fb_invoice_pdf_header img.fb_invoice_pdf_header_logo {
+                        position: absolute !important;
+                        top: 5mm !important;
+                        right: 0 !important;
+                        left: auto !important;
+                    
+                        /* Logo-Größe unverändert: 85 mm breit, proportional hoch */
+                        width: 85mm !important;
+                        height: auto !important;
+                        max-width: 85mm !important;
+                        max-height: none !important;
+                    
+                        min-width: 0 !important;
+                        min-height: 0 !important;
+                    
+                        display: block !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        border: 0 !important;
+                    }
+                </style>
+            </head>
+
+            <div class="header fb_invoice_pdf_header"
+                 style="
+                    width:100% !important;
+                    height:35mm !important;
+                    min-height:35mm !important;
+                    margin:0 !important;
+                    padding:0 !important;
+                    overflow:visible !important;
+                    border:0 !important;
+                 ">
+                <div class="fb_invoice_pdf_header_inner"
+                     style="
+                        position:relative !important;
+                        width:100% !important;
+                        height:35mm !important;
+                        min-height:35mm !important;
+                        margin:0 !important;
+                        padding:0 !important;
+                        overflow:visible !important;
+                     ">
+                    <img t-if="company.logo"
+                     t-att-src="image_data_uri(company.logo)"
+                     class="fb_invoice_pdf_header_logo"
+                     style="
+                        position:absolute !important;
+                        top: 0mm !important;
+                        right:0 !important;
+                        left:auto !important;
+                
+                        width:85mm !important;
+                        height:auto !important;
+                        max-width:85mm !important;
+                        max-height:none !important;
+                
+                        min-width:0 !important;
+                        min-height:0 !important;
+                
+                        display:block !important;
+                        margin:0 !important;
+                        padding:0 !important;
+                        border:0 !important;
+                     "/>
+                </div>
+            </div>
+
+            <div class="article"
+                 t-att-data-oe-model="o and o._name"
+                 t-att-data-oe-id="o and o.id">
+                <div class="page"
+                     style="
+                        position:relative !important;
+                        overflow:visible !important;
+                        margin-top:0 !important;
+                        padding-top:0 !important;
+                     ">
+                    <t t-out="0"/>
+                </div>
+            </div>
+
+            <div class="footer table-borderless mt-2"
+                 style="
+                    width:100%;
+                    font-size:12px;
+                    padding-top:0;
+                    text-align:left;
+                 ">
+
+                <div style="
+                        text-align:left;
+                        font-size:10.5px;
+                        margin-bottom:6px;
+                     ">
+                    Kommanditgesellschaft · Sitz München, HRA 116761 ·
+                    Persönlich haftende Gesellschafterin: Fischbacher GmbH ·
+                    Sitz München · HRB 278787<br/>
+                    USt-Id. DE355684446 · St-Nr. 143/518/60562 ·
+                    Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez
+                </div>
+
+                <table style="width:100%; border-collapse:collapse;">
+                    <tbody>
+                        <tr style="border:none;">
+                            <td style="
+                                    width:33%;
+                                    vertical-align:top;
+                                    border:none;
+                                    padding:0;
+                                ">
+                                Fischbacher GmbH + Co. KG<br/>
+                                Dessauerstr. 9<br/>
+                                80992 München
+                            </td>
+
+                            <td style="
+                                    width:33%;
+                                    vertical-align:top;
+                                    border:none;
+                                    padding:0;
+                                ">
+                                <strong style="display:inline-block; width:60px; color:#1f6fd2;">Telefon</strong>089 / 14 99 08-0<br/>
+                                <strong style="display:inline-block; width:60px; color:#1f6fd2;">Internet</strong>www.fischbacher.de<br/>
+                                <strong style="display:inline-block; width:60px; color:#1f6fd2;">E-Mail</strong>info@fischbacher.de
+                            </td>
+
+                            <td style="
+                                    width:33%;
+                                    vertical-align:top;
+                                    border:none;
+                                    padding:0;
+                                ">
+                                <strong style="display:inline-block; width:40px; color:#1f6fd2;">Bank</strong>VR-Bank Fürstenfeldbruck<br/>
+                                <strong style="display:inline-block; width:40px; color:#1f6fd2;">IBAN</strong>DE83 7016 3370 0000 3132 54<br/>
+                                <strong style="display:inline-block; width:40px; color:#1f6fd2;">BIC</strong>GENODEF1FFB
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="
+                        text-align:center;
+                        font-weight:bold;
+                        margin-top:8px;
+                     ">
+                    Seite <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="external_layout_for_sale_confirmation">
+        <t t-set="company" t-value="env.company"/>
+
+        <t t-call="web.html_container">
+            <head>
+                <meta charset="utf-8"/>
+
+                <style>
+                    /* Rahmen des Odoo-Layouts entfernen */
+                    .article,
+                    .article .page,
+                    .page {
+                        border: none !important;
+                        box-shadow: none !important;
+                        outline: none !important;
+                    }
+
+                    .header table,
+                    .header td,
+                    .header th,
+                    .footer table,
+                    .footer td,
+                    .footer th,
+                    .company_header,
+                    .company_header td,
+                    .company_header th {
+                        border: 0 !important;
+                        border-collapse: collapse !important;
+                        box-shadow: none !important;
+                        outline: none !important;
+                    }
+
+                    .footer table {
+                        background: transparent !important;
+                    }
+                </style>
+            </head>
+
+            <div class="header">
+                <table class="company_header table-borderless"
+                       style="width:100%;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:right;">
+                                <img t-if="company.logo"
+                                     t-att-src="image_data_uri(company.logo)"
+                                     style="height:80px;"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="article"
+                 t-att-data-oe-model="doc and doc._name"
+                 t-att-data-oe-id="doc and doc.id">
+                <div class="page"
+                     style="
+                        position:relative !important;
+                        overflow:visible !important;
+                        margin-top:0 !important;
+                        padding-top:0 !important;
+                     ">
+                    <t t-out="0"/>
+                </div>
+            </div>
+
+            <div class="footer table-borderless mt-2"
+                 style="
+                    width:100%;
+                    font-size:12px;
+                    padding-top:0;
+                    text-align:left;
+                 ">
+
+                <div style="
+                        text-align:left;
+                        font-size:10.5px;
+                        margin-bottom:6px;
+                     ">
+                    Kommanditgesellschaft · Sitz München, HRA 116761 ·
+                    Persönlich haftende Gesellschafterin: Fischbacher GmbH ·
+                    Sitz München · HRB 278787<br/>
+                    USt-Id. DE355684446 · St-Nr. 143/518/60562 ·
+                    Geschäftsführer: Dipl.-Ing. Marcus Mayr, Dipl.-Ing. (FH) Moritz Zwez
+                </div>
+
+                <table style="width:100%; border-collapse:collapse;">
+                    <tbody>
+                        <tr style="border:none;">
+                            <td style="
+                                    width:33%;
+                                    vertical-align:top;
+                                    border:none;
+                                    padding:0;
+                                ">
+                                Fischbacher GmbH + Co. KG<br/>
+                                Dessauerstr. 9<br/>
+                                80992 München
+                            </td>
+
+                            <td style="
+                                    width:33%;
+                                    vertical-align:top;
+                                    border:none;
+                                    padding:0;
+                                ">
+                                <strong style="display:inline-block; width:60px; color:#1f6fd2;">Telefon</strong>089 / 14 99 08-0<br/>
+                                <strong style="display:inline-block; width:60px; color:#1f6fd2;">Internet</strong>www.fischbacher.de<br/>
+                                <strong style="display:inline-block; width:60px; color:#1f6fd2;">E-Mail</strong>info@fischbacher.de
+                            </td>
+
+                            <td style="
+                                    width:33%;
+                                    vertical-align:top;
+                                    border:none;
+                                    padding:0;
+                                ">
+                                <strong style="display:inline-block; width:40px; color:#1f6fd2;">Bank</strong>VR-Bank Fürstenfeldbruck<br/>
+                                <strong style="display:inline-block; width:40px; color:#1f6fd2;">IBAN</strong>DE83 7016 3370 0000 3132 54<br/>
+                                <strong style="display:inline-block; width:40px; color:#1f6fd2;">BIC</strong>GENODEF1FFB
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="
+                        text-align:center;
+                        font-weight:bold;
+                        margin-top:8px;
+                     ">
+                    Seite <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

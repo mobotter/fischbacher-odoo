@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Angebot / Auftrag:
+        - partner_id bleibt unverändert.
+        - Rechnungsadresse, Lieferadresse und Leistungsempfänger werden nur
+          angezeigt, wenn der Kunde untergeordnete Kontakte dieser Adressart hat.
+        - Die Dropdowns bieten nur diese Unterkontakte an, nicht alle Kontakte.
+        - Ist das Feld ausgeblendet, bleibt der automatisch berechnete Wert
+          (Standard: der Kunde selbst) erhalten.
+    -->
+    <record id="view_order_form_inherit_partner_recipient" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.partner.recipient</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Rechnungsadresse -->
+            <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                <attribute name="invisible">not fb_has_invoice_address</attribute>
+                <attribute name="domain">[('id', 'child_of', fb_commercial_partner_id), ('type', '=', 'invoice'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+            </xpath>
+
+            <!-- Lieferadresse -->
+            <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                <attribute name="invisible">not fb_has_delivery_address</attribute>
+                <attribute name="domain">[('id', 'child_of', fb_commercial_partner_id), ('type', '=', 'delivery'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+            </xpath>
+
+            <!-- Leistungsempfänger + Hilfsfelder -->
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                <field name="fb_commercial_partner_id" invisible="1"/>
+                <field name="fb_has_invoice_address" invisible="1"/>
+                <field name="fb_has_delivery_address" invisible="1"/>
+                <field name="fb_has_recipient_address" invisible="1"/>
+
+                <field name="partner_recipient_id"
+                       invisible="not fb_has_recipient_address"
+                       domain="[('id', 'child_of', fb_commercial_partner_id), ('type', '=', 'recipient'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                       context="{'default_type': 'recipient', 'default_parent_id': fb_commercial_partner_id, 'show_address': 1, 'show_vat': True}"
+                       options="{'always_reload': True}"
+                       readonly="state == 'cancel' or locked"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_sales_order_filter_inherit_partner_recipient" model="ir.ui.view">
+        <field name="name">sale.order.search.inherit.partner.recipient</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_recipient_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
